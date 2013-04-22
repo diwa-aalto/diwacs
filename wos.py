@@ -266,14 +266,11 @@ class WORKER_THREAD(threading.Thread):
             logger.debug("Responsive checking active: %s"%str(nodes))
             if not nodes:
                 if RESPONSIVE == 0:
-                    screens = self.parent.swnp.get_screen_list()
-                    if screens:
-                        node = screens[0]
-                    else:
-                        return  
+                    return  
                 else:
                     node = self.parent.swnp.node.id
                 self.parent.responsive = node
+                logger.debug(node+str(type(node)))
                 if node == self.parent.swnp.node.id:
                     self.parent.is_responsive = True
                     self.parent.SetResponsive()
@@ -358,7 +355,8 @@ class WORKER_THREAD(threading.Thread):
             logger.exception('Exception in RemoveAllRegEntries:' + str(e))
             
     def parseConfig(self, config):
-        global STORAGE, RESPONSIVE
+        """ Handles config file settings"""
+        global STORAGE, RESPONSIVE, PGM_GROUP
         for key, val in config.items(): 
             if 'STORAGE' in key:
                 STORAGE = val
@@ -366,6 +364,8 @@ class WORKER_THREAD(threading.Thread):
                 utils.UpdateStorage(STORAGE)
             elif 'NAME' in key or 'SCREENS' in key:
                 pass 
+            elif 'PGM_GROUP' in key:
+                PGM_GROUP = int(val)
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
@@ -381,6 +381,7 @@ class WORKER_THREAD(threading.Thread):
             elif "RESPONSIVE" in key:
                 logger.debug("Setting RESPONSIVE")
                 RESPONSIVE = eval(val)
+                controller.SetIsResponsive(RESPONSIVE)
                 logger.debug("%d"%RESPONSIVE)
             else:
                 globals()[key] = eval(val) 
@@ -392,7 +393,8 @@ class WORKER_THREAD(threading.Thread):
             utils.Snaphot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')
             self.parent.status_text.SetLabel("Recording...")
-            wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
+            if AUDIO:
+                wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
         except:
             logger.exception("Create Event exception") 
                   
@@ -665,15 +667,26 @@ class CURRENT_PROJECT(threading.Thread):
         self.project_id = project_id
         self.swnp = swnp
         self._stop = threading.Event()
+        logger.debug("Current Project created")
     def stop(self):
         """Stops the thread."""
         self._stop.set()
          
     def run(self):
         """Starts the thread."""
+        global CURRENT_PROJECT_ID
+        logger.debug("current project started")
         while not self._stop.isSet():
-            if CURRENT_PROJECT_ID:
-                self.swnp('SYS', 'current_project;' + str(CURRENT_PROJECT_ID))
+            try:
+                logger.debug("Active project checking..")
+                current_project = controller.GetActiveProject()
+                logger.debug("current project id is %s"%str(current_project))
+                if current_project != CURRENT_PROJECT_ID:
+                    CURRENT_PROJECT_ID = current_project
+                if CURRENT_PROJECT_ID:
+                    self.swnp('SYS', 'current_project;' + str(CURRENT_PROJECT_ID))
+            except:
+                logger.exception("Exception in current project")
             time.sleep(5) 
 
           
@@ -698,6 +711,9 @@ class CURRENT_SESSION(threading.Thread):
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
+            current_session = controller.GetActiveSession()
+            if current_session != self.parent.current_session.id:
+                self.parent.SetCurrentSession(current_session)
             self.swnp('SYS', 'current_session;' + str(self.parent.current_session.id))
             time.sleep(5) 
             
@@ -1443,7 +1459,7 @@ class GUI(wx.Frame):
             else:    
                 self.config = self.LoadConfig()                        
             self.worker.parseConfig(self.config)  
-            self.swnp = swnp.SWNP(int(self.config['SCREENS']), self.config['NAME'], 'observer' if self.is_responsive else "", error_handler=self.error_th) 
+            self.swnp = swnp.SWNP(int(PGM_GROUP), int(self.config['SCREENS']), self.config['NAME'], 'observer' if self.is_responsive else "", error_handler=self.error_th) 
         except:
             logger.exception("loading config exception")
         #if self.swnp.node.id == '3':
@@ -1458,13 +1474,13 @@ class GUI(wx.Frame):
                 wx.MessageBox(it, 'Application Error', wx.OK | wx.ICON_ERROR).ShowModal()
             self.Destroy()
             sys.exit(0) 
-        
-        try:
-            self.audio_recorder = AudioRecorder(self)
-            self.audio_recorder.daemon = True
-            self.audio_recorder.start()
-        except:
-            pass 
+        if AUDIO:
+            try:
+                self.audio_recorder = AudioRecorder(self)
+                self.audio_recorder.daemon = True
+                self.audio_recorder.start()
+            except:
+                pass 
           
         DEFAULT_CURSOR = self.GetCursor()
         BLANK_CURSOR = wx.StockCursor(wx.CURSOR_BLANK)
@@ -1644,7 +1660,7 @@ class GUI(wx.Frame):
             utils.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
             CURRENT_PROJECT_ID = project_id
             if self.is_responsive:
-                self.SetProjectObserver()
+                self.SetObservers()
             logger.info('Project set to %s', project_id)  
         elif project_id == 0:
             self.current_project_id = 0
@@ -1661,7 +1677,8 @@ class GUI(wx.Frame):
             CURRENT_PROJECT_ID = 0
             
     def SetResponsive(self):
-        controller.SetIsResponsive(True)
+        logger.debug("Set Responsive")
+        controller.SetIsResponsive(PGM_GROUP)
         self.StartCurrentProject()
         self.SetObservers()
         if self.current_session_id and not self.session_th:
@@ -1670,7 +1687,7 @@ class GUI(wx.Frame):
             self.session_th.start()
             
     def StopResponsive(self):
-        controller.SetIsResponsive(False)
+        controller.SetIsResponsive(0)
         self.RemoveObservers()
         self.EndCurrentProject()
         self.EndCurrentSession()
@@ -1700,6 +1717,7 @@ class GUI(wx.Frame):
             pass
                
     def SetObservers(self):
+            logger.debug("Set observers")
             self.SetScanObserver()
             self.SetProjectObserver()
                                        
@@ -1778,6 +1796,7 @@ class GUI(wx.Frame):
         if self.project_th:
             self.project_th.stop()
             self.project_th = None
+        logger.debug("Creating Current Project!")
         self.project_th = CURRENT_PROJECT(self.current_project_id, self.SwnpSend)
         self.project_th.daemon = True
         self.project_th.start()
@@ -2078,17 +2097,24 @@ class GUI(wx.Frame):
         
     def SetScanObserver(self):
         """ Observer for created files in scanned or taken with camera """ 
-        try:       
+        try:
+            logger.debug("Setting scan observer")
+            if self.scan_observer:
+                try:
+                        self.scan_observer.stop()
+                        del self.scan_observer
+                except NameError:
+                    pass       
             self.scan_observer = Observer()
             path = 'C:\\Scan' if DEBUG else '\\\\' + STORAGE + '\\Pictures'
             self.scan_observer.schedule(controller.SCAN_HANDLER(self.current_project_id), path=path, recursive=True)
             #self.scan_observer.schedule(controller.SCAN_HANDLER(self.current_project_id), path='C:\\Scan', recursive=True)
             self.scan_observer.start()
             self.is_responsive = True
-            self.swnp.node.data = 'responsive'
+            #self.swnp.node.data = 'responsive'
         except Exception, e:
             self.is_responsive = False
-            self.swnp.node.data = ''
+            #self.swnp.node.data = ''
             logger.exception("error setting scan observer:%s", str(e))
             
     def SetProjectObserver(self):
@@ -2286,18 +2312,20 @@ class GUI(wx.Frame):
                 self.overlay.Destroy()
                 self.Hide()
                 self.trayicon.RemoveIcon()
-                self.trayicon.Destroy()
+                self.trayicon.Destroy()              
                 if not event == 'conn_err' and self.is_responsive:
                     logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
-                    controller.UnsetActivity()          
+                    #controller.UnsetActivity()          
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     logger.debug("On exit self is last active comp.")
                     controller.UnsetActivity()
                     if self.current_session_id:
                         controller.EndSession(self.current_session_id)                
-                utils.MapNetworkShare('W:', 'C:\\')             
+                utils.MapNetworkShare('W:', 'C:\\')
+                controller.SetIsResponsive(0)
+                time.sleep(5)             
                 self.cmfh.stop()                       
                 self.worker.RemoveAllRegEntries()
                 self.swnp.close()                        

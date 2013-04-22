@@ -144,13 +144,17 @@ class SWNP:
     NODE_LIST = set()
     MSG_BUFFER = []
     SYS_BUFFER = []
-    def __init__(self,screens=0,name=None,id=None,context=None,error_handler=None):
+    def __init__(self, pgm_group,screens=0,name=None,id=None,context=None,error_handler=None):
+        global PGM_IP
+        # Check pgm_group
+        if pgm_group != 1:
+            PGM_IP="239.128.128.%d:5555" % pgm_group
+        logger.debug("PGM IP %s"%PGM_IP)
         #Create context
         self.context = context if context else zmq.Context()
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
         #Get ip and id
-        
         self.ip = get_local_ip_address(STORAGE)
         logger.debug(self.ip)
         if id:
@@ -160,14 +164,12 @@ class SWNP:
         else:
             self.id = random.randint(1,154)  
         self.node = Node(self.id,int(screens),name)
-        logger.debug("Self.node at start %s(%s)",str(self.node),str(type(self.node)))
         #prevent overflow slow subscribers
         self.publisher.setsockopt(zmq.LINGER, 0)
         self.publisher.setsockopt(zmq.HWM, 1)
         #set swap space for publisher
         self.publisher.setsockopt(zmq.RATE, 1000000)
         #bind publisher
-        logger.debug("publisher bind"+self.ip)
         self.publisher.bind("epgm://"+self.ip+";"+PGM_IP)
         
         #Subscriber threads

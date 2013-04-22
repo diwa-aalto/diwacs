@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DiwaCS"
-#define MyAppVersion "0.8.6"
+#define MyAppVersion "0.8.8"
 #define MyAppPublisher "Aalto University"
 #define MyAppExeName "DiwaCS.exe"
 
@@ -17,7 +17,7 @@ AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=C:\Users\neriksso\Documents\workspace\wxui\installer
+OutputDir=C:\Users\neriksso\Documents\workspace\diwacs\installer
 OutputBaseFilename=DiwaCS-setup-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
@@ -33,8 +33,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\neriksso\Documents\workspace\wxui\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\neriksso\Documents\workspace\wxui\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\neriksso\Documents\workspace\diwacs\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\neriksso\Documents\workspace\diwacs\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "DeleteUpdateTask.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
