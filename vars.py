@@ -9,7 +9,7 @@ BLANK_CURSOR = None
 # Application name
 APPLICATION_NAME = "DiWaCS"
 # current application version
-VERSION = "0.8.6"
+VERSION = "0.8.8"
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
 # System tray icon filename
@@ -57,12 +57,14 @@ WINDOW_TAIL = 120
 MAX_LENGTH = (WINDOW_HEAD + WINDOW_TAIL)/INPUT_BLOCK_TIME
 # The version of windows OS
 WINDOWS_MAJOR = 6
-
+# PGM GROUP ADDRESS
+PGM_GROUP = 1
 # IP CAMERA VARS
-CAMERA_URL = "192.168.1.85"
+CAMERA_URL = "http://192.168.1.85/image/jpeg.cgi"
 CAMERA_USER = "admin"
 CAMERA_PASS = "wosadmin"
-
+#Is audi orecorded
+AUDIO = False
 # If the node can act as RESPONSIVE. 
 # -1 Not Setup
 #  0 Will NOT act as responsive

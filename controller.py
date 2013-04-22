@@ -32,7 +32,7 @@ PROJECT_PATH = '\\\\'+STORAGE+'\\Projects\\'
 SCANNER_TH = None
 CS_TH = None
 COMPUTER_INS = None
-IS_RESPONSIVE = False
+IS_RESPONSIVE = 0
 ACTIONS = {
                        1 : "Created",
                        2 : "Deleted",
@@ -123,7 +123,27 @@ def GetActiveActivity():
     logger.debug("Active activity: %s",str(act.id) if act else "None")
     db.close()
     return act.id if act else None
-   
+
+def GetActiveProject():
+    activity = GetActiveActivity()
+    if activity == None:
+        return 0
+    else:
+        db = ConnectToDatabase()
+        project = db.query(Activity).filter(Activity.id==activity).one().project
+        db.close()
+        return project.id
+
+def GetActiveSession():
+    activity = GetActiveActivity()
+    if activity == None:
+        return 0
+    else:
+        db = ConnectToDatabase()
+        session = db.query(Activity).filter(Activity.id==activity).one().session
+        db.close()
+        return session.id
+           
 def AddActivity(project_id,session_id=None,act_id=None):
     try:
         db = ConnectToDatabase()
@@ -387,6 +407,11 @@ def AddComputer(name,ip,wos_id):
         ip_int = utils.DottedIPToInt(ip)
         if mac:
             c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
+            c.name = name
+            c.ip = ip_int
+            c.wos_id = wos_id
+            db.add(c)
+            db.commit()
         else:
             c = None      
         if not c:
@@ -635,7 +660,7 @@ class SCAN_HANDLER(FileSystemEventHandler):
                 return                
             new_path = os.path.join(project_path,os.path.basename(event.src_path))
             if 'Scan' in  event.src_path:
-                time.sleep(35)                        
+                time.sleep(60)                        
             shutil.copy2(event.src_path,new_path)
             db = ConnectToDatabase()
             f = File(path=new_path,project=db.query(Project).filter(Project.id==self.project_id).one())
