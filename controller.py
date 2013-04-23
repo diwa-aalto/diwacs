@@ -33,6 +33,8 @@ SCANNER_TH = None
 CS_TH = None
 COMPUTER_INS = None
 IS_RESPONSIVE = 0
+NODE_NAME = ""
+NODE_SCREENS = 0
 ACTIONS = {
                        1 : "Created",
                        2 : "Deleted",
@@ -57,6 +59,14 @@ def UpdateStorage(storage):
 def SetIsResponsive(responsive):
     global IS_RESPONSIVE
     IS_RESPONSIVE = responsive
+    
+def SetNodeName(name):
+    global NODE_NAME
+    NODE_NAME = name    
+    
+def SetNodeScreens(screens):
+    global NODE_SCREENS
+    NODE_SCREENS = screens     
 def CreateAll():
     """Create tables to the database"""
     try:
@@ -440,7 +450,9 @@ def RefreshComputer(computer):
         db = ConnectToDatabase()
         db.add(computer)
         computer.time = sql.func.now()
-        computer.responsive = IS_RESPONSIVE   
+        computer.responsive = IS_RESPONSIVE
+        computer.name = NODE_NAME   
+        computer.screens = NODE_SCREENS  
         db.commit()
         db.expunge(computer)
         db.close()   

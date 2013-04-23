@@ -270,7 +270,7 @@ def SnaphotThread(path):
     request.add_header("Authorization", "Basic %s" % base64string)
     event_id = controller.GetLatestEvent()   
     try:
-        data = urllib2.urlopen(request,timeout=5).read()
+        data = urllib2.urlopen(request,timeout=60).read()
         name = str(event_id)+'_'+datetime.datetime.now().strftime("%d%m%Y%H%M%S")+'.jpg'
         logger.debug('Snaphot filename:%s',name)
         output = open(os.path.join(filepath,name),'wb')
