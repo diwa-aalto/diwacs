@@ -9,7 +9,7 @@ BLANK_CURSOR = None
 # Application name
 APPLICATION_NAME = "DiWaCS"
 # current application version
-VERSION = "0.8.8"
+VERSION = "0.8.8C"
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
 # System tray icon filename

@@ -48,13 +48,17 @@ class AudioRecorder(threading.Thread):
 
     def find_input_device(self):
         device_index = None            
-        for i in range(self.pa.get_device_count()):     
+        for i in range(self.pa.get_device_count()):
+            # China hack...
+            logger.debug("Selecting audio device %s"%str(i))
+            device_index = i
+            return device_index
+            """     
             devinfo = self.pa.get_device_info_by_index(i)   
-
             for keyword in ["mic", "input"]:
                 if keyword in devinfo["name"].lower():
                     device_index = i
-                    return device_index
+                    return device_index"""
 
         if device_index == None:
             pass
@@ -356,16 +360,27 @@ class WORKER_THREAD(threading.Thread):
             
     def parseConfig(self, config):
         """ Handles config file settings"""
-        global STORAGE, RESPONSIVE, PGM_GROUP
+        global STORAGE, RESPONSIVE, PGM_GROUP, AUDIO
         for key, val in config.items(): 
             if 'STORAGE' in key:
                 STORAGE = val
                 controller.UpdateStorage(STORAGE)
                 utils.UpdateStorage(STORAGE)
             elif 'NAME' in key or 'SCREENS' in key:
-                pass 
+                if key == 'NAME':
+                    controller.SetNodeName(val)
+                else:
+                    controller.SetNodeScreens(int(val))
             elif 'PGM_GROUP' in key:
                 PGM_GROUP = int(val)
+            elif 'AUDIO' in key:
+                logger.debug("AUDIO in config: %s"%str(val))
+                val = eval(val)
+                if val:
+                    AUDIO = val
+                    logger.debug("Starting audio recorder")
+                    self.parent.StartAudioRecorder()
+                    
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
@@ -391,9 +406,10 @@ class WORKER_THREAD(threading.Thread):
             ide = controller.AddEvent(self.parent.current_session_id, title, '')
             path = controller.GetProjectPath(self.parent.current_project_id)
             utils.Snaphot(path)
-            self.parent.SwnpSend('SYS', 'screenshot;0')
-            self.parent.status_text.SetLabel("Recording...")
+            self.parent.SwnpSend('SYS', 'screenshot;0')         
             if AUDIO:
+                logger.debug("Buffering audio..")
+                self.parent.status_text.SetLabel("Recording...")
                 wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
         except:
             logger.exception("Create Event exception") 
@@ -664,7 +680,7 @@ class CURRENT_PROJECT(threading.Thread):
     """
     def __init__ (self, project_id, swnp):
         threading.Thread.__init__(self, name="current project")
-        self.project_id = project_id
+        self.project_id = int(project_id)
         self.swnp = swnp
         self._stop = threading.Event()
         logger.debug("Current Project created")
@@ -674,17 +690,14 @@ class CURRENT_PROJECT(threading.Thread):
          
     def run(self):
         """Starts the thread."""
-        global CURRENT_PROJECT_ID
         logger.debug("current project started")
         while not self._stop.isSet():
             try:
                 logger.debug("Active project checking..")
-                current_project = controller.GetActiveProject()
+                current_project = int(controller.GetActiveProject())
                 logger.debug("current project id is %s"%str(current_project))
-                if current_project != CURRENT_PROJECT_ID:
-                    CURRENT_PROJECT_ID = current_project
-                if CURRENT_PROJECT_ID:
-                    self.swnp('SYS', 'current_project;' + str(CURRENT_PROJECT_ID))
+                if current_project:
+                    self.swnp('SYS', 'current_project;' + str(current_project))
             except:
                 logger.exception("Exception in current project")
             time.sleep(5) 
@@ -711,10 +724,10 @@ class CURRENT_SESSION(threading.Thread):
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
-            current_session = controller.GetActiveSession()
-            if current_session != self.parent.current_session.id:
-                self.parent.SetCurrentSession(current_session)
-            self.swnp('SYS', 'current_session;' + str(self.parent.current_session.id))
+            current_session = int(controller.GetActiveSession())
+            """if current_session != self.parent.current_session_id:
+                self.parent.SetCurrentSession(current_session)"""
+            self.swnp('SYS', 'current_session;' + str(current_session))
             time.sleep(5) 
             
 class DeleteProjectDialog(wx.Dialog):
@@ -1199,7 +1212,9 @@ class PreferencesDialog(wx.Dialog):
         """
         global CUSTOM_EVENT_1_LABEL, CUSTOM_EVENT_2_LABEL
         self.config['SCREENS'] = 1 if self.screens_show.GetValue() else 0
+        controller.SetNodeScreens(self.config['SCREENS'])
         self.config['NAME'] = self.name_value.GetValue()
+        controller.SetNodeName(self.config['NAME'])
         self.config.write()     
         dlg = wx.MessageDialog(self, "Preferences Saved!", 'Information', wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
@@ -1444,6 +1459,11 @@ class GUI(wx.Frame):
         MySplash = MySplashScreen()
         MySplash.Show()   
         WINDOWS_MAJOR = sys.getwindowsversion().major
+        try:
+            self.audio_recorder = AudioRecorder(self)
+            self.audio_recorder.daemon = True
+        except Exception, e:
+            logger.exception("Starting audio recorder exception")
         self.responsive = ''
         self.is_responsive = False
         self.error_th = CONN_ERR_TH(self)
@@ -1474,13 +1494,7 @@ class GUI(wx.Frame):
                 wx.MessageBox(it, 'Application Error', wx.OK | wx.ICON_ERROR).ShowModal()
             self.Destroy()
             sys.exit(0) 
-        if AUDIO:
-            try:
-                self.audio_recorder = AudioRecorder(self)
-                self.audio_recorder.daemon = True
-                self.audio_recorder.start()
-            except:
-                pass 
+        
           
         DEFAULT_CURSOR = self.GetCursor()
         BLANK_CURSOR = wx.StockCursor(wx.CURSOR_BLANK)
@@ -1534,6 +1548,7 @@ class GUI(wx.Frame):
             self.InitUI()
             self.Layout()
             self.AlignCenterTop()
+            
             self.Show(True)       
             pub.subscribe(self.ConnectionErrorHandler, "ConnectionErrorHandler")
             self.capture_thread = INPUT_CAPTURE(self, self.SwnpSend)
@@ -1541,7 +1556,7 @@ class GUI(wx.Frame):
             self.capture_thread.start()
             MySplash.Hide()
             MySplash.Destroy()
-            if self.activity:
+            if self.activity and not self.is_responsive:
                 self.SetCurrentProject(controller.GetProjectIdByActivity(self.activity))
                 self.SetCurrentSession(controller.GetSessionIdByActivity(self.activity))
         except:
@@ -1549,7 +1564,13 @@ class GUI(wx.Frame):
             MySplash.Hide()
             MySplash.Destroy()
             self.Destroy()
-        
+    
+    def StartAudioRecorder(self):
+        try:
+            self.audio_recorder.start()
+        except Exception, e:
+            logger.exception("Starting audio recorder exception")
+            
     def OnFocus(self, event):
         self.list.Hide() 
         
@@ -1613,7 +1634,10 @@ class GUI(wx.Frame):
             :type session_id: Integer.
              
         """
+        session_id = int(session_id)
         if session_id > 0 and session_id != self.current_session_id:
+            if self.current_session_id:
+                controller.EndSession(self.current_session_id)
             self.current_session_id = session_id      
             self.current_session = controller.StartNewSession(project_id=self.current_project_id, session_id=session_id)
             if self.is_responsive and not self.session_th:
@@ -1646,20 +1670,24 @@ class GUI(wx.Frame):
         """
         global CURRENT_PROJECT_PATH
         global CURRENT_PROJECT_ID
+        project_id = int(project_id)
+        logger.debug("Set current project id %d" % project_id)
         if project_id > 0 and self.current_project_id != project_id:   
             self.dirbtn.Disable()
             self.dirbtn.Enable(True)
             self.sesbtn.Disable()
             self.sesbtn.Enable(True)                    
             self.current_project_id = project_id
+            logger.debug("Set project label")
             self.pro_label.SetLabel('Project: ' + controller.GetProject(project_id).name)
             self.worker.RemoveAllRegEntries()       
             self.worker.AddProjectReg(project_id)
-            
+            logger.debug("setting project path")
             CURRENT_PROJECT_PATH = controller.GetProjectPath(self.current_project_id)
             utils.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
             CURRENT_PROJECT_ID = project_id
             if self.is_responsive:
+                logger.debug("Starting observers.")
                 self.SetObservers()
             logger.info('Project set to %s', project_id)  
         elif project_id == 0:
@@ -1680,12 +1708,8 @@ class GUI(wx.Frame):
         logger.debug("Set Responsive")
         controller.SetIsResponsive(PGM_GROUP)
         self.StartCurrentProject()
-        self.SetObservers()
-        if self.current_session_id and not self.session_th:
-            self.session_th = CURRENT_SESSION(self, self.SwnpSend)
-            self.session_th.daemon = True
-            self.session_th.start()
-            
+        #self.SetObservers()  
+        self.StartCurrentSession()
     def StopResponsive(self):
         controller.SetIsResponsive(0)
         self.RemoveObservers()
@@ -1801,6 +1825,16 @@ class GUI(wx.Frame):
         self.project_th.daemon = True
         self.project_th.start()
         
+    def StartCurrentSession(self):
+        """Start current project loop"""
+        if self.session_th:
+            self.session_th.stop()
+            self.session_th = None
+        logger.debug("Creating Current Session!")
+        self.session_th = CURRENT_SESSION(self.current_session_id, self.SwnpSend)
+        self.session_th.daemon = True
+        self.session_th.start() 
+          
     def SelectProjectDialog(self, evt):
         """ Select project event handler 
         
@@ -2489,20 +2523,17 @@ class GUI(wx.Frame):
                 if self.swnp.node.screens > 0:
                     utils.ScreenCapture(controller.GetProjectPath(self.current_project_id), self.swnp.node.id)                
             if cmd == 'current_session':
-                if not self.current_session_id:
+                target = int(target)
+                if self.current_session_id != target:
                     self.SetCurrentSession(target)                      
-                if target == 0:
-                    if self.session_th:
-                        self.session_th.stop()
-                        self.session_th = None
-                    self.SetCurrentSession(0) 
+                
                      
             if cmd == 'current_project':
-                if self.current_project_id != target:                
-                    self.SetCurrentProject(target)
-                    if self.project_th:
+                if self.current_project_id != target:
+                    """if self.project_th:
                         self.project_th.stop()
-                        self.project_th = None
+                        self.project_th = None"""                
+                    self.SetCurrentProject(target)
             if cmd == 'current_activity':
                 if self.activity != target:
                     self.activity = target
