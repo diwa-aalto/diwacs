@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DiwaCS"
-#define MyAppVersion "0.8.8C"
+#define MyAppVersion "0.9.0C"
 #define MyAppPublisher "Aalto University"
 #define MyAppExeName "DiwaCS.exe"
 
