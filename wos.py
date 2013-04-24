@@ -50,7 +50,7 @@ class AudioRecorder(threading.Thread):
         device_index = None            
         for i in range(self.pa.get_device_count()):
             # China hack...
-            logger.debug("Selecting audio device %s"%str(i))
+            """logger.debug("Selecting audio device %s / %s "%(str(i),str(self.pa.get_device_count())))
             device_index = i
             return device_index
             """     
@@ -58,7 +58,7 @@ class AudioRecorder(threading.Thread):
             for keyword in ["mic", "input"]:
                 if keyword in devinfo["name"].lower():
                     device_index = i
-                    return device_index"""
+                    return device_index
 
         if device_index == None:
             pass
@@ -66,13 +66,13 @@ class AudioRecorder(threading.Thread):
         return device_index
 
     def open_mic_stream(self):
-        device_index = self.find_input_device()
+        #device_index = self.find_input_device()
 
         stream = self.pa.open(format=FORMAT,
                                  channels=CHANNELS,
                                  rate=RATE,
                                  input=True,
-                                 input_device_index=device_index,
+                                 input_device_index=None, # use default input
                                  frames_per_buffer=INPUT_FRAMES_PER_BLOCK)
 
         return stream
@@ -408,7 +408,7 @@ class WORKER_THREAD(threading.Thread):
             utils.Snaphot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')         
             if AUDIO:
-                logger.debug("Buffering audio..")
+                logger.debug("Buffering audio for %d seconds"%WINDOW_TAIL)
                 self.parent.status_text.SetLabel("Recording...")
                 wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
         except:
@@ -690,12 +690,9 @@ class CURRENT_PROJECT(threading.Thread):
          
     def run(self):
         """Starts the thread."""
-        logger.debug("current project started")
         while not self._stop.isSet():
             try:
-                logger.debug("Active project checking..")
                 current_project = int(controller.GetActiveProject())
-                logger.debug("current project id is %s"%str(current_project))
                 if current_project:
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
@@ -1671,7 +1668,6 @@ class GUI(wx.Frame):
         global CURRENT_PROJECT_PATH
         global CURRENT_PROJECT_ID
         project_id = int(project_id)
-        logger.debug("Set current project id %d" % project_id)
         if project_id > 0 and self.current_project_id != project_id:   
             self.dirbtn.Disable()
             self.dirbtn.Enable(True)
@@ -1766,13 +1762,13 @@ class GUI(wx.Frame):
             db.commit()           
           
     def OnSession(self, evt):
-        """Start or terminate a session
+        """Session button pressed
         
         :param evt: GUI Event.
         :type evt: Event
         
         """
-        if self.current_session is None and self.current_project_id > 0:
+        if self.current_session_id == 0 and self.current_project_id > 0:
             try:          
                 self.current_session = controller.StartNewSession(project_id=self.current_project_id)
                 db = controller.ConnectToDatabase(True)
@@ -1802,6 +1798,7 @@ class GUI(wx.Frame):
                 self.evtbtn.Disable() 
                 controller.EndSession(self.current_session_id)
                 self.current_session_id = 0
+                self.current_session = None
                 #self.SetCurrentProject(0)
                 self.SwnpSend('SYS', 'current_session;0')
                 #self.SwnpSend('SYS', 'current_project;0')
@@ -2530,10 +2527,9 @@ class GUI(wx.Frame):
                      
             if cmd == 'current_project':
                 if self.current_project_id != target:
-                    """if self.project_th:
-                        self.project_th.stop()
-                        self.project_th = None"""                
-                    self.SetCurrentProject(target)
+                    target = int(target)
+                    if self.current_project_id != target:               
+                        self.SetCurrentProject(target)
             if cmd == 'current_activity':
                 if self.activity != target:
                     self.activity = target

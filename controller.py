@@ -25,7 +25,7 @@ import logging.config
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 STORAGE = "192.168.1.10"
-DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP'
+DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP?charset=utf8'
 ENGINE = create_engine(DATABASE, echo=True) 
 PROJECT_PATH = '\\\\'+STORAGE+'\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
@@ -130,7 +130,6 @@ def GetLatestEvent():
 def GetActiveActivity():
     db = ConnectToDatabase()
     act = db.query(Activity).filter(Activity.active==True).order_by(desc(Activity.id)).first()
-    logger.debug("Active activity: %s",str(act.id) if act else "None")
     db.close()
     return act.id if act else None
 
@@ -368,9 +367,6 @@ def EndSession(session_id):
     
     """
     try:
-        global SCANNER_TH
-        if SCANNER_TH:
-            SCANNER_TH.stop()
         db = ConnectToDatabase(True)
         #db.add(session)
         session = db.query(Session).filter(Session.id==session_id).one()
@@ -417,11 +413,12 @@ def AddComputer(name,ip,wos_id):
         ip_int = utils.DottedIPToInt(ip)
         if mac:
             c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
-            c.name = name
-            c.ip = ip_int
-            c.wos_id = wos_id
-            db.add(c)
-            db.commit()
+            if c:
+                c.name = name
+                c.ip = ip_int
+                c.wos_id = wos_id
+                db.add(c)
+                db.commit()
         else:
             c = None      
         if not c:
@@ -703,6 +700,7 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         """
         try:
             db = ConnectToDatabase()
+            logger.debug("PROJECT FILE CREATED %s %s"%(str(type(event.src_path)),event.src_path))
             f = File(path=event.src_path,project=db.query(Project).filter(Project.id==self.project_id).one())
             fa = FileAction(file=f,action=db.query(Action).filter(Action.id==1).one())
             db.add(f)
