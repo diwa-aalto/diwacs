@@ -26,7 +26,7 @@ class Company(Base):
     """
     __tablename__ = 'company'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50),nullable=False)
+    name = Column(String(50,convert_unicode=True),nullable=False)
 
     def __init__(self,name):
             self.name = name
@@ -43,10 +43,10 @@ class User(Base):
     """
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50),nullable=False)
-    email = Column(String(100))
-    title = Column(String(50))
-    department = Column(String(100))
+    name = Column(String(50,convert_unicode=True),nullable=False)
+    email = Column(String(100,convert_unicode=True))
+    title = Column(String(50,convert_unicode=True))
+    department = Column(String(100,convert_unicode=True))
     company_id = Column(Integer, ForeignKey('company.id'))
     company = relationship("Company", backref=backref('employees', order_by=id))
 
@@ -83,11 +83,11 @@ class Project(Base):
     """
     __tablename__ = 'project'
     id = Column(Integer, autoincrement=True,primary_key=True,default = text("coalesce(max(project.id),0)+1 from project"))
-    name = Column(String(50))
-    password = Column(String(40))
+    name = Column(String(50,convert_unicode=True))
+    password = Column(String(40),nullable=True)
     company_id = Column(Integer, ForeignKey('company.id'),nullable=False)
     company = relationship("Company", backref=backref('projects', order_by=id),uselist=False)
-    dir = Column(String(255))
+    dir = Column(String(255,convert_unicode=True),nullable=True)
     members = relationship('User', secondary=ProjectMembers, backref='projects')
     
     def __init__(self,name,company,password):
@@ -118,8 +118,8 @@ class Computer(Base):
     """
     __tablename__ = "computer"
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(computer.id),0)+1 from computer"))
-    name = Column(String(50),nullable=False)
-    ip = Column(mysql.INTEGER(unsigned=True))
+    name = Column(String(50,convert_unicode=True),nullable=False)
+    ip = Column(mysql.INTEGER(unsigned=True),nullable=False)
     mac = Column(String(12),nullable=True)
     time = Column(mysql.DATETIME)
     screens = Column(mysql.SMALLINT,default=0)
@@ -143,7 +143,7 @@ class Session(Base):
     """
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True,autoincrement=True,default = text("coalesce(max(session.id),0)+1 from session"))
-    name = Column(String(50))
+    name = Column(String(50,convert_unicode=True),nullable=True)
     project_id = Column(Integer, ForeignKey('project.id'),nullable=False)
     project = relationship("Project", backref=backref('sessions', order_by=id))
     starttime = Column(DateTime,default=sql.func.now())
@@ -222,8 +222,8 @@ class Event(Base):
     """
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(event.id),0)+1 from event"))
-    title = Column(String(40),nullable=False)
-    desc = Column(String(500),nullable=False)
+    title = Column(String(40,convert_unicode=True),nullable=False)
+    desc = Column(String(500,convert_unicode=True),nullable=False)
     time = Column(DateTime,default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('events', order_by=id))    
@@ -256,7 +256,7 @@ class File(Base):
     """
     __tablename__ = 'file'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(file.id),0)+1 from file"))
-    path = Column(String(255),nullable=False)
+    path = Column(String(255,convert_unicode=True),nullable=False)
     project_id = Column(Integer, ForeignKey('project.id'),nullable=True)
     project = relationship("Project", backref=backref('files', order_by=id))
     

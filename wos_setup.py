@@ -6,8 +6,6 @@ Created on 8.5.2012
 import sys
 import wxversion
 wxversion.select('2.9.4')
-#sys.path.append('C:\Users\neriksso\Documents\workspace\Session')
-# ...
 # ModuleFinder can't handle runtime changes to __path__, but win32com uses them
 try:
     # py2exe 0.6.4 introduced a replacement modulefinder.

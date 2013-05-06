@@ -4,7 +4,7 @@ Created on 8.5.2012
 @author: neriksso
 '''
 #import wxversion
-#wxversion.select('2.9')
+#wxversion.select('2.9.4')
 import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx, wx.combo, swnp, utils, wx.lib.statbmp, random, logging, logging.config, macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, zmq, subprocess, configobj, datetime, os, SendKeys, random, controller 
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
@@ -66,13 +66,14 @@ class AudioRecorder(threading.Thread):
         return device_index
 
     def open_mic_stream(self):
+        device_index = None
+        # uncomment the next line to search for a device 
         #device_index = self.find_input_device()
-
         stream = self.pa.open(format=FORMAT,
                                  channels=CHANNELS,
                                  rate=RATE,
                                  input=True,
-                                 input_device_index=None, # use default input
+                                 input_device_index=device_index, # use default input
                                  frames_per_buffer=INPUT_FRAMES_PER_BLOCK)
 
         return stream
@@ -147,7 +148,7 @@ class CHECK_UPDATE(threading.Thread):
     def getPad(self):
         return urllib2.urlopen(PAD_URL)
     
-    def showDialog(self,url):
+    def showDialog(self, url):
         try:
             dlg = UpdateDialog(self.latest_version, url).Show()
             dlg.Destroy()
@@ -267,14 +268,14 @@ class WORKER_THREAD(threading.Thread):
     def CheckResponsive(self):
         if not self.parent.responsive and not self.parent.is_responsive:        
             nodes = controller.GetActiveResponsiveNodes()
-            logger.debug("Responsive checking active: %s"%str(nodes))
+            logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
                 if RESPONSIVE == 0:
                     return  
                 else:
                     node = self.parent.swnp.node.id
                 self.parent.responsive = node
-                logger.debug(node+str(type(node)))
+                logger.debug(node + str(type(node)))
                 if node == self.parent.swnp.node.id:
                     self.parent.is_responsive = True
                     self.parent.SetResponsive()
@@ -374,13 +375,12 @@ class WORKER_THREAD(threading.Thread):
             elif 'PGM_GROUP' in key:
                 PGM_GROUP = int(val)
             elif 'AUDIO' in key:
-                logger.debug("AUDIO in config: %s"%str(val))
+                logger.debug("AUDIO in config: %s" % str(val))
                 val = eval(val)
                 if val:
                     AUDIO = val
                     logger.debug("Starting audio recorder")
-                    self.parent.StartAudioRecorder()
-                    
+                    self.parent.StartAudioRecorder()                    
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
@@ -388,16 +388,16 @@ class WORKER_THREAD(threading.Thread):
                 utils.SetLoggerLevel(str(val).upper()) 
             elif "CAMERA_" in key:
                 if "URL" in key:
-                    utils.UpdateCameraVars(str(val),None,None)
+                    utils.UpdateCameraVars(str(val), None, None)
                 if "USER" in key:
-                    utils.UpdateCameraVars(None,str(val),None)
+                    utils.UpdateCameraVars(None, str(val), None)
                 if "PASS" in key:
-                    utils.UpdateCameraVars(None,None,str(val))
+                    utils.UpdateCameraVars(None, None, str(val))
             elif "RESPONSIVE" in key:
                 logger.debug("Setting RESPONSIVE")
                 RESPONSIVE = eval(val)
                 controller.SetIsResponsive(RESPONSIVE)
-                logger.debug("%d"%RESPONSIVE)
+                logger.debug("%d" % RESPONSIVE)
             else:
                 globals()[key] = eval(val) 
               
@@ -408,7 +408,7 @@ class WORKER_THREAD(threading.Thread):
             utils.Snaphot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')         
             if AUDIO:
-                logger.debug("Buffering audio for %d seconds"%WINDOW_TAIL)
+                logger.debug("Buffering audio for %d seconds" % WINDOW_TAIL)
                 self.parent.status_text.SetLabel("Recording...")
                 wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
         except:
@@ -473,10 +473,11 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
                     self.parent.SetCurrentProject(id)
                     self.socket.send("OK")
                 elif cmd == 'save_audio':
-                    self.socket.send("OK")
-                    ide = controller.GetLatestEvent()
-                    threading.Timer(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, controller.GetProjectPath(self.parent.current_project_id)).start()
-                    wx.CallAfter(self.parent.status_text.SetLabel, "Recording...")
+                    if self.parent.is_responsive and AUDIO:
+                        self.socket.send("OK")
+                        ide = controller.GetLatestEvent()
+                        threading.Timer(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, controller.GetProjectPath(self.parent.current_project_id)).start()
+                        wx.CallAfter(self.parent.status_text.SetLabel, "Recording...")
                 elif cmd == 'open':
                     target = eval(path)
                     for f in target: 
@@ -645,7 +646,7 @@ class INPUT_CAPTURE(threading.Thread):
             self.ResetMouseEvents()
             for id in self.parent.selected_nodes:
                 self.swnp(id, 'key;%d,%d,%d' % (257, 18, 56))
-                self.swnp(id, 'remote_end;%s'%self.parent.swnp.node.id)
+                self.swnp(id, 'remote_end;%s' % self.parent.swnp.node.id)
             del self.parent.selected_nodes[:]        
             self.parent.overlay.Hide()
             self.unhook()
@@ -1311,7 +1312,7 @@ Create a splash screen widget.
         aBitmap = wx.Image(name="splashscreen.png").ConvertToBitmap()
         splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_NO_TIMEOUT
         splashDuration = 1000 # milliseconds
-        wx.SplashScreen.__init__(self, aBitmap, splashStyle,splashDuration, parent)
+        wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
 
 class ConnectionErrorDialog(wx.ProgressDialog):
     def __init__(self, parent):
@@ -1452,6 +1453,7 @@ class GUI(wx.Frame):
         super(GUI, self).__init__(parent, title=title,
             size=FRAME_SIZE, style=wx.FRAME_NO_TASKBAR)
         global DEFAULT_CURSOR, BLANK_CURSOR, WINDOWS_MAJOR, STORAGE, RUN_CMD
+        logger.debug("WxPython version %s" % (str(wx.VERSION)))
         self.init_screens_done = False
         MySplash = MySplashScreen()
         MySplash.Show()   
@@ -1535,7 +1537,7 @@ class GUI(wx.Frame):
             self.trayicon.Bind(wx.EVT_MENU, self.SelectProjectDialog, id=wx.ID_VIEW_LIST)
             #self.Bind(wx.EVT_QUERY_END_SESSION,self.OnExit)
             #self.Bind(wx.EVT_END_SESSION,self.OnExit)
-            self.Bind(wx.EVT_CLOSE,self.OnExit)
+            self.Bind(wx.EVT_CLOSE, self.OnExit)
             #self.trayicon.Bind(wx.EVT_MENU, self.OnCreateTables, id=wx.ID_PREVIEW) 
             self.trayicon.Bind(wx.EVT_MENU, self.OpenProjectDir, id=wx.ID_INDEX)  
             self.icon = wx.Icon(TRAY_ICON, wx.BITMAP_TYPE_PNG)
@@ -1675,7 +1677,9 @@ class GUI(wx.Frame):
             self.sesbtn.Enable(True)                    
             self.current_project_id = project_id
             logger.debug("Set project label")
-            self.pro_label.SetLabel('Project: ' + controller.GetProject(project_id).name)
+            project = controller.GetProject(project_id)
+            logger.debug("Project name is %s and type %s" % (project.name, str(type(project.name))))
+            self.pro_label.SetLabel('Project: ' + project.name)
             self.worker.RemoveAllRegEntries()       
             self.worker.AddProjectReg(project_id)
             logger.debug("setting project path")
@@ -1912,7 +1916,7 @@ class GUI(wx.Frame):
         try:
             self.swnp.send(node, 'MSG', message)
         except:
-            logger.exception("SwnpSend exception %s to %s"%(message,node))
+            logger.exception("SwnpSend exception %s to %s" % (message, node))
             
     def InitUI(self):
         """ UI initing """
@@ -2343,12 +2347,13 @@ class GUI(wx.Frame):
                 self.overlay.Destroy()
                 self.Hide()
                 self.trayicon.RemoveIcon()
-                self.trayicon.Destroy()              
+                self.trayicon.Destroy() 
+                self.closebtn.SetToolTip(None)             
                 if not event == 'conn_err' and self.is_responsive:
                     logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
-                    #controller.UnsetActivity()          
+                    controller.UnsetActivity()          
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     logger.debug("On exit self is last active comp.")
                     controller.UnsetActivity()
