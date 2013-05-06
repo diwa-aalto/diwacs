@@ -25,7 +25,7 @@ import logging.config
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 STORAGE = "192.168.1.10"
-DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP?charset=utf8'
+DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP?charset=utf8&use_unicode=1'
 ENGINE = create_engine(DATABASE, echo=True) 
 PROJECT_PATH = '\\\\'+STORAGE+'\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
@@ -595,15 +595,26 @@ def IsProjectFile(filename,project_id):
     :type project_id: Integer.
     :rtype: Boolean."""
     try:
+        if isinstance(filename, str):
+            filename = unicode(filename,errors='replace')
         db = ConnectToDatabase()
-        files = db.query(File.path).filter(File.project_id==project_id,File.path.like('%'+ os.path.basename(filename))).order_by(desc(File.id)).all()
+        basename = os.path.basename(filename)
+        if isinstance(basename,str):
+            basename =  unicode(basename, errors='replace')
+        logger.debug("IsProjectFile %s %s"%(str(type(filename)),filename))
+        files = db.query(File.path).filter(File.project_id==project_id,File.path.like(u'%'+ basename)).order_by(desc(File.id)).all()
         db.close()
     except Exception,e:
         logger.exception("IsProjectFile query exception")
+        files = []
 
     for file in files:
-            if os.path.basename(file[0]) == os.path.basename(filename):
-                return file[0]
+            filebase = os.path.basename(file[0])
+            if isinstance(filebase,str):
+                filebase =  unicode(filebase, errors='replace')
+        
+            if filebase == basename:
+                return filebase
     f = utils.SearchFile(os.path.basename(filename), GetProjectPath(project_id))
     if f:
         return AddFileToProject(f,project_id)          
@@ -703,8 +714,8 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             logger.debug("PROJECT FILE CREATED %s %s"%(str(type(event.src_path)),event.src_path))
             f = File(path=event.src_path,project=db.query(Project).filter(Project.id==self.project_id).one())
             fa = FileAction(file=f,action=db.query(Action).filter(Action.id==1).one())
-            db.add(f)
-            db.add(fa)
+            db.merge(f)
+            db.merge(fa)
             db.commit()
             db.close()
         except:
@@ -722,8 +733,8 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             f = db.query(File).filter(File.path==event.src_path,File.project_id==self.project_id).order_by(File.id.desc()).first()
             fa = FileAction(file=f,action=db.query(Action).filter(Action.id==2).one())
             f.project = None
-            db.add(f)
-            db.add(fa)
+            db.merge(f)
+            db.merge(fa)
             db.commit()
             db.close()
         except:
@@ -742,8 +753,8 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             if not f:
                 f = self.on_created(event)           
             fa = FileAction(file=f,action=db.query(Action).filter(Action.id==3).one())
-            db.add(f)
-            db.add(fa)
+            db.merge(f)
+            db.merge(fa)
             db.commit()
             db.close()
         except Exception,e:
