@@ -1040,6 +1040,9 @@ class ProjectSelectDialog(wx.Dialog):
         """
         index = self.project_index[self.project_list.GetSelection()]
         name = self.projects[self.project_list.GetSelection()]
+        if index == self.parent.current_project_id:
+            wx.MessageDialog(self, "You cannot delete currently active project.","Error", wx.OK|wx.ICON_ERROR).Show()
+            return
         dlg = DeleteProjectDialog(self, 'Delete Project', index)
         try:
             result = dlg.ShowModal()
