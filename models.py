@@ -68,7 +68,7 @@ class Activity(Base):
     project = relationship("Project", backref=backref('activities', order_by=id))
     active = Column(Boolean,default=True)
     def __init__(self,project,session=None):
-        controller.UnsetActivity()
+        #controller.UnsetActivity()
         self.project = project
         if session:
             self.session = session

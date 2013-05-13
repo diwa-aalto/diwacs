@@ -9,7 +9,7 @@ BLANK_CURSOR = None
 # Application name
 APPLICATION_NAME = "DiWaCS"
 # current application version
-VERSION = "0.9.2"
+VERSION = "0.9.2.1"
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
 # System tray icon filename
@@ -63,7 +63,7 @@ PGM_GROUP = 1
 CAMERA_URL = "http://192.168.1.85/image/jpeg.cgi"
 CAMERA_USER = "admin"
 CAMERA_PASS = "wosadmin"
-#Is audi orecorded
+#Is audio recorded
 AUDIO = False
 # If the node can act as RESPONSIVE. 
 # -1 Not Setup
