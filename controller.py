@@ -114,9 +114,9 @@ def GetProjectPath(project_id):
     db.close()
     return '' if not path else path
 
-def UnsetActivity():
+def UnsetActivity(pgmgroup):
     db = ConnectToDatabase()
-    for c in db.query(Activity).filter(Activity.active==True):
+    for c in db.query(Activity).filter(Activity.active==pgmgroup):
         c.active = False
     db.commit()
     db.close()
@@ -127,14 +127,14 @@ def GetLatestEvent():
     db.close()
     return event[0] if event else 0
     
-def GetActiveActivity():
+def GetActiveActivity(pgmgroup):
     db = ConnectToDatabase()
-    act = db.query(Activity).filter(Activity.active==True).order_by(desc(Activity.id)).first()
+    act = db.query(Activity).filter(Activity.active==pgmgroup).order_by(desc(Activity.id)).first()
     db.close()
     return act.id if act else None
 
-def GetActiveProject():
-    activity = GetActiveActivity()
+def GetActiveProject(pgmgroup):
+    activity = GetActiveActivity(pgmgroup)
     if activity == None:
         return 0
     else:
@@ -143,8 +143,8 @@ def GetActiveProject():
         db.close()
         return project.id
 
-def GetActiveSession():
-    activity = GetActiveActivity()
+def GetActiveSession(pgmgroup):
+    activity = GetActiveActivity(pgmgroup)
     if activity == None:
         return 0
     else:
@@ -153,7 +153,7 @@ def GetActiveSession():
         db.close()
         return session.id
            
-def AddActivity(project_id,session_id=None,act_id=None):
+def AddActivity(project_id,pgmgroup,session_id=None,act_id=None):
     try:
         db = ConnectToDatabase()
         project = db.query(Project).filter(Project.id==project_id).one()
@@ -167,7 +167,7 @@ def AddActivity(project_id,session_id=None,act_id=None):
             act = db.query(Activity).filter(Activity.id==act_id).one()
             act.project = project
             act.session = session
-              
+            act.active = pgmgroup  
         db.add(act)
         db.commit()
         db.expunge(act)
@@ -432,11 +432,11 @@ def AddComputer(name,ip,wos_id):
     except Exception,e:
         logger.exception("AddComputer exception")    
     return c
-def GetActiveResponsiveNodes():
+def GetActiveResponsiveNodes(pgmgroup):
     nodes = []
     try:
         db = ConnectToDatabase()
-        nodes = db.query(Computer.wos_id).filter(func.timestampdiff(sql.text('second'),Computer.time,func.now())<10).filter(Computer.responsive>0).order_by(Computer.wos_id).all()
+        nodes = db.query(Computer.wos_id).filter(func.timestampdiff(sql.text('second'),Computer.time,func.now())<10).filter(Computer.responsive==pgmgroup).order_by(Computer.wos_id).all()
         db.close()
     except:
         logger.debug("GetActiveResponsiveNodes exception")
