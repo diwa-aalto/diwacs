@@ -3,8 +3,8 @@ Created on 8.5.2012
 
 @author: neriksso
 '''
-#import wxversion
-#wxversion.select('2.9.4')
+import wxversion
+wxversion.select('2.9.4')
 import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx, wx.combo, swnp, utils, wx.lib.statbmp, random, logging, logging.config, macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, zmq, subprocess, configobj, datetime, os, SendKeys, random, controller 
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
@@ -267,7 +267,7 @@ class WORKER_THREAD(threading.Thread):
         
     def CheckResponsive(self):
         if not self.parent.responsive and not self.parent.is_responsive:        
-            nodes = controller.GetActiveResponsiveNodes()
+            nodes = controller.GetActiveResponsiveNodes(PGM_GROUP)
             logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
                 if RESPONSIVE == 0:
@@ -693,7 +693,7 @@ class CURRENT_PROJECT(threading.Thread):
         """Starts the thread."""
         while not self._stop.isSet():
             try:
-                current_project = int(controller.GetActiveProject())
+                current_project = int(controller.GetActiveProject(PGM_GROUP))
                 if current_project:
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
@@ -722,7 +722,7 @@ class CURRENT_SESSION(threading.Thread):
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
-            current_session = int(controller.GetActiveSession())
+            current_session = int(controller.GetActiveSession(PGM_GROUP))
             """if current_session != self.parent.current_session_id:
                 self.parent.SetCurrentSession(current_session)"""
             self.swnp('SYS', 'current_session;' + str(current_session))
@@ -1442,6 +1442,7 @@ class EventList(wx.Frame):
         
         """
         return wx.Image('icons/' + icon + '.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+
 class GUI(wx.Frame):
     """WOS Application Frame
     
@@ -1514,7 +1515,7 @@ class GUI(wx.Frame):
             self.current_project = None
             self.current_session_id = 0
             self.current_session = None
-            self.activity = controller.GetActiveActivity()
+            self.activity = controller.GetActiveActivity(PGM_GROUP)
             self.session_th = None
             self.project_th = None
             self.project_folder_observer = None
@@ -1783,7 +1784,7 @@ class GUI(wx.Frame):
                 self.current_session_id = self.current_session.id
                 db.expunge(self.current_session)
                 db.close()
-                controller.AddActivity(self.current_project_id, self.current_session_id, self.activity)
+                controller.AddActivity(self.current_project_id, PGM_GROUP, self.current_session_id, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
                 self.SwnpSend('SYS', 'current_session;' + str(self.current_session_id))
                 #controller.addComputerToSession(self.current_session, self.config['NAME'], self.swnp.ip, self.swnp.id)
@@ -1809,7 +1810,7 @@ class GUI(wx.Frame):
                 #self.SetCurrentProject(0)
                 self.SwnpSend('SYS', 'current_session;0')
                 #self.SwnpSend('SYS', 'current_project;0')
-                controller.AddActivity(self.current_project_id, None, self.activity)
+                controller.AddActivity(self.current_project_id, PGM_GROUP,  None, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
                 logger.info('Session ended')
                 dlg = wx.MessageDialog(self, "Session ended!", 'Information', wx.OK | wx.ICON_INFORMATION)
@@ -2178,7 +2179,7 @@ class GUI(wx.Frame):
     def OnProjectSelected(self):
         """ Project selected event handler """
         controller.InitSyncProjectDir(self.current_project_id)     
-        self.activity = controller.AddActivity(self.current_project_id, self.current_session_id, self.activity) 
+        self.activity = controller.AddActivity(self.current_project_id, PGM_GROUP, self.current_session_id, self.activity) 
         self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
         
     def GetRandomResponsive(self):
@@ -2356,10 +2357,10 @@ class GUI(wx.Frame):
                     logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
-                    controller.UnsetActivity()          
+                    controller.UnsetActivity(PGM_GROUP)          
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     logger.debug("On exit self is last active comp.")
-                    controller.UnsetActivity()
+                    controller.UnsetActivity(PGM_GROUP)
                     if self.current_session_id:
                         controller.EndSession(self.current_session_id)                
                 utils.MapNetworkShare('W:', 'C:\\')
