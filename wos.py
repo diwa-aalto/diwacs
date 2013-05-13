@@ -270,10 +270,10 @@ class WORKER_THREAD(threading.Thread):
             nodes = controller.GetActiveResponsiveNodes(PGM_GROUP)
             logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
-                if RESPONSIVE == 0:
-                    return  
-                else:
+                if RESPONSIVE == PGM_GROUP:
                     node = self.parent.swnp.node.id
+                else:
+                    return
                 self.parent.responsive = node
                 logger.debug(node + str(type(node)))
                 if node == self.parent.swnp.node.id:
