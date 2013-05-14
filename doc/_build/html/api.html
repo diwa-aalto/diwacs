@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-14 at 18:27.</p>
+<p>Documentation generated on 2013-05-14 at 19:42.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -569,6 +569,7 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <span id="models-module"></span><h2>Models module<a class="headerlink" href="#module-models" title="Permalink to this headline">¶</a></h2>
 <p>Created on 23.5.2012</p>
 <p>&#64;author: neriksso</p>
+<p>&#64;requires: sqlalchemy</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -592,24 +593,44 @@ Context menu allows the user to quickly send files without interacting with DiWa
 </dd></dl>
 
 <dl class="class">
+<dt id="models.Activity">
+<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Activity</tt><big>(</big><em>project</em>, <em>session=None</em><big>)</big><a class="headerlink" href="#models.Activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representation of an activity.</p>
+<dl class="docutils">
+<dt>Fields:</dt>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of activity, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of the session activity belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - Session relationship.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of the project activity belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - Project relationship.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">active</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Boolean</span></tt>) - Boolean flag indicating that the project is active.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>project</strong> (<a class="reference internal" href="#models.Project" title="models.Project"><em>models.Project</em></a>) &#8211; Project activity belongs to.</li>
+<li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><em>models.Session</em></a>) &#8211; Optional session activity belongs to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
 <dt id="models.Company">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Company</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#models.Company" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a company.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
-<dd><ul class="first last">
-<li><dl class="attribute">
-<dt>
-<tt class="descname">id (Integer) - Primary key in database table.</tt></dt>
-<dd></dd></dl>
-
-</li>
-<li><dl class="attribute">
-<dt>
-<tt class="descname">name (String) - Name of the company.</tt></dt>
-<dd></dd></dl>
-
-</li>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - Primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Name of the company.</li>
 </ul>
 </dd>
 </dl>
@@ -762,7 +783,19 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt id="models.User">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">User</tt><big>(</big><em>name</em>, <em>company</em><big>)</big><a class="headerlink" href="#models.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a user.</p>
-<p>A user has many data fields:</p>
+<dl class="docutils">
+<dt>Fields:</dt>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - Primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Name of the user.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">email</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Email address of the user.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Title of the user in the company.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">department</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Department of the user in the company.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - Company id of the employing company.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - Company relationship.</li>
+</ul>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

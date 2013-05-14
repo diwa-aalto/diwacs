@@ -1,7 +1,10 @@
 '''
 Created on 23.5.2012
 
+
 @author: neriksso
+
+@requires: sqlalchemy
 
 :synopsis: Used to represent the different database structures on DiWa.
 '''
@@ -22,12 +25,13 @@ class Company(Base):
     """ A class representation of a company.
     
     Fields:
-        * .. py:attribute:: id (Integer) - Primary key in database table.
-        * .. py:attribute:: name (String) - Name of the company.
+        * :py:attr:`id` (:py:class:`Integer`) - Primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of the company.
     
     :param name: The name of the company.
     :type name: String
     """
+    #: Todo: Should include backref to user documentation here?
     __tablename__ = 'company'
     id = Column(Integer, primary_key=True)
     name = Column(String(50,convert_unicode=True),nullable=False)
@@ -39,8 +43,14 @@ class Company(Base):
 class User(Base):
     """A class representation of a user.
     
-    A user has many data fields:
-    
+    Fields:
+        * :py:attr:`id` (:py:class:`Integer`) - Primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of the user.
+        * :py:attr:`email` (:py:class:`String`) - Email address of the user.
+        * :py:attr:`title` (:py:class:`String`) - Title of the user in the company.
+        * :py:attr:`department` (:py:class:`String`) - Department of the user in the company.
+        * :py:attr:`company_id` (:py:class:`Integer`) - Company id of the employing company.
+        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - Company relationship.
     
     :param name: Name of the user.
     :type name: String.
@@ -67,6 +77,21 @@ ProjectMembers = Table('projectmembers', Base.metadata,
 )
 
 class Activity(Base):
+    """ A class representation of an activity.
+    
+    Fields:
+        * :py:attr:`id` (:py:class:`Integer`) - ID of activity, used as primary key in database table.
+        * :py:attr:`session_id` (:py:class:`Integer`) - ID of the session activity belongs to.
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session relationship.
+        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project activity belongs to.
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project relationship.
+        * :py:attr:`active` (:py:class:`Boolean`) - Boolean flag indicating that the project is active.
+        
+    :param project: Project activity belongs to.
+    :type project: models.Project
+    :param session: Optional session activity belongs to.
+    :type session: models.Session
+    """
     __tablename__ = 'activity'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(activity.id),0)+1 from activity"))
     session_id = Column(Integer, ForeignKey('session.id'))
@@ -79,6 +104,8 @@ class Activity(Base):
         self.project = project
         if session:
             self.session = session
+            
+            
 class Project(Base):
     """A class representation of a project.
     
