@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Automated Code Documentation &mdash; Chimaira 0.2.1 documentation</title>
+    <title>Automated Code Documentation &mdash; DiWaCS 0.9.2.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.1',
+        VERSION:     '0.9.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Chimaira 0.2.1 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.2.1 documentation" href="index.html" />
     <link rel="next" title="Bugs" href="bugs.html" />
     <link rel="prev" title="Welcome to DiWaCS documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to DiWaCS documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Chimaira 0.2.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,10 +54,20 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Documentation generated on 2013-05-14 at 18:27.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
 <p>&#64;author: neriksso</p>
+<p>&#64;requires: ZeroMQ</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">synopsis:</th><td class="field-body">Used to add a file in the current project.</td>
+</tr>
+</tbody>
+</table>
 <dl class="function">
 <dt id="add_file.main">
 <tt class="descclassname">add_file.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#add_file.main" title="Permalink to this definition">¶</a></dt>
@@ -84,6 +94,15 @@ Context menu allows the user to quickly add files to project without interacting
 <span id="send-file-module"></span><h2>Send file module<a class="headerlink" href="#module-send_file_to" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
 <p>&#64;author: neriksso</p>
+<p>&#64;requires: ZeroMQ</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">synopsis:</th><td class="field-body">Used to send a file to another node.</td>
+</tr>
+</tbody>
+</table>
 <dl class="function">
 <dt id="send_file_to.main">
 <tt class="descclassname">send_file_to.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#send_file_to.main" title="Permalink to this definition">¶</a></dt>
@@ -550,6 +569,14 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <span id="models-module"></span><h2>Models module<a class="headerlink" href="#module-models" title="Permalink to this headline">¶</a></h2>
 <p>Created on 23.5.2012</p>
 <p>&#64;author: neriksso</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">synopsis:</th><td class="field-body">Used to represent the different database structures on DiWa.</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="models.Action">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Action</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#models.Action" title="Permalink to this definition">¶</a></dt>
@@ -568,11 +595,29 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt id="models.Company">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Company</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#models.Company" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a company.</p>
+<dl class="docutils">
+<dt>Fields:</dt>
+<dd><ul class="first last">
+<li><dl class="attribute">
+<dt>
+<tt class="descname">id (Integer) - Primary key in database table.</tt></dt>
+<dd></dd></dl>
+
+</li>
+<li><dl class="attribute">
+<dt>
+<tt class="descname">name (String) - Name of the company.</tt></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String.</em>) &#8211; The name of the company.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; The name of the company.</td>
 </tr>
 </tbody>
 </table>
@@ -717,6 +762,7 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt id="models.User">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">User</tt><big>(</big><em>name</em>, <em>company</em><big>)</big><a class="headerlink" href="#models.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a user.</p>
+<p>A user has many data fields:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1883,42 +1929,21 @@ last item in the sequence.</p>
 </tbody>
 </table>
 <dl class="method">
-<dt id="wos.INPUT_CAPTURE.OnKeyboardEvent">
-<tt class="descname">OnKeyboardEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.INPUT_CAPTURE.OnKeyboardEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>print &#8216;MessageName:&#8217;,event.MessageName
-print &#8216;Message:&#8217;,event.Message
-print &#8216;Time:&#8217;,event.Time
-print &#8216;Window:&#8217;,event.Window
-print &#8216;WindowName:&#8217;,event.WindowName
-print &#8216;Ascii:&#8217;, event.Ascii, chr(event.Ascii)
-print &#8216;Key:&#8217;, event.Key
-print &#8216;KeyID:&#8217;, event.KeyID
-print &#8216;ScanCode:&#8217;, event.ScanCode
-print &#8216;Extended:&#8217;, event.Extended
-print &#8216;Injected:&#8217;, event.Injected
-print &#8216;Alt&#8217;, event.Alt
-print &#8216;Transition&#8217;, event.Transition
-print &#8216;&#8212;&#8217;
-print event</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="wos.INPUT_CAPTURE.OnMouseEvent">
 <tt class="descname">OnMouseEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.INPUT_CAPTURE.OnMouseEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>print &#8216;MessageName:&#8217;,event.Message</p>
-<p>WM_MOUSEFIRST = 0x200
-WM_MOUSEMOVE = 0x200
-WM_LBUTTONDOWN = 0x201
-WM_LBUTTONUP = 0x202
-WM_LBUTTONDBLCLK = 0x203
-WM_RBUTTONDOWN = 0x204
-WM_RBUTTONUP = 0x205
-WM_RBUTTONDBLCLK = 0x206
-WM_MBUTTONDOWN = 0x207
-WM_MBUTTONUP = 0x208
-WM_MBUTTONDBLCLK = 0x209
-WM_MOUSEWHEEL = 0x20A
-WM_MOUSEHWHEEL = 0x20E</p>
+<dd><p>WM_MOUSEFIRST = 0x200</p>
+<p>WM_MOUSEMOVE = 0x200</p>
+<p>WM_LBUTTONDOWN = 0x201</p>
+<p>WM_LBUTTONUP = 0x202</p>
+<p>WM_LBUTTONDBLCLK = 0x203</p>
+<p>WM_RBUTTONDOWN = 0x204</p>
+<p>WM_RBUTTONUP = 0x205</p>
+<p>WM_RBUTTONDBLCLK = 0x206</p>
+<p>WM_MBUTTONDOWN = 0x207</p>
+<p>WM_MBUTTONUP = 0x208</p>
+<p>WM_MBUTTONDBLCLK = 0x209</p>
+<p>WM_MOUSEWHEEL = 0x20A</p>
+<p>WM_MOUSEHWHEEL = 0x20E</p>
 </dd></dl>
 
 <dl class="method">
@@ -2111,15 +2136,13 @@ WM_MOUSEHWHEEL = 0x20E</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>context</strong> (<em>ZeroMQ context.</em>) &#8211; Context for creating sockets.</li>
-<li><strong>send_file</strong> &#8211; Sends files.</li>
+<li><strong>send_file</strong> (<em>Function.</em>) &#8211; Sends files.</li>
+<li><strong>handle_file</strong> (<em>Function.</em>) &#8211; Handles files</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>:type send_file:Function.
-:param handle_file:Handles files
-:type handle_file:Function.</p>
 <dl class="method">
 <dt id="wos.SEND_FILE_CONTEX_MENU_HANDLER.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.SEND_FILE_CONTEX_MENU_HANDLER.run" title="Permalink to this definition">¶</a></dt>
@@ -2184,15 +2207,13 @@ WM_MOUSEHWHEEL = 0x20E</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>context</strong> (<em>ZeroMQ context.</em>) &#8211; Context for creating sockets.</li>
-<li><strong>send_file</strong> &#8211; Sends files.</li>
+<li><strong>send_file</strong> (<em>Function.</em>) &#8211; Sends files.</li>
+<li><strong>handle_file</strong> (<em>Function.</em>) &#8211; Handles files</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>:type send_file:Function.
-:param handle_file:Handles files
-:type handle_file:Function.</p>
 <dl class="method">
 <dt id="wos.WORKER_THREAD.AddProjectReg">
 <tt class="descname">AddProjectReg</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
@@ -2292,7 +2313,7 @@ WM_MOUSEHWHEEL = 0x20E</p>
         <li class="right" >
           <a href="index.html" title="Welcome to DiWaCS documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Chimaira 0.2.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
