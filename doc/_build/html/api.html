@@ -61,9 +61,10 @@
 <dl class="function">
 <dt id="add_file.main">
 <tt class="descclassname">add_file.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#add_file.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main function of the sub program.
-Sub program is meant to be bound to windows explorer context menu.
-Transmits the command to DiWaCS.</p>
+<dd><p>Main function of the sub program.</p>
+<p>Sub program is meant to be bound to windows explorer context menu.
+Context menu allows the user to quickly add files to project without interacting with DiWaCS directly.</p>
+<p>Transmits the add_file command to DiWaCS via interprocess socket.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -73,6 +74,38 @@ Transmits the command to DiWaCS.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">windows success code (0 on success).</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-send_file_to">
+<span id="send-file-module"></span><h2>Send file module<a class="headerlink" href="#module-send_file_to" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2012</p>
+<p>&#64;author: neriksso</p>
+<dl class="function">
+<dt id="send_file_to.main">
+<tt class="descclassname">send_file_to.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#send_file_to.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function of the sub program.</p>
+<p>Sub program is meant to be bound to windows explorer context menu.
+Context menu allows the user to quickly send files without interacting with DiWaCS directly.</p>
+<p>Transmits the send_to command to DiWaCS via interprocess connection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> (<em>Integer</em>) &#8211; ID of the node to send the file to.</li>
+<li><strong>filepath</strong> (<em>String</em>) &#8211; Path of the file to be sent.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">windows success code (0 on success).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Integer</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -2162,16 +2195,8 @@ WM_MOUSEHWHEEL = 0x20E</p>
 :type handle_file:Function.</p>
 <dl class="method">
 <dt id="wos.WORKER_THREAD.AddProjectReg">
-<tt class="descname">AddProjectReg</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">AddProjectReg</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds project folder to registry</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -2219,6 +2244,7 @@ WM_MOUSEHWHEEL = 0x20E</p>
   <ul>
 <li><a class="reference internal" href="#">Automated Code Documentation</a><ul>
 <li><a class="reference internal" href="#module-add_file">Add file module</a></li>
+<li><a class="reference internal" href="#module-send_file_to">Send file module</a></li>
 <li><a class="reference internal" href="#module-controller">Controller module</a></li>
 <li><a class="reference internal" href="#module-models">Models module</a></li>
 <li><a class="reference internal" href="#module-swnp">SWNP module</a></li>
