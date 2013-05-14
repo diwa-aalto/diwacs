@@ -3,8 +3,8 @@ Created on 8.5.2012
 
 @author: neriksso
 '''
-import wxversion
-wxversion.select('2.9.4')
+#import wxversion
+#wxversion.select('2.9.4')
 import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx, wx.combo, swnp, utils, wx.lib.statbmp, random, logging, logging.config, macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, zmq, subprocess, configobj, datetime, os, SendKeys, random, controller 
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
@@ -287,11 +287,8 @@ class WORKER_THREAD(threading.Thread):
                 self.parent.responsive = str(nodes[0][0])
         logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
                    
-    def AddProjectReg(self, project_id):
+    def AddProjectReg(self):
         """ Adds project folder to registry 
-        
-        :param project_id: Project id from database.
-        :type project_id: Integer.
         
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project', 'command']
@@ -303,7 +300,7 @@ class WORKER_THREAD(threading.Thread):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'add_file.exe ') + str(project_id) + ' \"%1\"')
+                    SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'add_file.exe ') + ' \"%1\"')
             CloseKey(rkey)
     
                   
@@ -1685,7 +1682,7 @@ class GUI(wx.Frame):
             logger.debug("Project name is %s and type %s" % (project.name, str(type(project.name))))
             self.pro_label.SetLabel('Project: ' + project.name)
             self.worker.RemoveAllRegEntries()       
-            self.worker.AddProjectReg(project_id)
+            self.worker.AddProjectReg()
             logger.debug("setting project path")
             CURRENT_PROJECT_PATH = controller.GetProjectPath(self.current_project_id)
             utils.MapNetworkShare('W:', CURRENT_PROJECT_PATH)

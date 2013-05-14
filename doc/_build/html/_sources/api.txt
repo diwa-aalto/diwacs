@@ -1,6 +1,11 @@
 Automated Code Documentation
 =================================
 
+Add file module
+-----------------
+.. automodule:: add_file
+   :members:
+
 Controller module
 ----------------- 
 .. automodule:: controller
