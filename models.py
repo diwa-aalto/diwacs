@@ -2,6 +2,8 @@
 Created on 23.5.2012
 
 @author: neriksso
+
+:synopsis: Used to represent the different database structures on DiWa.
 '''
 import datetime
 import os 
@@ -19,20 +21,26 @@ Base = declarative_base()
 class Company(Base):
     """ A class representation of a company.
     
-    :param name: The name of the company.
-    :type name: String.
+    Fields:
+        * .. py:attribute:: id (Integer) - Primary key in database table.
+        * .. py:attribute:: name (String) - Name of the company.
     
+    :param name: The name of the company.
+    :type name: String
     """
     __tablename__ = 'company'
     id = Column(Integer, primary_key=True)
     name = Column(String(50,convert_unicode=True),nullable=False)
 
     def __init__(self,name):
-            self.name = name
+        self.name = name
             
 
 class User(Base):
     """A class representation of a user.
+    
+    A user has many data fields:
+    
     
     :param name: Name of the user.
     :type name: String.
@@ -50,8 +58,8 @@ class User(Base):
     company = relationship("Company", backref=backref('employees', order_by=id))
 
     def __init__(self,name,company):
-            self.name = name 
-            self.company = company
+        self.name = name 
+        self.company = company
             
 ProjectMembers = Table('projectmembers', Base.metadata,
     Column('Project', Integer, ForeignKey('project.id')),

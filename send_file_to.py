@@ -5,7 +5,7 @@ Created on 5.6.2012
 
 @requires: ZeroMQ \n
 
-@summary: Used to send a file to another node. 
+:synopsis: Used to send a file to another node. 
 '''
 import sys
 import zmq

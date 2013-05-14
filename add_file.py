@@ -5,7 +5,7 @@ Created on 5.6.2012
 
 @requires: ZeroMQ \n
 
-@summary: Used to add a file in the current project. 
+:synopsis: Used to add a file in the current project. 
 '''
 import sys
 import zmq
