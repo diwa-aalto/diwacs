@@ -3,7 +3,6 @@ Created on 23.5.2012
 
 @author: neriksso
 '''
-import winshell
 import datetime
 import os 
 import threading
