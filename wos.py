@@ -252,10 +252,9 @@ class WORKER_THREAD(threading.Thread):
     :param context: Context for creating sockets.
     :type context: ZeroMQ context.
     :param send_file: Sends files.
-    :type send_file:Function.
-    :param handle_file:Handles files
-    :type handle_file:Function.
-    
+    :type send_file: Function.
+    :param handle_file: Handles files
+    :type handle_file: Function.
     """
     def __init__ (self, parent):
         threading.Thread.__init__(self, name="CMFH")
@@ -421,10 +420,9 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
     :param context: Context for creating sockets.
     :type context: ZeroMQ context.
     :param send_file: Sends files.
-    :type send_file:Function.
-    :param handle_file:Handles files
-    :type handle_file:Function.
-    
+    :type send_file: Function.
+    :param handle_file: Handles files
+    :type handle_file: Function.
     """
     
     def __init__ (self, parent, context, send_file, handle_file):
@@ -580,20 +578,32 @@ class INPUT_CAPTURE(threading.Thread):
         return True
 
     def OnMouseEvent(self, event):
-        """ print 'MessageName:',event.Message 
-        
+        # print 'MessageName:',event.Message 
+        """ 
         WM_MOUSEFIRST = 0x200
+        
         WM_MOUSEMOVE = 0x200
+        
         WM_LBUTTONDOWN = 0x201
+        
         WM_LBUTTONUP = 0x202
+        
         WM_LBUTTONDBLCLK = 0x203
+        
         WM_RBUTTONDOWN = 0x204
+        
         WM_RBUTTONUP = 0x205
+        
         WM_RBUTTONDBLCLK = 0x206
+        
         WM_MBUTTONDOWN = 0x207
+        
         WM_MBUTTONUP = 0x208
+        
         WM_MBUTTONDBLCLK = 0x209
+        
         WM_MOUSEWHEEL = 0x20A
+        
         WM_MOUSEHWHEEL = 0x20E
         """
         # called when mouse events are received
@@ -605,13 +615,16 @@ class INPUT_CAPTURE(threading.Thread):
         print 'Position:',event.Position
         print 'Wheel:',event.Wheel
         print 'Injected:',event.Injected
-        print '---'"""
+        print '---'
+        """
+        
         """if event.Message == 0x200:
-            dx = event.Position[0] - self.mx
-            dy = event.Position[1] - self.my
-            #print 'move',dx,dy
-            self.mx = event.Position[0]
-            self.my = event.Position[1]"""  
+        dx = event.Position[0] - self.mx
+        dy = event.Position[1] - self.my
+        #print 'move',dx,dy
+        self.mx = event.Position[0]
+        self.my = event.Position[1]
+        """  
         try:     
             if CAPTURE:
                     self.mouse_queue.append(event)               
@@ -621,6 +634,7 @@ class INPUT_CAPTURE(threading.Thread):
         return not CAPTURE
        
     def OnKeyboardEvent(self, event):
+        global CAPTURE
         """print 'MessageName:',event.MessageName
         print 'Message:',event.Message
         print 'Time:',event.Time
@@ -636,7 +650,6 @@ class INPUT_CAPTURE(threading.Thread):
         print 'Transition', event.Transition
         print '---'
         print event"""
-        global CAPTURE
         if  event.Alt and (event.KeyID == 91 or event.KeyID == 92)  and CAPTURE:
             logger.debug('ESC')
             CAPTURE = False
