@@ -5,6 +5,11 @@ Add file module
 -----------------
 .. automodule:: add_file
    :members:
+   
+Send file module
+-----------------
+.. automodule:: send_file_to
+   :members:
 
 Controller module
 ----------------- 
