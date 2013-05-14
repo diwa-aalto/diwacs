@@ -1,6 +1,11 @@
 Automated Code Documentation
 =================================
 
+.. |date| date::
+.. |time| date:: %H:%M
+
+Documentation generated on |date| at |time|.
+
 Add file module
 -----------------
 .. automodule:: add_file
