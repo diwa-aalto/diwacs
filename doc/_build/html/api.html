@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-15 at 09:52.</p>
+<p>Documentation generated on 2013-05-15 at 10:19.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -613,8 +613,8 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>project</strong> (<a class="reference internal" href="#models.Project" title="models.Project"><em>models.Project</em></a>) &#8211; Project activity belongs to.</li>
-<li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><em>models.Session</em></a>) &#8211; Optional session activity belongs to.</li>
+<li><strong>project</strong> (<a class="reference internal" href="#models.Project" title="models.Project"><tt class="xref py py-class docutils literal"><span class="pre">models.Project</span></tt></a>) &#8211; Project activity belongs to.</li>
+<li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; Optional session activity belongs to.</li>
 </ul>
 </td>
 </tr>
@@ -772,7 +772,7 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project</strong> &#8211; The project for the session.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project</strong> (<a class="reference internal" href="#models.Project" title="models.Project"><tt class="xref py py-class docutils literal"><span class="pre">models.Project</span></tt></a>) &#8211; The project for the session.</td>
 </tr>
 </tbody>
 </table>
@@ -780,6 +780,14 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt id="models.Session.addUser">
 <tt class="descname">addUser</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#models.Session.addUser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add users to a session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> (<a class="reference internal" href="#models.User" title="models.User"><tt class="xref py py-class docutils literal"><span class="pre">models.User</span></tt></a>) &#8211; User to be added into the session.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -791,14 +799,14 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dl class="method">
 <dt id="models.Session.get_last_checked">
 <tt class="descname">get_last_checked</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.get_last_checked" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch last checked field.</p>
+<dd><p>Fetch <tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Last checked field</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field (None before <a class="reference internal" href="#models.Session.start" title="models.Session.start"><tt class="xref py py-meth docutils literal"><span class="pre">models.Session.start()</span></tt></a> is called).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Datetime</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -807,7 +815,7 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dl class="method">
 <dt id="models.Session.start">
 <tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start a session. Set the last checked field.</p>
+<dd><p>Start a session. Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field to current DateTime.</p>
 </dd></dl>
 
 </dd></dl>

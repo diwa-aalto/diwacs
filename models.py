@@ -55,7 +55,7 @@ class User(Base):
     :param name: Name of the user.
     :type name: String.
     :param company: The employer.
-    :type company: :class:`models.Company`
+    :type company: :py:class:`models.Company`
     
     """
     __tablename__ = 'user'
@@ -88,9 +88,9 @@ class Activity(Base):
         * :py:attr:`active` (:py:class:`Boolean`) - Boolean flag indicating that the project is active.
         
     :param project: Project activity belongs to.
-    :type project: models.Project
+    :type project: :py:class:`models.Project`
     :param session: Optional session activity belongs to.
-    :type session: models.Session
+    :type session: :py:class:`models.Session`
     """
     __tablename__ = 'activity'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(activity.id),0)+1 from activity"))
@@ -121,7 +121,7 @@ class Project(Base):
     :param name: Name of the project.
     :type name: String
     :param company: The owner of the project.
-    :type company: :class:`models.Company`
+    :type company: :py:class:`models.Company`
     
     """
     __tablename__ = 'project'
@@ -197,7 +197,8 @@ class Session(Base):
         * :py:attr:`computers` (:py:class:`sqlalchemy.orm.relationship`) - Computers that belong to this session.
     
     :param project: The project for the session.
-    :type company: :class:`models.Project`
+    :type project: :py:class:`models.Project`
+    
     
     """
     __tablename__ = 'session'
@@ -219,20 +220,24 @@ class Session(Base):
         self.last_checked =  None
         
     def start(self):
-        """Start a session. Set the last checked field."""
+        """Start a session. Set the :py:attr:`last_checked` field to current DateTime."""
         self.last_checked = datetime.datetime.now()
         
     def get_last_checked(self):
-        """Fetch last checked field.
+        """Fetch :py:attr:`last_checked` field.
         
-        :return: Last checked field
-        :rtype: Datetime
+        :return: :py:attr:`last_checked` field (None before :py:meth:`models.Session.start` is called).
+        :rtype: :py:class:`datetime.datetime` or :py:const:`None`
         
         """
         return self.last_checked   
      
-    def addUser(self,user):
-        """Add users to a session."""
+    def addUser(self, user):
+        """Add users to a session.
+        
+        :param user: User to be added into the session.
+        :type user: :py:class:`models.User`
+        """
         self.users.append(user)
     
     def fileRoutine(self):
