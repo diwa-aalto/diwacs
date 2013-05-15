@@ -72,17 +72,21 @@ class User(Base):
     def __init__(self,name,company):
         self.name = name 
         self.company = company
-    
+
+
+"""A variable to hold the connection between users and projects (a table).
+
+:py:data:`ProjectMembers` (:py:class:`sqlalchemy.schema.Table`)
+
+This comment is not included in the autodoc because it's over the ProjectMember
+definition. However if it was under it, the autodoc would include the whole line
+to the documentation before the actual docstring... Which is horribly ugly with
+autodoc formatting.
+"""
 ProjectMembers = Table('projectmembers', Base.metadata,
     Column('Project', Integer, ForeignKey('project.id')),
     Column('User', Integer, ForeignKey('user.id'))
-) #: TODO: Beatify this by removing the Table initialization from documentation somehow.
-"""
-
-A variable to hold the connection between users and projects (a table).
-
-:py:data:`ProjectMembers` (:py:class:`sqlalchemy.schema.Table`)
-"""
+) 
 
 class Activity(Base):
     """ A class representation of an activity.
@@ -194,11 +198,11 @@ class Session(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of session, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of session.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of session.
         * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project the session belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - The project the session belongs to.
-        * :py:attr:`starttime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the session began, defaults to `now()`.
-        * :py:attr:`endtime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - The time session ended.
+        * :py:attr:`starttime` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the session began, defaults to `now()`.
+        * :py:attr:`endtime` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - The time session ended.
         * :py:attr:`previous_session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the previous session.
         * :py:attr:`previous_session` (:py:class:`sqlalchemy.orm.relationship`) - The previous session.
         * :py:attr:`participants` (:py:class:`sqlalchemy.orm.relationship`) - Users that belong to this session.
@@ -290,9 +294,9 @@ class Event(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the event, used as primary key in database table.
-        * :py:attr:`title` (:py:class:`String`) - Title of the event.
-        * :py:attr:`desc` (:py:class:`String`) - More in-depth description of the event (500 characters max).
-        * :py:attr:`time` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the event took place.
+        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the event.
+        * :py:attr:`desc` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - More in-depth description of the event (500 characters max).
+        * :py:attr:`time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the event took place.
         * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session this event belongs to.
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session this event belongs to.
     
@@ -310,7 +314,7 @@ class Action(Base):
     
     Field:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of the action.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the action.
     
     :param name: Name of the action.
     :type name: :py:class:`String`
@@ -321,7 +325,7 @@ class Action(Base):
     name = Column(String(50))
     
     
-    def __init__(self,name):
+    def __init__(self, name):
         self.name = name
         
     def __repr__(self):
@@ -332,7 +336,7 @@ class File(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the file, used as primary key in database table.
-        * :py:attr:`path` (:py:class:`String`) - Path of the file on DiWa (max 255 chars).
+        * :py:attr:`path` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Path of the file on DiWa (max 255 chars).
         * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project this file belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project this file belongs to.
         
@@ -348,7 +352,11 @@ class File(Base):
     
                 
 class FileAction(Base):
-    """A class representation of a fileaction. 
+    """A class representation of a fileaction.
+    
+    Fields:
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the FileAction, used as primary key in the database table.
+        * more (TODO)
     
     :param file: The file in question.
     :type file: :py:class:`models.File`
