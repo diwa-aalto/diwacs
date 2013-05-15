@@ -109,8 +109,17 @@ class Activity(Base):
 class Project(Base):
     """A class representation of a project.
     
+    Fields:
+        * :py:attr:`id` (:py:class:`Integer`) - ID of project, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of the project.
+        * :py:attr:`password` (:py:class:`String`) - Password for the project.
+        * :py:attr:`company_id` (:py:class:`Integer`) - ID of the company that owns the project.
+        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - The company that owns the project.
+        * :py:attr:`dir` (:py:class:`String`) - Directory path for the project files.
+        * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`) - The users that work on the project.
+        
     :param name: Name of the project.
-    :type name: String.
+    :type name: String
     :param company: The owner of the project.
     :type company: :class:`models.Company`
     
@@ -142,12 +151,16 @@ class Computer(Base):
     """A class representation of a computer. 
     
     Fields:
-        * name
-        * ip
-        * mac
-        * user
-        * responsive
-        * wos_id
+        * :py:attr:`id` (:py:class:`Integer`) - ID of computer, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of the computer.
+        * :py:attr:`ip` (:py:class:`sqlalchemy.dialects.mysql.INTEGER`) - Internet Protocol address of the computer.
+        * :py:attr:`mac` (:py:class:`String`) - Media Access Control address of the computer.
+        * :py:attr:`time` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time of the last network activity from the computer.
+        * :py:attr:`screens` (:py:class:`sqlalchemy.dialects.mysql.SMALLINT`) - Number of screens on the computer.
+        * :py:attr:`responsive` (:py:class:`sqlalchemy.dialects.mysql.TINYINT`) - The responsive value of the computer.
+        * :py:attr:`user_id` (:py:class:`Integer`) - ID of the user currently using the computer.
+        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`) - The current user.
+        * :py:attr:`wos_id` (:py:class:`Integer`) - **WOS** ID.
          
     """
     __tablename__ = "computer"

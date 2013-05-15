@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-14 at 19:42.</p>
+<p>Documentation generated on 2013-05-15 at 09:27.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -651,12 +651,16 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li>name</li>
-<li>ip</li>
-<li>mac</li>
-<li>user</li>
-<li>responsive</li>
-<li>wos_id</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of computer, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Name of the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">ip</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.dialects.mysql.INTEGER</span></tt>) - Internet Protocol address of the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">mac</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Media Access Control address of the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.dialects.mysql.DATETIME</span></tt>) - Time of the last network activity from the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">screens</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.dialects.mysql.SMALLINT</span></tt>) - Number of screens on the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">responsive</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.dialects.mysql.TINYINT</span></tt>) - The responsive value of the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of the user currently using the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">user</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - The current user.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">wos_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - <strong>WOS</strong> ID.</li>
 </ul>
 </dd>
 </dl>
@@ -717,12 +721,25 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt id="models.Project">
 <em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Project</tt><big>(</big><em>name</em>, <em>company</em>, <em>password</em><big>)</big><a class="headerlink" href="#models.Project" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a project.</p>
+<dl class="docutils">
+<dt>Fields:</dt>
+<dd><ul class="first last simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of project, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Name of the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">password</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Password for the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">Integer</span></tt>) - ID of the company that owns the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - The company that owns the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">dir</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) - Directory path for the project files.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">members</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - The users that work on the project.</li>
+</ul>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<em>String.</em>) &#8211; Name of the project.</li>
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of the project.</li>
 <li><strong>company</strong> (<a class="reference internal" href="#models.Company" title="models.Company"><tt class="xref py py-class docutils literal"><span class="pre">models.Company</span></tt></a>) &#8211; The owner of the project.</li>
 </ul>
 </td>
