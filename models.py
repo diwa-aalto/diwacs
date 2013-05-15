@@ -21,20 +21,22 @@ from sqlalchemy.orm import relationship, backref
 #import controller
 Base = declarative_base()
 
+
+#: TODO: The attribute descriptions need a bit of refactoring after the models are up to date with database situation.
 class Company(Base):
     """ A class representation of a company.
     
     Fields:
-        * :py:attr:`id` (:py:class:`sqlaclhemy.schema.Column(Integer)`) - Primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlaclhemy.schema.Column(String)`) - Name of the company (Max 50 characters).
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the company, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the company (Max 50 characters).
     
     :param name: The name of the company.
     :type name: :py:class:`String`
     """
     #: Todo: Should include backref to user documentation here?
     __tablename__ = 'company'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50,convert_unicode=True),nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(company.id),0)+1 from company"))
+    name = Column(String(50, convert_unicode=True), nullable=False)
 
     def __init__(self,name):
         self.name = name
@@ -44,12 +46,12 @@ class User(Base):
     """A class representation of a user.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - Primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of the user.
-        * :py:attr:`email` (:py:class:`String`) - Email address of the user.
-        * :py:attr:`title` (:py:class:`String`) - Title of the user in the company.
-        * :py:attr:`department` (:py:class:`String`) - Department of the user in the company.
-        * :py:attr:`company_id` (:py:class:`Integer`) - Company id of the employing company.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the user (Max 50 characters).
+        * :py:attr:`email` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Email address of the user (Max 100 characters).
+        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the user in the company (Max 50 characters).
+        * :py:attr:`department` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Department of the user in the company (Max 100 characters).
+        * :py:attr:`company_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - Company id of the employing company.
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - Company relationship.
     
     :param name: Name of the user.
@@ -59,33 +61,39 @@ class User(Base):
     
     """
     __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50,convert_unicode=True),nullable=False)
-    email = Column(String(100,convert_unicode=True))
-    title = Column(String(50,convert_unicode=True))
-    department = Column(String(100,convert_unicode=True))
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(user.id),0)+1 from user"))
+    name = Column(String(50, convert_unicode=True), nullable=False)
+    email = Column(String(100, convert_unicode=True), nullable=True)
+    title = Column(String(50, convert_unicode=True), nullable=True)
+    department = Column(String(100, convert_unicode=True), nullable=True)
     company_id = Column(Integer, ForeignKey('company.id'))
     company = relationship("Company", backref=backref('employees', order_by=id))
 
     def __init__(self,name,company):
         self.name = name 
         self.company = company
-            
+    
 ProjectMembers = Table('projectmembers', Base.metadata,
     Column('Project', Integer, ForeignKey('project.id')),
     Column('User', Integer, ForeignKey('user.id'))
-)
+) #: TODO: Beatify this by removing the Table initialization from documentation somehow.
+"""
+
+A variable to hold the connection between users and projects (a table).
+
+:py:data:`ProjectMembers` (:py:class:`sqlalchemy.schema.Table`)
+"""
 
 class Activity(Base):
     """ A class representation of an activity.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of activity, used as primary key in database table.
-        * :py:attr:`session_id` (:py:class:`Integer`) - ID of the session activity belongs to.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of activity, used as primary key in database table.
+        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session activity belongs to.
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session relationship.
-        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project activity belongs to.
+        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project activity belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project relationship.
-        * :py:attr:`active` (:py:class:`Boolean`) - Boolean flag indicating that the project is active.
+        * :py:attr:`active` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Boolean)`) - Boolean flag indicating that the project is active.
         
     :param project: Project activity belongs to.
     :type project: :py:class:`models.Project`
@@ -93,12 +101,12 @@ class Activity(Base):
     :type session: :py:class:`models.Session`
     """
     __tablename__ = 'activity'
-    id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(activity.id),0)+1 from activity"))
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(activity.id),0)+1 from activity"))
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('activities', order_by=id))
-    project_id = Column(Integer, ForeignKey('project.id'),nullable=False)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
     project = relationship("Project", backref=backref('activities', order_by=id))
-    active = Column(Boolean,default=True)
+    active = Column(Boolean, nullable=False, default=True)
     def __init__(self,project,session=None):
         #controller.UnsetActivity()
         self.project = project
@@ -110,12 +118,12 @@ class Project(Base):
     """A class representation of a project.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of project, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of the project.
-        * :py:attr:`password` (:py:class:`String`) - Password for the project.
-        * :py:attr:`company_id` (:py:class:`Integer`) - ID of the company that owns the project.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of project, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the project (Max 50 characters).
+        * :py:attr:`company_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the company that owns the project.
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - The company that owns the project.
-        * :py:attr:`dir` (:py:class:`String`) - Directory path for the project files.
+        * :py:attr:`dir` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Directory path for the project files (Max 255 characters).
+        * :py:attr:`password` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Password for the project (Max 40 characters).
         * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`) - The users that work on the project.
         
     :param name: Name of the project.
@@ -125,12 +133,12 @@ class Project(Base):
     
     """
     __tablename__ = 'project'
-    id = Column(Integer, autoincrement=True,primary_key=True,default = text("coalesce(max(project.id),0)+1 from project"))
-    name = Column(String(50,convert_unicode=True))
-    password = Column(String(40),nullable=True)
-    company_id = Column(Integer, ForeignKey('company.id'),nullable=False)
-    company = relationship("Company", backref=backref('projects', order_by=id),uselist=False)
-    dir = Column(String(255,convert_unicode=True),nullable=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(project.id),0)+1 from project"))
+    name = Column(String(50, convert_unicode=True), nullable=False)
+    company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
+    company = relationship("Company", backref=backref('projects', order_by=id), uselist=False)
+    dir = Column(String(255, convert_unicode=True), nullable=True)  #: Is it ok for a project to not have a directory?
+    password = Column(String(40) , nullable=True)
     members = relationship('User', secondary=ProjectMembers, backref='projects')
     
     def __init__(self,name,company,password):
@@ -151,29 +159,29 @@ class Computer(Base):
     """A class representation of a computer. 
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of computer, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of the computer.
-        * :py:attr:`ip` (:py:class:`sqlalchemy.dialects.mysql.INTEGER`) - Internet Protocol address of the computer.
-        * :py:attr:`mac` (:py:class:`String`) - Media Access Control address of the computer.
-        * :py:attr:`time` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time of the last network activity from the computer.
-        * :py:attr:`screens` (:py:class:`sqlalchemy.dialects.mysql.SMALLINT`) - Number of screens on the computer.
-        * :py:attr:`responsive` (:py:class:`sqlalchemy.dialects.mysql.TINYINT`) - The responsive value of the computer.
-        * :py:attr:`user_id` (:py:class:`Integer`) - ID of the user currently using the computer.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of computer, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the computer.
+        * :py:attr:`ip` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)`) - Internet Protocol address of the computer (Defined as unsigned).
+        * :py:attr:`mac` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Media Access Control address of the computer.
+        * :py:attr:`time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time of the last network activity from the computer.
+        * :py:attr:`screens` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)`) - Number of screens on the computer.
+        * :py:attr:`responsive` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)`) - The responsive value of the computer.
+        * :py:attr:`user_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user currently using the computer.
         * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`) - The current user.
-        * :py:attr:`wos_id` (:py:class:`Integer`) - **WOS** ID.
-         
+        * :py:attr:`wos_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - **WOS** ID.
+    
     """
     __tablename__ = "computer"
-    id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(computer.id),0)+1 from computer"))
-    name = Column(String(50,convert_unicode=True),nullable=False)
-    ip = Column(mysql.INTEGER(unsigned=True),nullable=False)
-    mac = Column(String(12),nullable=True)
-    time = Column(mysql.DATETIME)
-    screens = Column(mysql.SMALLINT,default=0)
-    responsive = Column(mysql.TINYINT,nullable=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False, default = text("coalesce(max(computer.id),0)+1 from computer"))
+    name = Column(String(50, convert_unicode=True), nullable=False)
+    ip = Column(mysql.INTEGER(unsigned=True), nullable=False)
+    mac = Column(String(12, convert_unicode=True), nullable=True)
+    time = Column(mysql.DATETIME, nullable=True)
+    screens = Column(mysql.SMALLINT, nullable=True, default=0)
+    responsive = Column(mysql.TINYINT, nullable=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref('computers', order_by=id))
-    wos_id = Column(Integer)
+    wos_id = Column(Integer, nullable=True)
     
     def __str__(self):
         return "<%d: name:%s screens:%d time:%s>" % (self.wos_id,self.name,self.screens,self.time.isoformat())
@@ -185,15 +193,15 @@ class Session(Base):
     """A class representation of a session.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of session, used as primary key in database table.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of session, used as primary key in database table.
         * :py:attr:`name` (:py:class:`String`) - Name of session.
-        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project the session belongs to.
+        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project the session belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - The project the session belongs to.
         * :py:attr:`starttime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the session began, defaults to `now()`.
         * :py:attr:`endtime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - The time session ended.
-        * :py:attr:`previous_session_id` (:py:class:`Integer`) - ID of the previous session.
-        * :py:attr:`previous_session` (:py:class:`sqlaclhemy.orm.relationship`) - The previous session.
-        * :py:attr:`participants` (:py:class:`sqlaclhemy.orm.relationship`) - Users that belong to this session.
+        * :py:attr:`previous_session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the previous session.
+        * :py:attr:`previous_session` (:py:class:`sqlalchemy.orm.relationship`) - The previous session.
+        * :py:attr:`participants` (:py:class:`sqlalchemy.orm.relationship`) - Users that belong to this session.
         * :py:attr:`computers` (:py:class:`sqlalchemy.orm.relationship`) - Computers that belong to this session.
     
     :param project: The project for the session.
@@ -281,11 +289,11 @@ class Event(Base):
     """A class representation of Event. A simple note with timestamp during a session.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of the event, used as primary key in database table.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the event, used as primary key in database table.
         * :py:attr:`title` (:py:class:`String`) - Title of the event.
         * :py:attr:`desc` (:py:class:`String`) - More in-depth description of the event (500 characters max).
         * :py:attr:`time` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the event took place.
-        * :py:attr:`session_id` (:py:class:`Integer`) - ID of the session this event belongs to.
+        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session this event belongs to.
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session this event belongs to.
     
     """
@@ -301,7 +309,7 @@ class Action(Base):
     """A class representation of a action. A file action uses this to describe the action.
     
     Field:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of the action, used as primary key in database table.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action, used as primary key in database table.
         * :py:attr:`name` (:py:class:`String`) - Name of the action.
     
     :param name: Name of the action.
@@ -323,15 +331,15 @@ class File(Base):
     """A class representation of a file.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - ID of the file, used as primary key in database table.
+        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the file, used as primary key in database table.
         * :py:attr:`path` (:py:class:`String`) - Path of the file on DiWa (max 255 chars).
-        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project this file belongs to.
+        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project this file belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project this file belongs to.
         
     """
     __tablename__ = 'file'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(file.id),0)+1 from file"))
-    path = Column(String(255,convert_unicode=True),nullable=False)
+    path = Column(String(255, convert_unicode=True), nullable=False)
     project_id = Column(Integer, ForeignKey('project.id'),nullable=True)
     project = relationship("Project", backref=backref('files', order_by=id))
     
