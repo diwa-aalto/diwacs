@@ -14,7 +14,7 @@ import threading
 import time
 import win32com.client 
 import pythoncom
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime,sql,create_engine,Boolean, text
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, sql, create_engine, Boolean, text
 from sqlalchemy.dialects import mysql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
@@ -184,6 +184,18 @@ class Computer(Base):
 class Session(Base):
     """A class representation of a session.
     
+    Fields:
+        * :py:attr:`id` (:py:class:`Integer`) - ID of session, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of session.
+        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project the session belongs to.
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - The project the session belongs to.
+        * :py:attr:`starttime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the session began, defaults to `now()`.
+        * :py:attr:`endtime` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - The time session ended.
+        * :py:attr:`previous_session_id` (:py:class:`Integer`) - ID of the previous session.
+        * :py:attr:`previous_session` (:py:class:`sqlaclhemy.orm.relationship`) - The previous session.
+        * :py:attr:`participants` (:py:class:`sqlaclhemy.orm.relationship`) - Users that belong to this session.
+        * :py:attr:`computers` (:py:class:`sqlalchemy.orm.relationship`) - Computers that belong to this session.
+    
     :param project: The project for the session.
     :type company: :class:`models.Project`
     
@@ -193,8 +205,8 @@ class Session(Base):
     name = Column(String(50,convert_unicode=True),nullable=True)
     project_id = Column(Integer, ForeignKey('project.id'),nullable=False)
     project = relationship("Project", backref=backref('sessions', order_by=id))
-    starttime = Column(DateTime,default=sql.func.now())
-    endtime = Column(DateTime)
+    starttime = Column(mysql.DATETIME, default=sql.func.now())
+    endtime = Column(mysql.DATETIME)
     previous_session_id = Column(Integer, ForeignKey('session.id'))
     previous_session = relationship('Session', uselist=False,remote_side=[id])
     participants = relationship('User', secondary=SessionParticipants, backref='sessions')
@@ -271,7 +283,7 @@ class Event(Base):
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(event.id),0)+1 from event"))
     title = Column(String(40,convert_unicode=True),nullable=False)
     desc = Column(String(500,convert_unicode=True),nullable=False)
-    time = Column(DateTime,default=sql.func.now())
+    time = Column(mysql.DATETIME,default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('events', order_by=id))    
           
@@ -332,7 +344,7 @@ class FileAction(Base):
     file = relationship("File", backref=backref('actions', order_by=id))
     action_id = Column(Integer, ForeignKey('action.id'),nullable=False)
     action = relationship("Action", backref=backref('actions', order_by=id))
-    action_time = Column(DateTime,default=sql.func.now()) 
+    action_time = Column(mysql.DATETIME, default=sql.func.now()) 
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref('fileactions', order_by=id))
     computer_id = Column(Integer, ForeignKey('computer.id'))
