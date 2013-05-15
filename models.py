@@ -10,7 +10,7 @@ Created on 23.5.2012
 '''
 import datetime
 import os 
-import threading
+#import threading
 import time
 import win32com.client 
 import pythoncom
@@ -18,18 +18,18 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Table, sql, create_e
 from sqlalchemy.dialects import mysql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
-import controller
+#import controller
 Base = declarative_base()
 
 class Company(Base):
     """ A class representation of a company.
     
     Fields:
-        * :py:attr:`id` (:py:class:`Integer`) - Primary key in database table.
-        * :py:attr:`name` (:py:class:`String`) - Name of the company.
+        * :py:attr:`id` (:py:class:`sqlaclhemy.schema.Column(Integer)`) - Primary key in database table.
+        * :py:attr:`name` (:py:class:`sqlaclhemy.schema.Column(String)`) - Name of the company (Max 50 characters).
     
     :param name: The name of the company.
-    :type name: String
+    :type name: :py:class:`String`
     """
     #: Todo: Should include backref to user documentation here?
     __tablename__ = 'company'
@@ -53,7 +53,7 @@ class User(Base):
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - Company relationship.
     
     :param name: Name of the user.
-    :type name: String.
+    :type name: :py:class:`String`
     :param company: The employer.
     :type company: :py:class:`models.Company`
     
@@ -119,7 +119,7 @@ class Project(Base):
         * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`) - The users that work on the project.
         
     :param name: Name of the project.
-    :type name: String
+    :type name: :py:class:`String`
     :param company: The owner of the project.
     :type company: :py:class:`models.Company`
     
@@ -241,13 +241,16 @@ class Session(Base):
         self.users.append(user)
     
     def fileRoutine(self):
-        """ File checking routine for logging"""
+        """ File checking routine for logging.
+        
+        :throws IOError: When log.txt is not available for write access.
+        """
         recent_path = os.path.join(os.getenv('APPDATA'),'Microsoft\\Windows\\Recent')
-        f = open('log.txt','w')
+        f = open('log.txt', 'w')
         log_path = os.path.join(os.getcwd(),f.name)
         try:
             pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        except pythoncom.com_error:
+        except pythoncom.com_error :
                 # already initialized.
                 pass
         shell = win32com.client.Dispatch("WScript.Shell")
@@ -278,11 +281,13 @@ class Event(Base):
     """A class representation of Event. A simple note with timestamp during a session.
     
     Fields:
-        * desc
-        * title
-        * time
-        * session
-        
+        * :py:attr:`id` (:py:class:`Integer`) - ID of the event, used as primary key in database table.
+        * :py:attr:`title` (:py:class:`String`) - Title of the event.
+        * :py:attr:`desc` (:py:class:`String`) - More in-depth description of the event (500 characters max).
+        * :py:attr:`time` (:py:class:`sqlalchemy.dialects.mysql.DATETIME`) - Time the event took place.
+        * :py:attr:`session_id` (:py:class:`Integer`) - ID of the session this event belongs to.
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session this event belongs to.
+    
     """
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(event.id),0)+1 from event"))
@@ -293,10 +298,14 @@ class Event(Base):
     session = relationship("Session", backref=backref('events', order_by=id))    
           
 class Action(Base):
-    """A class representation of a action. Describes a file action.
+    """A class representation of a action. A file action uses this to describe the action.
+    
+    Field:
+        * :py:attr:`id` (:py:class:`Integer`) - ID of the action, used as primary key in database table.
+        * :py:attr:`name` (:py:class:`String`) - Name of the action.
     
     :param name: Name of the action.
-    :type name: String.
+    :type name: :py:class:`String`
     
     """
     __tablename__ = 'action'
@@ -314,8 +323,10 @@ class File(Base):
     """A class representation of a file.
     
     Fields:
-        * path
-        * project
+        * :py:attr:`id` (:py:class:`Integer`) - ID of the file, used as primary key in database table.
+        * :py:attr:`path` (:py:class:`String`) - Path of the file on DiWa (max 255 chars).
+        * :py:attr:`project_id` (:py:class:`Integer`) - ID of the project this file belongs to.
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project this file belongs to.
         
     """
     __tablename__ = 'file'
@@ -332,15 +343,15 @@ class FileAction(Base):
     """A class representation of a fileaction. 
     
     :param file: The file in question.
-    :type file: :class:`models.File`
+    :type file: :py:class:`models.File`
     :param action: The action in question.
-    :type action: :class:`models.Action`
+    :type action: :py:class:`models.Action`
     :param session: The session in question.
-    :type session: :class:`models.Session`
+    :type session: :py:class:`models.Session`
     :param computer: The computer in question.
-    :type computer: :class:`models.Computer`
+    :type computer: :py:class:`models.Computer`
     :param user: The user performing the action.
-    :type user: :class:`models.User`
+    :type user: :py:class:`models.User`
     
     """
     __tablename__ = 'fileaction'
@@ -362,4 +373,7 @@ class FileAction(Base):
         self.action = action
         self.user = user
         self.session = session
-        self.computer = computer                             
+        self.computer = computer
+        
+        
+                     
