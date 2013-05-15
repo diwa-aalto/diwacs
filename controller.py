@@ -3,7 +3,7 @@ Created on 28.5.2012
 
 @author: neriksso
 '''
-import MySQLdb
+#import MySQLdb
 import sys
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
@@ -11,17 +11,18 @@ from models import *
 from sqlalchemy import create_engine,func, sql,desc,or_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
-import time
 from pubsub import pub
-import utils
 import csv
-import watchdog
-import shutil
 import datetime
-import socket
-from watchdog.events import FileSystemEventHandler
 import logging
 import logging.config
+import time
+import shutil
+import socket
+import threading
+import utils
+import watchdog
+from watchdog.events import FileSystemEventHandler
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 STORAGE = "192.168.1.10"
