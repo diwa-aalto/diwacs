@@ -10,15 +10,13 @@ Created on 23.5.2012
 '''
 import datetime
 import os 
-#import threading
 import time
 import win32com.client 
 import pythoncom
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, sql, create_engine, Boolean, text
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, sql, Boolean, text
 from sqlalchemy.dialects import mysql
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
-#import controller
 Base = declarative_base()
 
 
@@ -263,25 +261,26 @@ class Session(Base):
         try:
             pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
         except pythoncom.com_error :
-                # already initialized.
-                pass
+            # already initialized.
+            pass
+        
         shell = win32com.client.Dispatch("WScript.Shell")
         while self.endtime == None:
-            for file in os.listdir(recent_path):
-                filepath = os.path.join(recent_path,file)
+            for directory_entry in os.listdir(recent_path):
+                filepath = os.path.join(recent_path,directory_entry)
                 file_atime =  datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
-                #f.write(file + " " + str(file_atime))              
+                #f.write(directory_entry + " " + str(file_atime))
                 if file_atime  > self.get_last_checked():
-                    #f.write("file ")
+                    #f.write("directory_entry ")
                     try:
                         shortcut = shell.CreateShortCut(filepath)
                         if os.path.isfile(shortcut.TargetPath) and not shortcut.TargetPath == log_path:
                             f.write(shortcut.TargetPath+" "+str(file_atime))
                         else:
-                            continue    
+                            continue
                     except:
-                        ext = file.rfind('.')
-                        f.write(file[:ext]+" "+str(file_atime))   
+                        ext = directory_entry.rfind('.')
+                        f.write(directory_entry[:ext]+" "+str(file_atime))   
                     f.write(" opened \n")    
                     
             self.last_checked = datetime.datetime.now()
@@ -302,10 +301,10 @@ class Event(Base):
     
     """
     __tablename__ = 'event'
-    id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(event.id),0)+1 from event"))
-    title = Column(String(40,convert_unicode=True),nullable=False)
-    desc = Column(String(500,convert_unicode=True),nullable=False)
-    time = Column(mysql.DATETIME,default=sql.func.now())
+    id = Column(Integer, primary_key=True, autoincrement=True, default = text("coalesce(max(event.id),0)+1 from event"))
+    title = Column(String(40, convert_unicode=True), nullable=False)
+    desc = Column(String(500, convert_unicode=True), nullable=False)
+    time = Column(mysql.DATETIME, default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('events', order_by=id))    
           
@@ -384,7 +383,7 @@ class FileAction(Base):
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('fileactions', order_by=id))  
     
-    def __init__(self,file,action,session=None,computer=None,user=None):
+    def __init__(self, file, action, session=None, computer=None, user=None):
         self.file = file
         self.action = action
         self.user = user
