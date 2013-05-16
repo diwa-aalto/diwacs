@@ -302,7 +302,7 @@ class Event(Base):
     """
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True, autoincrement=True, default = text("coalesce(max(event.id),0)+1 from event"))
-    title = Column(String(40, convert_unicode=True), nullable=False) #: ?
+    title = Column(String(40, convert_unicode=True), nullable=False)
     desc = Column(String(500, convert_unicode=True), nullable=True)
     time = Column(mysql.DATETIME, default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
