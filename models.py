@@ -293,8 +293,8 @@ class Event(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the event, used as primary key in database table.
-        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the event.
-        * :py:attr:`desc` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - More in-depth description of the event (500 characters max).
+        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the event (Max 40 characters).
+        * :py:attr:`desc` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - More in-depth description of the event (Max 500 characters).
         * :py:attr:`time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the event took place.
         * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session this event belongs to.
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session this event belongs to.
@@ -302,18 +302,18 @@ class Event(Base):
     """
     __tablename__ = 'event'
     id = Column(Integer, primary_key=True, autoincrement=True, default = text("coalesce(max(event.id),0)+1 from event"))
-    title = Column(String(40, convert_unicode=True), nullable=False)
-    desc = Column(String(500, convert_unicode=True), nullable=False)
+    title = Column(String(40, convert_unicode=True), nullable=False) #: ?
+    desc = Column(String(500, convert_unicode=True), nullable=True)
     time = Column(mysql.DATETIME, default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
-    session = relationship("Session", backref=backref('events', order_by=id))    
+    session = relationship("Session", backref=backref('events', order_by=id))
           
 class Action(Base):
     """A class representation of a action. A file action uses this to describe the action.
     
     Field:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the action.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the action (Max 50 characters).
     
     :param name: Name of the action.
     :type name: :py:class:`String`
@@ -321,13 +321,13 @@ class Action(Base):
     """
     __tablename__ = 'action'
     id = Column(Integer, primary_key=True)
-    name = Column(String(50))
+    name = Column(String(50, convert_unicode=True), nullable=True)
     
     
-    def __init__(self, name):
+    def __init__(self, name) :
         self.name = name
         
-    def __repr__(self):
+    def __repr__(self) :
         return self.name 
          
 class File(Base):
