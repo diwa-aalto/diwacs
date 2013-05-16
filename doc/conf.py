@@ -10,17 +10,16 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-
-import sys, os
+import os
+import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('C:\\Users\\Kristian\\workspace\\diwacs'))
 
-# Import vars for application name and version numbering.
+# Import vars for application name and version, this needs to be after sys.path.insert
 import vars
-
 
 # -- General configuration -----------------------------------------------------
 
@@ -198,7 +197,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Chimaira.tex', u'Chimaira Documentation',
+  ('index', 'DiWaCS.tex', u'DiWaCS Documentation',
    u'Nick Eriksson', 'manual'),
 ]
 
@@ -228,7 +227,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'chimaira', u'Chimaira Documentation',
+    ('index', 'diwacs', u'DiWaCS Documentation',
      [u'Nick Eriksson'], 1)
 ]
 
@@ -242,8 +241,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Chimaira', u'Chimaira Documentation',
-   u'Nick Eriksson', 'Chimaira', 'One line description of project.',
+  ('index', 'DiWaCS', u'DiWaCS Documentation',
+   u'Nick Eriksson', 'DiWaCS', 'One line description of project.',
    'Miscellaneous'),
 ]
 

@@ -24,6 +24,7 @@ Contents:
    api
    bugs
    features
+   license
    ui
    
    
