@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-16 at 13:15.
+Documentation generated on 2013-05-16 at 13:40.
 
 
 \section{Add file module}
@@ -1493,9 +1493,16 @@ Created on 9.5.2012
 
 @requires: \href{http://www.pythonware.com/products/pil/}{PIL}
 
-@requires: WMI
+@requires: \href{https://sourceforge.net/projects/pywin32/}{pywin32}
 
-@requires: wxPython
+@requires: \href{https://pypi.python.org/pypi/WMI/}{WMI}
+
+@requires: \href{http://www.wxpython.org/}{wxPython}
+\begin{quote}\begin{description}
+\item[{synopsis}] \leavevmode
+A lot of utility functions needed by DiWaCS.
+
+\end{description}\end{quote}
 \index{CopyFileToProject() (in module utils)}
 
 \begin{fulllineitems}
@@ -1744,6 +1751,39 @@ Search file in a given path.
 \textbf{search\_path} (\emph{String.}) -- The search path.
 
 \end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_lan\_machines() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.get_lan_machines}\pysiglinewithargsret{\code{utils.}\bfcode{get\_lan\_machines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{lan\_ip} (\emph{string}) -- Local Area Network IP.
+
+\item[{Returns}] \leavevmode
+lan machines
+
+\item[{Return type}] \leavevmode
+string{[}{]}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{get\_local\_ip\_address() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.get_local_ip_address}\pysiglinewithargsret{\code{utils.}\bfcode{get\_local\_ip\_address}}{\emph{target}}{}
+Used to get local Internet Protocol address.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+The current IP address.
+
+\item[{Return type}] \leavevmode
+string
 
 \end{description}\end{quote}
 
@@ -3115,17 +3155,11 @@ business.
 This Licence shall be governed by the law of the European Union country where the
 Licensor resides or has his registered office.
 This licence shall be governed by the Belgian law if:
-\begin{itemize}
-\item {} 
-a litigation arises between the European Commission, as a Licensor, and any Licensee;
-
-\item {} 
-the Licensor, other than the European Commission, has no residence or registered office inside a European Union country.
-
-\end{itemize}
+- a litigation arises between the European Commission, as a Licensor, and any Licensee;
+- the Licensor, other than the European Commission, has no residence or registered office inside a European Union country.
 
 
-\chapter{Appendix}
+\section{Appendix}
 \label{license:appendix}\begin{description}
 \item[{“Compatible Licences” according to article 5 EUPL are:}] \leavevmode\begin{itemize}
 \item {} 

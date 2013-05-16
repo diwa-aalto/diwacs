@@ -5,9 +5,13 @@ Created on 9.5.2012
 
 @requires: `PIL <http://www.pythonware.com/products/pil/>`_
 
-@requires: WMI
+@requires: `pywin32 <https://sourceforge.net/projects/pywin32/>`_
 
-@requires: wxPython
+@requires: `WMI <https://pypi.python.org/pypi/WMI/>`_
+
+@requires: `wxPython <http://www.wxpython.org/>`_
+
+:synopsis: A lot of utility functions needed by DiWaCS.
 '''
 
 # Standard library imports go here.
@@ -23,11 +27,11 @@ import subprocess
 import tempfile
 import threading
 import urllib2
-import zipfile
 from _winreg import (HKEY_CLASSES_ROOT, KEY_ALL_ACCESS, OpenKey, CloseKey,
                     EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ,
                     HKEY_CURRENT_USER, QueryValueEx)
 import xmlrpclib
+import zipfile
 
 # Third party library imports go here.
 from PIL import Image, ImageOps, ImageFilter,ImageGrab,PngImagePlugin
@@ -220,6 +224,11 @@ SENDKEYS_TABLE = (
     )
 
 def get_local_ip_address(target):
+    """ Used to get local Internet Protocol address.
+    
+    :returns: The current IP address.
+    :rtype: string
+    """
     ipaddr = ''
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -231,6 +240,13 @@ def get_local_ip_address(target):
     return ipaddr 
 
 def get_lan_machines(lan_ip):
+    """
+    
+    :param lan_ip: Local Area Network IP.
+    :type lan_ip: string
+    :returns: lan machines
+    :rtype: string[]
+    """
     index = lan_ip.rfind('.')
     if index > -1:
         lan_space = lan_ip[0:index]
