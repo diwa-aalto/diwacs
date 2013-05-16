@@ -22,8 +22,7 @@ from sqlalchemy.orm import relationship, backref
 Base = declarative_base()
 
 
-#: TODO: The attribute descriptions need a bit of refactoring after the models are up to date with database situation.
-class Company(Base):
+class Company(Base) :
     """ A class representation of a company.
     
     Fields:
@@ -38,11 +37,11 @@ class Company(Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(company.id),0)+1 from company"))
     name = Column(String(50, convert_unicode=True), nullable=False)
 
-    def __init__(self,name):
+    def __init__(self,name) :
         self.name = name
-            
 
-class User(Base):
+
+class User(Base) :
     """A class representation of a user.
     
     Fields:
@@ -69,7 +68,7 @@ class User(Base):
     company_id = Column(Integer, ForeignKey('company.id'))
     company = relationship("Company", backref=backref('employees', order_by=id))
 
-    def __init__(self,name,company):
+    def __init__(self,name,company) :
         self.name = name 
         self.company = company
 
@@ -88,7 +87,8 @@ ProjectMembers = Table('projectmembers', Base.metadata,
     Column('User', Integer, ForeignKey('user.id'))
 ) 
 
-class Activity(Base):
+
+class Activity(Base) :
     """ A class representation of an activity.
     
     Fields:
@@ -111,14 +111,15 @@ class Activity(Base):
     project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
     project = relationship("Project", backref=backref('activities', order_by=id))
     active = Column(Boolean, nullable=False, default=True)
-    def __init__(self,project,session=None):
+
+    def __init__(self,project,session=None) :
         #controller.UnsetActivity()
         self.project = project
         if session:
             self.session = session
-            
-            
-class Project(Base):
+
+
+class Project(Base) :
     """A class representation of a project.
     
     Fields:
@@ -134,7 +135,6 @@ class Project(Base):
     :type name: :py:class:`String`
     :param company: The owner of the project.
     :type company: :py:class:`models.Company`
-    
     """
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(project.id),0)+1 from project"))
@@ -144,22 +144,25 @@ class Project(Base):
     dir = Column(String(255, convert_unicode=True), nullable=True)  #: Is it ok for a project to not have a directory?
     password = Column(String(40) , nullable=True)
     members = relationship('User', secondary=ProjectMembers, backref='projects')
-    
-    def __init__(self,name,company,password):
+
+    def __init__(self,name,company,password) :
         self.name = name
         self.company = company
         self.password = password
+
 
 SessionParticipants = Table('sessionparticipants', Base.metadata,
     Column('Session', Integer, ForeignKey('session.id')),
     Column('User', Integer, ForeignKey('user.id'))
 )
+
 SessionComputers = Table('sessioncomputers', Base.metadata,
     Column('Session', Integer, ForeignKey('session.id')),
     Column('Computer', Integer, ForeignKey('computer.id'))
 )
 
-class Computer(Base):
+
+class Computer(Base) :
     """A class representation of a computer. 
     
     Fields:
@@ -186,14 +189,15 @@ class Computer(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User", backref=backref('computers', order_by=id))
     wos_id = Column(Integer, nullable=True)
-    
-    def __str__(self):
+
+    def __str__(self) :
         return "<%d: name:%s screens:%d time:%s>" % (self.wos_id,self.name,self.screens,self.time.isoformat())
-    
-    def __repr__(self):
+
+    def __repr__(self) :
         return self.__str__()
-                            
-class Session(Base):
+
+
+class Session(Base) :
     """A class representation of a session.
     
     Fields:
@@ -210,8 +214,6 @@ class Session(Base):
     
     :param project: The project for the session.
     :type project: :py:class:`models.Project`
-    
-    
     """
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(session.id),0)+1 from session"))
@@ -224,35 +226,35 @@ class Session(Base):
     previous_session = relationship('Session', uselist=False, remote_side=[id])
     participants = relationship('User', secondary=SessionParticipants, backref='sessions')
     computers = relationship('Computer', secondary=SessionComputers, backref='sessions')
-    
-    def __init__(self, project):
+
+    def __init__(self, project) :
         self.project = project
         self.users = []
         self.endtime = None
         self.last_checked =  None
-        
-    def start(self):
+
+    def start(self) :
         """Start a session. Set the :py:attr:`last_checked` field to current DateTime."""
         self.last_checked = datetime.datetime.now()
-        
-    def get_last_checked(self):
+
+    def get_last_checked(self) :
         """Fetch :py:attr:`last_checked` field.
         
         :return: :py:attr:`last_checked` field (None before :py:meth:`models.Session.start` is called).
         :rtype: :py:class:`datetime.datetime` or :py:const:`None`
         
         """
-        return self.last_checked   
-     
-    def addUser(self, user):
+        return self.last_checked
+
+    def addUser(self, user) :
         """Add users to a session.
         
         :param user: User to be added into the session.
         :type user: :py:class:`models.User`
         """
         self.users.append(user)
-    
-    def fileRoutine(self):
+
+    def fileRoutine(self) :
         """ File checking routine for logging.
         
         :throws IOError: When log.txt is not available for write access.
@@ -287,10 +289,10 @@ class Session(Base):
                         f.write(dir_entry[:ext] + " " + str(dir_mtime) + " opened \n")
             self.last_checked = datetime.datetime.now()
             time.sleep(10)
-        
         f.close()
-        
-class Event(Base):
+
+
+class Event(Base) :
     """A class representation of Event. A simple note with timestamp during a session.
     
     Fields:
@@ -309,8 +311,9 @@ class Event(Base):
     time = Column(mysql.DATETIME, default=sql.func.now())
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('events', order_by=id))
-          
-class Action(Base):
+
+
+class Action(Base) :
     """A class representation of a action. A file action uses this to describe the action.
     
     Field:
@@ -319,20 +322,19 @@ class Action(Base):
     
     :param name: Name of the action.
     :type name: :py:class:`String`
-    
     """
     __tablename__ = 'action'
     id = Column(Integer, primary_key=True)
     name = Column(String(50, convert_unicode=True), nullable=True)
-    
-    
+
     def __init__(self, name) :
         self.name = name
-        
+
     def __repr__(self) :
         return self.name 
-         
-class File(Base):
+
+
+class File(Base) :
     """A class representation of a file.
     
     Fields:
@@ -347,12 +349,12 @@ class File(Base):
     path = Column(String(255, convert_unicode=True), nullable=False)
     project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
     project = relationship("Project", backref=backref('files', order_by=id))
-    
-    def __repr__(self):
+
+    def __repr__(self) :
         return self.path
-    
-                
-class FileAction(Base):
+
+
+class FileAction(Base) :
     """A class representation of a fileaction.
     
     Fields:
@@ -380,7 +382,6 @@ class FileAction(Base):
     :type computer: :py:class:`models.Computer`
     :param user: The user performing the action.
     :type user: :py:class:`models.User`
-    
     """
     __tablename__ = 'fileaction'
     id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(fileaction.id),0)+1 from fileaction"))
@@ -395,12 +396,11 @@ class FileAction(Base):
     computer = relationship("Computer", backref=backref('fileactions', order_by=id))
     session_id = Column(Integer, ForeignKey('session.id'))
     session = relationship("Session", backref=backref('fileactions', order_by=id))  
-    
-    def __init__(self, file, action, session=None, computer=None, user=None):
+
+    def __init__(self, file, action, session=None, computer=None, user=None) :
         self.file = file
         self.action = action
         self.user = user
         self.session = session
         self.computer = computer
-        
-        
+
