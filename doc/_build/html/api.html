@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-16 at 09:48.</p>
+<p>Documentation generated on 2013-05-16 at 10:09.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -586,7 +586,7 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt>Field:</dt>
 <dd><ul class="first last simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>) - ID of the action, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - Name of the action.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - Name of the action (Max 50 characters).</li>
 </ul>
 </dd>
 </dl>
@@ -682,14 +682,20 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
 <li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>) - ID of the event, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - Title of the event.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">desc</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - More in-depth description of the event (500 characters max).</li>
+<li><a class="reference internal" href="#models.Event.title" title="models.Event.title"><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt></a> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - Title of the event (Max 40 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">desc</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>) - More in-depth description of the event (Max 500 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>) - Time the event took place.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>) - ID of the session this event belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - Session this event belongs to.</li>
 </ul>
 </dd>
 </dl>
+<dl class="attribute">
+<dt id="models.Event.title">
+<tt class="descname">title</tt><a class="headerlink" href="#models.Event.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>?</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
