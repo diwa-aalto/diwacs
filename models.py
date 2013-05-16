@@ -341,13 +341,13 @@ class File(Base):
         
     """
     __tablename__ = 'file'
-    id = Column(Integer, primary_key=True, autoincrement=True,default = text("coalesce(max(file.id),0)+1 from file"))
+    id = Column(Integer, primary_key=True, autoincrement=True, default = text("coalesce(max(file.id),0)+1 from file"))
     path = Column(String(255, convert_unicode=True), nullable=False)
-    project_id = Column(Integer, ForeignKey('project.id'),nullable=True)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
     project = relationship("Project", backref=backref('files', order_by=id))
     
     def __repr__(self):
-        return self.path 
+        return self.path
     
                 
 class FileAction(Base):
@@ -355,15 +355,26 @@ class FileAction(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the FileAction, used as primary key in the database table.
-        * more (TODO)
+        * :py:attr:`file_id` (:py:class:`sqlalchemy.schema.Column(sqlaclhemy.types.Integer)`) - ID of the file this FileAction affects.
+        * :py:attr:`file` (:py:class:`sqlalchemy.orm.relationship)`) - The file this FileAction affects.
+        * :py:attr:`action_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action affecting the file.
+        * :py:attr:`action` (:py:class:`sqlalchemy.orm.relationship)`) - Action affecting the file.
+        * :py:attr:`action_time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the action took place on.
+        * :py:attr:`user_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user performing the action.
+        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`) - User peforming the action.
+        * :py:attr:`computer_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the computer user performed the action on.
+        * :py:attr:`computer` (:py:class:`sqlalchemy.orm.relationship`) - Computer user performed the action on.
+        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session user performed the action in.
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session user performed the action in.
     
-    :param file: The file in question.
+    
+    :param file: The file which is subjected to the action.
     :type file: :py:class:`models.File`
-    :param action: The action in question.
+    :param action: The action which is applied to the file.
     :type action: :py:class:`models.Action`
-    :param session: The session in question.
+    :param session: The session in which the FileAction took place on.
     :type session: :py:class:`models.Session`
-    :param computer: The computer in question.
+    :param computer: The computer from which the user performed the action.
     :type computer: :py:class:`models.Computer`
     :param user: The user performing the action.
     :type user: :py:class:`models.User`
