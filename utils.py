@@ -3,6 +3,8 @@ Created on 9.5.2012
 
 @author: neriksso
 
+@requires: `PIL <http://www.pythonware.com/products/pil/>`_
+
 @requires: WMI
 
 @requires: wxPython
@@ -47,7 +49,7 @@ SENDKEYS_TABLE_VIRTUAL = (
     (0x09,"{TAB}"),     
     (0x0D,"{ENTER}"),  
     (0x1B,"{ESC}"),   
-    (0x20,"{SPACE}"),    
+    (0x20,"{SPACE}"), 
     (0x2E,"{DEL}"), 
     (19,"{BREAK}"), 
     (0x14,"{CAP}"), 
