@@ -273,7 +273,7 @@ def UpdateStorage(storage):
     global STORAGE
     STORAGE = storage
     
-def UpdateCameraVars(url,user,passwd):
+def UpdateCameraVars(url, user, passwd):
     global CAMERA_URL, CAMERA_USER, CAMERA_PASS
     if url:
         CAMERA_URL = url
