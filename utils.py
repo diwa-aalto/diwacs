@@ -27,14 +27,12 @@ import subprocess
 import tempfile
 import threading
 import urllib2
-from _winreg import (HKEY_CLASSES_ROOT, KEY_ALL_ACCESS, OpenKey, CloseKey,
-                    EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ,
-                    HKEY_CURRENT_USER, QueryValueEx)
+from _winreg import (OpenKey, CloseKey, HKEY_CURRENT_USER, QueryValueEx)
 import xmlrpclib
 import zipfile
 
 # Third party library imports go here.
-from PIL import Image, ImageOps, ImageFilter, ImageGrab, PngImagePlugin
+from PIL import Image, ImageOps, ImageGrab
 import win32wnet
 from win32netcon import RESOURCETYPE_DISK as DISK
 import wmi
@@ -117,6 +115,7 @@ SENDKEYS_TABLE_VIRTUAL = (
     (0x5B, "{LWIN}"),
     (0x5C, "{RWIN}"),
     )
+
 SENDKEYS_TABLE = (
     (wx.WXK_BACK, "{BACKSPACE}"),
     (wx.WXK_TAB, "{TAB}"),
@@ -231,14 +230,14 @@ def get_local_ip_address(target):
     :rtype: string
 
     """
-    ipaddr = ''
+    ipaddr = None
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect((target, 8000))
         ipaddr = s.getsockname()[0]
         s.close()
     except:
-        ipaddr = None
+        pass
     return ipaddr
 
 
@@ -251,23 +250,24 @@ def get_lan_machines(lan_ip):
     :rtype: string[]
 
     """
+    resultlist = []
     index = lan_ip.rfind('.')
     if index > -1:
         lan_space = lan_ip[0:index]
     else:
         #print "given ip is not valid"
-        return []
+        return resultlist
     arp_table = subprocess.Popen('arp -a', shell=True, stdout=subprocess.PIPE)
-    resultlist = []
     for line in arp_table.stdout:
         if line.find(lan_ip) > -1:
             primary = True
             continue
         if not line.strip():
             primary = False
+        item = line.split.split()[0]
         if (primary and line.count('.') == 3 and
-                line.split()[0].find(lan_space) > -1):
-            resultlist.append(line.split()[0])
+                item.find(lan_space) > -1):
+            resultlist.append(item)
     return resultlist
 
 
@@ -409,6 +409,7 @@ def SaveScreen(win, filepath):
                                          wallpaper_path[i2 + 2:])
             else:
                 wallpaper = wallpaper_path
+            CloseKey(key)
         if win == 6:
             wallpaper = os.path.join(os.environ['APPDATA'],
                         'Microsoft\Windows\Themes\TranscodedWallpaper.jpg')
@@ -423,6 +424,7 @@ def SaveScreen(win, filepath):
                                              wallpaper_path[i2 + 2:])
                 else:
                     wallpaper = wallpaper_path
+                CloseKey(key)
         if win == 7:
             wallpaper = os.path.join(os.environ['APPDATA'],
                         'Microsoft\Windows\Themes\TranscodedWallpaper')
@@ -437,12 +439,14 @@ def SaveScreen(win, filepath):
                                              wallpaper_path[i2 + 2:])
                 else:
                     wallpaper = wallpaper_path
+                CloseKey(key)
         #From blog :
         #http://tobias.klpstn.com/2008/02/10/simple-image-masking-with-pil/
         # the image we want to paste in the transparent mask
         background = Image.open(wallpaper)
         # or take screenshot
-        unused_grab = ImageGrab.grab()  #: :todo: Consider refactoring out.
+        #: TODO: Consider refactoring out.
+        unused_grab = ImageGrab.grab()
         # the mask, where we insert our image
         mask = Image.open("scr_mask.png")
         # mask, that we overlay
@@ -462,6 +466,11 @@ def SaveScreen(win, filepath):
         cropped_image.save(filepath, format="PNG")
     except Exception as inst:
         logger.exception('SaveScreen Exception: %s', str(inst))
+        try:
+            if (key is not None):
+                CloseKey(key)
+        except:
+            pass  # We may want to ignore this and not nest exceptions.
 
 
 def ScreenCapture(path, node):

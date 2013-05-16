@@ -301,8 +301,7 @@ class WORKER_THREAD(threading.Thread):
                 if islast:
                     SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'add_file.exe ') + ' \"%1\"')
             CloseKey(rkey)
-    
-                  
+
     def AddRegEntry(self, name, id):
         """ Adds a node to registry 
         
@@ -323,7 +322,7 @@ class WORKER_THREAD(threading.Thread):
                 if islast:
                     SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'send_file_to.exe ' + str(id) + ' \"%1\"'))
             CloseKey(rkey)
-            
+
     def RemoveAllRegEntries(self):
         """ Removes all related registry entries """
         try:
@@ -354,7 +353,7 @@ class WORKER_THREAD(threading.Thread):
             CloseKey(main_key)
         except Exception, e:
             logger.exception('Exception in RemoveAllRegEntries:' + str(e))
-            
+
     def parseConfig(self, config):
         """ Handles config file settings"""
         global STORAGE, RESPONSIVE, PGM_GROUP, AUDIO
