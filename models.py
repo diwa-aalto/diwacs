@@ -196,7 +196,7 @@ class Session(Base):
     
     Fields:
         * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of session, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of session.
+        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of session (Max 50 characters).
         * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project the session belongs to.
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - The project the session belongs to.
         * :py:attr:`starttime` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the session began, defaults to `now()`.
@@ -212,18 +212,18 @@ class Session(Base):
     
     """
     __tablename__ = 'session'
-    id = Column(Integer, primary_key=True,autoincrement=True,default = text("coalesce(max(session.id),0)+1 from session"))
-    name = Column(String(50,convert_unicode=True),nullable=True)
-    project_id = Column(Integer, ForeignKey('project.id'),nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(session.id),0)+1 from session"))
+    name = Column(String(50, convert_unicode=True), nullable=True)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
     project = relationship("Project", backref=backref('sessions', order_by=id))
-    starttime = Column(mysql.DATETIME, default=sql.func.now())
-    endtime = Column(mysql.DATETIME)
-    previous_session_id = Column(Integer, ForeignKey('session.id'))
-    previous_session = relationship('Session', uselist=False,remote_side=[id])
+    starttime = Column(mysql.DATETIME, default=sql.func.now(), nullable=True)
+    endtime = Column(mysql.DATETIME, nullable=True)
+    previous_session_id = Column(Integer, ForeignKey('session.id'), nullable=True)
+    previous_session = relationship('Session', uselist=False, remote_side=[id])
     participants = relationship('User', secondary=SessionParticipants, backref='sessions')
     computers = relationship('Computer', secondary=SessionComputers, backref='sessions')
     
-    def __init__(self,project):
+    def __init__(self, project):
         self.project = project
         self.users = []
         self.endtime = None
@@ -265,27 +265,27 @@ class Session(Base):
             pass
         
         shell = win32com.client.Dispatch("WScript.Shell")
-        while self.endtime == None:
-            for directory_entry in os.listdir(recent_path):
-                filepath = os.path.join(recent_path,directory_entry)
-                file_atime =  datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
-                #f.write(directory_entry + " " + str(file_atime))
-                if file_atime  > self.get_last_checked():
-                    #f.write("directory_entry ")
-                    try:
-                        shortcut = shell.CreateShortCut(filepath)
-                        if os.path.isfile(shortcut.TargetPath) and not shortcut.TargetPath == log_path:
-                            f.write(shortcut.TargetPath+" "+str(file_atime))
-                        else:
-                            continue
-                    except:
-                        ext = directory_entry.rfind('.')
-                        f.write(directory_entry[:ext]+" "+str(file_atime))   
-                    f.write(" opened \n")    
-                    
+        while self.endtime == None :
+            for dir_entry in os.listdir(recent_path):
+                dir_path = os.path.join(recent_path, dir_entry)
+                dir_mtime = None
+                try :
+                    dir_mtime = datetime.datetime.fromtimestamp(os.path.getmtime(dir_path))
+                    #: os.path.getmtime() can raise exceptions as well.
+                except os.error :
+                    continue
+                    #: Just ignore the entry if you fail to get the mtimne.
+                if dir_mtime > self.get_last_checked() :
+                    try :
+                        shortcut = shell.CreateShortCut(dir_path)
+                        if os.path.isfile(shortcut.TargetPath) and not shortcut.TargetPath == log_path :
+                            f.write(shortcut.TargetPath + " " + str(dir_mtime) + " opened \n")
+                    except :
+                        ext = dir_entry.rfind('.')
+                        f.write(dir_entry[:ext] + " " + str(dir_mtime) + " opened \n")
             self.last_checked = datetime.datetime.now()
-            #f.write("-----------------------")
             time.sleep(10)
+        
         f.close()
         
 class Event(Base):
@@ -391,4 +391,3 @@ class FileAction(Base):
         self.computer = computer
         
         
-                     
