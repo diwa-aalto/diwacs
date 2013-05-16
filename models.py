@@ -37,7 +37,7 @@ class Company(Base) :
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True, default = text("coalesce(max(company.id),0)+1 from company"))
     name = Column(String(50, convert_unicode=True), nullable=False)
 
-    def __init__(self,name) :
+    def __init__(self, name) :
         self.name = name
 
 
@@ -68,7 +68,7 @@ class User(Base) :
     company_id = Column(Integer, ForeignKey('company.id'))
     company = relationship("Company", backref=backref('employees', order_by=id))
 
-    def __init__(self,name,company) :
+    def __init__(self, name, company) :
         self.name = name 
         self.company = company
 
@@ -112,10 +112,10 @@ class Activity(Base) :
     project = relationship("Project", backref=backref('activities', order_by=id))
     active = Column(Boolean, nullable=False, default=True)
 
-    def __init__(self,project,session=None) :
+    def __init__(self, project, session=None) :
         #controller.UnsetActivity()
         self.project = project
-        if session:
+        if session :
             self.session = session
 
 
@@ -145,7 +145,7 @@ class Project(Base) :
     password = Column(String(40) , nullable=True)
     members = relationship('User', secondary=ProjectMembers, backref='projects')
 
-    def __init__(self,name,company,password) :
+    def __init__(self, name, company, password) :
         self.name = name
         self.company = company
         self.password = password
@@ -262,7 +262,7 @@ class Session(Base) :
         recent_path = os.path.join(os.getenv('APPDATA'),'Microsoft\\Windows\\Recent')
         f = open('log.txt', 'w')
         log_path = os.path.join(os.getcwd(),f.name)
-        try:
+        try :
             pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
         except pythoncom.com_error :
             # already initialized.
@@ -270,7 +270,7 @@ class Session(Base) :
         
         shell = win32com.client.Dispatch("WScript.Shell")
         while self.endtime == None :
-            for dir_entry in os.listdir(recent_path):
+            for dir_entry in os.listdir(recent_path) :
                 dir_path = os.path.join(recent_path, dir_entry)
                 dir_mtime = None
                 try :
