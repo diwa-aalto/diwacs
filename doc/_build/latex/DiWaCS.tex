@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-16 at 15:04.
+Documentation generated on 2013-05-16 at 15:56.
 
 
 \section{Add file module}
@@ -1511,7 +1511,7 @@ A lot of utility functions needed by DiWaCS.
 
 \begin{fulllineitems}
 \phantomsection\label{api:utils.CopyFileToProject}\pysiglinewithargsret{\code{utils.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
-Copy file to project dir and return new filepath in project dir
+Copy file to project dir and return new filepath in project dir.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1559,7 +1559,13 @@ Creates a project directory, if one does not exist in the file system
 Transforms a dotted IP address to Integer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{dotted\_ip} (\emph{String.}) -- The IP address.
+\textbf{dotted\_ip} (\emph{String}) -- The IP address.
+
+\item[{Returns}] \leavevmode
+The IP address.
+
+\item[{Return type}] \leavevmode
+Integer
 
 \end{description}\end{quote}
 
@@ -1640,7 +1646,13 @@ Returns a character for a key code.
 Transforms an Integer IP address to dotted representation.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{intip} (\emph{Integer.}) -- The IP
+\textbf{intip} (\emph{Integer}) -- The IP
+
+\item[{Returns}] \leavevmode
+The IP
+
+\item[{Return type}] \leavevmode
+string
 
 \end{description}\end{quote}
 
@@ -1684,7 +1696,7 @@ last item in the sequence.
 
 \begin{fulllineitems}
 \phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
-Maps the network share to a letter
+Maps the network share to a letter.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
