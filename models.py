@@ -141,7 +141,7 @@ class Project(Base) :
     name = Column(String(50, convert_unicode=True), nullable=False)
     company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
     company = relationship("Company", backref=backref('projects', order_by=id), uselist=False)
-    dir = Column(String(255, convert_unicode=True), nullable=True)  #: Is it ok for a project to not have a directory?
+    dir = Column(String(255, convert_unicode=True), nullable=True)
     password = Column(String(40) , nullable=True)
     members = relationship('User', secondary=ProjectMembers, backref='projects')
 
