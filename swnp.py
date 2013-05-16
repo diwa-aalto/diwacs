@@ -10,7 +10,6 @@ sys.stdout = open("data\swnp_stdout.log", "wb")
 sys.stderr = open("data\swnp_stderr.log", "wb")  
 import os
 import threading
-from lan import get_local_ip_address
 import netifaces
 import controller
 import time
@@ -155,7 +154,7 @@ class SWNP:
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
         #Get ip and id
-        self.ip = get_local_ip_address(STORAGE)
+        self.ip = utils.get_local_ip_address(STORAGE)
         logger.debug(self.ip)
         if id:
             self.id = id

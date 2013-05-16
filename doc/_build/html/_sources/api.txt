@@ -26,14 +26,13 @@ Models module
 .. automodule:: models
    :members:
     
-   
 SWNP module
------------   
+-----------
 .. automodule:: swnp
    :members:
    
-Utils
------   
+Utils module
+------------
 .. automodule:: utils
    :members:
    

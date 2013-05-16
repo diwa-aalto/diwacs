@@ -71,14 +71,14 @@ class POINT(Structure):
              ("y", c_ulong)]
 # END SENDINPUT TYPE DECLARATIONS
 
-  #  LEFTDOWN   = 0x00000002,
-  #  LEFTUP     = 0x00000004,
-  #  MIDDLEDOWN = 0x00000020,
-  #  MIDDLEUP   = 0x00000040,
-  #  MOVE       = 0x00000001,
-  #  ABSOLUTE   = 0x00008000,
-  #  RIGHTDOWN  = 0x00000008,
-  #  RIGHTUP    = 0x00000010
+#  LEFTDOWN   = 0x00000002,
+#  LEFTUP     = 0x00000004,
+#  MIDDLEDOWN = 0x00000020,
+#  MIDDLEUP   = 0x00000040,
+#  MOVE       = 0x00000001,
+#  ABSOLUTE   = 0x00008000,
+#  RIGHTDOWN  = 0x00000008,
+#  RIGHTUP    = 0x00000010
 
 MIDDLEDOWN = 0x00000020
 MIDDLEUP   = 0x00000040
@@ -183,6 +183,3 @@ def middledown():
     windll.user32.mouse_event(MIDDLEDOWN,0,0,0,0)
 def middleup():
     windll.user32.mouse_event(MIDDLEUP,0,0,0,0)
-
-def move(x,y):
-    user32.SetCursorPos(x,y)
