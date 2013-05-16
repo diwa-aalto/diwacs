@@ -2,30 +2,43 @@
 Created on 9.5.2012
 
 @author: neriksso
+
+@requires: WMI
+
+@requires: wxPython
 '''
-import urllib2, base64
-import wx
+
+# Standard library imports go here.
+import base64
 import datetime
+import hashlib
+import logging.config
 import os
-import wmi
-from PIL import Image, ImageOps, ImageFilter,ImageGrab,PngImagePlugin
+from os.path import exists, join, abspath
 import shutil
-import controller
-import xmlrpclib
+import socket
+import subprocess
 import tempfile
-from os.path import exists, join,abspath
-from os import pathsep
-from string import split
-from _winreg import HKEY_CLASSES_ROOT,KEY_ALL_ACCESS,OpenKey,CloseKey,EnumKey,DeleteKey,CreateKey,SetValueEx,REG_SZ,HKEY_CURRENT_USER,QueryValueEx
+import threading
+import urllib2
+import zipfile
+from _winreg import (HKEY_CLASSES_ROOT, KEY_ALL_ACCESS, OpenKey, CloseKey,
+                    EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ,
+                    HKEY_CURRENT_USER, QueryValueEx)
+import xmlrpclib
+
+# Third party library imports go here.
+from PIL import Image, ImageOps, ImageFilter,ImageGrab,PngImagePlugin
 import win32wnet
 from win32netcon import RESOURCETYPE_DISK as DISK
-import subprocess
-import hashlib
-import zipfile
-import logging
-import threading
-import logging.config
+import wmi
+import wx
+
+# Imports from DiWaCS go here.
+import controller
 from vars import CAMERA_URL, CAMERA_USER, CAMERA_PASS
+
+# Some module variables.
 STORAGE = "192.168.1.10"
 logging.config.fileConfig(os.path.abspath('logging.conf'))
 logger = logging.getLogger('utils')
@@ -202,7 +215,38 @@ SENDKEYS_TABLE = (
     (wx.WXK_WINDOWS_RIGHT,"{RWIN}"), 
     (wx.WXK_WINDOWS_MENU,"{LWIN}"), 
     (wx.WXK_COMMAND,""),
-    ) 
+    )
+
+def get_local_ip_address(target):
+    ipaddr = ''
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect((target, 8000))
+        ipaddr = s.getsockname()[0]
+        s.close()
+    except:
+        ipaddr = None
+    return ipaddr 
+
+def get_lan_machines(lan_ip):
+    index = lan_ip.rfind('.')
+    if index > -1:
+        lan_space = lan_ip[0:index]
+    else:
+        #print "given ip is not valid"
+        return []
+    arp_table = subprocess.Popen('arp -a',shell=True,stdout=subprocess.PIPE)
+    list = []
+    for line in arp_table.stdout:
+        if line.find(lan_ip) > -1:
+            primary = True
+            continue
+        if not line.strip():
+            primary = False
+        if primary and line.count('.') == 3 and line.split()[0].find(lan_space) > -1:
+            list.append(line.split()[0])
+    return list        
+
 
 def SetLoggerLevel(level):
     logger.setLevel(level)
@@ -237,7 +281,6 @@ def OpenFile(filepath):
         :type filepath: String.
         
         """
-        import subprocess, os
         logger.debug("%s Opening file %s",(os.name,filepath))
         if os.name == 'mac':
             subprocess.call(('open', filepath))
@@ -472,7 +515,7 @@ def SearchFile(filename, search_path):
     if not search_path or not os.path.exists(search_path):
         return None
     file_found = 0
-    paths = split(search_path, pathsep)
+    paths = search_path.split(os.path.pathsep)
     for path in paths:
         if exists(join(path, filename)):
             file_found = 1
@@ -632,4 +675,3 @@ def GetFileExtension(path):
     """
     fileName, fileExtension = os.path.splitext(path)
     return fileExtension
-           
