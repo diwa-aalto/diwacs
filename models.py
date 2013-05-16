@@ -4,7 +4,9 @@ Created on 23.5.2012
 
 @author: neriksso
 
-@requires: sqlalchemy
+@requires: :py:mod:`sqlalchemy`
+
+@requires: :py:mod:`pywin32`
 
 :synopsis: Used to represent the different database structures on DiWa.
 '''
