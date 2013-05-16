@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-16 at 13:15.</p>
+<p>Documentation generated on 2013-05-16 at 13:40.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -1203,8 +1203,17 @@ Context menu allows the user to quickly send files without interacting with DiWa
 <p>Created on 9.5.2012</p>
 <p>&#64;author: neriksso</p>
 <p>&#64;requires: <a class="reference external" href="http://www.pythonware.com/products/pil/">PIL</a></p>
-<p>&#64;requires: WMI</p>
-<p>&#64;requires: wxPython</p>
+<p>&#64;requires: <a class="reference external" href="https://sourceforge.net/projects/pywin32/">pywin32</a></p>
+<p>&#64;requires: <a class="reference external" href="https://pypi.python.org/pypi/WMI/">WMI</a></p>
+<p>&#64;requires: <a class="reference external" href="http://www.wxpython.org/">wxPython</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">synopsis:</th><td class="field-body">A lot of utility functions needed by DiWaCS.</td>
+</tr>
+</tbody>
+</table>
 <dl class="function">
 <dt id="utils.CopyFileToProject">
 <tt class="descclassname">utils.</tt><tt class="descname">CopyFileToProject</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#utils.CopyFileToProject" title="Permalink to this definition">¶</a></dt>
@@ -1456,6 +1465,39 @@ last item in the sequence.</p>
 <li><strong>search_path</strong> (<em>String.</em>) &#8211; The search path.</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.get_lan_machines">
+<tt class="descclassname">utils.</tt><tt class="descname">get_lan_machines</tt><big>(</big><em>lan_ip</em><big>)</big><a class="headerlink" href="#utils.get_lan_machines" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lan_ip</strong> (<em>string</em>) &#8211; Local Area Network IP.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lan machines</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string[]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.get_local_ip_address">
+<tt class="descclassname">utils.</tt><tt class="descname">get_local_ip_address</tt><big>(</big><em>target</em><big>)</big><a class="headerlink" href="#utils.get_local_ip_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to get local Internet Protocol address.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The current IP address.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
