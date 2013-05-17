@@ -20,7 +20,7 @@ import time
 import shutil
 import socket
 import threading
-import utils
+from utils import commons, filesystem, networking
 import watchdog
 from watchdog.events import FileSystemEventHandler
 logging.config.fileConfig('logging.conf')
@@ -209,9 +209,9 @@ def AddProject(data):
         db.add(project)
         db.commit()
         if dir:
-            project.dir = utils.CreateProjectDir(dir)
+            project.dir = filesystem.CreateProjectDir(dir)
         else:
-            project.dir = utils.CreateProjectDir(project.id)
+            project.dir = filesystem.CreateProjectDir(project.id)
         db.commit()
         db.close()
         return project
@@ -219,11 +219,12 @@ def AddProject(data):
         logger.exception("Add project exception")
         return None
 
+
 def CheckPassword(project_id,password):
     db = ConnectToDatabase()
     project_hash = db.query(Project.password).filter_by(id=project_id).one()[0]
     db.close()
-    if not project_hash or project_hash == utils.HashPassword(password):
+    if not project_hash or project_hash == commons.HashPassword(password):
         return True
     else:
         return False
@@ -410,8 +411,8 @@ def AddComputer(name,ip,wos_id):
         db = ConnectToDatabase(True)
         pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
         mac = ''
-        mac = utils.GetMacForIp(ip)          
-        ip_int = utils.DottedIPToInt(ip)
+        mac = networking.GetMacForIp(ip)          
+        ip_int = networking.DottedIPToInt(ip)
         if mac:
             c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
             if c:
@@ -482,8 +483,8 @@ def AddComputerToSession(session,name,ip,wos_id):
     try:
         db = ConnectToDatabase(True)
         db.add(session)
-        mac = utils.GetMacForIp(ip)
-        ip_int = utils.DottedIPToInt(ip)
+        mac = networking.GetMacForIp(ip)
+        ip_int = networking.DottedIPToInt(ip)
         c = AddComputer(name,ip,wos_id)
         db.add(c)
         session.computers.append(c)
@@ -562,7 +563,7 @@ def InitSyncProjectDir(project_id):
     except Exception,e:
         logger.exception('Init sync project dir error')
                           
-def AddFileToProject(file,project_id):
+def AddFileToProject(file, project_id):
     """Add a file to project. Copies it to the folder and adds a record to database.
     
     :param file: A filepath.
@@ -575,7 +576,7 @@ def AddFileToProject(file,project_id):
     try:
         db = ConnectToDatabase()
         project = db.query(Project).filter(Project.id == project_id).one()
-        filepath=utils.CopyFileToProject(file, project_id)
+        filepath = filesystem.CopyFileToProject(file, project_id)
         if filepath:
             f = File(path=filepath,project=project)
             db.add(f)
@@ -616,9 +617,9 @@ def IsProjectFile(filename,project_id):
         
             if filebase == basename:
                 return filebase
-    f = utils.SearchFile(os.path.basename(filename), GetProjectPath(project_id))
+    f = filesystem.SearchFile(os.path.basename(filename), GetProjectPath(project_id))
     if f:
-        return AddFileToProject(f,project_id)          
+        return AddFileToProject(f, project_id)
     return False
 
 def GetFilePath(project_id,filename):
@@ -795,7 +796,7 @@ class FILE_ACTION_SCANNER(threading.Thread):
             while not self._stop.isSet():
                 del rf[:]
                 del of[:]
-                utils.RecentFilesQuery()()
+                filesystem.RecentFilesQuery()()
                 reader = csv.reader(open('rfv.csv'))
                 rf = [(x[0],x[3]) for x in reader if not os.path.isdir(x[0])]
                 for x in rf:

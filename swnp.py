@@ -14,7 +14,7 @@ import netifaces
 import controller
 import time
 import json
-import utils
+from utils import networking
 import random
 #import unicodedata
 from wos import CONN_ERR_TH, CloseError
@@ -154,7 +154,7 @@ class SWNP:
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
         #Get ip and id
-        self.ip = utils.get_local_ip_address(STORAGE)
+        self.ip = networking.GetLocalIPAddress(STORAGE)
         logger.debug(self.ip)
         if id:
             self.id = id
