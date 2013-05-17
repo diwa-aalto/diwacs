@@ -3,13 +3,15 @@ Created on 8.5.2012
 
 @author: neriksso
 '''
-#import wxversion
-#wxversion.select('2.9.4')
-import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx, wx.combo, swnp, utils, wx.lib.statbmp, random, logging, logging.config, macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, zmq, subprocess, configobj, datetime, os, SendKeys, random, controller 
+import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx
+import wx.combo, swnp, wx.lib.statbmp, random, logging, logging.config
+import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
+import configobj, datetime, os, SendKeys, random, controller
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
 from lxml import etree
 import wx.lib.buttons as buttons
+import zmq
 from pubsub import pub
 from shutil import rmtree
 from sqlalchemy import exc
@@ -26,12 +28,16 @@ try:
 except ImportError: # if it's not there locally, try the wxPython lib.
     from wx.lib.agw import ultimatelistctrl as ULC
 
+from utils import filesystem, commons, networking
+
+
+
 logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('wos')
+wos_logger = logging.getLogger('wos')
 
 def SetLoggerLevel(level):
-    logger.setLevel(level)
-    
+    wos_logger.setLevel(level)
+
 class AudioRecorder(threading.Thread):
     """A thread for capturing audio continuously. It keeps a buffer that can be saved to a file."""
     def __init__(self, parent):
@@ -90,7 +96,7 @@ class AudioRecorder(threading.Thread):
                     del d
                 self.buffer.append(data)
             except IOError, e:
-                logger.exception("Error recording: %s" % (e))
+                wos_logger.exception("Error recording: %s" % (e))
                 
     def save(self, ide, path):
         """Save the buffer to a file."""
@@ -109,7 +115,7 @@ class AudioRecorder(threading.Thread):
             wf.close()
             wx.CallAfter(self.parent.ClearStatusText)
         except:
-            logger.exception("audio save exception")
+            wos_logger.exception("audio save exception")
             wx.CallAfter(self.parent.ClearStatusText)    
             
 class UpdateDialog(wx.Dialog):
@@ -153,17 +159,17 @@ class CHECK_UPDATE(threading.Thread):
             dlg = UpdateDialog(self.latest_version, url).Show()
             dlg.Destroy()
         except:
-            logger.exception("Update Dialog Exception")
+            wos_logger.exception("Update Dialog Exception")
             
     def run(self):
         try:
             padfile = self.getPad()
             tree = etree.parse(padfile)
         except urllib2.URLError:
-            logger.exception("update checker exception retrieving padfile")
+            wos_logger.exception("update checker exception retrieving padfile")
             return False    
         except etree.ExpatError:
-            logger.exception("Update checker exception parsing padfile")
+            wos_logger.exception("Update checker exception parsing padfile")
             return False
         
         latest_version = tree.findtext('Program_Info/Program_Version')
@@ -194,7 +200,7 @@ class CONN_ERR_TH(threading.Thread):
                     self.queue.get()
                     wx.CallAfter(pub.sendMessage, "ConnectionErrorHandler", error=True) 
                 except Exception:
-                    logger.exception('connection error checker exception')
+                    wos_logger.exception('connection error checker exception')
                     
 class CloseError(Exception):
     def __init__(self, *args, **kwds):
@@ -227,7 +233,7 @@ class BlackOverlay(wx.Frame):
         while True:
             if self.mouse_queue:
                 event = self.mouse_queue.popleft()
-                logger.debug(event)
+                wos_logger.debug(event)
                 if event[0] == 0x200:
                     dx = mx - event[1] if mx > 0 else event[1]
                     dy = my - event[2] if my > 0 else event[2]
@@ -235,11 +241,11 @@ class BlackOverlay(wx.Frame):
                     my = event[2]
                     
                     for id in self.parent.selected_nodes:
-                        logger.debug('mouse_move;%d,%d' % (int(dx), int(dy)))
+                        wos_logger.debug('mouse_move;%d,%d' % (int(dx), int(dy)))
                         self.swnp(id, 'mouse_move;%d,%d' % (int(dx), int(dy)))
                 else:
                     for id in self.parent.selected_nodes:
-                        logger.debug('mouse_event;%d,%d' % (int(event.Message), int(event.Wheel)))
+                        wos_logger.debug('mouse_event;%d,%d' % (int(event.Message), int(event.Wheel)))
                         self.swnp(id, 'mouse_event;%d,%d' % (int(event.Message), int(event.Wheel)))   
         
     def DisableFocus(self, evt):
@@ -267,32 +273,32 @@ class WORKER_THREAD(threading.Thread):
     def CheckResponsive(self):
         if not self.parent.responsive and not self.parent.is_responsive:        
             nodes = controller.GetActiveResponsiveNodes(PGM_GROUP)
-            logger.debug("Responsive checking active: %s" % str(nodes))
+            wos_logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
                 if RESPONSIVE == PGM_GROUP:
                     node = self.parent.swnp.node.id
                 else:
                     return
                 self.parent.responsive = node
-                logger.debug(node + str(type(node)))
+                wos_logger.debug(node + str(type(node)))
                 if node == self.parent.swnp.node.id:
                     self.parent.is_responsive = True
                     self.parent.SetResponsive()
-                    logger.debug("Setting self as responsive")
+                    wos_logger.debug("Setting self as responsive")
                 else:
-                    logger.debug("Setting %s as responsive" % node)
+                    wos_logger.debug("Setting %s as responsive" % node)
                     self.parent.SwnpSend(node, 'set;responsive')
             else:
                 self.parent.responsive = str(nodes[0][0])
-        logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
-                   
+        wos_logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
+
     def AddProjectReg(self):
         """ Adds project folder to registry 
-        
+
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project', 'command']
         key = ''
-        for k, islast in utils.IterIsLast(keys):
+        for k, islast in commons.IterIsLast(keys):
             key += k if key == '' else '\\' + k
             try:
                 rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
@@ -313,7 +319,7 @@ class WORKER_THREAD(threading.Thread):
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' + str(name), 'command']
         key = ''
-        for k, islast in utils.IterIsLast(keys):
+        for k, islast in commons.IterIsLast(keys):
             key += k if key == '' else '\\' + k
             try:
                 rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
@@ -352,16 +358,16 @@ class WORKER_THREAD(threading.Thread):
                     break
             CloseKey(main_key)
         except Exception, e:
-            logger.exception('Exception in RemoveAllRegEntries:' + str(e))
+            wos_logger.exception('Exception in RemoveAllRegEntries:' + str(e))
 
     def parseConfig(self, config):
         """ Handles config file settings"""
         global STORAGE, RESPONSIVE, PGM_GROUP, AUDIO
-        for key, val in config.items(): 
+        for key, val in config.items():
             if 'STORAGE' in key:
                 STORAGE = val
                 controller.UpdateStorage(STORAGE)
-                utils.UpdateStorage(STORAGE)
+                filesystem.UpdateStorage(STORAGE)
             elif 'NAME' in key or 'SCREENS' in key:
                 if key == 'NAME':
                     controller.SetNodeName(val)
@@ -370,29 +376,29 @@ class WORKER_THREAD(threading.Thread):
             elif 'PGM_GROUP' in key:
                 PGM_GROUP = int(val)
             elif 'AUDIO' in key:
-                logger.debug("AUDIO in config: %s" % str(val))
+                wos_logger.debug("AUDIO in config: %s" % str(val))
                 val = eval(val)
                 if val:
                     AUDIO = val
-                    logger.debug("Starting audio recorder")
+                    wos_logger.debug("Starting audio recorder")
                     self.parent.StartAudioRecorder()                    
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
                 swnp.SetLoggerLevel(str(val).upper())
-                utils.SetLoggerLevel(str(val).upper()) 
+                commons.SetLoggerLevel(str(val).upper()) 
             elif "CAMERA_" in key:
                 if "URL" in key:
-                    utils.UpdateCameraVars(str(val), None, None)
+                    commons.UpdateCameraVars(str(val), None, None)
                 if "USER" in key:
-                    utils.UpdateCameraVars(None, str(val), None)
+                    commons.UpdateCameraVars(None, str(val), None)
                 if "PASS" in key:
-                    utils.UpdateCameraVars(None, None, str(val))
+                    commons.UpdateCameraVars(None, None, str(val))
             elif "RESPONSIVE" in key:
-                logger.debug("Setting RESPONSIVE")
+                wos_logger.debug("Setting RESPONSIVE")
                 RESPONSIVE = eval(val)
                 controller.SetIsResponsive(RESPONSIVE)
-                logger.debug("%d" % RESPONSIVE)
+                wos_logger.debug("%d" % RESPONSIVE)
             else:
                 globals()[key] = eval(val) 
               
@@ -400,14 +406,14 @@ class WORKER_THREAD(threading.Thread):
         try:
             ide = controller.AddEvent(self.parent.current_session_id, title, '')
             path = controller.GetProjectPath(self.parent.current_project_id)
-            utils.Snaphot(path)
+            filesystem.Snaphot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')         
             if AUDIO:
-                logger.debug("Buffering audio for %d seconds" % WINDOW_TAIL)
+                wos_logger.debug("Buffering audio for %d seconds" % WINDOW_TAIL)
                 self.parent.status_text.SetLabel("Recording...")
                 wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
         except:
-            logger.exception("Create Event exception") 
+            wos_logger.exception("Create Event exception") 
                   
     def run(self):
         while not self._stop.isSet():
@@ -446,14 +452,14 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
         self.stop_socket.recv()
         self.stop_socket.close()
         self.socket.close()
-        logger.debug('CMFH closed')
+        wos_logger.debug('CMFH closed')
          
     def run(self):
         """Starts the thread"""
         while not self._stop.isSet():
             try:
                 message = self.socket.recv()
-                logger.debug('CMFH got message: %s', message)
+                wos_logger.debug('CMFH got message: %s', message)
                 cmd, id, path = message.split(';')
                 if cmd == 'send_to':
                     filepath = str([self.handle_file(path)])
@@ -477,15 +483,15 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
                     for f in target: 
                         if self.parent.current_session_id:
                             controller.CreateFileaction(f, 6, self.parent.current_session_id, self.parent.current_project_id)                     
-                        utils.OpenFile(f)
+                        filesystem.OpenFile(f)
                     self.socket.send("OK")   
                 elif cmd == 'url':
                     webbrowser.open(path)
                     self.socket.send("OK") 
                 elif cmd == 'screenshot':
                     if self.parent.swnp.node.screens > 0:
-                        utils.ScreenCapture(controller.GetProjectPath(self.parent.current_project_id), self.parent.swnp.node.id)
-                    self.socket.send("OK")            
+                        filesystem.ScreenCapture(controller.GetProjectPath(self.parent.current_project_id), self.parent.swnp.node.id)
+                    self.socket.send("OK")
                 elif cmd == 'exit':
                     self.socket.send("OK")
                     break
@@ -495,17 +501,17 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
                         os.system(path)
                 else:
                     self.socket.send("ERROR")
-                    logger.debug('CMFH: Unknown command:%s', cmd) 
+                    wos_logger.debug('CMFH: Unknown command:%s', cmd) 
                        
             except zmq.ZMQError, zerr:
                 # context terminated so quit silently
                 if zerr.strerror == 'Context was terminated':
                     break 
                 else:
-                    logger.exception('CMFH exception')
+                    wos_logger.exception('CMFH exception')
                     pass      
             except Exception, e:
-                logger.exception('Exception in CMFH:%s', str(e))
+                wos_logger.exception('Exception in CMFH:%s', str(e))
                 self.socket.send("ERROR")
         
 class INPUT_CAPTURE(threading.Thread):
@@ -628,7 +634,7 @@ class INPUT_CAPTURE(threading.Thread):
             if CAPTURE:
                     self.mouse_queue.append(event)               
         except:
-            logger.exception('MouseEventCatch exception')
+            wos_logger.exception('MouseEventCatch exception')
         # return True to pass the event to other handlers
         return not CAPTURE
        
@@ -650,7 +656,7 @@ class INPUT_CAPTURE(threading.Thread):
         print '---'
         print event"""
         if  event.Alt and (event.KeyID == 91 or event.KeyID == 92)  and CAPTURE:
-            logger.debug('ESC')
+            wos_logger.debug('ESC')
             CAPTURE = False
             self.ResetMouseEvents()
             for id in self.parent.selected_nodes:
@@ -693,7 +699,7 @@ class CURRENT_PROJECT(threading.Thread):
         self.project_id = int(project_id)
         self.swnp = swnp
         self._stop = threading.Event()
-        logger.debug("Current Project created")
+        wos_logger.debug("Current Project created")
     def stop(self):
         """Stops the thread."""
         self._stop.set()
@@ -706,7 +712,7 @@ class CURRENT_PROJECT(threading.Thread):
                 if current_project:
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
-                logger.exception("Exception in current project")
+                wos_logger.exception("Exception in current project")
             time.sleep(5) 
 
           
@@ -763,7 +769,7 @@ class DeleteProjectDialog(wx.Dialog):
             self.sizer.Fit(self)
             self.SetFocus()
         except:
-            logger.exception("Dialog exception")    
+            wos_logger.exception("Dialog exception")    
             self.EndModal(0)
     def OnOk(self, event):
         ret = 0
@@ -793,7 +799,7 @@ class ProjectSelectedDialog(wx.Dialog):
             self.sizer.Fit(self)
             self.SetFocus()
         except:
-            logger.exception("Dialog exception")    
+            wos_logger.exception("Dialog exception")    
             self.EndModal(0)
     def OnOk(self, event):
         self.EndModal(0 if self.cb.GetValue() else 1) 
@@ -837,7 +843,7 @@ class CreateProjectDialog(wx.Dialog):
             self.project = controller.AddProject(data)  
             self.Destroy()
         except:
-            logger.exception("create project exception")    
+            wos_logger.exception("create project exception")    
         
     def OnCancel(self, event):
         self.Destroy()
@@ -857,7 +863,7 @@ class AddProjectDialog(wx.Dialog):
         self.add_label = 'Create'
         dir_label_text = 'Project Folder Name (optional):'
         self.project_id = 0
-        logger.debug(project_id)
+        wos_logger.debug(project_id)
         if project_id:
             self.project_id = project_id
             self.add_label = 'Save'
@@ -904,7 +910,7 @@ class AddProjectDialog(wx.Dialog):
         if self.project_id:
             controller.EditProject(self.project_id, {'name':self.name.GetValue(), 'dir':self.dir.GetValue()})
             self.Destroy()
-            logger.debug(self.project_id)
+            wos_logger.debug(self.project_id)
             self.Endmodal(self.project_id)
         else:    
             db = controller.ConnectToDatabase()
@@ -912,7 +918,7 @@ class AddProjectDialog(wx.Dialog):
             company_name = company.name
             data = {'project':{'name':self.name.GetValue(), 'dir':self.dir.GetValue(), 'password': None}, 'company':{'name':company_name}}
             project = controller.AddProject(data) 
-            logger.debug(project) 
+            wos_logger.debug(project) 
             self.EndModal(project.id)
         
         
@@ -1018,7 +1024,7 @@ class ProjectSelectDialog(wx.Dialog):
             if project_id:                
                 self.project_list.SetSelection(int(self.project_index.index(project_id)))
         except:
-            logger.exception("Edit event exception")  
+            wos_logger.exception("Edit event exception")  
             
     def AddEvent(self, event):
         """Shows a modal dialog for adding a new project.
@@ -1032,13 +1038,13 @@ class ProjectSelectDialog(wx.Dialog):
             project_id = dlg.ShowModal()    
             self.projects = self.GetProjects()
             self.project_list.Set(self.projects)
-            logger.debug(project_id)
+            wos_logger.debug(project_id)
             if project_id:                
                 self.project_list.SetSelection(int(self.project_index.index(project_id))) 
                 self.OnLb(None)
 
         except:
-            logger.exception("Add event exception") 
+            wos_logger.exception("Add event exception") 
                
     def DelEvent(self, evt):
         """Handles the selection of a project. Starts a :class:`wos.CURRENT_PROJECT`, if necessary. Shows a dialog of the selected project.  
@@ -1055,11 +1061,11 @@ class ProjectSelectDialog(wx.Dialog):
         dlg = DeleteProjectDialog(self, 'Delete Project', index)
         try:
             result = dlg.ShowModal()
-            logger.debug(result)
+            wos_logger.debug(result)
             if result % 10 == 1:
                 if result == 11:
                     #delete files
-                    utils.DeleteDir(controller.GetProjectPath(index))
+                    filesystem.DeleteDir(controller.GetProjectPath(index))
                 success = controller.DeleteRecord(Project, index)
                 self.projects = self.GetProjects()
                 self.project_list.Set(self.projects)
@@ -1075,7 +1081,7 @@ class ProjectSelectDialog(wx.Dialog):
         :type evt: Event.
         
         """
-        logger.debug('Project selected')
+        wos_logger.debug('Project selected')
         index = self.project_index[self.project_list.GetSelection()]
         if index != self.parent.current_project_id:         
             self.parent.SetCurrentProject(index)
@@ -1085,12 +1091,12 @@ class ProjectSelectDialog(wx.Dialog):
         dlg = ProjectSelectedDialog(self, 'Project Selected', index)
         try:
             result = dlg.ShowModal()
-            logger.debug(result)
+            wos_logger.debug(result)
             if result == 1:
                 self.parent.OnSession(None)
         finally:
             dlg.Destroy()
-        logger.debug('Asked to start session.')    
+        wos_logger.debug('Asked to start session.')    
         self.EndModal(0)
         
     def GetProjects(self, company_id=1):
@@ -1114,7 +1120,7 @@ class ProjectSelectDialog(wx.Dialog):
         except (exc.OperationalError, exc.DBAPIError):
             ConnectionErrorDialog(self.parent)
         except Exception, e:
-            logger.exception("Project Select Dialog exception")
+            wos_logger.exception("Project Select Dialog exception")
             
 
 class PreferencesDialog(wx.Dialog):
@@ -1184,7 +1190,7 @@ class PreferencesDialog(wx.Dialog):
         """
         screens = self.config['SCREENS']
         name = self.config['NAME']
-        logger.debug("config:%s" % str(self.config))
+        wos_logger.debug("config:%s" % str(self.config))
         if int(self.config['SCREENS']) == 0:
             self.screens_hidden.SetValue(1)
         else:
@@ -1200,7 +1206,7 @@ class PreferencesDialog(wx.Dialog):
         :type event: Event.
         
         """
-        utils.OpenFile(CONFIG_PATH)
+        filesystem.OpenFile(CONFIG_PATH)
         
     #----------------------------------------------------------------------
     def onCancel(self, event):
@@ -1272,7 +1278,7 @@ class DropTarget(wx.PyDropTarget):
                     command = "open;" + str(filenames)              
                     self.parent.SwnpSend(str(self.parent.nodes[self.id + self.parent.iterator][0]), command)
                 except Exception, error:
-                    logger.exception('OnData exception: %s', filenames)
+                    wos_logger.exception('OnData exception: %s', filenames)
 
             elif df == wx.DF_BITMAP:
                 pass
@@ -1428,7 +1434,7 @@ class EventList(wx.Frame):
         i = self.evtlist.GetNextSelected(-1)
         self.evtlist.SetItemBackgroundColour(i, wx.Colour(45, 137, 255))
         label = self.evtlist.GetItemText(i)
-        logger.debug("Custom event %s responsive is %s" % (str(label), str(self.parent.responsive)))
+        wos_logger.debug("Custom event %s responsive is %s" % (str(label), str(self.parent.responsive)))
         self.evtlist.Select(i, False)                
         self.selection_made += 1
         if not self.parent.is_responsive and not DEBUG:
@@ -1466,7 +1472,7 @@ class GUI(wx.Frame):
         super(GUI, self).__init__(parent, title=title,
             size=FRAME_SIZE, style=wx.FRAME_NO_TASKBAR)
         global DEFAULT_CURSOR, BLANK_CURSOR, WINDOWS_MAJOR, STORAGE, RUN_CMD
-        logger.debug("WxPython version %s" % (str(wx.VERSION)))
+        wos_logger.debug("WxPython version %s" % (str(wx.VERSION)))
         self.init_screens_done = False
         MySplash = MySplashScreen()
         MySplash.Show()   
@@ -1475,7 +1481,7 @@ class GUI(wx.Frame):
             self.audio_recorder = AudioRecorder(self)
             self.audio_recorder.daemon = True
         except Exception, e:
-            logger.exception("Starting audio recorder exception")
+            wos_logger.exception("Starting audio recorder exception")
         self.responsive = ''
         self.is_responsive = False
         self.error_th = CONN_ERR_TH(self)
@@ -1489,11 +1495,11 @@ class GUI(wx.Frame):
                 self.config = self.LoadConfig()
                 self.ShowPreferences(None)
             else:    
-                self.config = self.LoadConfig()                        
-            self.worker.parseConfig(self.config)  
+                self.config = self.LoadConfig()
+            self.worker.parseConfig(self.config)
             self.swnp = swnp.SWNP(int(PGM_GROUP), int(self.config['SCREENS']), self.config['NAME'], 'observer' if self.is_responsive else "", error_handler=self.error_th) 
         except:
-            logger.exception("loading config exception")
+            wos_logger.exception("loading config exception")
         #if self.swnp.node.id == '3':
         #    self.is_responsive = True    
         # Perform initial testing before actual initing   
@@ -1572,7 +1578,7 @@ class GUI(wx.Frame):
                 self.SetCurrentProject(controller.GetProjectIdByActivity(self.activity))
                 self.SetCurrentSession(controller.GetSessionIdByActivity(self.activity))
         except:
-            logger.exception("load exception")
+            wos_logger.exception("load exception")
             MySplash.Hide()
             MySplash.Destroy()
             self.Destroy()
@@ -1581,7 +1587,7 @@ class GUI(wx.Frame):
         try:
             self.audio_recorder.start()
         except Exception, e:
-            logger.exception("Starting audio recorder exception")
+            wos_logger.exception("Starting audio recorder exception")
             
     def OnFocus(self, event):
         self.list.Hide() 
@@ -1601,7 +1607,7 @@ class GUI(wx.Frame):
             error += "Database connection failed.\n"      
         if error:  
             error += "Press OK to exit."
-            logger.debug(error)           
+            wos_logger.debug(error)           
             return error
         return False                        
     def HandleFileSend(self, file):
@@ -1616,7 +1622,7 @@ class GUI(wx.Frame):
                     if copied_file:
                         filepath = copied_file
                 else:
-                    temp = utils.CopyToTemp(file.encode('utf-8'))
+                    temp = filesystem.CopyToTemp(file.encode('utf-8'))
                     if temp:
                         filepath = temp
         return filepath
@@ -1661,7 +1667,7 @@ class GUI(wx.Frame):
             self.sesbtn.SetBitmapLabel(self.GetIcon('session_on'))
             self.evtbtn.SetFocus()
             self.evtbtn.Enable()
-            logger.info('Session %d started', int(session_id))
+            wos_logger.info('Session %d started', int(session_id))
         elif session_id == 0 and session_id != self.current_session_id:
             print "Current Session 0"
             self.current_session = None
@@ -1671,7 +1677,7 @@ class GUI(wx.Frame):
             self.sesbtn.SetBitmapLabel(self.GetIcon('session_off'))
             self.evtbtn.SetFocus()
             self.evtbtn.Disable()
-            logger.info('Session ended')
+            wos_logger.info('Session ended')
         self.Refresh()
      
     def SetCurrentProject(self, project_id):
@@ -1689,20 +1695,20 @@ class GUI(wx.Frame):
             self.sesbtn.Disable()
             self.sesbtn.Enable(True)                    
             self.current_project_id = project_id
-            logger.debug("Set project label")
+            wos_logger.debug("Set project label")
             project = controller.GetProject(project_id)
-            logger.debug("Project name is %s and type %s" % (project.name, str(type(project.name))))
+            wos_logger.debug("Project name is %s and type %s" % (project.name, str(type(project.name))))
             self.pro_label.SetLabel('Project: ' + project.name)
             self.worker.RemoveAllRegEntries()       
             self.worker.AddProjectReg()
-            logger.debug("setting project path")
+            wos_logger.debug("setting project path")
             CURRENT_PROJECT_PATH = controller.GetProjectPath(self.current_project_id)
-            utils.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
+            networking.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
             CURRENT_PROJECT_ID = project_id
             if self.is_responsive:
-                logger.debug("Starting observers.")
+                wos_logger.debug("Starting observers.")
                 self.SetObservers()
-            logger.info('Project set to %s', project_id)  
+            wos_logger.info('Project set to %s', project_id)  
         elif project_id == 0:
             self.current_project_id = 0
             self.dirbtn.Disable()
@@ -1718,7 +1724,7 @@ class GUI(wx.Frame):
             CURRENT_PROJECT_ID = 0
             
     def SetResponsive(self):
-        logger.debug("Set Responsive")
+        wos_logger.debug("Set Responsive")
         controller.SetIsResponsive(PGM_GROUP)
         self.StartCurrentProject()
         #self.SetObservers()  
@@ -1754,7 +1760,7 @@ class GUI(wx.Frame):
             pass
                
     def SetObservers(self):
-            logger.debug("Set observers")
+            wos_logger.debug("Set observers")
             self.SetScanObserver()
             self.SetProjectObserver()
                                        
@@ -1801,9 +1807,9 @@ class GUI(wx.Frame):
                 self.sesbtn.SetBitmapLabel(self.GetIcon('session_on'))
                 self.evtbtn.Enable(True)
                 self.evtbtn.SetFocus()              
-                logger.info('OnSession started')
+                wos_logger.info('OnSession started')
             except Exception, e:
-                logger.exception("OnSession exception")
+                wos_logger.exception("OnSession exception")
         elif self.current_project_id == 0:
                 dlg = wx.MessageDialog(self, 'No project selected.', 'Could not start session', wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
@@ -1821,20 +1827,20 @@ class GUI(wx.Frame):
                 #self.SwnpSend('SYS', 'current_project;0')
                 controller.AddActivity(self.current_project_id, PGM_GROUP,  None, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
-                logger.info('Session ended')
+                wos_logger.info('Session ended')
                 dlg = wx.MessageDialog(self, "Session ended!", 'Information', wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 self.sesbtn.SetBitmapLabel(self.GetIcon('session_off'))
                 self.evtbtn.SetFocus()          
             except Exception, e:
-                logger.exception("OnSession exception")
+                wos_logger.exception("OnSession exception")
                 
     def StartCurrentProject(self):
         """Start current project loop"""
         if self.project_th:
             self.project_th.stop()
             self.project_th = None
-        logger.debug("Creating Current Project!")
+        wos_logger.debug("Creating Current Project!")
         self.project_th = CURRENT_PROJECT(self.current_project_id, self.SwnpSend)
         self.project_th.daemon = True
         self.project_th.start()
@@ -1844,7 +1850,7 @@ class GUI(wx.Frame):
         if self.session_th:
             self.session_th.stop()
             self.session_th = None
-        logger.debug("Creating Current Session!")
+        wos_logger.debug("Creating Current Session!")
         self.session_th = CURRENT_SESSION(self.current_session_id, self.SwnpSend)
         self.session_th.daemon = True
         self.session_th.start() 
@@ -1863,13 +1869,13 @@ class GUI(wx.Frame):
                     dlg.ShowModal()
                     dlg.Destroy()
                 except Exception, e:
-                    logger.exception('SelectProjectDialog Exception')    
+                    wos_logger.exception('SelectProjectDialog Exception')    
                 
             else:
                 dlg = wx.MessageDialog(self, 'Cannot change project during session.', 'Project selection error', wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal() 
         except:
-            logger.exception('ShowSelectProjectDialog exception')        
+            wos_logger.exception('ShowSelectProjectDialog exception')        
                 
     def ShowPreferences(self, evt):
         """ Preferences dialog event handler
@@ -1890,7 +1896,7 @@ class GUI(wx.Frame):
             except:
                 pass
         except:
-            logger.exception("showprefs exception")
+            wos_logger.exception("showprefs exception")
                 
     def LoadConfig(self):
         """ Loads a config file or creates one """
@@ -1929,12 +1935,12 @@ class GUI(wx.Frame):
         try:
             self.swnp.send(node, 'MSG', message)
         except:
-            logger.exception("SwnpSend exception %s to %s" % (message, node))
+            wos_logger.exception("SwnpSend exception %s to %s" % (message, node))
             
     def InitUI(self):
         """ UI initing """
         self.EXITED = False
-        utils.SaveScreen(WINDOWS_MAJOR, os.path.join('\\\\', STORAGE, 'SCREEN_IMAGES', self.swnp.node.id + '.png'))
+        filesystem.SaveScreen(WINDOWS_MAJOR, os.path.join('\\\\', STORAGE, 'SCREEN_IMAGES', self.swnp.node.id + '.png'))
         self.screens = wx.BoxSizer(wx.HORIZONTAL)
         self.InitScreens()
         # Subscribe handlers
@@ -2010,7 +2016,7 @@ class GUI(wx.Frame):
             self.closebtn.Bind(wx.EVT_BUTTON, self.OnExit)
             btnsizer.Add(self.closebtn, 0, wx.RIGHT, 1)
         except:
-            logger.exception("ui exception")
+            wos_logger.exception("ui exception")
         vbox.Add(btnsizer, 0, wx.EXPAND | wx.BOTTOM, 3)
         
         screenSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -2146,7 +2152,7 @@ class GUI(wx.Frame):
     def SetScanObserver(self):
         """ Observer for created files in scanned or taken with camera """ 
         try:
-            logger.debug("Setting scan observer")
+            wos_logger.debug("Setting scan observer")
             if self.scan_observer:
                 try:
                         self.scan_observer.stop()
@@ -2163,7 +2169,7 @@ class GUI(wx.Frame):
         except Exception, e:
             self.is_responsive = False
             #self.swnp.node.data = ''
-            logger.exception("error setting scan observer:%s", str(e))
+            wos_logger.exception("error setting scan observer:%s", str(e))
             
     def SetProjectObserver(self):
         """ Observer for filechanges in project dir """
@@ -2183,7 +2189,7 @@ class GUI(wx.Frame):
         except Exception, e:
             self.is_responsive = False
             self.swnp.node.data = ''
-            logger.exception("error setting PROJECT observer:%s", str(e))
+            wos_logger.exception("error setting PROJECT observer:%s", str(e))
                          
     def OnProjectSelected(self):
         """ Project selected event handler """
@@ -2208,9 +2214,9 @@ class GUI(wx.Frame):
             try:
                 item = random.choice(self.swnp.get_screen_list())
             except IndexError:
-                logger.debug('get_random error: nodes empty')
+                wos_logger.debug('get_random error: nodes empty')
                 return    
-        logger.debug('Random responsive is %s', item)    
+        wos_logger.debug('Random responsive is %s', item)    
         self.SwnpSend(item, 'set;responsive')
                             
     def PaintSelect(self, evt):
@@ -2270,7 +2276,7 @@ class GUI(wx.Frame):
     
     def InitScreens(self):
         """ Inits Screens """
-        logger.debug("init screens start")
+        wos_logger.debug("init screens start")
         i = 0
         self.selected_nodes = []
         try:
@@ -2288,7 +2294,7 @@ class GUI(wx.Frame):
                 self.screens.Add(s, 0, wx.LEFT | wx.RIGHT, border=3)
                 i += 1
         except:
-            logger.exception("init screens except")
+            wos_logger.exception("init screens except")
         self.Layout()
         self.Refresh()
         self.init_screens_done = True
@@ -2333,7 +2339,7 @@ class GUI(wx.Frame):
                     self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
                 while i < MAX_SCREENS and i < len(self.nodes): 
                     try:              
-                        img_path = utils.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
+                        img_path = filesystem.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
                         try:
                             bm = wx.Image(img_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
                         except:
@@ -2343,7 +2349,7 @@ class GUI(wx.Frame):
                         img.SetToolTip(wx.ToolTip(self.nodes[(i + self.iterator) % len(self.nodes)][2]))
                         i += 1
                     except:
-                        logger.exception("nodes update except:" + str(self.nodes[(i + self.iterator) % len(self.nodes)]))        
+                        wos_logger.exception("nodes update except:" + str(self.nodes[(i + self.iterator) % len(self.nodes)]))        
             self.worker.CheckResponsive()
             self.Refresh()      
     
@@ -2363,30 +2369,30 @@ class GUI(wx.Frame):
                 self.trayicon.Destroy() 
                 self.closebtn.SetToolTip(None)             
                 if not event == 'conn_err' and self.is_responsive:
-                    logger.debug("On exit self is responsive")
+                    wos_logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
                     controller.UnsetActivity(PGM_GROUP)          
                 if not event == 'conn_err' and controller.LastActiveComputer():
-                    logger.debug("On exit self is last active comp.")
+                    wos_logger.debug("On exit self is last active comp.")
                     controller.UnsetActivity(PGM_GROUP)
                     if self.current_session_id:
-                        controller.EndSession(self.current_session_id)                
-                utils.MapNetworkShare('W:', 'C:\\')
+                        controller.EndSession(self.current_session_id)
+                networking.MapNetworkShare('W:', 'C:\\')
                 controller.SetIsResponsive(0)
-                time.sleep(5)             
-                self.cmfh.stop()                       
+                time.sleep(5)
+                self.cmfh.stop()
                 self.worker.RemoveAllRegEntries()
-                self.swnp.close()                        
+                self.swnp.close()
                 self.Destroy()
-                logger.info('Application closed')
-                sys.exit(0)                
+                wos_logger.info('Application closed')
+                sys.exit(0)
             except CloseError:
                 raise CloseError 
             except Exception, e:
-                logger.exception('Exception in Close:' + str(e))
+                wos_logger.exception('Exception in Close:' + str(e))
                 for thread in threading.enumerate():
-                    logger.debug(thread.getName())                    
+                    wos_logger.debug(thread.getName())
                 self.Destroy()
                 sys.exit(0)
     def OnAboutBox(self, e):
@@ -2463,7 +2469,7 @@ class GUI(wx.Frame):
         """
         global CONTROLLED, CONTROLLING
         try:
-            if DEBUG: logger.debug('ZMQ PUBSUB Message:' + message)
+            if DEBUG: wos_logger.debug('ZMQ PUBSUB Message:' + message)
             cmd, target = message.split(';')           
             if cmd == 'open':
                 """Open all files in list"""
@@ -2471,7 +2477,7 @@ class GUI(wx.Frame):
                 for f in target:
                     if self.current_session_id:
                         controller.CreateFileaction(f, 6, self.current_session_id, self.current_project_id)
-                    utils.OpenFile(f)
+                    filesystem.OpenFile(f)
             if cmd == 'new_responsive':
                 if self.is_responsive:
                     self.StopResponsive()
@@ -2536,7 +2542,7 @@ class GUI(wx.Frame):
                     self.is_responsive = True
             if cmd == 'screenshot':
                 if self.swnp.node.screens > 0:
-                    utils.ScreenCapture(controller.GetProjectPath(self.current_project_id), self.swnp.node.id)                
+                    filesystem.ScreenCapture(controller.GetProjectPath(self.current_project_id), self.swnp.node.id)                
             if cmd == 'current_session':
                 target = int(target)
                 if self.current_session_id != target:
@@ -2553,16 +2559,15 @@ class GUI(wx.Frame):
                     self.activity = target
                 self.SetCurrentProject(controller.GetProjectIdByActivity(self.activity))
                 self.SetCurrentSession(controller.GetSessionIdByActivity(self.activity))                 
-          
+
         except Exception:
-            logger.exception('Exception in MessageHandler:')
-                 
-            
+            wos_logger.exception('Exception in MessageHandler:')
+
+
 if __name__ == '__main__':
-    logger.info("\n\n\n")
-    logger.info('Application started')
+    wos_logger.info("\n\n\n")
+    wos_logger.info('Application started')
     #version_checker = CHECK_UPDATE().start()
     app = wx.App()
     w = GUI(None, title=APPLICATION_NAME)
-    app.MainLoop()       
-
+    app.MainLoop()
