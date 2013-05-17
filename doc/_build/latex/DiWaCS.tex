@@ -14,7 +14,7 @@
 
 
 \title{DiWaCS Documentation}
-\date{May 16, 2013}
+\date{May 17, 2013}
 \release{0.9.2.1}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-16 at 16:53.
+Documentation generated on 2013-05-17 at 15:03.
 
 
 \section{Add file module}
@@ -1489,28 +1489,33 @@ Routine for checking node list and removing nodes with timeout.
 
 
 
-\section{Utils module}
-\label{api:utils-module}\label{api:module-utils}\index{utils (module)}
-Created on 9.5.2012
-
-@author: neriksso
-
-@requires: \href{http://www.pythonware.com/products/pil/}{PIL}
-
-@requires: \href{https://sourceforge.net/projects/pywin32/}{pywin32}
-
-@requires: \href{https://pypi.python.org/pypi/WMI/}{WMI}
-
-@requires: \href{http://www.wxpython.org/}{wxPython}
-\begin{quote}\begin{description}
-\item[{synopsis}] \leavevmode
-A lot of utility functions needed by DiWaCS.
-
-\end{description}\end{quote}
-\index{CopyFileToProject() (in module utils)}
+\section{Utils.commons module}
+\label{api:module-utils.commons}\label{api:utils-commons-module}\index{utils.commons (module)}
+Created on 17.5.2013
+\index{IterIsLast() (in module utils.commons)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.CopyFileToProject}\pysiglinewithargsret{\code{utils.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
+\phantomsection\label{api:utils.commons.IterIsLast}\pysiglinewithargsret{\code{utils.commons.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
+Generates pairs where the first element is an item from the iterable
+source and the second element is a boolean flag indicating if it is the
+last item in the sequence.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{iterable} (\emph{iterable}) -- The iterable element.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{Utils.filesystem module}
+\label{api:module-utils.filesystem}\label{api:utils-filesystem-module}\index{utils.filesystem (module)}
+Created on 17.5.2013
+\index{CopyFileToProject() (in module utils.filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.filesystem.CopyFileToProject}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
 Copy file to project dir and return new filepath in project dir.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1526,10 +1531,10 @@ Copy file to project dir and return new filepath in project dir.
 
 \end{fulllineitems}
 
-\index{CopyToTemp() (in module utils)}
+\index{CopyToTemp() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.CopyToTemp}\pysiglinewithargsret{\code{utils.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
+\phantomsection\label{api:utils.filesystem.CopyToTemp}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
 Copy a file to temporary folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1539,10 +1544,10 @@ Copy a file to temporary folder.
 
 \end{fulllineitems}
 
-\index{CreateProjectDir() (in module utils)}
+\index{CreateProjectDir() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.CreateProjectDir}\pysiglinewithargsret{\code{utils.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
+\phantomsection\label{api:utils.filesystem.CreateProjectDir}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
 Creates a project directory, if one does not exist in the file system
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1552,29 +1557,10 @@ Creates a project directory, if one does not exist in the file system
 
 \end{fulllineitems}
 
-\index{DottedIPToInt() (in module utils)}
+\index{FileToBase64() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.DottedIPToInt}\pysiglinewithargsret{\code{utils.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
-Transforms a dotted IP address to Integer.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{dotted\_ip} (\emph{String}) -- The IP address.
-
-\item[{Returns}] \leavevmode
-The IP address.
-
-\item[{Return type}] \leavevmode
-Integer
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{FileToBase64() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.FileToBase64}\pysiglinewithargsret{\code{utils.}\bfcode{FileToBase64}}{\emph{filepath}}{}
+\phantomsection\label{api:utils.filesystem.FileToBase64}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{FileToBase64}}{\emph{filepath}}{}
 Transform a file to a binary object.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1584,10 +1570,10 @@ Transform a file to a binary object.
 
 \end{fulllineitems}
 
-\index{GetFileExtension() (in module utils)}
+\index{GetFileExtension() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetFileExtension}\pysiglinewithargsret{\code{utils.}\bfcode{GetFileExtension}}{\emph{path}}{}
+\phantomsection\label{api:utils.filesystem.GetFileExtension}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{GetFileExtension}}{\emph{path}}{}
 Returns the file extension of a file
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1600,23 +1586,10 @@ String.
 
 \end{fulllineitems}
 
-\index{GetMacForIp() (in module utils)}
+\index{GetNodeImg() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetMacForIp}\pysiglinewithargsret{\code{utils.}\bfcode{GetMacForIp}}{\emph{ip}}{}
-Returns the mac address for an local IP address.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{ip} (\emph{String.}) -- IP address
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{GetNodeImg() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.GetNodeImg}\pysiglinewithargsret{\code{utils.}\bfcode{GetNodeImg}}{\emph{node}}{}
+\phantomsection\label{api:utils.filesystem.GetNodeImg}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{GetNodeImg}}{\emph{node}}{}
 Searches for a node's image in STORAGE.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1626,42 +1599,10 @@ Searches for a node's image in STORAGE.
 
 \end{fulllineitems}
 
-\index{GetSendkeys() (in module utils)}
+\index{IsSubtree() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetSendkeys}\pysiglinewithargsret{\code{utils.}\bfcode{GetSendkeys}}{\emph{code}}{}
-Returns a character for a key code.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{code} (\emph{Integer.}) -- The character code.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{IntToDottedIP() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.IntToDottedIP}\pysiglinewithargsret{\code{utils.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
-Transforms an Integer IP address to dotted representation.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{intip} (\emph{Integer}) -- The IP
-
-\item[{Returns}] \leavevmode
-The IP
-
-\item[{Return type}] \leavevmode
-string
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{IsSubtree() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.IsSubtree}\pysiglinewithargsret{\code{utils.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
+\phantomsection\label{api:utils.filesystem.IsSubtree}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
 Determines, if filename is inside the parent folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1677,44 +1618,10 @@ Determines, if filename is inside the parent folder.
 
 \end{fulllineitems}
 
-\index{IterIsLast() (in module utils)}
+\index{OpenFile() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.IterIsLast}\pysiglinewithargsret{\code{utils.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
-Generates pairs where the first element is an item from the iterable
-source and the second element is a boolean flag indicating if it is the
-last item in the sequence.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{iterable} (\emph{iterable}) -- The iterable element.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{MapNetworkShare() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
-Maps the network share to a letter.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{letter} (\emph{String.}) -- The letter for which to map.
-
-\item {} 
-\textbf{share} (\emph{String.}) -- The network share.
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{OpenFile() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:utils.OpenFile}\pysiglinewithargsret{\code{utils.}\bfcode{OpenFile}}{\emph{filepath}}{}
+\phantomsection\label{api:utils.filesystem.OpenFile}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{OpenFile}}{\emph{filepath}}{}
 Opens a file path.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1724,26 +1631,26 @@ Opens a file path.
 
 \end{fulllineitems}
 
-\index{OpenedFilesQuery() (in module utils)}
+\index{OpenedFilesQuery() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.OpenedFilesQuery}\pysiglinewithargsret{\code{utils.}\bfcode{OpenedFilesQuery}}{}{}
+\phantomsection\label{api:utils.filesystem.OpenedFilesQuery}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{OpenedFilesQuery}}{}{}
 Calls the openedfilesview.
 
 \end{fulllineitems}
 
-\index{RecentFilesQuery() (in module utils)}
+\index{RecentFilesQuery() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.RecentFilesQuery}\pysiglinewithargsret{\code{utils.}\bfcode{RecentFilesQuery}}{}{}
+\phantomsection\label{api:utils.filesystem.RecentFilesQuery}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{RecentFilesQuery}}{}{}
 Calls the recentfilesview.
 
 \end{fulllineitems}
 
-\index{SaveScreen() (in module utils)}
+\index{SaveScreen() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.SaveScreen}\pysiglinewithargsret{\code{utils.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
+\phantomsection\label{api:utils.filesystem.SaveScreen}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
 Saves the background image of the desktop.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1753,10 +1660,10 @@ Saves the background image of the desktop.
 
 \end{fulllineitems}
 
-\index{SearchFile() (in module utils)}
+\index{SearchFile() (in module utils.filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.SearchFile}\pysiglinewithargsret{\code{utils.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
+\phantomsection\label{api:utils.filesystem.SearchFile}\pysiglinewithargsret{\code{utils.filesystem.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
 Search file in a given path.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1772,10 +1679,34 @@ Search file in a given path.
 
 \end{fulllineitems}
 
-\index{get\_lan\_machines() (in module utils)}
+
+
+\section{Utils.networking module}
+\label{api:utils-networking-module}\label{api:module-utils.networking}\index{utils.networking (module)}
+Created on 17.5.2013
+\index{DottedIPToInt() (in module utils.networking)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.get_lan_machines}\pysiglinewithargsret{\code{utils.}\bfcode{get\_lan\_machines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
+\phantomsection\label{api:utils.networking.DottedIPToInt}\pysiglinewithargsret{\code{utils.networking.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
+Transforms a dotted IP address to Integer.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{dotted\_ip} (\emph{String}) -- The IP address.
+
+\item[{Returns}] \leavevmode
+The IP address.
+
+\item[{Return type}] \leavevmode
+Integer
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetLANMachines() (in module utils.networking)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.networking.GetLANMachines}\pysiglinewithargsret{\code{utils.networking.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{lan\_ip} (\emph{string}) -- Local Area Network IP.
 
@@ -1789,10 +1720,10 @@ string{[}{]}
 
 \end{fulllineitems}
 
-\index{get\_local\_ip\_address() (in module utils)}
+\index{GetLocalIPAddress() (in module utils.networking)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.get_local_ip_address}\pysiglinewithargsret{\code{utils.}\bfcode{get\_local\_ip\_address}}{\emph{target}}{}
+\phantomsection\label{api:utils.networking.GetLocalIPAddress}\pysiglinewithargsret{\code{utils.networking.}\bfcode{GetLocalIPAddress}}{\emph{target}}{}
 Used to get local Internet Protocol address.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -1800,6 +1731,57 @@ The current IP address.
 
 \item[{Return type}] \leavevmode
 string
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetMacForIp() (in module utils.networking)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.networking.GetMacForIp}\pysiglinewithargsret{\code{utils.networking.}\bfcode{GetMacForIp}}{\emph{ip}}{}
+Returns the mac address for an local IP address.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{ip} (\emph{String.}) -- IP address
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{IntToDottedIP() (in module utils.networking)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.networking.IntToDottedIP}\pysiglinewithargsret{\code{utils.networking.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
+Transforms an Integer IP address to dotted representation.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{intip} (\emph{Integer}) -- The IP
+
+\item[{Returns}] \leavevmode
+The IP
+
+\item[{Return type}] \leavevmode
+string
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MapNetworkShare() (in module utils.networking)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.networking.MapNetworkShare}\pysiglinewithargsret{\code{utils.networking.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
+Maps the network share to a letter.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{letter} (\emph{String.}) -- The letter for which to map.
+
+\item {} 
+\textbf{share} (\emph{String.}) -- The network share.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -3286,7 +3268,9 @@ Exit the application
 \item {\texttt{swnp}}, \pageref{api:module-swnp}
 \indexspace
 \bigletter{u}
-\item {\texttt{utils}}, \pageref{api:module-utils}
+\item {\texttt{utils.commons}}, \pageref{api:module-utils.commons}
+\item {\texttt{utils.filesystem}}, \pageref{api:module-utils.filesystem}
+\item {\texttt{utils.networking}}, \pageref{api:module-utils.networking}
 \indexspace
 \bigletter{w}
 \item {\texttt{wos}}, \pageref{api:module-wos}

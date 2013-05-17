@@ -69,27 +69,28 @@
 \indexentry{sync\_handler() (swnp.SWNP method)|hyperpage}{13}
 \indexentry{sys\_handler() (swnp.SWNP method)|hyperpage}{14}
 \indexentry{timeout\_routine() (swnp.SWNP method)|hyperpage}{14}
-\indexentry{utils (module)|hyperpage}{14}
-\indexentry{CopyFileToProject() (in module utils)|hyperpage}{14}
-\indexentry{CopyToTemp() (in module utils)|hyperpage}{14}
-\indexentry{CreateProjectDir() (in module utils)|hyperpage}{14}
-\indexentry{DottedIPToInt() (in module utils)|hyperpage}{14}
-\indexentry{FileToBase64() (in module utils)|hyperpage}{14}
-\indexentry{GetFileExtension() (in module utils)|hyperpage}{14}
-\indexentry{GetMacForIp() (in module utils)|hyperpage}{15}
-\indexentry{GetNodeImg() (in module utils)|hyperpage}{15}
-\indexentry{GetSendkeys() (in module utils)|hyperpage}{15}
-\indexentry{IntToDottedIP() (in module utils)|hyperpage}{15}
-\indexentry{IsSubtree() (in module utils)|hyperpage}{15}
-\indexentry{IterIsLast() (in module utils)|hyperpage}{15}
-\indexentry{MapNetworkShare() (in module utils)|hyperpage}{15}
-\indexentry{OpenFile() (in module utils)|hyperpage}{15}
-\indexentry{OpenedFilesQuery() (in module utils)|hyperpage}{15}
-\indexentry{RecentFilesQuery() (in module utils)|hyperpage}{15}
-\indexentry{SaveScreen() (in module utils)|hyperpage}{15}
-\indexentry{SearchFile() (in module utils)|hyperpage}{16}
-\indexentry{get\_lan\_machines() (in module utils)|hyperpage}{16}
-\indexentry{get\_local\_ip\_address() (in module utils)|hyperpage}{16}
+\indexentry{utils.commons (module)|hyperpage}{14}
+\indexentry{IterIsLast() (in module utils.commons)|hyperpage}{14}
+\indexentry{utils.filesystem (module)|hyperpage}{14}
+\indexentry{CopyFileToProject() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{CopyToTemp() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{CreateProjectDir() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{FileToBase64() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{GetFileExtension() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{GetNodeImg() (in module utils.filesystem)|hyperpage}{14}
+\indexentry{IsSubtree() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{OpenFile() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{OpenedFilesQuery() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{RecentFilesQuery() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{SaveScreen() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{SearchFile() (in module utils.filesystem)|hyperpage}{15}
+\indexentry{utils.networking (module)|hyperpage}{15}
+\indexentry{DottedIPToInt() (in module utils.networking)|hyperpage}{15}
+\indexentry{GetLANMachines() (in module utils.networking)|hyperpage}{15}
+\indexentry{GetLocalIPAddress() (in module utils.networking)|hyperpage}{15}
+\indexentry{GetMacForIp() (in module utils.networking)|hyperpage}{16}
+\indexentry{IntToDottedIP() (in module utils.networking)|hyperpage}{16}
+\indexentry{MapNetworkShare() (in module utils.networking)|hyperpage}{16}
 \indexentry{wos (module)|hyperpage}{16}
 \indexentry{AddProjectDialog (class in wos)|hyperpage}{16}
 \indexentry{OnAdd() (wos.AddProjectDialog method)|hyperpage}{16}
@@ -98,7 +99,7 @@
 \indexentry{run() (wos.AudioRecorder method)|hyperpage}{16}
 \indexentry{save() (wos.AudioRecorder method)|hyperpage}{16}
 \indexentry{CHECK\_UPDATE (class in wos)|hyperpage}{16}
-\indexentry{CONN\_ERR\_TH (class in wos)|hyperpage}{17}
+\indexentry{CONN\_ERR\_TH (class in wos)|hyperpage}{16}
 \indexentry{run() (wos.CONN\_ERR\_TH method)|hyperpage}{17}
 \indexentry{CURRENT\_PROJECT (class in wos)|hyperpage}{17}
 \indexentry{run() (wos.CURRENT\_PROJECT method)|hyperpage}{17}
@@ -111,7 +112,7 @@
 \indexentry{EventList (class in wos)|hyperpage}{17}
 \indexentry{GetIcon() (wos.EventList method)|hyperpage}{17}
 \indexentry{GUI (class in wos)|hyperpage}{17}
-\indexentry{AlignCenterTop() (wos.GUI method)|hyperpage}{18}
+\indexentry{AlignCenterTop() (wos.GUI method)|hyperpage}{17}
 \indexentry{CreateConfig() (wos.GUI method)|hyperpage}{18}
 \indexentry{GetIcon() (wos.GUI method)|hyperpage}{18}
 \indexentry{HandleFileSend() (wos.GUI method)|hyperpage}{18}
@@ -127,7 +128,7 @@
 \indexentry{OnIconify() (wos.GUI method)|hyperpage}{18}
 \indexentry{OnProjectSelected() (wos.GUI method)|hyperpage}{18}
 \indexentry{OnSession() (wos.GUI method)|hyperpage}{18}
-\indexentry{OnTaskBarActivate() (wos.GUI method)|hyperpage}{19}
+\indexentry{OnTaskBarActivate() (wos.GUI method)|hyperpage}{18}
 \indexentry{OnTaskBarClose() (wos.GUI method)|hyperpage}{19}
 \indexentry{OpenProjectDir() (wos.GUI method)|hyperpage}{19}
 \indexentry{PaintSelect() (wos.GUI method)|hyperpage}{19}
@@ -140,7 +141,7 @@
 \indexentry{Shift() (wos.GUI method)|hyperpage}{19}
 \indexentry{ShowPreferences() (wos.GUI method)|hyperpage}{19}
 \indexentry{StartCurrentProject() (wos.GUI method)|hyperpage}{19}
-\indexentry{StartCurrentSession() (wos.GUI method)|hyperpage}{20}
+\indexentry{StartCurrentSession() (wos.GUI method)|hyperpage}{19}
 \indexentry{SwnpSend() (wos.GUI method)|hyperpage}{20}
 \indexentry{UpdateScreens() (wos.GUI method)|hyperpage}{20}
 \indexentry{INPUT\_CAPTURE (class in wos)|hyperpage}{20}
