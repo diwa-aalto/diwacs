@@ -14,7 +14,7 @@ import netifaces
 import controller
 import time
 import json
-from utils import networking
+import networking
 import random
 #import unicodedata
 from wos import CONN_ERR_TH, CloseError

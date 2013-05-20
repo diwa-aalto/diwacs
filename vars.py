@@ -16,11 +16,11 @@ VERSION = "0.9.2.1"
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
 # System tray icon filename
-TRAY_ICON = "Icon.png"
+TRAY_ICON = os.path.join("data", "Icon.png")
 # Default screen icon filename
-DEFAULT_SCREEN = "SCREEN.png"
+DEFAULT_SCREEN = os.path.join("data", "SCREEN.png")
 # Empty screen icon filename
-NO_SCREEN = "noscreen.png"
+NO_SCREEN = os.path.join("data", "noscreen.png")
 # The tooltip shown on systray hover
 TRAY_TOOLTIP = ' '.join(("DiWaCS", VERSION,))
 # The size of the main frame

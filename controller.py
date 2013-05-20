@@ -20,9 +20,15 @@ import time
 import shutil
 import socket
 import threading
-from utils import commons, filesystem, networking
 import watchdog
 from watchdog.events import FileSystemEventHandler
+
+# Own imports
+import commons
+import filesystem
+import networking
+
+
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 STORAGE = "192.168.1.10"
@@ -271,7 +277,7 @@ def GetActiveComputers(timeout):
     return [] 
   
 def EditProject(idNum, row):
-    """Update a project info
+    """ Update a project info
     
     :param idNum: Database id number of the project.
     :type idNum: Integer.
