@@ -28,7 +28,7 @@ try:
 except ImportError: # if it's not there locally, try the wxPython lib.
     from wx.lib.agw import ultimatelistctrl as ULC
 
-from utils import filesystem, commons, networking
+import filesystem, commons, networking
 
 
 
@@ -389,11 +389,11 @@ class WORKER_THREAD(threading.Thread):
                 commons.SetLoggerLevel(str(val).upper()) 
             elif "CAMERA_" in key:
                 if "URL" in key:
-                    commons.UpdateCameraVars(str(val), None, None)
+                    filesystem.UpdateCameraVars(str(val), None, None)
                 if "USER" in key:
-                    commons.UpdateCameraVars(None, str(val), None)
+                    filesystem.UpdateCameraVars(None, str(val), None)
                 if "PASS" in key:
-                    commons.UpdateCameraVars(None, None, str(val))
+                    filesystem.UpdateCameraVars(None, None, str(val))
             elif "RESPONSIVE" in key:
                 wos_logger.debug("Setting RESPONSIVE")
                 RESPONSIVE = eval(val)
@@ -1327,9 +1327,10 @@ class MySplashScreen(wx.SplashScreen):
 Create a splash screen widget.
     """
     def __init__(self, parent=None):
-        aBitmap = wx.Image(name="splashscreen.png").ConvertToBitmap()
+        aBitmap = wx.Image(name=os.path.join("data", "splashscreen.png"))
+        aBitmap = aBitmap.ConvertToBitmap()
         splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_NO_TIMEOUT
-        splashDuration = 1000 # milliseconds
+        splashDuration = 1000  # milliseconds
         wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
 
 class ConnectionErrorDialog(wx.ProgressDialog):
@@ -1450,11 +1451,11 @@ class EventList(wx.Frame):
                 
     def GetIcon(self, icon):
         """Fetches gui icons.
-        
+
         :param icon: The icon file name.
         :type icon: String.
         :rtype: :class:`wx.Image`
-        
+
         """
         return wx.Image('icons/' + icon + '.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
@@ -1915,11 +1916,11 @@ class GUI(wx.Frame):
         
     def GetIcon(self, icon):
         """Fetches gui icons.
-        
+
         :param icon: The icon file name.
         :type icon: String.
         :rtype: :class:`wx.Image`
-        
+
         """
         return wx.Image('icons/' + icon + '.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
        
@@ -2410,7 +2411,7 @@ class GUI(wx.Frame):
         """
         info = wx.AboutDialogInfo()
 
-        info.SetIcon(wx.Icon('splashscreen.png', wx.BITMAP_TYPE_PNG))
+        info.SetIcon(wx.Icon(os.path.join("data", "splashscreen.png"), wx.BITMAP_TYPE_PNG))
         info.SetName(APPLICATION_NAME)
         info.SetVersion(VERSION)
         info.SetDescription(description)
@@ -2418,13 +2419,13 @@ class GUI(wx.Frame):
         info.SetWebSite('http://stratus.soberit.hut.fi/')
 
         wx.AboutBox(info)
-                   
+
     def OnIconify(self, evt):
         """ Window minimize event handler
-        
+
         :param evt: GUI Event.
         :type evt: Event.
-        
+
         """
         if self.IsIconized():
             self.Show()

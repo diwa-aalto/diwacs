@@ -11,6 +11,6 @@ setup(name="WOS",
       windows=[{'script': "gui.py", }],
       data_files=[("Microsoft.VC90.CRT", glob(r'C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*')),
                   (".",
-                   ["icon.ico","SCREEN.png"]) ],
+                   ["data\\icon.ico","data\\SCREEN.png"]) ],
       #zipfile = None,
 )

@@ -23,6 +23,9 @@ import commons
 import controller
 import vars
 STORAGE = vars.STORAGE
+CAMERA_URL = vars.CAMERA_URL
+CAMERA_USER = vars.CAMERA_USER
+CAMERA_PASS = vars.CAMERA_PASS
 
 
 def CopyFileToProject(filepath, project_id):
@@ -175,7 +178,7 @@ def GetNodeImg(node):
     img_path = '\\\\' + STORAGE + '\\screen_images\\' + str(node) + '.png'
     if os.path.exists(img_path):
         return img_path
-    return 'SCREEN.png'
+    return os.path.join(os.getcwd(), vars.DEFAULT_SCREEN)
 
 
 def IsSubtree(filename, parent):
@@ -250,9 +253,9 @@ def SaveScreen(win, filepath):
         #: TODO: Consider refactoring out.
         unused_grab = ImageGrab.grab()
         # the mask, where we insert our image
-        mask = Image.open("scr_mask.png")
+        mask = Image.open(os.path.join("data", "scr_mask.png"))
         # mask, that we overlay
-        frame_mask = Image.open("scr_frame_mask.png")
+        frame_mask = Image.open(os.path.join("data", "scr_frame_mask.png"))
         # smooth the mask a little bit, if you want
         # mask = mask.filter(ImageFilter.SMOOTH)
         # resize/crop the image to the size of the mask-image
@@ -340,6 +343,18 @@ def SnaphotThread(path):
         output.close()
     except Exception, e:
         commons.logger.exception("Snapshot exception: %s", str(e))
+
+
+def UpdateCameraVars(url, user, passwd):
+    global CAMERA_URL
+    global CAMERA_USER
+    global CAMERA_PASS
+    if url:
+        CAMERA_URL = url
+    if user:
+        CAMERA_USER = user
+    if passwd:
+        CAMERA_PASS = passwd
 
 
 def UpdateStorage(storage):

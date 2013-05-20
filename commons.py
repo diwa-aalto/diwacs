@@ -9,7 +9,6 @@ import os
 
 # My imports.
 import controller
-import vars
 logging.config.fileConfig(os.path.abspath('logging.conf'))
 logger = logging.getLogger('utils')
 
@@ -48,12 +47,3 @@ def IterIsLast(iterable):
 
 def SetLoggerLevel(level):
     logger.setLevel(level)
-
-
-def UpdateCameraVars(url, user, passwd):
-    if url:
-        vars.CAMERA_URL = url
-    if user:
-        vars.CAMERA_USER = user
-    if passwd:
-        vars.CAMERA_PASS = passwd

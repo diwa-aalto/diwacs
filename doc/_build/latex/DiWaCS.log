@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.16)  17 MAY 2013 15:04
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.16)  20 MAY 2013 11:07
 entering extended mode
 **C:/Users/Kristian/workspace/diwacs/doc/_build/latex/DiWaCS.tex
 (C:/Users/Kristian/workspace/diwacs/doc/_build/latex/DiWaCS.tex
@@ -1014,47 +1014,47 @@ Chapter 6.
 ] [39
 
 ]
-Overfull \hbox (25.19078pt too wide) in paragraph at lines 125--127
+Overfull \hbox (25.19078pt too wide) in paragraph at lines 126--128
 []\T1/ptm/m/n/10 on_created() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Overfull \hbox (25.20078pt too wide) in paragraph at lines 128--130
+Overfull \hbox (25.20078pt too wide) in paragraph at lines 129--131
 []\T1/ptm/m/n/10 on_deleted() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Overfull \hbox (31.88083pt too wide) in paragraph at lines 130--132
+Overfull \hbox (31.88083pt too wide) in paragraph at lines 131--133
 []\T1/ptm/m/n/10 on_modified() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 168--170
+Underfull \hbox (badness 10000) in paragraph at lines 169--171
 []\T1/ptm/m/n/10 RemoveAllRegEntries() (wos.WORKER_THREAD
  []
 
 
-Overfull \hbox (2.17117pt too wide) in paragraph at lines 212--214
+Overfull \hbox (2.17117pt too wide) in paragraph at lines 213--215
 []\T1/ptm/m/n/10 stop() (wos.SEND_FILE_CONTEX_MENU_HANDLER
  []
 
 [40] [41
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3281.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 3281.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3283.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 3283.
  (C:\Users\Kristian\workspace\diwacs\doc\_build\latex\DiWaCS.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 3281.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 3281.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 3283.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 3283.
 
 Package rerunfilecheck Info: File `DiWaCS.out' has not changed.
-(rerunfilecheck)             Checksum: 1078E2AD98608862161D4D899C056B22;2146.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 3281.
+(rerunfilecheck)             Checksum: 29328DC9FC809866FDC32636A4EBFC5C;2128.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 3283.
  ) 
 Here is how much of TeX's memory you used:
  9350 strings out of 493921
- 132116 string characters out of 3146471
- 227715 words of memory out of 3000000
+ 131966 string characters out of 3146471
+ 227565 words of memory out of 3000000
  12164 multiletter control sequences out of 15000+200000
  53492 words of font info for 60 fonts, out of 3000000 for 9000
  842 hyphenation exceptions out of 8191
@@ -1068,7 +1068,7 @@ vbo8a.pfb><C:/Program Files (x86)/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C
 :/Program Files (x86)/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files
  (x86)/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX/f
 onts/type1/urw/times/utmri8a.pfb>
-Output written on DiWaCS.pdf (45 pages, 318617 bytes).
+Output written on DiWaCS.pdf (45 pages, 318497 bytes).
 PDF statistics:
  855 PDF objects out of 1000 (max. 8388607)
  248 named destinations out of 1000 (max. 500000)

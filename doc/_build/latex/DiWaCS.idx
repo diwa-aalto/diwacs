@@ -69,28 +69,28 @@
 \indexentry{sync\_handler() (swnp.SWNP method)|hyperpage}{13}
 \indexentry{sys\_handler() (swnp.SWNP method)|hyperpage}{14}
 \indexentry{timeout\_routine() (swnp.SWNP method)|hyperpage}{14}
-\indexentry{utils.commons (module)|hyperpage}{14}
-\indexentry{IterIsLast() (in module utils.commons)|hyperpage}{14}
-\indexentry{utils.filesystem (module)|hyperpage}{14}
-\indexentry{CopyFileToProject() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{CopyToTemp() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{CreateProjectDir() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{FileToBase64() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{GetFileExtension() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{GetNodeImg() (in module utils.filesystem)|hyperpage}{14}
-\indexentry{IsSubtree() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{OpenFile() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{OpenedFilesQuery() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{RecentFilesQuery() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{SaveScreen() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{SearchFile() (in module utils.filesystem)|hyperpage}{15}
-\indexentry{utils.networking (module)|hyperpage}{15}
-\indexentry{DottedIPToInt() (in module utils.networking)|hyperpage}{15}
-\indexentry{GetLANMachines() (in module utils.networking)|hyperpage}{15}
-\indexentry{GetLocalIPAddress() (in module utils.networking)|hyperpage}{15}
-\indexentry{GetMacForIp() (in module utils.networking)|hyperpage}{16}
-\indexentry{IntToDottedIP() (in module utils.networking)|hyperpage}{16}
-\indexentry{MapNetworkShare() (in module utils.networking)|hyperpage}{16}
+\indexentry{commons (module)|hyperpage}{14}
+\indexentry{IterIsLast() (in module commons)|hyperpage}{14}
+\indexentry{filesystem (module)|hyperpage}{14}
+\indexentry{CopyFileToProject() (in module filesystem)|hyperpage}{14}
+\indexentry{CopyToTemp() (in module filesystem)|hyperpage}{14}
+\indexentry{CreateProjectDir() (in module filesystem)|hyperpage}{14}
+\indexentry{FileToBase64() (in module filesystem)|hyperpage}{14}
+\indexentry{GetFileExtension() (in module filesystem)|hyperpage}{14}
+\indexentry{GetNodeImg() (in module filesystem)|hyperpage}{14}
+\indexentry{IsSubtree() (in module filesystem)|hyperpage}{15}
+\indexentry{OpenFile() (in module filesystem)|hyperpage}{15}
+\indexentry{OpenedFilesQuery() (in module filesystem)|hyperpage}{15}
+\indexentry{RecentFilesQuery() (in module filesystem)|hyperpage}{15}
+\indexentry{SaveScreen() (in module filesystem)|hyperpage}{15}
+\indexentry{SearchFile() (in module filesystem)|hyperpage}{15}
+\indexentry{networking (module)|hyperpage}{15}
+\indexentry{DottedIPToInt() (in module networking)|hyperpage}{15}
+\indexentry{GetLANMachines() (in module networking)|hyperpage}{15}
+\indexentry{GetLocalIPAddress() (in module networking)|hyperpage}{15}
+\indexentry{GetMacForIp() (in module networking)|hyperpage}{16}
+\indexentry{IntToDottedIP() (in module networking)|hyperpage}{16}
+\indexentry{MapNetworkShare() (in module networking)|hyperpage}{16}
 \indexentry{wos (module)|hyperpage}{16}
 \indexentry{AddProjectDialog (class in wos)|hyperpage}{16}
 \indexentry{OnAdd() (wos.AddProjectDialog method)|hyperpage}{16}
