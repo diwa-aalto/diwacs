@@ -19,7 +19,6 @@
 
   \item CHECK\_UPDATE (class in wos), \hyperpage{16}
   \item close() (swnp.SWNP method), \hyperpage{12}
-  \item commons (module), \hyperpage{14}
   \item Company (class in models), \hyperpage{8}
   \item Computer (class in models), \hyperpage{8}
   \item CONN\_ERR\_TH (class in wos), \hyperpage{16}
@@ -28,11 +27,11 @@
   \item CopyFileToProject() (in module filesystem), \hyperpage{14}
   \item CopyToTemp() (in module filesystem), \hyperpage{14}
   \item CreateAll() (in module controller), \hyperpage{4}
-  \item CreateConfig() (wos.GUI method), \hyperpage{18}
+  \item CreateConfig() (wos.GUI method), \hyperpage{17}
   \item CreateFileaction() (in module controller), \hyperpage{4}
-  \item CreateMenu() (wos.SysTray method), \hyperpage{22}
+  \item CreateMenu() (wos.SysTray method), \hyperpage{21}
   \item CreateProjectDir() (in module filesystem), \hyperpage{14}
-  \item CURRENT\_PROJECT (class in wos), \hyperpage{17}
+  \item CURRENT\_PROJECT (class in wos), \hyperpage{16}
   \item CURRENT\_SESSION (class in wos), \hyperpage{17}
 
   \indexspace
@@ -40,7 +39,7 @@
   \item DeleteRecord() (in module controller), \hyperpage{5}
   \item DelEvent() (wos.ProjectSelectDialog method), \hyperpage{21}
   \item do\_ping() (swnp.SWNP method), \hyperpage{12}
-  \item DottedIPToInt() (in module networking), \hyperpage{15}
+  \item DottedIPToInt() (in module utils), \hyperpage{15}
   \item DropTarget (class in wos), \hyperpage{17}
 
   \indexspace
@@ -70,10 +69,10 @@
   \item get\_screen\_list() (swnp.SWNP method), \hyperpage{13}
   \item GetFileExtension() (in module filesystem), \hyperpage{14}
   \item GetIcon() (wos.EventList method), \hyperpage{17}
-  \item GetIcon() (wos.GUI method), \hyperpage{18}
-  \item GetLANMachines() (in module networking), \hyperpage{15}
-  \item GetLocalIPAddress() (in module networking), \hyperpage{15}
-  \item GetMacForIp() (in module networking), \hyperpage{16}
+  \item GetIcon() (wos.GUI method), \hyperpage{17}
+  \item GetLANMachines() (in module utils), \hyperpage{15}
+  \item GetLocalIPAddress() (in module utils), \hyperpage{15}
+  \item GetMacForIp() (in module utils), \hyperpage{15}
   \item GetNodeImg() (in module filesystem), \hyperpage{14}
   \item GetOrCreate() (in module controller), \hyperpage{5}
   \item GetProject() (in module controller), \hyperpage{5}
@@ -95,10 +94,10 @@
   \item InitSyncProjectDir() (in module controller), \hyperpage{6}
   \item InitUI() (wos.GUI method), \hyperpage{18}
   \item INPUT\_CAPTURE (class in wos), \hyperpage{20}
-  \item IntToDottedIP() (in module networking), \hyperpage{16}
+  \item IntToDottedIP() (in module utils), \hyperpage{15}
   \item IsProjectFile() (in module controller), \hyperpage{6}
-  \item IsSubtree() (in module filesystem), \hyperpage{15}
-  \item IterIsLast() (in module commons), \hyperpage{14}
+  \item IsSubtree() (in module filesystem), \hyperpage{14}
+  \item IterIsLast() (in module utils), \hyperpage{16}
 
   \indexspace
 
@@ -110,7 +109,7 @@
 
   \item main() (in module add\_file), \hyperpage{3}
   \item main() (in module send\_file\_to), \hyperpage{3}
-  \item MapNetworkShare() (in module networking), \hyperpage{16}
+  \item MapNetworkShare() (in module utils), \hyperpage{16}
   \item Message (class in swnp), \hyperpage{12}
   \item MessageHandler() (wos.GUI method), \hyperpage{18}
   \item models (module), \hyperpage{7}
@@ -118,7 +117,6 @@
 
   \indexspace
 
-  \item networking (module), \hyperpage{15}
   \item Node (class in swnp), \hyperpage{12}
 
   \indexspace
@@ -132,7 +130,7 @@
 		\hyperpage{6}
   \item OnAboutBox() (wos.GUI method), \hyperpage{18}
   \item OnAdd() (wos.AddProjectDialog method), \hyperpage{16}
-  \item onCancel() (wos.PreferencesDialog method), \hyperpage{21}
+  \item onCancel() (wos.PreferencesDialog method), \hyperpage{20}
   \item onCancel() (wos.ProjectSelectDialog method), \hyperpage{21}
   \item OnClose() (wos.AddProjectDialog method), \hyperpage{16}
   \item OnCreateTables() (wos.GUI method), \hyperpage{18}
@@ -144,11 +142,11 @@
   \item OnProjectSelected() (wos.GUI method), \hyperpage{18}
   \item OnSession() (wos.GUI method), \hyperpage{18}
   \item OnTaskBarActivate() (wos.GUI method), \hyperpage{18}
-  \item OnTaskBarClose() (wos.GUI method), \hyperpage{19}
-  \item openConfig() (wos.PreferencesDialog method), \hyperpage{21}
+  \item OnTaskBarClose() (wos.GUI method), \hyperpage{18}
+  \item openConfig() (wos.PreferencesDialog method), \hyperpage{20}
   \item OpenedFilesQuery() (in module filesystem), \hyperpage{15}
-  \item OpenFile() (in module filesystem), \hyperpage{15}
-  \item OpenProjectDir() (wos.GUI method), \hyperpage{19}
+  \item OpenFile() (in module filesystem), \hyperpage{14}
+  \item OpenProjectDir() (wos.GUI method), \hyperpage{18}
 
   \indexspace
 
@@ -170,7 +168,7 @@
 		\hyperpage{22}
   \item run() (controller.FILE\_ACTION\_SCANNER method), \hyperpage{5}
   \item run() (wos.AudioRecorder method), \hyperpage{16}
-  \item run() (wos.CONN\_ERR\_TH method), \hyperpage{17}
+  \item run() (wos.CONN\_ERR\_TH method), \hyperpage{16}
   \item run() (wos.CURRENT\_PROJECT method), \hyperpage{17}
   \item run() (wos.CURRENT\_SESSION method), \hyperpage{17}
   \item run() (wos.INPUT\_CAPTURE method), \hyperpage{20}
@@ -181,7 +179,7 @@
 
   \item save() (wos.AudioRecorder method), \hyperpage{16}
   \item savePreferences() (wos.PreferencesDialog method), 
-		\hyperpage{21}
+		\hyperpage{20}
   \item SaveScreen() (in module filesystem), \hyperpage{15}
   \item SCAN\_HANDLER (class in controller), \hyperpage{6}
   \item SearchFile() (in module filesystem), \hyperpage{15}
@@ -199,7 +197,7 @@
   \item SetProjectObserver() (wos.GUI method), \hyperpage{19}
   \item SetScanObserver() (wos.GUI method), \hyperpage{19}
   \item Shift() (wos.GUI method), \hyperpage{19}
-  \item ShowMenu() (wos.SysTray method), \hyperpage{22}
+  \item ShowMenu() (wos.SysTray method), \hyperpage{21}
   \item ShowPreferences() (wos.GUI method), \hyperpage{19}
   \item shutdown() (swnp.SWNP method), \hyperpage{13}
   \item start() (models.Session method), \hyperpage{11}
@@ -211,15 +209,15 @@
   \item stop() (wos.CURRENT\_SESSION method), \hyperpage{17}
   \item stop() (wos.INPUT\_CAPTURE method), \hyperpage{20}
   \item stop() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method), 
-		\hyperpage{22}
+		\hyperpage{21}
   \item sub\_routine() (swnp.SWNP method), \hyperpage{13}
   \item sub\_routine\_sys() (swnp.SWNP method), \hyperpage{13}
   \item SWNP (class in swnp), \hyperpage{12}
   \item swnp (module), \hyperpage{12}
-  \item SwnpSend() (wos.GUI method), \hyperpage{20}
+  \item SwnpSend() (wos.GUI method), \hyperpage{19}
   \item sync\_handler() (swnp.SWNP method), \hyperpage{13}
   \item sys\_handler() (swnp.SWNP method), \hyperpage{14}
-  \item SysTray (class in wos), \hyperpage{22}
+  \item SysTray (class in wos), \hyperpage{21}
 
   \indexspace
 
@@ -231,6 +229,7 @@
   \item UpdateDialog (class in wos), \hyperpage{22}
   \item UpdateScreens() (wos.GUI method), \hyperpage{20}
   \item User (class in models), \hyperpage{11}
+  \item utils (module), \hyperpage{15}
 
   \indexspace
 

@@ -5,11 +5,11 @@ Created on 20.5.2013
 '''
 import unittest
 
-import commons
 import filesystem
+import utils
 
 
-class TestCommons(unittest.TestCase):
+class TestUtils(unittest.TestCase):
 
     def setUp(self):
         unittest.TestCase.setUp(self)
@@ -21,15 +21,15 @@ class TestCommons(unittest.TestCase):
         """ Test the SHA1 password hash generation. """
         example_password = "The quick brown fox jumps over the lazy dog"
         expected_hash = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
-        myhash = commons.HashPassword(example_password)
+        myhash = utils.HashPassword(example_password)
         self.assertEquals(myhash, expected_hash)
 
     def test_getpassword(self):
         correct_password = "test"
         project_id = 84
         expected_prehash = str(project_id) + correct_password
-        expected_hash = commons.HashPassword(expected_prehash)
-        myhash = commons.GetProjectPassword(project_id)
+        expected_hash = utils.HashPassword(expected_prehash)
+        myhash = utils.GetProjectPassword(project_id)
         self.assertEquals(myhash, expected_hash)
 
 
@@ -59,7 +59,7 @@ class DiwaTest(unittest.TestSuite):
     def __init__(self):
         print 'DiwaTest__init__'
         unittest.TestSuite.__init__(self, test=(
-                TestCommons
+                TestUtils
             )
         )
 

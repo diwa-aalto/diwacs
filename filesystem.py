@@ -19,13 +19,13 @@ from PIL import Image, ImageOps, ImageGrab
 
 
 # Own imports.
-import commons
 import controller
-import vars
-STORAGE = vars.STORAGE
-CAMERA_URL = vars.CAMERA_URL
-CAMERA_USER = vars.CAMERA_USER
-CAMERA_PASS = vars.CAMERA_PASS
+import utils
+import diwavars
+STORAGE = diwavars.STORAGE
+CAMERA_URL = diwavars.CAMERA_URL
+CAMERA_USER = diwavars.CAMERA_USER
+CAMERA_PASS = diwavars.CAMERA_PASS
 
 
 def CopyFileToProject(filepath, project_id):
@@ -44,7 +44,7 @@ def CopyFileToProject(filepath, project_id):
             project_dir = controller.GetProjectPath(project_id)
             shutil.copy2(filepath, project_dir)
         except:
-            commons.logger.exception('File copy error')
+            utils.logger.exception('File copy error')
             return False
         return os.path.join(project_dir,
                             os.path.basename(filepath))
@@ -84,7 +84,7 @@ def CreateProjectDir(dir_name):
         try:
             os.makedirs(project_dir)
         except:
-            commons.logger.exception("Error creating project dir.")
+            utils.logger.exception("Error creating project dir.")
             return None
         return project_dir
     return None
@@ -96,7 +96,7 @@ def DeleteDir(path):
         shutil.rmtree(path)
         result = True
     except:
-        commons.logger.exception("Delete dir exception")
+        utils.logger.exception("Delete dir exception")
     return result
 
 
@@ -178,7 +178,7 @@ def GetNodeImg(node):
     img_path = '\\\\' + STORAGE + '\\screen_images\\' + str(node) + '.png'
     if os.path.exists(img_path):
         return img_path
-    return os.path.join(os.getcwd(), vars.DEFAULT_SCREEN)
+    return os.path.join(os.getcwd(), diwavars.DEFAULT_SCREEN)
 
 
 def IsSubtree(filename, parent):
@@ -213,7 +213,7 @@ def OpenFile(filepath):
         :type filepath: String.
 
         """
-        commons.logger.debug("%s Opening file %s", (os.name, filepath))
+        utils.logger.debug("%s Opening file %s", (os.name, filepath))
         if os.name == 'mac':
             subprocess.call(('open', filepath))
         elif os.name == 'nt':
@@ -224,7 +224,7 @@ def OpenFile(filepath):
                     except:
                         subprocess.call(('start', filepath), shell=True)
             except:
-                commons.logger.exception("Open file exception")
+                utils.logger.exception("Open file exception")
         elif os.name == 'posix':
             subprocess.call(('xdg-open', filepath))
 
@@ -270,7 +270,7 @@ def SaveScreen(win, filepath):
         cropped_image.paste(frame_mask, mask=a)
         cropped_image.save(filepath, format="PNG")
     except Exception as inst:
-        commons.logger.exception('SaveScreen Exception: %s', str(inst))
+        utils.logger.exception('SaveScreen Exception: %s', str(inst))
 
 
 def ScreenCapture(path, node):
@@ -288,7 +288,7 @@ def ScreenCapture(path, node):
                                 stringform + '.png')
         grab.save(filepath, format='PNG')
     except Exception, e:
-        commons.logger.exception('ScreenCapture exception:%s', str(e))
+        utils.logger.exception('ScreenCapture exception:%s', str(e))
 
 
 def SearchFile(filename, search_path):
@@ -327,9 +327,9 @@ def SnaphotThread(path):
         os.makedirs(filepath)
     except:
         pass
-    request = urllib2.Request(vars.CAMERA_URL)
-    base64string = base64.encodestring('%s:%s' % (vars.CAMERA_USER,
-                                                  vars.CAMERA_PASS))
+    request = urllib2.Request(diwavars.CAMERA_URL)
+    base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
+                                                  diwavars.CAMERA_PASS))
     base64string = base64string.replace('\n', '')
     request.add_header("Authorization", "Basic %s" % base64string)
     event_id = controller.GetLatestEvent()
@@ -337,12 +337,12 @@ def SnaphotThread(path):
         data = urllib2.urlopen(request, timeout=60).read()
         name = str(event_id) + '_' + (
                     datetime.datetime.now().strftime("%d%m%Y%H%M%S") + '.jpg')
-        commons.logger.debug('Snaphot filename: %s', name)
+        utils.logger.debug('Snaphot filename: %s', name)
         output = open(os.path.join(filepath, name), 'wb')
         output.write(data)
         output.close()
     except Exception, e:
-        commons.logger.exception("Snapshot exception: %s", str(e))
+        utils.logger.exception("Snapshot exception: %s", str(e))
 
 
 def UpdateCameraVars(url, user, passwd):

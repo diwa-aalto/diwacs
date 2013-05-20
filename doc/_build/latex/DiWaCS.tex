@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-20 at 11:06.
+Documentation generated on 2013-05-20 at 13:41.
 
 
 \section{Add file module}
@@ -1489,26 +1489,6 @@ Routine for checking node list and removing nodes with timeout.
 
 
 
-\section{Commons module}
-\label{api:module-commons}\label{api:commons-module}\index{commons (module)}
-Created on 17.5.2013
-\index{IterIsLast() (in module commons)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:commons.IterIsLast}\pysiglinewithargsret{\code{commons.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
-Generates pairs where the first element is an item from the iterable
-source and the second element is a boolean flag indicating if it is the
-last item in the sequence.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{iterable} (\emph{iterable}) -- The iterable element.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-
 \section{Filesystem module}
 \label{api:module-filesystem}\label{api:filesystem-module}\index{filesystem (module)}
 Created on 17.5.2013
@@ -1681,13 +1661,13 @@ Search file in a given path.
 
 
 
-\section{Networking module}
-\label{api:module-networking}\label{api:networking-module}\index{networking (module)}
+\section{Utils module}
+\label{api:utils-module}\label{api:module-utils}\index{utils (module)}
 Created on 17.5.2013
-\index{DottedIPToInt() (in module networking)}
+\index{DottedIPToInt() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.DottedIPToInt}\pysiglinewithargsret{\code{networking.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
+\phantomsection\label{api:utils.DottedIPToInt}\pysiglinewithargsret{\code{utils.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
 Transforms a dotted IP address to Integer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1703,10 +1683,10 @@ Integer
 
 \end{fulllineitems}
 
-\index{GetLANMachines() (in module networking)}
+\index{GetLANMachines() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.GetLANMachines}\pysiglinewithargsret{\code{networking.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
+\phantomsection\label{api:utils.GetLANMachines}\pysiglinewithargsret{\code{utils.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{lan\_ip} (\emph{string}) -- Local Area Network IP.
 
@@ -1720,10 +1700,10 @@ string{[}{]}
 
 \end{fulllineitems}
 
-\index{GetLocalIPAddress() (in module networking)}
+\index{GetLocalIPAddress() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.GetLocalIPAddress}\pysiglinewithargsret{\code{networking.}\bfcode{GetLocalIPAddress}}{\emph{target}}{}
+\phantomsection\label{api:utils.GetLocalIPAddress}\pysiglinewithargsret{\code{utils.}\bfcode{GetLocalIPAddress}}{\emph{target}}{}
 Used to get local Internet Protocol address.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -1736,10 +1716,10 @@ string
 
 \end{fulllineitems}
 
-\index{GetMacForIp() (in module networking)}
+\index{GetMacForIp() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.GetMacForIp}\pysiglinewithargsret{\code{networking.}\bfcode{GetMacForIp}}{\emph{ip}}{}
+\phantomsection\label{api:utils.GetMacForIp}\pysiglinewithargsret{\code{utils.}\bfcode{GetMacForIp}}{\emph{ip}}{}
 Returns the mac address for an local IP address.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1749,10 +1729,10 @@ Returns the mac address for an local IP address.
 
 \end{fulllineitems}
 
-\index{IntToDottedIP() (in module networking)}
+\index{IntToDottedIP() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.IntToDottedIP}\pysiglinewithargsret{\code{networking.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
+\phantomsection\label{api:utils.IntToDottedIP}\pysiglinewithargsret{\code{utils.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
 Transforms an Integer IP address to dotted representation.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1768,10 +1748,25 @@ string
 
 \end{fulllineitems}
 
-\index{MapNetworkShare() (in module networking)}
+\index{IterIsLast() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:networking.MapNetworkShare}\pysiglinewithargsret{\code{networking.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
+\phantomsection\label{api:utils.IterIsLast}\pysiglinewithargsret{\code{utils.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
+Generates pairs where the first element is an item from the iterable
+source and the second element is a boolean flag indicating if it is the
+last item in the sequence.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{iterable} (\emph{iterable}) -- The iterable element.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MapNetworkShare() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
 Maps the network share to a letter.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2106,7 +2101,7 @@ Message handler for received messages
 \index{OnAboutBox() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnAboutBox}\pysiglinewithargsret{\bfcode{OnAboutBox}}{\emph{e}}{}
+\phantomsection\label{api:wos.GUI.OnAboutBox}\pysiglinewithargsret{\bfcode{OnAboutBox}}{\emph{unused\_event}}{}
 About dialog
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2146,7 +2141,7 @@ Event Button handler
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnExit}\pysiglinewithargsret{\bfcode{OnExit}}{\emph{event}}{}
-Exits program
+Exits program.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{event} (\emph{Event.}) -- GUI Event
@@ -2158,7 +2153,7 @@ Exits program
 \index{OnIconify() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnIconify}\pysiglinewithargsret{\bfcode{OnIconify}}{\emph{evt}}{}
+\phantomsection\label{api:wos.GUI.OnIconify}\pysiglinewithargsret{\bfcode{OnIconify}}{\emph{unused\_event}}{}
 Window minimize event handler
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2205,8 +2200,8 @@ Taskbar activate event handler
 \index{OnTaskBarClose() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnTaskBarClose}\pysiglinewithargsret{\bfcode{OnTaskBarClose}}{\emph{evt}}{}
-Taskbar close event handler
+\phantomsection\label{api:wos.GUI.OnTaskBarClose}\pysiglinewithargsret{\bfcode{OnTaskBarClose}}{\emph{unused\_event}}{}
+Taskbar close event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2533,13 +2528,13 @@ Save the preferences.
 A dialog for selecting a project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{parent} (\code{wx.Frame}) -- Parent frame
+\textbf{parent} (\code{wx.Frame}) -- Parent frame.
 
 \end{description}\end{quote}
 \index{AddEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.AddEvent}\pysiglinewithargsret{\bfcode{AddEvent}}{\emph{event}}{}
+\phantomsection\label{api:wos.ProjectSelectDialog.AddEvent}\pysiglinewithargsret{\bfcode{AddEvent}}{\emph{unused\_event}}{}
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2552,8 +2547,10 @@ Shows a modal dialog for adding a new project.
 \index{DelEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.DelEvent}\pysiglinewithargsret{\bfcode{DelEvent}}{\emph{evt}}{}
-Handles the selection of a project. Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary. Shows a dialog of the selected project.
+\phantomsection\label{api:wos.ProjectSelectDialog.DelEvent}\pysiglinewithargsret{\bfcode{DelEvent}}{\emph{unused\_event}}{}
+Handles the selection of a project.
+Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
+Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2565,7 +2562,7 @@ Handles the selection of a project. Starts a {\hyperref[api:wos.CURRENT_PROJECT]
 \index{EditEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.EditEvent}\pysiglinewithargsret{\bfcode{EditEvent}}{\emph{event}}{}
+\phantomsection\label{api:wos.ProjectSelectDialog.EditEvent}\pysiglinewithargsret{\bfcode{EditEvent}}{\emph{unused\_event}}{}
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2591,8 +2588,10 @@ Fetches all projects from the database, based on the company.
 \index{SelEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.SelEvent}\pysiglinewithargsret{\bfcode{SelEvent}}{\emph{evt}}{}
-Handles the selection of a project. Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary. Shows a dialog of the selected project.
+\phantomsection\label{api:wos.ProjectSelectDialog.SelEvent}\pysiglinewithargsret{\bfcode{SelEvent}}{\emph{unused\_event}}{}
+Handles the selection of a project.
+Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
+Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2604,7 +2603,7 @@ Handles the selection of a project. Starts a {\hyperref[api:wos.CURRENT_PROJECT]
 \index{onCancel() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{event}}{}
+\phantomsection\label{api:wos.ProjectSelectDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
 Handles ``Cancel'' button presses.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -3258,7 +3257,6 @@ Exit the application
 \item {\texttt{add\_file}}, \pageref{api:module-add_file}
 \indexspace
 \bigletter{c}
-\item {\texttt{commons}}, \pageref{api:module-commons}
 \item {\texttt{controller}}, \pageref{api:module-controller}
 \indexspace
 \bigletter{f}
@@ -3267,12 +3265,12 @@ Exit the application
 \bigletter{m}
 \item {\texttt{models}}, \pageref{api:module-models}
 \indexspace
-\bigletter{n}
-\item {\texttt{networking}}, \pageref{api:module-networking}
-\indexspace
 \bigletter{s}
 \item {\texttt{send\_file\_to}}, \pageref{api:module-send_file_to}
 \item {\texttt{swnp}}, \pageref{api:module-swnp}
+\indexspace
+\bigletter{u}
+\item {\texttt{utils}}, \pageref{api:module-utils}
 \indexspace
 \bigletter{w}
 \item {\texttt{wos}}, \pageref{api:module-wos}

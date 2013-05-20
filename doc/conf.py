@@ -19,7 +19,7 @@ import sys
 sys.path.insert(0, os.path.abspath('C:\\Users\\Kristian\\workspace\\diwacs'))
 
 # Import vars for application name and version, this needs to be after sys.path.insert
-import vars
+import diwavars
 
 # -- General configuration -----------------------------------------------------
 
@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = vars.APPLICATION_NAME
+project = diwavars.APPLICATION_NAME
 copyright = u'2012, Nick Eriksson'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -53,13 +53,13 @@ copyright = u'2012, Nick Eriksson'
 # built documents.
 #
 # The short X.Y version, initialize as the long version.
-version = vars.VERSION
+version = diwavars.VERSION
 # The full version, including alpha/beta/rc tags.
-release = vars.VERSION
+release = diwavars.VERSION
 
 # Try to parse short X.Y format from the release string.
 try:
-	vc = vars.VERSION.split('.')
+	vc = diwavars.VERSION.split('.')
 	if len(rc) > 1 :
 		version = u'' + vc[0] + u'.' + vc[1]
 except:

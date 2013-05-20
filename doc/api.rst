@@ -31,19 +31,14 @@ SWNP module
 .. automodule:: swnp
    :members:
 
-Commons module
---------------------
-.. automodule:: commons
-   :members:
-
 Filesystem module
 -----------------------
 .. automodule:: filesystem
    :members:
 
-Networking module
+Utils module
 -----------------------
-.. automodule:: networking
+.. automodule:: utils
    :members:
 
 Wos module

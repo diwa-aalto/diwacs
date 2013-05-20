@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-20 at 11:06.</p>
+<p>Documentation generated on 2013-05-20 at 13:41.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -1202,26 +1202,6 @@ DateTime.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-commons">
-<span id="commons-module"></span><h2>Commons module<a class="headerlink" href="#module-commons" title="Permalink to this headline">¶</a></h2>
-<p>Created on 17.5.2013</p>
-<dl class="function">
-<dt id="commons.IterIsLast">
-<tt class="descclassname">commons.</tt><tt class="descname">IterIsLast</tt><big>(</big><em>iterable</em><big>)</big> &rarr; generates (item, islast) pairs<a class="headerlink" href="#commons.IterIsLast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates pairs where the first element is an item from the iterable
-source and the second element is a boolean flag indicating if it is the
-last item in the sequence.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> (<em>iterable</em>) &#8211; The iterable element.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
 <div class="section" id="module-filesystem">
 <span id="filesystem-module"></span><h2>Filesystem module<a class="headerlink" href="#module-filesystem" title="Permalink to this headline">¶</a></h2>
 <p>Created on 17.5.2013</p>
@@ -1392,12 +1372,12 @@ last item in the sequence.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-networking">
-<span id="networking-module"></span><h2>Networking module<a class="headerlink" href="#module-networking" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-utils">
+<span id="utils-module"></span><h2>Utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
 <p>Created on 17.5.2013</p>
 <dl class="function">
-<dt id="networking.DottedIPToInt">
-<tt class="descclassname">networking.</tt><tt class="descname">DottedIPToInt</tt><big>(</big><em>dotted_ip</em><big>)</big><a class="headerlink" href="#networking.DottedIPToInt" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.DottedIPToInt">
+<tt class="descclassname">utils.</tt><tt class="descname">DottedIPToInt</tt><big>(</big><em>dotted_ip</em><big>)</big><a class="headerlink" href="#utils.DottedIPToInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms a dotted IP address to Integer.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1414,8 +1394,8 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="networking.GetLANMachines">
-<tt class="descclassname">networking.</tt><tt class="descname">GetLANMachines</tt><big>(</big><em>lan_ip</em><big>)</big><a class="headerlink" href="#networking.GetLANMachines" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.GetLANMachines">
+<tt class="descclassname">utils.</tt><tt class="descname">GetLANMachines</tt><big>(</big><em>lan_ip</em><big>)</big><a class="headerlink" href="#utils.GetLANMachines" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1431,8 +1411,8 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="networking.GetLocalIPAddress">
-<tt class="descclassname">networking.</tt><tt class="descname">GetLocalIPAddress</tt><big>(</big><em>target</em><big>)</big><a class="headerlink" href="#networking.GetLocalIPAddress" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.GetLocalIPAddress">
+<tt class="descclassname">utils.</tt><tt class="descname">GetLocalIPAddress</tt><big>(</big><em>target</em><big>)</big><a class="headerlink" href="#utils.GetLocalIPAddress" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to get local Internet Protocol address.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1447,8 +1427,8 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="networking.GetMacForIp">
-<tt class="descclassname">networking.</tt><tt class="descname">GetMacForIp</tt><big>(</big><em>ip</em><big>)</big><a class="headerlink" href="#networking.GetMacForIp" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.GetMacForIp">
+<tt class="descclassname">utils.</tt><tt class="descname">GetMacForIp</tt><big>(</big><em>ip</em><big>)</big><a class="headerlink" href="#utils.GetMacForIp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the mac address for an local IP address.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1461,8 +1441,8 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="networking.IntToDottedIP">
-<tt class="descclassname">networking.</tt><tt class="descname">IntToDottedIP</tt><big>(</big><em>intip</em><big>)</big><a class="headerlink" href="#networking.IntToDottedIP" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.IntToDottedIP">
+<tt class="descclassname">utils.</tt><tt class="descname">IntToDottedIP</tt><big>(</big><em>intip</em><big>)</big><a class="headerlink" href="#utils.IntToDottedIP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms an Integer IP address to dotted representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1479,8 +1459,24 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="networking.MapNetworkShare">
-<tt class="descclassname">networking.</tt><tt class="descname">MapNetworkShare</tt><big>(</big><em>letter</em>, <em>share</em><big>)</big><a class="headerlink" href="#networking.MapNetworkShare" title="Permalink to this definition">¶</a></dt>
+<dt id="utils.IterIsLast">
+<tt class="descclassname">utils.</tt><tt class="descname">IterIsLast</tt><big>(</big><em>iterable</em><big>)</big> &rarr; generates (item, islast) pairs<a class="headerlink" href="#utils.IterIsLast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates pairs where the first element is an item from the iterable
+source and the second element is a boolean flag indicating if it is the
+last item in the sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>iterable</strong> (<em>iterable</em>) &#8211; The iterable element.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.MapNetworkShare">
+<tt class="descclassname">utils.</tt><tt class="descname">MapNetworkShare</tt><big>(</big><em>letter</em>, <em>share</em><big>)</big><a class="headerlink" href="#utils.MapNetworkShare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maps the network share to a letter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1775,7 +1771,7 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.GUI.OnAboutBox">
-<tt class="descname">OnAboutBox</tt><big>(</big><em>e</em><big>)</big><a class="headerlink" href="#wos.GUI.OnAboutBox" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">OnAboutBox</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.GUI.OnAboutBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>About dialog</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1818,7 +1814,7 @@ last item in the sequence.</p>
 <dl class="method">
 <dt id="wos.GUI.OnExit">
 <tt class="descname">OnExit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.GUI.OnExit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exits program</p>
+<dd><p>Exits program.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1831,7 +1827,7 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.GUI.OnIconify">
-<tt class="descname">OnIconify</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.OnIconify" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">OnIconify</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.GUI.OnIconify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Window minimize event handler</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1879,8 +1875,8 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.GUI.OnTaskBarClose">
-<tt class="descname">OnTaskBarClose</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.OnTaskBarClose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Taskbar close event handler</p>
+<tt class="descname">OnTaskBarClose</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.GUI.OnTaskBarClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taskbar close event handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2187,13 +2183,13 @@ last item in the sequence.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Frame</span></tt>) &#8211; Parent frame</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Frame</span></tt>) &#8211; Parent frame.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="wos.ProjectSelectDialog.AddEvent">
-<tt class="descname">AddEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.AddEvent" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">AddEvent</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.AddEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows a modal dialog for adding a new project.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2207,8 +2203,10 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.ProjectSelectDialog.DelEvent">
-<tt class="descname">DelEvent</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.DelEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles the selection of a project. Starts a <a class="reference internal" href="#wos.CURRENT_PROJECT" title="wos.CURRENT_PROJECT"><tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt></a>, if necessary. Shows a dialog of the selected project.</p>
+<tt class="descname">DelEvent</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.DelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a project.
+Starts a <a class="reference internal" href="#wos.CURRENT_PROJECT" title="wos.CURRENT_PROJECT"><tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt></a>, if necessary.
+Shows a dialog of the selected project.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2221,7 +2219,7 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.ProjectSelectDialog.EditEvent">
-<tt class="descname">EditEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.EditEvent" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">EditEvent</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.EditEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows a modal dialog for adding a new project.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2249,8 +2247,10 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.ProjectSelectDialog.SelEvent">
-<tt class="descname">SelEvent</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.SelEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles the selection of a project. Starts a <a class="reference internal" href="#wos.CURRENT_PROJECT" title="wos.CURRENT_PROJECT"><tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt></a>, if necessary. Shows a dialog of the selected project.</p>
+<tt class="descname">SelEvent</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.SelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a project.
+Starts a <a class="reference internal" href="#wos.CURRENT_PROJECT" title="wos.CURRENT_PROJECT"><tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt></a>, if necessary.
+Shows a dialog of the selected project.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2263,7 +2263,7 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.ProjectSelectDialog.onCancel">
-<tt class="descname">onCancel</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.onCancel" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">onCancel</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog.onCancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles &#8220;Cancel&#8221; button presses.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2420,9 +2420,8 @@ last item in the sequence.</p>
 <li><a class="reference internal" href="#module-controller">Controller module</a></li>
 <li><a class="reference internal" href="#module-models">Models module</a></li>
 <li><a class="reference internal" href="#module-swnp">SWNP module</a></li>
-<li><a class="reference internal" href="#module-commons">Commons module</a></li>
 <li><a class="reference internal" href="#module-filesystem">Filesystem module</a></li>
-<li><a class="reference internal" href="#module-networking">Networking module</a></li>
+<li><a class="reference internal" href="#module-utils">Utils module</a></li>
 <li><a class="reference internal" href="#module-wos">Wos module</a></li>
 </ul>
 </li>
