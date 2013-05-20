@@ -3,6 +3,9 @@ Created on 17.5.2013
 
 '''
 # System imports.
+import hashlib
+import logging
+import os
 import socket
 import subprocess
 
@@ -12,8 +15,45 @@ import win32wnet
 import wmi
 
 # My imports.
-import commons
+import controller
+logging.config.fileConfig(os.path.abspath('logging.conf'))
+logger = logging.getLogger('utils')
 
+
+def GetProjectPassword(project_id):
+    project = controller.GetProject(project_id)
+    m = hashlib.sha1()
+    m.update(str(project.id) + project.password if project.password else '')
+    return m.hexdigest()
+
+
+def HashPassword(password):
+    m = hashlib.sha1()
+    m.update(password)
+    return m.hexdigest()
+
+
+def IterIsLast(iterable):
+    """ IterIsLast(iterable) -> generates (item, islast) pairs
+
+    Generates pairs where the first element is an item from the iterable
+    source and the second element is a boolean flag indicating if it is the
+    last item in the sequence.
+
+    :param iterable: The iterable element.
+    :type iterable: iterable
+    """
+
+    it = iter(iterable)
+    prev = it.next()
+    for item in it:
+        yield prev, False
+        prev = item
+    yield prev, True
+
+
+def SetLoggerLevel(level):
+    logger.setLevel(level)
 
 def DottedIPToInt(dotted_ip):
     """Transforms a dotted IP address to Integer.
@@ -92,7 +132,7 @@ def GetMacForIp(ip):
                 if ip_address == ip:
                     return str(interface.MACAddress).translate(None, ':')
     except Exception, e:
-        commons.logger.exception("Exception in GetMacForIp: %s", str(e))
+        logger.exception("Exception in GetMacForIp: %s", str(e))
     return None
 
 
@@ -124,10 +164,10 @@ def MapNetworkShare(letter, share):
     try:
         win32wnet.WNetCancelConnection2(letter, 1, 1)
     except Exception, e:
-        commons.logger.exception("error mapping share %s %s %s", letter,
+        logger.exception("error mapping share %s %s %s", letter,
                                  share, str(e))
     try:
         win32wnet.WNetAddConnection2(DISK, letter, share)
     except Exception, e:
-        commons.logger.exception("error mapping share %s %s %s", letter,
+        logger.exception("error mapping share %s %s %s", letter,
                                  share, str(e))

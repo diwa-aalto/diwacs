@@ -24,9 +24,8 @@ import watchdog
 from watchdog.events import FileSystemEventHandler
 
 # Own imports
-import commons
 import filesystem
-import networking
+import utils
 
 
 logging.config.fileConfig('logging.conf')
@@ -417,8 +416,8 @@ def AddComputer(name,ip,wos_id):
         db = ConnectToDatabase(True)
         pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
         mac = ''
-        mac = networking.GetMacForIp(ip)          
-        ip_int = networking.DottedIPToInt(ip)
+        mac = utils.GetMacForIp(ip)          
+        ip_int = utils.DottedIPToInt(ip)
         if mac:
             c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
             if c:
@@ -489,8 +488,8 @@ def AddComputerToSession(session,name,ip,wos_id):
     try:
         db = ConnectToDatabase(True)
         db.add(session)
-        mac = networking.GetMacForIp(ip)
-        ip_int = networking.DottedIPToInt(ip)
+        mac = utils.GetMacForIp(ip)
+        ip_int = utils.DottedIPToInt(ip)
         c = AddComputer(name,ip,wos_id)
         db.add(c)
         session.computers.append(c)

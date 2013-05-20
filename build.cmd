@@ -1,1 +1,1 @@
-python setup.py py2exe --icon icon.ico
+python setup.py py2exe --icon data\icon.ico

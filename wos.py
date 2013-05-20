@@ -16,7 +16,7 @@ from pubsub import pub
 from shutil import rmtree
 from sqlalchemy import exc
 from models import *
-from vars import *
+from diwavars import *
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from _winreg import KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER, QueryValueEx 
@@ -28,7 +28,8 @@ try:
 except ImportError: # if it's not there locally, try the wxPython lib.
     from wx.lib.agw import ultimatelistctrl as ULC
 
-import filesystem, commons, networking
+import filesystem
+import utils
 
 
 
@@ -298,7 +299,7 @@ class WORKER_THREAD(threading.Thread):
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project', 'command']
         key = ''
-        for k, islast in commons.IterIsLast(keys):
+        for k, islast in utils.IterIsLast(keys):
             key += k if key == '' else '\\' + k
             try:
                 rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
@@ -319,7 +320,7 @@ class WORKER_THREAD(threading.Thread):
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' + str(name), 'command']
         key = ''
-        for k, islast in commons.IterIsLast(keys):
+        for k, islast in utils.IterIsLast(keys):
             key += k if key == '' else '\\' + k
             try:
                 rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
@@ -386,7 +387,7 @@ class WORKER_THREAD(threading.Thread):
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
                 swnp.SetLoggerLevel(str(val).upper())
-                commons.SetLoggerLevel(str(val).upper()) 
+                utils.SetLoggerLevel(str(val).upper()) 
             elif "CAMERA_" in key:
                 if "URL" in key:
                     filesystem.UpdateCameraVars(str(val), None, None)
@@ -780,7 +781,8 @@ class DeleteProjectDialog(wx.Dialog):
         self.EndModal(ret)
     def OnCancel(self, event):
         self.EndModal(0) 
-           
+
+
 class ProjectSelectedDialog(wx.Dialog):
     def __init__(self, parent, title, project_id):
         super(ProjectSelectedDialog, self).__init__(parent=parent,
@@ -942,29 +944,33 @@ class AddProjectDialog(wx.Dialog):
         
         :param e: GUI Event.
         :type e: Event.
-        
-        """       
+
+        """
         self.Destroy()
-        
+
+
 class ProjectSelectDialog(wx.Dialog):
     """ A dialog for selecting a project.
-    
-    :param parent: Parent frame
-    :type parent: :class:`wx.Frame`
-    
+
+    :param parent: Parent frame.
+    :type parent: :py:class:`wx.Frame`
+
     """
-    def __init__(self, parent):       
-        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Project Selection', style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, size=(400, 300))
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Project Selection',
+                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+                           size=(400, 300))
         self.parent = parent
-        self.projects = self.GetProjects() 
+        self.projects = self.GetProjects()
         self.project_list = wx.ListBox(self, wx.ID_ANY, choices=self.projects)
         if self.parent.current_project_id:
-            project_id = self.project_index.index(int(self.parent.current_project_id))
-            self.project_list.SetSelection(project_id)
-        self.project_list.Bind(wx.EVT_LISTBOX_DCLICK, self.SelEvent) 
-        self.project_list.Bind(wx.EVT_LISTBOX, self.OnLb)   
-        addBtn = wx.Button(self, wx.ID_ANY, "Create...")
+            project_id = int(self.parent.current_project_id)
+            list_index = self.project_index.index(project_id)
+            self.project_list.SetSelection(list_index)
+        self.project_list.Bind(wx.EVT_LISTBOX_DCLICK, self.SelEvent)
+        self.project_list.Bind(wx.EVT_LISTBOX, self.OnLb)
 
+        addBtn = wx.Button(self, wx.ID_ANY, "Create...")
         addBtn.Bind(wx.EVT_BUTTON, self.AddEvent)
         self.selBtn = wx.Button(self, wx.ID_ANY, "Select")
         self.selBtn.Bind(wx.EVT_BUTTON, self.SelEvent)
@@ -993,70 +999,76 @@ class ProjectSelectDialog(wx.Dialog):
         mainSizer.Add(selSizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
         self.SetSizer(mainSizer)
         self.Layout()
-        
-    def OnLb(self, event):
-        self.selBtn.Enable() 
-        self.editBtn.Enable() 
-        self.delBtn.Enable()  
-    def onCancel(self, event):
+
+    def OnLb(self, unused_event):
+        self.selBtn.Enable()
+        self.editBtn.Enable()
+        self.delBtn.Enable()
+
+    def onCancel(self, unused_event):
         """Handles "Cancel" button presses.
-        
+
         :param event: GUI Event.
         :type event: Event.
-        
+
         """
         self.EndModal(0)
  
     #----------------------------------------------------------------------
-    def EditEvent(self, event):
+    def EditEvent(self, unused_event):
         """Shows a modal dialog for adding a new project.
-        
+
         :param event: GUI Event.
         :type event: Event.
-        
+
         """
         try:
-            project_id = self.project_index[self.project_list.GetSelection()]
+            select_index = self.project_list.GetSelection()
+            project_id = self.project_index[select_index]
             dlg = AddProjectDialog(self, 'Modify a Project', project_id)
-            dlg.ShowModal()    
+            dlg.ShowModal()
             self.projects = self.GetProjects()
             self.project_list.Set(self.projects)
-            if project_id:                
-                self.project_list.SetSelection(int(self.project_index.index(project_id)))
+            if project_id:
+                self.project_list.SetSelection(select_index)
         except:
-            wos_logger.exception("Edit event exception")  
-            
-    def AddEvent(self, event):
+            wos_logger.exception("Edit event exception")
+
+    def AddEvent(self, unused_event):
         """Shows a modal dialog for adding a new project.
-        
+
         :param event: GUI Event.
         :type event: Event.
-        
+
         """
         try:
             dlg = AddProjectDialog(self, 'Create a Project')
-            project_id = dlg.ShowModal()    
+            project_id = dlg.ShowModal()
             self.projects = self.GetProjects()
             self.project_list.Set(self.projects)
             wos_logger.debug(project_id)
-            if project_id:                
-                self.project_list.SetSelection(int(self.project_index.index(project_id))) 
+            if project_id:
+                self.project_list.SetSelection(int(
+                                self.project_index.index(project_id)))
                 self.OnLb(None)
 
         except:
-            wos_logger.exception("Add event exception") 
-               
-    def DelEvent(self, evt):
-        """Handles the selection of a project. Starts a :class:`wos.CURRENT_PROJECT`, if necessary. Shows a dialog of the selected project.  
-        
+            wos_logger.exception("Add event exception")
+
+    def DelEvent(self, unused_event):
+        """Handles the selection of a project.
+        Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
+        Shows a dialog of the selected project.
+
         :param evt: GUI Event.
         :type evt: Event.
-        
+
         """
         index = self.project_index[self.project_list.GetSelection()]
-        name = self.projects[self.project_list.GetSelection()]
+        unused_project_name = self.projects[self.project_list.GetSelection()]
         if index == self.parent.current_project_id:
-            wx.MessageDialog(self, "You cannot delete currently active project.","Error", wx.OK|wx.ICON_ERROR).Show()
+            wx.MessageDialog(self, "You cannot delete currently active project.",
+                             "Error", wx.OK | wx.ICON_ERROR).Show()
             return
         dlg = DeleteProjectDialog(self, 'Delete Project', index)
         try:
@@ -1066,26 +1078,25 @@ class ProjectSelectDialog(wx.Dialog):
                 if result == 11:
                     #delete files
                     filesystem.DeleteDir(controller.GetProjectPath(index))
-                success = controller.DeleteRecord(Project, index)
+                unused_success = controller.DeleteRecord(Project, index)
                 self.projects = self.GetProjects()
                 self.project_list.Set(self.projects)
-                
         finally:
-            dlg.Destroy()   
-        
-            
-    def SelEvent(self, evt):
-        """Handles the selection of a project. Starts a :class:`wos.CURRENT_PROJECT`, if necessary. Shows a dialog of the selected project.  
-        
+            dlg.Destroy()
+
+    def SelEvent(self, unused_event):
+        """Handles the selection of a project.
+        Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
+        Shows a dialog of the selected project.
+
         :param evt: GUI Event.
         :type evt: Event.
-        
+
         """
         wos_logger.debug('Project selected')
         index = self.project_index[self.project_list.GetSelection()]
-        if index != self.parent.current_project_id:         
+        if index != self.parent.current_project_id:
             self.parent.SetCurrentProject(index)
-            #self.parent.StartCurrentProject()
             self.parent.OnProjectSelected()
 
         dlg = ProjectSelectedDialog(self, 'Project Selected', index)
@@ -1096,15 +1107,15 @@ class ProjectSelectDialog(wx.Dialog):
                 self.parent.OnSession(None)
         finally:
             dlg.Destroy()
-        wos_logger.debug('Asked to start session.')    
+        wos_logger.debug('Asked to start session.')
         self.EndModal(0)
-        
+
     def GetProjects(self, company_id=1):
         """Fetches all projects from the database, based on the company.
-        
+
         :param company_id: A company id, the owner of the projects. Defaults to 1.
         :type company_id: Integer.
-        
+
         """
         try:
             db = controller.ConnectToDatabase()
@@ -1121,7 +1132,7 @@ class ProjectSelectDialog(wx.Dialog):
             ConnectionErrorDialog(self.parent)
         except Exception, e:
             wos_logger.exception("Project Select Dialog exception")
-            
+
 
 class PreferencesDialog(wx.Dialog):
     """ Creates and displays a preferences dialog that allows the user to change some settings.
@@ -1704,7 +1715,7 @@ class GUI(wx.Frame):
             self.worker.AddProjectReg()
             wos_logger.debug("setting project path")
             CURRENT_PROJECT_PATH = controller.GetProjectPath(self.current_project_id)
-            networking.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
+            utils.MapNetworkShare('W:', CURRENT_PROJECT_PATH)
             CURRENT_PROJECT_ID = project_id
             if self.is_responsive:
                 wos_logger.debug("Starting observers.")
@@ -2316,19 +2327,19 @@ class GUI(wx.Frame):
         self.left.SetBitmapLabel(self.GetIcon('0'))
         for i in self.imgs:
             i.SetBitmap(wx.Image(NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-            i.SetToolTip(None)        
-                             
+            i.SetToolTip(None)
+
     def UpdateScreens(self, update):
         """Called when screens need to be updated and redrawn
-        
+
         :param update: Pubsub needs one param, therefore it is called update.
         :type update: Boolean.
-        
+
         """
         if self.init_screens_done:
             self.HideScreens()
             self.nodes = []
-            screen = 0   
+            screen = 0
             for node in self.swnp.get_screen_list():
                 self.nodes.insert(screen, (node.id, node.screens, node.name))
                 self.worker.AddRegEntry(node.name, node.id)
@@ -2339,7 +2350,7 @@ class GUI(wx.Frame):
                     self.left.SetBitmapLabel(self.GetIcon('left_arrow'))
                     self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
                 while i < MAX_SCREENS and i < len(self.nodes): 
-                    try:              
+                    try:
                         img_path = filesystem.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
                         try:
                             bm = wx.Image(img_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
@@ -2352,34 +2363,34 @@ class GUI(wx.Frame):
                     except:
                         wos_logger.exception("nodes update except:" + str(self.nodes[(i + self.iterator) % len(self.nodes)]))        
             self.worker.CheckResponsive()
-            self.Refresh()      
-    
+            self.Refresh()
+
     def OnExit(self, event):
-        """ Exits program 
-        
+        """ Exits program.
+
         :param event: GUI Event
         :type event: Event.
-        
+
         """
-        if not self.EXITED:        
+        if not self.EXITED:
             try:
                 self.EXITED = True
                 self.overlay.Destroy()
                 self.Hide()
                 self.trayicon.RemoveIcon()
-                self.trayicon.Destroy() 
-                self.closebtn.SetToolTip(None)             
+                self.trayicon.Destroy()
+                self.closebtn.SetToolTip(None)
                 if not event == 'conn_err' and self.is_responsive:
                     wos_logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
-                    controller.UnsetActivity(PGM_GROUP)          
+                    controller.UnsetActivity(PGM_GROUP)
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     wos_logger.debug("On exit self is last active comp.")
                     controller.UnsetActivity(PGM_GROUP)
                     if self.current_session_id:
                         controller.EndSession(self.current_session_id)
-                networking.MapNetworkShare('W:', 'C:\\')
+                utils.MapNetworkShare('W:', 'C:\\')
                 controller.SetIsResponsive(0)
                 time.sleep(5)
                 self.cmfh.stop()
@@ -2396,31 +2407,37 @@ class GUI(wx.Frame):
                     wos_logger.debug(thread.getName())
                 self.Destroy()
                 sys.exit(0)
-    def OnAboutBox(self, e):
-        """ About dialog 
-        
+
+    def OnAboutBox(self, unused_event):
+        """ About dialog.
+
         :param e: GUI Event.
         :type e: Event.
-        
+
         """
-        description = APPLICATION_NAME + """ is the windows client for DiWa - A distributed meeting room collaboration system.\n\nLead programmer: Nick Eriksson\nContributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen, Vikki du Preez, Marko Nieminen\n\n
-"""
+        description = APPLICATION_NAME + " is the windows client for DiWa - "\
+            "A distributed meeting room collaboration system.\n\n"\
+            "Lead programmer: Nick Eriksson\n"\
+            "Contributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen, "\
+            "Vikki du Preez, Marko Nieminen\n\n"
 
         licence = """ 
         DiwaCS is free software.
         """
         info = wx.AboutDialogInfo()
 
-        info.SetIcon(wx.Icon(os.path.join("data", "splashscreen.png"), wx.BITMAP_TYPE_PNG))
+        info.SetIcon(wx.Icon(os.path.join("data", "splashscreen.png"),
+                             wx.BITMAP_TYPE_PNG))
         info.SetName(APPLICATION_NAME)
         info.SetVersion(VERSION)
         info.SetDescription(description)
-        info.SetCopyright('(c) 2012-2013 DiWa project by Strategic Usability Research Group STRATUS, Aalto University School of Science.')
+        info.SetCopyright('(c) 2012-2013 DiWa project by Strategic Usability'\
+                          ' Research Group STRATUS, Aalto University School'\
+                          ' of Science.')
         info.SetWebSite('http://stratus.soberit.hut.fi/')
-
         wx.AboutBox(info)
 
-    def OnIconify(self, evt):
+    def OnIconify(self, unused_event):
         """ Window minimize event handler
 
         :param evt: GUI Event.
@@ -2433,60 +2450,62 @@ class GUI(wx.Frame):
             self.Iconize(False)
         else:
             self.Iconize(True)
-            self.Hide()    
+            self.Hide()
 
     def OnTaskBarActivate(self, evt):
         """ Taskbar activate event handler 
-        
+
         :param evt: GUI Event.
         :type evt: Event.
-        
+
         """
         evt.Skip()
         if self.IsIconized():
             self.Show()
-            self.Raise() 
+            self.Raise()
             self.Iconize(False)
         else:
             self.Iconize(True)
-            self.Hide()        
+            self.Hide()
 
-    
-    def OnTaskBarClose(self, evt):
-        """ Taskbar close event handler 
-        
+    def OnTaskBarClose(self, unused_event):
+        """ Taskbar close event handler.
+
         :param evt: GUI Event.
         :type evt: Event.
-        
+
         """
         wx.CallAfter(self.Close)
-                                       
+
     def MessageHandler(self, message):
         """Message handler for received messages
-        
+
         :param message: Received message.
         :type message: an instance of :class:`swnp.Message`
-        
+
         """
         global CONTROLLED, CONTROLLING
         try:
-            if DEBUG: wos_logger.debug('ZMQ PUBSUB Message:' + message)
-            cmd, target = message.split(';')           
+            if DEBUG:
+                    wos_logger.debug('ZMQ PUBSUB Message:' + message)
+            cmd, target = message.split(';')
             if cmd == 'open':
                 """Open all files in list"""
                 target = eval(target)
                 for f in target:
                     if self.current_session_id:
-                        controller.CreateFileaction(f, 6, self.current_session_id, self.current_project_id)
+                        controller.CreateFileaction(f, 6,
+                                                    self.current_session_id,
+                                                    self.current_project_id)
                     filesystem.OpenFile(f)
             if cmd == 'new_responsive':
                 if self.is_responsive:
                     self.StopResponsive()
                     self.is_responsive = False
-                    self.responsive = target    
+                    self.responsive = target
             if cmd == 'event':
                 if self.is_responsive or DEBUG:
-                    self.worker.CreateEvent(target)   
+                    self.worker.CreateEvent(target)
             if cmd == 'key':
                 e, key, scan = target.split(',')
                 e = int(e)
@@ -2495,8 +2514,8 @@ class GUI(wx.Frame):
                     flags = 2
                 macro.send_input('k', int(key), flags, int(scan))
             if cmd == 'remote_start':
-                CONTROLLED = target              
-            if cmd == 'remote_end':                
+                CONTROLLED = target
+            if cmd == 'remote_end':
                 if CONTROLLED:
                     #release alt
                     macro.send_input('k', 18, 2, 56)
@@ -2504,11 +2523,11 @@ class GUI(wx.Frame):
                     global CAPTURE
                     self.SetCursor(DEFAULT_CURSOR)
                     del self.selected_nodes[:]
-                    CAPTURE = False 
+                    CAPTURE = False
                     self.capture_thread.unhook()
                     self.overlay.Hide()
                 CONTROLLED = False
-                CONTROLLING = False    
+                CONTROLLING = False
             if cmd == 'mouse_move':
                 x, y = target.split(',')
                 macro.send_input('m', [int(x), int(y)], 0x0001)
@@ -2530,11 +2549,12 @@ class GUI(wx.Frame):
                     flags = 0x0040
                 elif int(target) == 0x20A:
                     flags = 0x0800
-                    mouseData = int(wheel) * 120 
+                    mouseData = int(wheel) * 120
                 elif int(target) == 0x20E:
                     flags = 0x01000
                     mouseData = int(wheel) * 120
-                macro.send_input('m', [0, 0], flags, scan=0, mouseData=mouseData)                                  
+                macro.send_input('m', [0, 0], flags, scan=0,
+                                 mouseData=mouseData)
             if cmd == 'url':
                 webbrowser.open(target)
             if cmd == 'set' and target == 'responsive':
@@ -2543,23 +2563,27 @@ class GUI(wx.Frame):
                     self.is_responsive = True
             if cmd == 'screenshot':
                 if self.swnp.node.screens > 0:
-                    filesystem.ScreenCapture(controller.GetProjectPath(self.current_project_id), self.swnp.node.id)                
+                    filesystem.ScreenCapture(
+                        controller.GetProjectPath(self.current_project_id),
+                        self.swnp.node.id)
             if cmd == 'current_session':
                 target = int(target)
                 if self.current_session_id != target:
-                    self.SetCurrentSession(target)                      
-                
-                     
+                    self.SetCurrentSession(target)
             if cmd == 'current_project':
                 if self.current_project_id != target:
                     target = int(target)
-                    if self.current_project_id != target:               
-                        self.SetCurrentProject(target)
+                if self.current_project_id != target:
+                    self.SetCurrentProject(target)
             if cmd == 'current_activity':
                 if self.activity != target:
                     self.activity = target
-                self.SetCurrentProject(controller.GetProjectIdByActivity(self.activity))
-                self.SetCurrentSession(controller.GetSessionIdByActivity(self.activity))                 
+                self.SetCurrentProject(
+                    controller.GetProjectIdByActivity(self.activity)
+                )
+                self.SetCurrentSession(
+                    controller.GetSessionIdByActivity(self.activity)
+                )
 
         except Exception:
             wos_logger.exception('Exception in MessageHandler:')
@@ -2570,5 +2594,5 @@ if __name__ == '__main__':
     wos_logger.info('Application started')
     #version_checker = CHECK_UPDATE().start()
     app = wx.App()
-    w = GUI(None, title=APPLICATION_NAME)
+    w = GUI(parent=None, title=(APPLICATION_NAME + ' ' + VERSION))
     app.MainLoop()
