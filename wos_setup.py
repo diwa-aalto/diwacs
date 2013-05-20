@@ -33,15 +33,23 @@ import py2exe
 from glob import glob
 
 
+sys.path.append(r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT')
+mydata_content = ['data\\icon.ico']
+x = glob('data\\*.png')
+if x:
+    for t in x:
+        mydata_content.append(t)
+
+
 setup(name="DiwaCS",
       options={'py2exe':
                     {"typelibs": [('{565783C6-CB41-11D1-8B02-00600806D9B6}',
                                    0, 1, 2)],
                     'bundle_files': 3,
-                    'includes': ["zmq.utils.strtypes", "zmq.utils.jsonapi",
-                                  "zmq.core.pysocket", 'sqlalchemy',
+                    'includes': ['zmq.utils.strtypes', 'zmq.utils.jsonapi',
+                                  'zmq.core.pysocket', 'sqlalchemy',
                                   'sqlalchemy.dialects.mysql', 'pymysql',
-                                  'PIL', 'pathtools', 'migrate',
+                                  'PIL', 'pathtools', 'migrate', 'wmi',
                                   'migrate.changeset.databases.mysql'],
                      "packages": ['pubsub', 'zmq', 'configobj', 'migrate',
                                    'netifaces', 'lxml', 'pyaudio', 'wave',
@@ -54,34 +62,25 @@ setup(name="DiwaCS",
                 {
                 'script': "wos.py",
                 'dest_base': 'DiwaCS',
-                "icon_resources": [(0, "data\\icon.ico")]
+                "icon_resources": [(0, r'data\icon.ico')]
                 },
-                {'script': "add_file.py"},
-                {'script':'send_file_to.py'},
-                {'script':'manage.py'}
+                {'script': 'add_file.py'},
+                {'script': 'send_file_to.py'},
+                {'script': 'manage.py'}
               ],
       data_files=[
-                  ("Microsoft.VC90.CRT", 
+                  ("Microsoft.VC90.CRT",
                    glob(r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*')),
                   ("icons", glob(r'icons\*.*')),
                   #("migraterepo", glob(r'migraterepo\*.*')),
                   #("migraterepo\\versions", glob(r'migraterepo\\versions\*.*')),
                   #("ofv", glob(r'ofv\*.*')),
                   #("rfv", glob(r'rfv\*.*')),
-                  #("7Zip64", glob(r'7Zip64\*.*')),
                   ("icons//filetypes", glob(r'icons\filetypes\*.*')),
-                  (".", [
-                         "data\\icon.ico",
-                         'data\\Icon.png',
-                         "data\\scr_mask.png",
-                         "data\\scr_frame_mask.png",
-                         "data\\SCREEN.png",
-                         "data\\noscreen.png",
-                         "C:\Users\\neriksso\zeromq-2.2.0\lib\libzmq.dll",
-                         "logging.conf",
-                         "data\\splashscreen.png",
-                         "config.ini"
-                        ]
-                   )
-                  ]
-      )
+                  ("data", mydata_content),
+                  (".", ['C:\Users\Kristian\Documents\libzmq\libzmq.dll',
+                         'logging.conf',
+                         'config.ini'
+                         ])
+                 ]
+)
