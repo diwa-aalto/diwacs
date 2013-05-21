@@ -278,20 +278,12 @@ class WORKER_THREAD(threading.Thread):
             wos_logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
                 if RESPONSIVE == PGM_GROUP:
-                    node = self.parent.swnp.node.id
-                else:
-                    return
-                self.parent.responsive = node
-                wos_logger.debug(node + str(type(node)))
-                if node == self.parent.swnp.node.id:
-                    self.parent.is_responsive = True
                     self.parent.SetResponsive()
-                    wos_logger.debug("Setting self as responsive")
-                else:
-                    wos_logger.debug("Setting %s as responsive" % node)
-                    self.parent.SwnpSend(node, 'set;responsive')
+                    wos_logger.debug("Setting self as responsive")         
             else:
                 self.parent.responsive = str(nodes[0][0])
+                if self.parent.responsive == self.parent.swnp.node.id:
+                    self.parent.SetResponsive()
         wos_logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
 
     def AddProjectReg(self):
@@ -1756,8 +1748,10 @@ class GUI(wx.Frame):
         wos_logger.debug("Set Responsive")
         controller.SetIsResponsive(PGM_GROUP)
         self.StartCurrentProject()
+        self.is_responsive = True
         #self.SetObservers()  
         self.StartCurrentSession()
+        
     def StopResponsive(self):
         controller.SetIsResponsive(0)
         self.RemoveObservers()
