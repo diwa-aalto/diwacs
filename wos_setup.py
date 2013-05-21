@@ -20,7 +20,7 @@ try:
     import win32com
     for p in win32com.__path__[1:]:
         modulefinder.AddPackagePath("win32com", p)
-    for extra in ["win32com.shell"]: #,"win32com.mapi"
+    for extra in ["win32com.shell"]:
         __import__(extra)
         m = sys.modules[extra]
         for p in m.__path__[1:]:
@@ -32,8 +32,9 @@ from distutils.core import setup
 import py2exe
 from glob import glob
 
-
-sys.path.append(r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT')
+vspath = 'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\'\
+         'x86\\Microsoft.VC90.CRT'
+sys.path.append(vspath)
 mydata_content = ['data\\icon.ico']
 x = glob('data\\*.png')
 if x:
@@ -43,7 +44,7 @@ if x:
 
 setup(name="DiwaCS",
       options={'py2exe':
-                    {"typelibs": [('{565783C6-CB41-11D1-8B02-00600806D9B6}',
+                    {'typelibs': [('{565783C6-CB41-11D1-8B02-00600806D9B6}',
                                    0, 1, 2)],
                     'bundle_files': 3,
                     'includes': ['zmq.utils.strtypes', 'zmq.utils.jsonapi',
@@ -69,11 +70,10 @@ setup(name="DiwaCS",
                 {'script': 'manage.py'}
               ],
       data_files=[
-                  ("Microsoft.VC90.CRT",
-                   glob(r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*')),
+                  ("Microsoft.VC90.CRT", glob(vspath + r'\*.*')),
                   ("icons", glob(r'icons\*.*')),
                   #("migraterepo", glob(r'migraterepo\*.*')),
-                  #("migraterepo\\versions", glob(r'migraterepo\\versions\*.*')),
+                  #("migraterepo\\versions", glob(r'migraterepo\\versions\*.*')
                   #("ofv", glob(r'ofv\*.*')),
                   #("rfv", glob(r'rfv\*.*')),
                   ("icons//filetypes", glob(r'icons\filetypes\*.*')),
