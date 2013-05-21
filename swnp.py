@@ -135,7 +135,9 @@ class Message():
 def testIP():
     try:
         for interface in netifaces.interfaces():
-            if netifaces.AF_INET in netifaces.ifaddresses(interface) and '192.168.1' in netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']:
+            if_addresses = netifaces.ifaddresses(interface)
+            if netifaces.AF_INET in if_addresses and (
+                    '192.168.1' in if_addresses[netifaces.AF_INET][0]['addr']):
                 logger.debug('192.168.1 found')
                 return True
         logger.debug('192.168.1 not in any ip addresses')
@@ -280,7 +282,9 @@ class SWNP:
                 if len(to_be_removed) > 0:
                     #logger.debug('Timeout: screen update sent')
                     pub.sendMessage("update_screens", update=True)
-                """logger.debug('Timeout list comparison nodelist: %s nodes: %s result: %s',str(self.NODE_LIST),str(nodes),str(self.NODE_LIST.symmetric_difference(nodes)))
+                """logger.debug('Timeout list comparison nodelist: %s nodes: %s
+                result: %s',str(self.NODE_LIST),str(nodes),str(self.NODE_LIST.
+                symmetric_difference(nodes)))
                 if self.NODE_LIST.symmetric_difference(nodes):
                     self.NODE_LIST = nodes
                     pub.sendMessage("update_screens",update=True)"""
@@ -358,7 +362,7 @@ class SWNP:
                 if msg_obj.PREFIX == 'SYNC':
                     ##print "Syncing\n"
                     self.sync_handler(msg_obj)
-                if msg_obj.PREFIX == 'MSG': 
+                if msg_obj.PREFIX == 'MSG':
                     #print 'got msg', msg_obj
                     #self.MSG_BUFFER.append(msg_obj)
                     pub.sendMessage("message_received",

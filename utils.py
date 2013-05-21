@@ -55,6 +55,7 @@ def IterIsLast(iterable):
 def SetLoggerLevel(level):
     logger.setLevel(level)
 
+
 def DottedIPToInt(dotted_ip):
     """Transforms a dotted IP address to Integer.
 
