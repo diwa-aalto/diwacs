@@ -35,8 +35,10 @@ from glob import glob
 vspath = 'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\'\
          'x86\\Microsoft.VC90.CRT'
 postgrepath = 'C:\\Program Files (x86)\\PostgreSQL\\9.2\\lib'
+#ocipath = r'C:\Program Files (x86)\OracleInstantClient'
 sys.path.append(vspath)
 sys.path.append(postgrepath)
+#sys.path.append(ocipath)
 mydata_content = ['data\\icon.ico']
 x = glob('data\\*.png')
 if x:
