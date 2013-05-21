@@ -12,7 +12,7 @@ BLANK_CURSOR = None
 # Application name
 APPLICATION_NAME = "DiWaCS"
 # current application version
-VERSION = "0.9.2.1"
+VERSION = "0.9.2.2"
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
 # System tray icon filename
@@ -73,3 +73,31 @@ AUDIO = False
 #  0 Will NOT act as responsive.
 #  1 WILL act as responsive.
 RESPONSIVE = -1
+
+
+# DATABASE CONFIGS
+DB_ADDRESS = '192.168.1.10'
+DB_NAME = 'WZP'
+DB_TYPE = 'mysql'
+DB_USER = 'wazzuup'
+DB_PASS = 'serval'
+DB_DRIVER = {
+             'mysql': 'pymysql',
+             #'oracle': 'cx_oracle',
+             'postgresql': 'pg8000',
+             'mssql': 'pyodbc'
+            }
+
+
+def UpdateDatabase(ADDRESS=None, NAME=None, TYPE=None, USER=None, PASS=None):
+    global DB_ADDRESS, DB_NAME, DB_TYPE, DB_USER, DB_PASS
+    if ADDRESS:
+        DB_ADDRESS = ADDRESS
+    if NAME:
+        DB_NAME = NAME
+    if TYPE:
+        DB_TYPE = TYPE
+    if USER:
+        DB_USER = USER
+    if PASS:
+        DB_PASS = PASS

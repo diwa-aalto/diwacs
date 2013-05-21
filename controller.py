@@ -6,9 +6,9 @@ Created on 28.5.2012
 #import MySQLdb
 import sys
 sys.stdout = open("data\stdout.log", "wb")
-sys.stderr = open("data\stderr.log", "wb")  
+sys.stderr = open("data\stderr.log", "wb")
 from models import *
-from sqlalchemy import create_engine,func, sql,desc,or_
+from sqlalchemy import create_engine, func, sql, desc, or_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import exc
 from pubsub import pub
@@ -24,6 +24,7 @@ import watchdog
 from watchdog.events import FileSystemEventHandler
 
 # Own imports
+import diwavars
 import filesystem
 import utils
 
@@ -31,9 +32,10 @@ import utils
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 STORAGE = "192.168.1.10"
-DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP?charset=utf8&use_unicode=1'
-ENGINE = create_engine(DATABASE, echo=True) 
-PROJECT_PATH = '\\\\'+STORAGE+'\\Projects\\'
+DATABASE = ('mysql+pymysql://wazzuup:serval@' + STORAGE +
+            '/WZP?charset=utf8&use_unicode=1')
+ENGINE = create_engine(DATABASE, echo=True)
+PROJECT_PATH = '\\\\' + STORAGE + '\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
 SCANNER_TH = None
 CS_TH = None
@@ -42,37 +44,56 @@ IS_RESPONSIVE = 0
 NODE_NAME = ""
 NODE_SCREENS = 0
 ACTIONS = {
-                       1 : "Created",
-                       2 : "Deleted",
-                       3 : "Updated",
-                       4 : "Renamed from something",
-                       5 : "Renamed to something",
-                       6 : "Opened",
-                       7 : "Closed",
+                       1: "Created",
+                       2: "Deleted",
+                       3: "Updated",
+                       4: "Renamed from something",
+                       5: "Renamed to something",
+                       6: "Opened",
+                       7: "Closed",
             }
+
+
 def SetLoggerLevel(level):
     logger.setLevel(level)
-    
+
+
 def UpdateStorage(storage):
     global STORAGE
     STORAGE = storage
     global DATABASE
-    DATABASE = 'mysql+pymysql://wazzuup:serval@'+STORAGE+'/WZP'
+    try:
+        DATABASE = (
+                    ('%s+%s://' % (diwavars.DB_TYPE,
+                                   diwavars.DB_DRIVER[diwavars.DB_TYPE])) +
+                    ('%s:%s@' % (diwavars.DB_USER, diwavars.DB_PASS)) +
+                    diwavars.STORAGE + '/' + diwavars.DB_NAME
+                    )
+        logger.debug('DB = ' + DATABASE)
+    except Exception, e:
+        logger.error('DATABASE ERROR: %s', str(e))
+        raise Exception('EXIT')
     global ENGINE
-    ENGINE = create_engine(DATABASE, echo=True) 
+    ENGINE = create_engine(DATABASE, echo=True)
     global PROJECT_PATH
-    PROJECT_PATH = '\\\\'+STORAGE+'\\Projects\\'
+    PROJECT_PATH = '\\\\' + STORAGE + '\\Projects\\'
+
+
 def SetIsResponsive(responsive):
     global IS_RESPONSIVE
     IS_RESPONSIVE = responsive
-    
+
+
 def SetNodeName(name):
     global NODE_NAME
-    NODE_NAME = name    
-    
+    NODE_NAME = name
+
+
 def SetNodeScreens(screens):
     global NODE_SCREENS
-    NODE_SCREENS = screens     
+    NODE_SCREENS = screens
+
+
 def CreateAll():
     """Create tables to the database"""
     try:
@@ -81,12 +102,13 @@ def CreateAll():
         db.execute('DROP table IF EXISTS Action')
         db.execute('SET foreign_key_checks = 1')
         db.commit()
-        Base.metadata.create_all(ENGINE)    
-        for x,y in ACTIONS.items(): db.add(Action(y))
-        db.commit()    
+        Base.metadata.create_all(ENGINE)
+        for unused_x, y in ACTIONS.items():
+            db.add(Action(y))
+        db.commit()
         db.close()
     except Exception, e:
-        logger.exception('CreateAll Exception')   
+        logger.exception('CreateAll Exception: %s', str(e))
 
 def ConnectToDatabase(expire=False):
     """ Connect to the database and return a Session object
@@ -158,7 +180,8 @@ def GetActiveSession(pgmgroup):
         session = db.query(Activity).filter(Activity.id==activity).one().session
         db.close()
         return session.id
-           
+
+
 def AddActivity(project_id,pgmgroup,session_id=None,act_id=None):
     try:
         db = ConnectToDatabase()
@@ -166,7 +189,7 @@ def AddActivity(project_id,pgmgroup,session_id=None,act_id=None):
         if session_id:
             session = db.query(Session).filter(Session.id==session_id).one()
         else:
-            session = None    
+            session = None
         if not act_id:
                 act = Activity(project,session)
         else:
@@ -225,15 +248,15 @@ def AddProject(data):
         return None
 
 
-def CheckPassword(project_id,password):
+def CheckPassword(project_id, password):
     db = ConnectToDatabase()
     project_hash = db.query(Project.password).filter_by(id=project_id).one()[0]
     db.close()
-    if not project_hash or project_hash == commons.HashPassword(password):
+    if not project_hash or project_hash == utils.HashPassword(password):
         return True
     else:
         return False
-    
+
 def DeleteRecord(Model,idNum):
     """ Delete a record from database
     
@@ -607,7 +630,7 @@ def IsProjectFile(filename,project_id):
         db = ConnectToDatabase()
         basename = os.path.basename(filename)
         if isinstance(basename,str):
-            basename =  unicode(basename, errors='replace')
+            basename = unicode(basename, errors='replace')
         logger.debug("IsProjectFile %s %s"%(str(type(filename)),filename))
         files = db.query(File.path).filter(File.project_id==project_id,File.path.like(u'%'+ basename)).order_by(desc(File.id)).all()
         db.close()
@@ -617,9 +640,9 @@ def IsProjectFile(filename,project_id):
 
     for file in files:
             filebase = os.path.basename(file[0])
-            if isinstance(filebase,str):
-                filebase =  unicode(filebase, errors='replace')
-        
+            if isinstance(filebase, str):
+                filebase = unicode(filebase, errors='replace')
+
             if filebase == basename:
                 return filebase
     f = filesystem.SearchFile(os.path.basename(filename), GetProjectPath(project_id))
@@ -627,7 +650,7 @@ def IsProjectFile(filename,project_id):
         return AddFileToProject(f, project_id)
     return False
 
-def GetFilePath(project_id,filename):
+def GetFilePath(project_id, filename):
     file = IsProjectFile(filename,project_id)
     if file:
         return file
