@@ -67,7 +67,7 @@ def UpdateStorage(storage):
                     ('%s+%s://' % (diwavars.DB_TYPE,
                                    diwavars.DB_DRIVER[diwavars.DB_TYPE])) +
                     ('%s:%s@' % (diwavars.DB_USER, diwavars.DB_PASS)) +
-                    diwavars.STORAGE + '/' + diwavars.DB_NAME
+                    diwavars.DB_ADDRESS + '/' + diwavars.DB_NAME
                     )
         logger.debug('DB = ' + DATABASE)
     except Exception, e:
