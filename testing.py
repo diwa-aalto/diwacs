@@ -3,6 +3,7 @@ Created on 20.5.2013
 
 @author: Kristian
 '''
+import os
 import unittest
 
 import filesystem
@@ -52,6 +53,15 @@ class TestFilesystem(unittest.TestCase):
         self.assertTrue(filesystem.CAMERA_URL == old_vars[0])
         self.assertEquals(filesystem.CAMERA_USER, old_vars[1])
         self.assertEquals(filesystem.CAMERA_PASS, old_vars[2])
+
+    def test_searchfile(self):
+        tofind = ['api.doctree', 'DiWaCS.ilg',
+                  '001_Edit_project_definition.pyc']
+        root = os.getcwd()
+        for f in tofind:
+            fp = filesystem.SearchFile(f, root)
+            if not fp:
+                self.assertFalse(True, '%s not found in %s' % (f, root))
 
 
 class DiwaTest(unittest.TestSuite):

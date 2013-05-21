@@ -5,6 +5,7 @@ Created on 17.5.2013
 # System imports.
 import base64
 import datetime
+from collections import deque
 import os
 import shutil
 import subprocess
@@ -298,13 +299,39 @@ def SearchFile(filename, search_path):
     :type filename: String.
     :param search_path: The search path.
     :type search_path: String.
+    :returns: The path to the file.
+    :rtype: String
 
     """
-    #: TODO: Implementation is invalid.
+    def predicate(rr, nn):
+        try:
+            return os.path.isfile(os.path.join(rr, nn))
+        except:
+            return False
+
     if not search_path or not os.path.exists(search_path):
         return None
-    file_found = 0
-    paths = search_path.split(os.path.pathsep)
+    root = search_path
+    dirs = os.listdir(root)
+    names = [n for n in dirs if predicate(root, n)]
+    for n in names:
+        dirs.remove(n)
+
+    myqueue = deque()
+    while len(myqueue) or len(names):
+        if filename in names:
+            myqueue.clear()
+            return os.path.join(root, filename)
+        for v in dirs:
+            myqueue.append(os.path.join(root, v))
+        if len(myqueue):
+            root = myqueue.popleft()
+            dirs = os.listdir(root)
+            names = [n for n in dirs if predicate(root, n)]
+            for n in names:
+                dirs.remove(n)
+    return None
+""" OLD CODE.
     for path in paths:
         if os.path.exists(os.path.join(path, filename)):
             file_found = 1
@@ -313,6 +340,8 @@ def SearchFile(filename, search_path):
         return os.path.abspath(os.path.join(path, filename))
     else:
         return None
+
+"""
 
 
 def Snaphot(path):
