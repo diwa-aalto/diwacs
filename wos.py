@@ -6,7 +6,7 @@ Created on 8.5.2012
 import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx
 import wx.combo, swnp, wx.lib.statbmp, random, logging, logging.config
 import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
-import configobj, datetime, os, SendKeys, random, controller
+import configobj, datetime, os, SendKeys, random
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
 from lxml import etree
@@ -28,6 +28,7 @@ try:
 except ImportError: # if it's not there locally, try the wxPython lib.
     from wx.lib.agw import ultimatelistctrl as ULC
 
+import controller
 import filesystem
 import utils
 
@@ -365,10 +366,26 @@ class WORKER_THREAD(threading.Thread):
         """ Handles config file settings"""
         global STORAGE, RESPONSIVE, PGM_GROUP, AUDIO
         for key, val in config.items():
+            wos_logger.debug('(' + key + '=' + val + ')')
             if 'STORAGE' in key:
                 STORAGE = val
                 controller.UpdateStorage(STORAGE)
                 filesystem.UpdateStorage(STORAGE)
+            elif 'DB_ADDRESS' in key:
+                UpdateDatabase(ADDRESS=val)
+                controller.UpdateStorage(STORAGE)
+            elif 'DB_NAME' in key:
+                UpdateDatabase(NAME=val)
+                controller.UpdateStorage(STORAGE)
+            elif 'DB_TYPE' in key:
+                UpdateDatabase(TYPE=val)
+                controller.UpdateStorage(STORAGE)
+            elif 'DB_USER' in key:
+                UpdateDatabase(USER=val)
+                controller.UpdateStorage(STORAGE)
+            elif 'DB_PASS' in key:
+                UpdateDatabase(PASS=val)
+                controller.UpdateStorage(STORAGE)
             elif 'NAME' in key or 'SCREENS' in key:
                 if key == 'NAME':
                     controller.SetNodeName(val)
@@ -382,7 +399,7 @@ class WORKER_THREAD(threading.Thread):
                 if val:
                     AUDIO = val
                     wos_logger.debug("Starting audio recorder")
-                    self.parent.StartAudioRecorder()                    
+                    self.parent.StartAudioRecorder()
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
@@ -1909,13 +1926,13 @@ class GUI(wx.Frame):
                 pass
         except:
             wos_logger.exception("showprefs exception")
-                
+
     def LoadConfig(self):
         """ Loads a config file or creates one """
         if not os.path.exists(CONFIG_PATH):
-            self.CreateConfig()          
+            self.CreateConfig()
         return configobj.ConfigObj(CONFIG_PATH)
-        
+
     def CreateConfig(self):
         """ Creates a config file """
         if not os.path.exists(CONFIG_PATH):
