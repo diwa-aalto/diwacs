@@ -1,0 +1,10 @@
+Elikk‰s Joryssa tiistaina "julkaistaan" paketti sorsien ja bin‰‰rien kera.. Joten siihen menness‰ pit‰‰ keskitty‰ siihen, 
+ett‰ sorsat kehtaa laittaa julkiseks ja testaa hiukan uusinta diwacsia, ett‰ toimii. Ensin siivotaan noi repot ja sitten voi 
+jatkaa koodin kommentoimista. T‰ydellist‰ ei tarvii olla, mutta siedett‰v‰‰. Siirret‰‰n noi kaikki tiistaina julkiseksi.. 
+
+- Poistetaan ylim‰‰r‰iset kansiot / filut
+- Koodista ylim‰‰r‰iset p‰tk‰t pois, jos tuskin tarvitaan en‰‰
+- Kaikki tunnukset yms yksityinen data pois
+- Sourceforge ja github pit‰‰ saada siedett‰v‰‰n kuntoon.
+
+
