@@ -625,12 +625,12 @@ def InitSyncProjectDir(project_id):
         project_path = GetProjectPath(project_id)
         for root, unused_dirs, files in os.walk(project_path):
             for f in files:
-                if os.path.join(root, f) not in project_files:
+                if (os.path.join(root, f),) not in project_files:
                     AddFileToProject(os.path.join(root, f), project_id)
                 else:
                     project_files.remove((os.path.join(root, f),))
         for f in project_files:
-            files = db.query(File).filter(File.path == f,
+            files = db.query(File).filter(File.path == f[0],
                                           File.project_id == project_id).all()
             for ff in files:
                 ff.project = None
