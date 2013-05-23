@@ -7,6 +7,7 @@ import base64
 import datetime
 from collections import deque
 import logging
+import logging.config
 import os
 import shutil
 import subprocess
@@ -22,7 +23,6 @@ from PIL import Image, ImageOps, ImageGrab
 
 # Own imports.
 import controller
-import utils
 import diwavars
 
 logging.config.fileConfig(os.path.abspath('logging.conf'))

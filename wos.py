@@ -6,10 +6,13 @@ Created on 8.5.2012
 
 #: TODO: Clean the imports...
 import sys
+import random
 import wave
 import threading
 import wx
-import wx.combo, wx.lib.statbmp, random, logging, logging.config
+import wx.combo
+import wx.lib.statbmp
+import logging
 import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
 import configobj, datetime, os, SendKeys, random
 from xml.etree.ElementTree import ElementTree
@@ -481,7 +484,7 @@ class WORKER_THREAD(threading.Thread):
          
 class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
     """ Thread for OS contex menu actions like file sending to other node.
-    
+
     :param context: Context for creating sockets.
     :type context: ZeroMQ context.
     :param send_file: Sends files.
@@ -489,8 +492,8 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
     :param handle_file: Handles files
     :type handle_file: Function.
     """
-    
-    def __init__ (self, parent, context, send_file, handle_file):
+
+    def __init__(self, parent, context, send_file, handle_file):
         threading.Thread.__init__(self, name="CMFH")
         self.parent = parent
         self.send_file = send_file
@@ -500,8 +503,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
         self.socket = context.socket(zmq.REP)
         self.socket.setsockopt(zmq.LINGER, 0)
         self.socket.bind("tcp://*:5555")
-        
-        
+
     def stop(self):
         """Stops the thread"""
         self.stop_socket = self.context.socket(zmq.REQ)
@@ -520,39 +522,44 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
             try:
                 message = self.socket.recv()
                 wos_logger.debug('CMFH got message: %s', message)
-                cmd, id, path = message.split(';')
+                pid = self.parent.current_project_id
+                sid = self.parent.current_session_id
+                cmd, id_, path = message.split(';')
                 if cmd == 'send_to':
                     filepath = str([self.handle_file(path)])
-                    self.send_file(str(id), 'open;' + filepath)
+                    self.send_file(str(id_), 'open;' + filepath)
                     self.socket.send("OK")
                 elif cmd == 'add_to_project':
-                    if self.parent.current_project_id:
-                        controller.AddFileToProject(path, self.parent.current_project_id)
-                    self.socket.send("OK")    
+                    if pid:
+                        controller.AddFileToProject(path, pid)
+                    self.socket.send("OK")
                 elif cmd == 'project':
-                    self.parent.SetCurrentProject(id)
+                    self.parent.SetCurrentProject(id_)
                     self.socket.send("OK")
                 elif cmd == 'save_audio':
                     if self.parent.is_responsive and diwavars.AUDIO:
                         self.socket.send("OK")
                         ide = controller.GetLatestEvent()
                         threading.Timer(diwavars.WINDOW_TAIL * 1000,
-                                        self.parent.audio_recorder.save,
-                                        ide, controller.GetProjectPath(self.parent.current_project_id)).start()
-                        wx.CallAfter(self.parent.status_text.SetLabel, "Recording...")
+                                        self.parent.audio_recorder.save, ide,
+                                        controller.GetProjectPath(pid)).start()
+                        wx.CallAfter(self.parent.status_text.SetLabel,
+                                     "Recording...")
                 elif cmd == 'open':
                     target = eval(path)
-                    for f in target: 
-                        if self.parent.current_session_id:
-                            controller.CreateFileaction(f, 6, self.parent.current_session_id, self.parent.current_project_id)                     
+                    for f in target:
+                        if sid:
+                            controller.CreateFileaction(f, 6, sid, pid)
                         filesystem.OpenFile(f)
-                    self.socket.send("OK")   
+                    self.socket.send("OK")
                 elif cmd == 'url':
                     webbrowser.open(path)
-                    self.socket.send("OK") 
+                    self.socket.send("OK")
                 elif cmd == 'screenshot':
                     if self.parent.swnp.node.screens > 0:
-                        filesystem.ScreenCapture(controller.GetProjectPath(self.parent.current_project_id), self.parent.swnp.node.id)
+                        nid = self.parent.swnp.node.id
+                        path = controller.GetProjectPath(pid)
+                        filesystem.ScreenCapture(path, nid)
                     self.socket.send("OK")
                 elif cmd == 'exit':
                     self.socket.send("OK")
@@ -564,28 +571,28 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
                 else:
                     self.socket.send("ERROR")
                     wos_logger.debug('CMFH: Unknown command:%s', cmd) 
-                       
             except zmq.ZMQError, zerr:
                 # context terminated so quit silently
                 if zerr.strerror == 'Context was terminated':
-                    break 
+                    break
                 else:
                     wos_logger.exception('CMFH exception')
-                    pass      
+                    pass
             except Exception, e:
                 wos_logger.exception('Exception in CMFH:%s', str(e))
                 self.socket.send("ERROR")
-        
+
+
 class INPUT_CAPTURE(threading.Thread):
     """Thread for capturing input from mouse/keyboard.
-    
+
     :param parent: Parent instance.
     :type parent: :class:`GUI`.
     :param swnp: SWNP instance for sending data to the network.
     :type swnp: :class:`swnp.SWNP`
-    
+
     """
-    def __init__ (self, parent, swnp):
+    def __init__(self, parent, swnp):
         threading.Thread.__init__(self, name="input capture")
         self.parent = parent
         self.swnp = swnp
@@ -597,17 +604,17 @@ class INPUT_CAPTURE(threading.Thread):
         self.mouse_thread = threading.Thread(target=self.ParseMouseEvents)
         self.mouse_thread.daemon = True
         self.mouse_thread.start()
-        
+
     def stop(self):
         """Stops the thread."""
         self.hm.UnhookKeyboard()
-        
+
     def unhook(self):
-        self.hm.UnhookKeyboard() 
+        self.hm.UnhookKeyboard()
         self.hm.UnhookMouse()
         self.mouse_queue.clear()
-        self.ResetMouseEvents() 
-        
+        self.ResetMouseEvents()
+
     def hook(self):
         self.mouse_queue.clear()
         self.ResetMouseEvents()
@@ -1559,6 +1566,7 @@ class GUI(wx.Frame):
         self.responsive = ''
         self.is_responsive = False
         self.error_th = CONN_ERR_TH(self)
+        self.rand = random.Random()
         self.error_th.daemon = True
         self.error_th.start()
         self.worker = WORKER_THREAD(self)
@@ -2239,7 +2247,7 @@ class GUI(wx.Frame):
                     self.iterator = self.iterator + 1
                 
             pub.sendMessage("update_screens", update=True)        
-        
+
     def SetScanObserver(self):
         """ Observer for created files in scanned or taken with camera """ 
         try:
@@ -2261,7 +2269,7 @@ class GUI(wx.Frame):
             self.is_responsive = False
             #self.swnp.node.data = ''
             wos_logger.exception("error setting scan observer:%s", str(e))
-            
+
     def SetProjectObserver(self):
         """ Observer for filechanges in project dir """
         try:
@@ -2292,7 +2300,7 @@ class GUI(wx.Frame):
         self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
 
     def GetRandomResponsive(self):
-        has_nodes = False 
+        has_nodes = False
         if len(self.nodes) > 1:
             for node in self.swnp.get_list():
                 if node < 10:
@@ -2300,27 +2308,27 @@ class GUI(wx.Frame):
                     break
         if not has_nodes:
             self.SetResponsive()
-            return             
+            return
         item = '255'
         self.is_responsive = False
         self.swnp.node.data = ''
         while int(item) > 10:
             try:
-                item = random.choice(self.swnp.get_screen_list())
+                item = self.rand.choice(self.swnp.get_screen_list())
             except IndexError:
                 wos_logger.debug('get_random error: nodes empty')
-                return    
-        wos_logger.debug('Random responsive is %s', item)    
+                return
+        wos_logger.debug('Random responsive is %s', item)
         self.SwnpSend(item, 'set;responsive')
-                            
+
     def PaintSelect(self, evt):
         """Paints the selection of a node.
-        
+
         .. note:: For future use.
-        
+
         :param evt: GUI Event
         :type evt: Event.
-        
+
         """
         dc = wx.ClientDC(self.panel)
         dc.Clear()
@@ -2331,30 +2339,31 @@ class GUI(wx.Frame):
             dc.BeginDrawing()
             pen = wx.Pen('#4c4c4c', 3, wx.SOLID)
             dc.SetPen(pen)
-            dc.DrawLine(66 + self.screen_selected * (6 + 128), 110, 98 + self.screen_selected * (6 + 128), 110)
+            dc.DrawLine(66 + self.screen_selected * (6 + 128), 110,
+                        98 + self.screen_selected * (6 + 128), 110)
             dc.EndDrawing()
-        
+
     def SelectNode(self, evt):
         """Handles the selection of a node, start remote control.
-        
+
         .. note:: For future use.
-        
+
         :param evt: GUI Event
         :type evt: Event.
-        
+
         """
         global MOUSE_X, MOUSE_Y, CAPTURE
         index = self.iterator + evt.GetId()
         id = self.nodes[(index) % len(self.nodes)][0]
-        if evt.GetId() >= len(self.nodes) or id == self.swnp.id:          
+        if evt.GetId() >= len(self.nodes) or id == self.swnp.id:
             if CONTROLLED and id == self.swnp.id:
                 self.SwnpSend(self.swnp.id, 'remote_end;now')
                 self.SwnpSend(str(CONTROLLED), 'remote_end;now')
-            return 
+            return
         if id in self.selected_nodes:
             # End Remote
             self.selected_nodes.remove(id)
-            CAPTURE = False 
+            CAPTURE = False
             self.capture_thread.unhook()
             self.overlay.Hide()
         else:
@@ -2366,8 +2375,8 @@ class GUI(wx.Frame):
             MOUSE_X, MOUSE_Y = evt.GetPositionTuple()
             self.selected_nodes.append(id)
             self.Refresh()
-            self.overlay.Show()              
-    
+            self.overlay.Show()
+
     def InitScreens(self):
         """ Inits Screens """
         wos_logger.debug("init screens start")
@@ -2376,12 +2385,12 @@ class GUI(wx.Frame):
         try:
             while i < diwavars.MAX_SCREENS:
                 s = wx.BoxSizer(wx.VERTICAL)
-                h = wx.BoxSizer(wx.HORIZONTAL)
-                tra = wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+                tra = wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG)
+                tra = tra.ConvertToBitmap()
                 img = wx.StaticBitmap(parent=self.panel, id=i, bitmap=tra)
-                img.Bind(wx.EVT_LEFT_DOWN, self.SelectNode) 
+                img.Bind(wx.EVT_LEFT_DOWN, self.SelectNode)
                 self.imgs.insert(i, img)
-                dt = DropTarget(img, self, i)              
+                dt = DropTarget(img, self, i)
                 img.SetDropTarget(dt)
                 self.filedrops.insert(i, dt)
                 s.Add(img)
@@ -2392,60 +2401,58 @@ class GUI(wx.Frame):
         self.Layout()
         self.Refresh()
         self.init_screens_done = True
-        
-    
 
     def AlignCenterTop(self):
         """Aligns frame to Horizontal center and vertical top"""
-        dw, dh = wx.DisplaySize()
-        w, h = self.GetSize()
+        dw = wx.DisplaySize()[0]
+        w = self.GetSize()[0]
         x = (dw - w) / 2
-        y = 0
-        self.SetPosition((x, y))
-        
+        self.SetPosition((x, 0))
+
     def HideScreens(self):
         """ Hides all screens """
         self.right.SetBitmapLabel(self.GetIcon('0'))
         self.left.SetBitmapLabel(self.GetIcon('0'))
         for i in self.imgs:
-            i.SetBitmap(wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+            temp = wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG)
+            i.SetBitmap(temp.ConvertToBitmap())
             i.SetToolTip(None)
 
     def UpdateScreens(self, update):
         """Called when screens need to be updated and redrawn
 
         :param update: Pubsub needs one param, therefore it is called update.
-        :type update: Boolean.
+        :type update: Boolean
 
         """
-        if self.init_screens_done:
-            self.HideScreens()
-            self.nodes = []
-            screen = 0
-            for node in self.swnp.get_screen_list():
-                self.nodes.insert(screen, (node.id, node.screens, node.name))
-                self.worker.AddRegEntry(node.name, node.id)
-                screen += 1
+        update = update  # Intentionally left unused.
+        if not self.init_screens_done:
+            return
+        self.HideScreens()
+        self.nodes = []
+        for node in self.swnp.get_screen_list():
+            self.nodes.append((node.id, node.screens, node.name))
+            self.worker.AddRegEntry(node.name, node.id)
+        if len(self.nodes):
+            if len(self.nodes) > 3:
+                self.left.SetBitmapLabel(self.GetIcon('left_arrow'))
+                self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
             i = 0
-            if len(self.nodes):
-                if len(self.nodes) > 3:
-                    self.left.SetBitmapLabel(self.GetIcon('left_arrow'))
-                    self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
-                while i < diwavars.MAX_SCREENS and i < len(self.nodes): 
+            while i < diwavars.MAX_SCREENS and i < len(self.nodes): 
+                try:
+                    img_path = filesystem.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
                     try:
-                        img_path = filesystem.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
-                        try:
-                            bm = wx.Image(img_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-                        except:
-                            bm = wx.Image(diwavars.DEFAULT_SCREEN, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
-                        img = self.imgs[i]
-                        img.SetBitmap(bm)
-                        img.SetToolTip(wx.ToolTip(self.nodes[(i + self.iterator) % len(self.nodes)][2]))
-                        i += 1
+                        bm = wx.Image(img_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
                     except:
-                        wos_logger.exception("nodes update except:" + str(self.nodes[(i + self.iterator) % len(self.nodes)]))        
-            self.worker.CheckResponsive()
-            self.Refresh()
+                        bm = wx.Image(diwavars.DEFAULT_SCREEN, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+                    img = self.imgs[i]
+                    img.SetBitmap(bm)
+                    img.SetToolTip(wx.ToolTip(self.nodes[(i + self.iterator) % len(self.nodes)][2]))
+                    i += 1
+                except:
+                    wos_logger.exception("nodes update except:" + str(self.nodes[(i + self.iterator) % len(self.nodes)]))        
+        self.worker.CheckResponsive()
+        self.Refresh()
 
     def OnExit(self, event):
         """ Exits program.
@@ -2481,8 +2488,8 @@ class GUI(wx.Frame):
                 self.Destroy()
                 wos_logger.info('Application closed')
                 sys.exit(0)
-            except CloseError:
-                raise CloseError 
+            except CloseError, e:
+                raise e
             except Exception, e:
                 wos_logger.exception('Exception in Close:' + str(e))
                 for thread in threading.enumerate():
@@ -2497,13 +2504,13 @@ class GUI(wx.Frame):
         :type e: Event.
 
         """
-        description = diwavars.APPLICATION_NAME + " is the windows client for DiWa - "\
-            "A distributed meeting room collaboration system.\n\n"\
+        description = diwavars.APPLICATION_NAME + " is the windows client for"\
+            " DiWa - A distributed meeting room collaboration system.\n\n"\
             "Lead programmer: Nick Eriksson\n"\
             "Contributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen, "\
             "Vikki du Preez, Marko Nieminen\n\n"
 
-        licence = """ 
+        unused_licence = """
         DiwaCS is free software.
         """
         info = wx.AboutDialogInfo()
@@ -2535,7 +2542,7 @@ class GUI(wx.Frame):
             self.Hide()
 
     def OnTaskBarActivate(self, evt):
-        """ Taskbar activate event handler 
+        """ Taskbar activate event handler.
 
         :param evt: GUI Event.
         :type evt: Event.

@@ -288,7 +288,7 @@ class Session(Base):
         log_path = os.path.join(os.getcwd(), f.name)
         try:
             pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        except pythoncom.com_error :
+        except pythoncom.com_error:
             # already initialized.
             pass
 

@@ -36,24 +36,6 @@ class TestUtils(unittest.TestCase):
 
 class TestFilesystem(unittest.TestCase):
 
-    def test_setvars(self):
-        up_url = "www.dummy_url_for_test.org"
-        up_user = "tester"
-        up_pass = "testpassword"
-        self.assertNotEquals(filesystem.CAMERA_URL, up_url)
-        self.assertNotEquals(filesystem.CAMERA_USER, up_user)
-        self.assertNotEquals(filesystem.CAMERA_PASS, up_pass)
-        old_vars = (filesystem.CAMERA_URL, filesystem.CAMERA_USER,
-                    filesystem.CAMERA_PASS)
-        filesystem.UpdateCameraVars(up_url, up_user, up_pass)
-        self.assertTrue(filesystem.CAMERA_URL == up_url)
-        self.assertEquals(filesystem.CAMERA_USER, up_user)
-        self.assertEquals(filesystem.CAMERA_PASS, up_pass)
-        filesystem.UpdateCameraVars(old_vars[0], old_vars[1], old_vars[2])
-        self.assertTrue(filesystem.CAMERA_URL == old_vars[0])
-        self.assertEquals(filesystem.CAMERA_USER, old_vars[1])
-        self.assertEquals(filesystem.CAMERA_PASS, old_vars[2])
-
     def test_searchfile(self):
         tofind = ['api.doctree', 'DiWaCS.ilg',
                   '001_Edit_project_definition.pyc']

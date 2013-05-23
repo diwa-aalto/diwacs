@@ -7,25 +7,26 @@ Created on 28.5.2012
 import sys
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")
-from models import *
-from sqlalchemy import create_engine, func, sql, desc, or_
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import exc
-from pubsub import pub
-import csv
 import datetime
 import logging
-import logging.config
 import time
 import shutil
 import socket
 import threading
+
+# 3rd party imports
+import csv
+from pubsub import pub
+from sqlalchemy import create_engine, func, sql, desc, or_
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import exc
 import watchdog
 from watchdog.events import FileSystemEventHandler
 
 # Own imports
 import diwavars
 import filesystem
+from models import *
 import utils
 
 
@@ -236,14 +237,16 @@ def AddProject(data):
         logger.debug("Adding project")
         db = ConnectToDatabase()
         name = data["project"]["name"]
-        dir = data["project"]["dir"]
+        directory = data["project"]["dir"]
         password = data["project"]["password"]
-        company = db.query(Company).filter(Company.name.contains('%s' % data['company']['name'])).first()
+        company = db.query(Company).filter(
+                        Company.name.contains('%s' % data['company']['name'])
+                        ).first()
         project = Project(name=name, company=company, password=password)
         db.add(project)
         db.commit()
-        if dir:
-            project.dir = filesystem.CreateProjectDir(dir)
+        if directory:
+            project.dir = filesystem.CreateProjectDir(directory)
         else:
             project.dir = filesystem.CreateProjectDir(project.id)
         db.commit()
@@ -293,13 +296,13 @@ def DeleteRecord(Model, idNum):
 
 
 def LastActiveComputer():
-        db = ConnectToDatabase()
-        pcs = db.query(Computer.id).filter(func.timestampdiff(sql.text('second'),
-                                                              Computer.time,
-                                                              func.now()) < 10
-                                           ).count()
-        db.close()
-        return pcs < 2
+    db = ConnectToDatabase()
+    pcs = db.query(Computer.id).filter(func.timestampdiff(sql.text('second'),
+                                                          Computer.time,
+                                                          func.now()) < 10
+                                       ).count()
+    db.close()
+    return pcs < 2
 
 
 def GetActiveComputers(timeout):
@@ -389,8 +392,8 @@ def StartNewSession(project_id, session_id=None, old_session_id=None):
     """
     db = ConnectToDatabase(True)
     project = db.query(Project).filter(Project.id == project_id).one()
-    recent_path = os.path.join(os.getenv('APPDATA'),
-                               'Microsoft\\Windows\\Recent')
+    """recent_path = os.path.join(os.getenv('APPDATA'),
+                               'Microsoft\\Windows\\Recent')"""
     session = None
     if session_id:
         session = db.query(Session).filter(Session.id == session_id).one()
@@ -401,7 +404,8 @@ def StartNewSession(project_id, session_id=None, old_session_id=None):
         db.commit()
         if old_session_id:
             #link two sessions together
-            old_session = db.query(Session).filter(Session.id == old_session_id).one()
+            old_session = db.query(Session).filter(Session.id ==
+                                                   old_session_id).one()
             session.previous_session = old_session
             old_session.next_session = session
             db.add(session)
@@ -417,7 +421,7 @@ def EndSession(session_id):
     """Ends a session, sets its endtime to database. Ends file scanner.
 
     :param session: Current session.
-    :type session: :class:`models.Session` 
+    :type session: :py:class:`models.Session`
 
     """
     try:
@@ -432,22 +436,23 @@ def EndSession(session_id):
         logger.exception('EndSession exception %s', str(e))
 
 
-def AddEvent(session_id,title,desc):
-    """ Adds an event to the database. 
-    
+def AddEvent(session_id, title, desc):
+    """ Adds an event to the database.
+
     :param session: The current session.
     :type session: :class:`models.Session`
     :param desc: Description of the event.
     :type desc: String.
-    
+
     """
     try:
         db = ConnectToDatabase(True)
         if session_id:
-            session = db.query(Session).filter(Session.id==session_id).one()
+            session = db.query(Session).filter(Session.id ==
+                                               session_id).one()
         else:
-            session = None    
-        event = Event(desc=desc,session=session,title=title)
+            session = None
+        event = Event(desc=desc, session=session, title=title)
         db.add(event)
         db.commit()
         ide = event.id
@@ -463,11 +468,11 @@ def AddComputer(name, ip, wos_id):
         global COMPUTER_INS
         db = ConnectToDatabase(True)
         pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        mac = ''
-        mac = utils.GetMacForIp(ip)
+        wanted_mac = utils.GetMacForIp(ip)
         ip_int = utils.DottedIPToInt(ip)
-        if mac:
-            c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
+        if wanted_mac:
+            c = db.query(Computer).filter_by(mac=wanted_mac)
+            c = c.order_by(desc(Computer.id)).first()
             if c:
                 c.name = name
                 c.ip = ip_int
@@ -475,22 +480,30 @@ def AddComputer(name, ip, wos_id):
                 db.add(c)
                 db.commit()
         else:
-            c = None      
+            c = None
         if not c:
             logger.debug("no computer instance  found")
-            c = Computer(ip=ip_int,name=name,mac=mac,wos_id=wos_id)
+            c = Computer(ip=ip_int, name=name, mac=wanted_mac, wos_id=wos_id)
             db.add(c)
-            db.commit()       
+            db.commit()
         db.expunge(c)
         db.close()
-    except Exception,e:
-        logger.exception("AddComputer exception")    
+    except Exception, e:
+        logger.exception("AddComputer exception: %s", str(e))
     return c
+
+
 def GetActiveResponsiveNodes(pgmgroup):
     nodes = []
     try:
         db = ConnectToDatabase()
-        nodes = db.query(Computer.wos_id).filter(func.timestampdiff(sql.text('second'),Computer.time,func.now())<10).filter(Computer.responsive==pgmgroup).order_by(Computer.wos_id).all()
+        nodes = db.query(Computer.wos_id).filter(
+                                        func.timestampdiff(sql.text('second'),
+                                                           Computer.time,
+                                                           func.now()
+                                        ) < 10,
+                                        Computer.responsive == pgmgroup
+                        ).order_by(Computer.wos_id).all()
         db.close()
     except:
         logger.debug("GetActiveResponsiveNodes exception")
@@ -536,8 +549,6 @@ def AddComputerToSession(session, name, ip, wos_id):
     try:
         db = ConnectToDatabase(True)
         db.add(session)
-        mac = utils.GetMacForIp(ip)
-        ip_int = utils.DottedIPToInt(ip)
         c = AddComputer(name, ip, wos_id)
         db.add(c)
         session.computers.append(c)
@@ -548,78 +559,94 @@ def AddComputerToSession(session, name, ip, wos_id):
         COMPUTER_INS = c
         db.close()
     except Exception, e:
-        logger.debug("Exception in AddComputerToSession")
+        logger.debug("Exception in AddComputerToSession: %s", str(e))
 
 
 def GetOrCreate(session, model, **kwargs):
     """Fetches or creates a instance.
 
-    :param session: a related session 
+    :param session: a related session.
     :type session: :class:`models.Session`
-    :param model: The model of which an instance is wanted
-    :type  model: :func:`sqlalchemy.ext.declarative.declarative_base`.
+    :param model: The model of which an instance is wanted.
+    :type  model: :func:`sqlalchemy.ext.declarative.declarative_base`
 
      """
-    instance = session.query(model).filter_by(**kwargs).order_by(desc(model.id)).first()
+    instance = session.query(model).filter_by(**kwargs)
+    instance = instance.order_by(desc(model.id)).first()
     if instance:
         return instance
     else:
         if 'path' in kwargs and 'project_id' in kwargs:
-            project = session.query(Project).filter(Project.id==kwargs['project_id']).one()
-            instance = File(path=kwargs['path'],project=project)
+            project = session.query(Project).filter(
+                            Project.id == kwargs['project_id']).one()
+            instance = File(path=kwargs['path'], project=project)
             session.add(instance)
             session.commit()
             return instance
         instance = model(**kwargs)
         return instance
-    
+
+
 def GetRecentFiles(project_id):
-    """Fetches files accessed recently in the project sessions from the database.
-   
+    """Fetches files accessed recently in the project sessions from the
+    database.
+
     .. todo::  Add a limit parameter, currently fetches all files.
-    
+
     .. todo:: Duplicate check.
-    
+
     :param project_id: The project id
     :type project_id: Integer.
     :rtype: a list of files
-    
+
     """
     db = ConnectToDatabase()
-    files = db.query(File.path,FileAction.action_time).filter(File.project_id==project_id,File.id==FileAction.file_id).order_by(desc(FileAction.action_time)).group_by(File.path).all()
+    files = db.query(File.path, FileAction.action_time).filter(
+                                File.project_id == project_id,
+                                File.id == FileAction.file_id
+                                ).order_by(desc(FileAction.action_time))
+    files = files.group_by(File.path).all()
     db.close()
     return files
 
+
 def InitSyncProjectDir(project_id):
     """Initial sync of project dir and database.
-    
+
     :param project_id: Project id from database.
     :type project_id: Integer.
-    
+
     """
     try:
         db = ConnectToDatabase()
-        project_files = list(set(db.query(File.path).filter(File.project_id==project_id).all()))
+        project_files = list(set(db.query(File.path).filter(File.project_id ==
+                                                            project_id).all()))
         project_path = GetProjectPath(project_id)
-        for root, dirs, files in os.walk(project_path):
-            for file in files:
-                if (os.path.join(root,file),) not in project_files:
-                    AddFileToProject(os.path.join(root,file),project_id)
-                else:
-                    project_files.remove((os.path.join(root,file),))
-        for file in project_files:
-            files = db.query(File).filter(File.path==file[0],File.project_id==project_id).all()
+        for root, unused_dirs, files in os.walk(project_path):
             for f in files:
-                f.project = None
-                db.add(f)
+                if os.path.join(root, f) not in project_files:
+                    AddFileToProject(os.path.join(root, f), project_id)
+                else:
+                    # FIXME:
+                    # FIXME: Refactored this dubiously, if something breaks
+                    # look here first.
+                    project_files.remove(os.path.join(root, f))
+        for f in project_files:
+            files = db.query(File).filter(File.path == f,
+                                          File.project_id == project_id).all()
+            for ff in files:
+                ff.project = None
+                db.add(ff)
         db.commit()
         db.close()
-    except Exception,e:
-        logger.exception('Init sync project dir error')
-                          
+    except Exception, e:
+        logger.exception('Init sync project dir error: %s', str(e))
+
+
 def AddFileToProject(file, project_id):
-    """Add a file to project. Copies it to the folder and adds a record to database.
-    
+    """Add a file to project. Copies it to the folder and adds a record to
+    database.
+
     :param file: A filepath.
     :type file: String
     :param project_id: Project id from database.
@@ -632,54 +659,59 @@ def AddFileToProject(file, project_id):
         project = db.query(Project).filter(Project.id == project_id).one()
         filepath = filesystem.CopyFileToProject(file, project_id)
         if filepath:
-            f = File(path=filepath,project=project)
+            f = File(path=filepath, project=project)
             db.add(f)
             db.commit()
             db.close()
         return filepath
-    except Exception,e:
-        logger.exception('Add file to project exception')
+    except Exception, e:
+        logger.exception('Add file to project exception: %s', str(e))
         return ""
-    
-         
-def IsProjectFile(filename,project_id):
-    """Checks, if a file belongs to a project. Checks both project folder and database.
-    
+
+
+def IsProjectFile(filename, project_id):
+    """Checks, if a file belongs to a project. Checks both project folder
+    and database.
+
     :param filename: a filepath.
     :type filename: String.
     :param project_id: Project id from database.
     :type project_id: Integer.
-    :rtype: Boolean."""
+    :rtype: Boolean.
+
+    """
     try:
         if isinstance(filename, str):
-            filename = unicode(filename,errors='replace')
+            filename = unicode(filename, errors='replace')
         db = ConnectToDatabase()
         basename = os.path.basename(filename)
-        if isinstance(basename,str):
+        if isinstance(basename, str):
             basename = unicode(basename, errors='replace')
-        logger.debug("IsProjectFile %s %s"%(str(type(filename)),filename))
-        files = db.query(File.path).filter(File.project_id==project_id,File.path.like(u'%'+ basename)).order_by(desc(File.id)).all()
+        logger.debug("IsProjectFile %s %s" % (str(type(filename)), filename))
+        files = db.query(File.path).filter(File.project_id == project_id,
+                                           File.path.like(u'%' + basename)
+                                           ).order_by(desc(File.id)).all()
         db.close()
-    except Exception,e:
-        logger.exception("IsProjectFile query exception")
+    except Exception, e:
+        logger.exception("IsProjectFile query exception: %s", str(e))
         files = []
-
-    for file in files:
-            filebase = os.path.basename(file[0])
+    for f in files:
+            filebase = os.path.basename(f[0])
             if isinstance(filebase, str):
                 filebase = unicode(filebase, errors='replace')
-
             if filebase == basename:
                 return filebase
-    f = filesystem.SearchFile(os.path.basename(filename), GetProjectPath(project_id))
+    f = filesystem.SearchFile(os.path.basename(filename),
+                              GetProjectPath(project_id))
     if f:
         return AddFileToProject(f, project_id)
     return False
 
+
 def GetFilePath(project_id, filename):
-    file = IsProjectFile(filename,project_id)
-    if file:
-        return file
+    f = IsProjectFile(filename, project_id)
+    if f:
+        return f
     return False
 
 
@@ -698,122 +730,139 @@ def CreateFileaction(path, action, session_id, project_id):
     """
     global COMPUTER_INS
     db = ConnectToDatabase()
-    project_file = IsProjectFile(path,project_id)
+    project_file = IsProjectFile(path, project_id)
     if project_file:
         fi = GetOrCreate(db, File, path=project_file)
     else:
         fi = GetOrCreate(db, File, path=path)
-    a = db.query(Action).filter(Action.id==action).one()
-    if session_id>0:
-        session=db.query(Session).filter(Session.id==session_id).one()
+
+    a = db.query(Action).filter(Action.id == action).one()
+    if session_id > 0:
+        session = db.query(Session).filter(Session.id == session_id).one()
     else:
-        session = None    
-    fa = FileAction(fi,a,session,None)
+        session = None
+    fa = FileAction(fi, a, session)
     db.add(fi)
     db.add(fa)
     db.commit()
     db.close()
-    
+
+
 class SCAN_HANDLER(FileSystemEventHandler):
     """ Handler for FileSystem events on SCANNING folder.
-    
+
     :param project_id: Project id from database.
     :type project_id: Integer.
-    
+
     """
-    def __init__(self,project_id):
-        self.project_id=project_id
-            
-    def on_created(self,event):
+    def __init__(self, project_id):
+        self.project_id = project_id
+
+    def on_created(self, event):
         """On_created event handler. Logs to database.
-        
+
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
-        
+
         """
         try:
             project_path = GetProjectPath(self.project_id)
             if not project_path:
-                return                
-            new_path = os.path.join(project_path,os.path.basename(event.src_path))
+                return
+            new_path = os.path.join(project_path,
+                                    os.path.basename(event.src_path))
             if 'Scan' in  event.src_path:
-                time.sleep(60)                        
-            shutil.copy2(event.src_path,new_path)
+                time.sleep(60)
+            shutil.copy2(event.src_path, new_path)
             db = ConnectToDatabase()
-            f = File(path=new_path,project=db.query(Project).filter(Project.id==self.project_id).one())
-            fa = FileAction(file=f,action=db.query(Action).filter(Action.id==1).one())
+            f = File(path=new_path,
+                     project=db.query(Project).filter(Project.id ==
+                                                      self.project_id).one())
+            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
+                                                                   1).one())
             db.add(f)
             db.add(fa)
             db.commit()
             db.close()
-        except Exception,e:
-            logger.exception('Exception in SCAN HANDLER:%s',str(e))    
-            
+        except Exception, e:
+            logger.exception('Exception in SCAN HANDLER:%s', str(e))
+
+
 class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
     """ Handler for FileSystem events on project folder.
-    
+
     :param project_id: Project id from database.
     :type project_id: Integer.
-    
+
     """
-    def __init__(self,project_id):
-        self.project_id=project_id
-            
-    def on_created(self,event):
+    def __init__(self, project_id):
+        self.project_id = project_id
+
+    def on_created(self, event):
         """On_created event handler. Logs to database.
-        
+
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
-        
+
         """
         try:
             db = ConnectToDatabase()
-            logger.debug("PROJECT FILE CREATED %s %s"%(str(type(event.src_path)),event.src_path))
-            f = File(path=event.src_path,project=db.query(Project).filter(Project.id==self.project_id).one())
-            fa = FileAction(file=f,action=db.query(Action).filter(Action.id==1).one())
+            logger.debug("PROJECT FILE CREATED %s %s" %
+                         (str(type(event.src_path)), event.src_path))
+            f = File(path=event.src_path,
+                     project=db.query(Project).filter(Project.id ==
+                                                      self.project_id).one())
+            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
+                                                                   1).one())
             db.merge(f)
             db.merge(fa)
             db.commit()
             db.close()
         except:
             logger.exception("Project file scanner on_created exception")
-    
+
     def on_deleted(self, event):
         """On_deleted event handler. Logs to database.
-        
+
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
-        
+
         """
         try:
             db = ConnectToDatabase()
-            f = db.query(File).filter(File.path==event.src_path,File.project_id==self.project_id).order_by(File.id.desc()).first()
-            fa = FileAction(file=f,action=db.query(Action).filter(Action.id==2).one())
+            f = db.query(File).filter(File.path == event.src_path,
+                                      File.project_id == self.project_id
+                                      ).order_by(File.id.desc()).first()
+            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
+                                                                   2).one())
             f.project = None
             db.merge(f)
             db.merge(fa)
             db.commit()
             db.close()
         except:
-            logger.exception("Project file scanner on_deleted exception")  
-         
+            logger.exception("Project file scanner on_deleted exception")
+
     def on_modified(self, event):
         """On_modified event handler. Logs to database.
-        
+
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
-        
+
         """
         try:
             db = ConnectToDatabase()
-            f = db.query(File).filter(File.path==event.src_path,File.project_id==self.project_id).order_by(File.id.desc()).first()
+            f = db.query(File).filter(File.path == event.src_path,
+                                      File.project_id == self.project_id
+                                      ).order_by(File.id.desc()).first()
             if not f:
-                f = self.on_created(event)           
-            fa = FileAction(file=f,action=db.query(Action).filter(Action.id==3).one())
+                f = self.on_created(event)
+            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
+                                                                   3).one())
             db.merge(f)
             db.merge(fa)
             db.commit()
             db.close()
-        except Exception,e:
-            logger.exception("Project file scanner on_modifed exception")      
-        
+        except Exception, e:
+            logger.exception("Project file scanner on_modifed exception: %s",
+                             str(e))
