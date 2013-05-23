@@ -202,11 +202,6 @@ diff = lambda l1, l2: [x for x in l1 if x not in l2]
 intr = lambda l1, l2: [x for x in l1 if x in l2]
 
 
-def OpenedFilesQuery():
-    """Calls the openedfilesview. """
-    subprocess.call('ofv//OpenedFilesView.exe /scomma ofv.csv')
-
-
 def OpenFile(filepath):
         """Opens a file path.
 
@@ -228,11 +223,6 @@ def OpenFile(filepath):
                 utils.logger.exception("Open file exception")
         elif os.name == 'posix':
             subprocess.call(('xdg-open', filepath))
-
-
-def RecentFilesQuery():
-    """Calls the recentfilesview. """
-    subprocess.call('rfv//RecentFilesView.exe /scomma rfv.csv /sort ~3')
 
 
 def SaveScreen(win, filepath):

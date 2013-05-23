@@ -132,21 +132,6 @@ class Message():
         return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
 
 
-def testIP():
-    try:
-        for interface in netifaces.interfaces():
-            if_addresses = netifaces.ifaddresses(interface)
-            if netifaces.AF_INET in if_addresses and (
-                    '192.168.1' in if_addresses[netifaces.AF_INET][0]['addr']):
-                logger.debug('192.168.1 found')
-                return True
-        logger.debug('192.168.1 not in any ip addresses')
-        return False
-    except Exception, e:
-        logger.exception("Unable to loop adapters: %s", e.msg)
-        return True
-
-
 def testStorageConnection():
     return os.path.exists('\\\\' + STORAGE + '\\Projects')
 
@@ -180,7 +165,6 @@ class SWNP:
         self.context = context if context else zmq.Context()
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
-        #Get ip and id
         self.ip = utils.GetLocalIPAddress(STORAGE)
         logger.debug(self.ip)
         if id:
@@ -193,11 +177,9 @@ class SWNP:
         #prevent overflow slow subscribers
         self.publisher.setsockopt(zmq.LINGER, 0)
         self.publisher.setsockopt(zmq.HWM, 1)
-        #set swap space for publisher
         self.publisher.setsockopt(zmq.RATE, 1000000)
         #bind publisher
         self.publisher.bind("epgm://" + self.ip + ";" + PGM_IP)
-
         #Subscriber threads
         self.sub_thread = threading.Thread(target=self.sub_routine,
                                            name="Sub_thread", args=(
@@ -214,23 +196,13 @@ class SWNP:
                                                )
         self.sub_thread_sys.daemon = True
         self.sub_thread_sys.start()
-        #join
-        #time.sleep(1)
         self.send("SYS", PREFIX_CHOICES[0], ("%s_SCREENS_%d_NAME_%s_DATA_%s" %
                                              (self.node.id, self.node.screens,
                                               self.node.name, self.node.data)
                                             )
                   )
         self.last_joined = self.id
-        # print self.node
-        # logger.debug("Self.node before addition to node_list %s(%s)",
-        # str(self.node),str(type(self.node)))
-        # logger.debug('Self.node_list before addition %s',str(self.NODE_LIST))
         self.NODE_LIST.add(self.node)
-        # for node in self.NODE_LIST:
-        #    logger.debug('Node in list (%s)',str(type(node)))
-        # logger.debug(" node_list after append : %s",str(self.NODE_LIST))
-        # pub.sendMessage("update_screens",update=True)
         self.do_ping()
         #heartbeat
         self.ping_stop = threading.Event()
@@ -248,30 +220,9 @@ class SWNP:
 
     def timeout_routine(self):
         """Routine for checking node list and removing nodes with timeout."""
-        #logger.debug('Timeout routine started')
         timeout = timedelta(seconds=TIMEOUT)
-        #c = controller.AddComputer(self.node.name, self.ip, self.id)
         while not self.timeout_stop.isSet():
             try:
-                #c.name = self.node.name
-                #c.screens = self.node.screens
-                #c.wos_id = self.id
-                #c = controller.RefreshComputer(c)
-                #logger.debug('Timeout Computer refreshed')
-                #active = controller.getActiveComputers(TIMEOUT)
-                #logger.debug('Timeout active computers from db: %s',
-                #str(active))
-                """nodes = set()
-                for row in active:
-                    logger.debug("Timeout active row:%s find node %s",str(row),
-                    str(row[0]))
-                    n = self.find_node(str(row[0]))
-                    logger.debug('Timeout node: %s',str(n) if n else "None")
-                    if n:
-                        nodes.add(n)
-                    else:
-                        nodes.add(Node(str(row[0]),row[1],row[2]))
-                logger.debug('Timeout nodes: %s',str(nodes))"""
                 to_be_removed = []
                 for node in list(self.NODE_LIST):
                     if not node == self.node and (
@@ -280,14 +231,7 @@ class SWNP:
                 for node in to_be_removed:
                     self.NODE_LIST.discard(node)
                 if len(to_be_removed) > 0:
-                    #logger.debug('Timeout: screen update sent')
                     pub.sendMessage("update_screens", update=True)
-                """logger.debug('Timeout list comparison nodelist: %s nodes: %s
-                result: %s',str(self.NODE_LIST),str(nodes),str(self.NODE_LIST.
-                symmetric_difference(nodes)))
-                if self.NODE_LIST.symmetric_difference(nodes):
-                    self.NODE_LIST = nodes
-                    pub.sendMessage("update_screens",update=True)"""
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
             time.sleep(TIMEOUT)
@@ -350,21 +294,14 @@ class SWNP:
             # Read envelope with address
             try:
                 [unused_address, contents] = self.subscriber.recv_multipart()
-                #print("[%s] %s\n" % (address, contents))
-
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
                 logger.debug('Message: %s', str(msg_obj))
-                ##print "msg reveived ",msg_obj
-
                 if msg_obj.PAYLOAD == self.id and msg_obj.PREFIX == 'LEAVE':
                     logger.debug('LEAVE msg catched')
                     break
                 if msg_obj.PREFIX == 'SYNC':
-                    ##print "Syncing\n"
                     self.sync_handler(msg_obj)
                 if msg_obj.PREFIX == 'MSG':
-                    #print 'got msg', msg_obj
-                    #self.MSG_BUFFER.append(msg_obj)
                     pub.sendMessage("message_received",
                                     message=msg_obj.PAYLOAD)
             except ValueError:
@@ -374,8 +311,6 @@ class SWNP:
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine:%s", str(e))
                 break
-
-        #print "Closing routine"
         logger.debug('Closing sub')
         self.subscriber.close()
 
@@ -410,7 +345,6 @@ class SWNP:
                             self.subscriber_sys.recv_multipart()
                     )
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
-                #logger.debug('Sys message:%s',str(msg_obj))
                 if msg_obj.PREFIX == 'LEAVE' and msg_obj.PAYLOAD == self.id:
                     break
                 self.sys_handler(msg_obj)
@@ -421,13 +355,11 @@ class SWNP:
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine sys:%s", str(e))
                 break
-        #print "Closing system routine"
         logger.debug('Closing sys sub')
         self.subscriber_sys.close()
 
     def shutdown(self):
         """shuts down all connections, no exit."""
-        #print "Close sys"
         i = 0
         limit = 5
         while self.sub_thread_sys.isAlive() and i < limit:
@@ -444,7 +376,6 @@ class SWNP:
 
     def close(self):
         """Closes all connections and exits."""
-        #print "Close sys"
         self.ping_stop.set()
         self.timeout_stop.set()
         i = 0
@@ -471,11 +402,6 @@ class SWNP:
         except:
             logger.exception('swnp close exception')
         logger.debug('swnp closed completely')
-        logger.debug('sub_thread :' + str(self.sub_thread.isAlive()) +
-                     'sub_thread_sys :' + str(self.sub_thread_sys.isAlive()) +
-                     'ping_routine :' + str(self.ping_thread.isAlive()) +
-                     'timeout_thread :' + str(self.timeout_thread.isAlive())
-                     )
 
     def send(self, tag, prefix, message):
         """Send a message to the network.
@@ -513,7 +439,6 @@ class SWNP:
         ls = []
         for node in sorted(self.NODE_LIST, key=lambda x: int(x.id)):
             ls.append(node.id)
-        #list=['245','246']
         return ls
 
     def get_screen_list(self):
@@ -522,12 +447,11 @@ class SWNP:
         :rtype: list.
 
         """
-        my_list = []
+        ls = []
         for node in sorted(self.NODE_LIST, key=lambda x: int(x.id)):
             if int(node.screens) > 0:
-                my_list.append(node)
-        #list=[Node(245,1,'HardKnocks'),Node(246,1,'Iconia')]
-        return my_list
+                ls.append(node)
+        return ls
 
     def sys_handler(self, msg):
         """Handler for "SYS" messages.
@@ -537,21 +461,17 @@ class SWNP:
 
         """
         if msg.PREFIX == 'JOIN':
-            ##print "JOIN\n"
             payload = msg.PAYLOAD.split('_')
             if  payload[0] != self.id:
-                #nodelist = "_".join(self.NODE_LIST)
                 self.send("SYS", PREFIX_CHOICES[4], "%s_SCREENS_%d" %
                                                     (self.id,
                                                      int(self.node.screens)
                                                      )
                          )
-            #if len(filter(lambda id: id == payload[0], self.NODE_LIST))==0:
-            ##print "add to node_list\n"
+
             self.NODE_LIST.add(Node(payload[0], int(payload[2]), payload[4],
                                     payload[6]))
             self.last_joined = payload[0]
-            ##print "send update_screens \n"
             pub.sendMessage("update_screens", update=True)
         if msg.PREFIX == 'LEAVE':
             node = self.find_node(msg.PAYLOAD)
@@ -576,17 +496,14 @@ class SWNP:
         ping = self.find_node(payload[0])
         new_scr = int(payload[2])
         if ping:
-            if ping.screens != new_scr or not ping.name == payload[4] or (
-                                          not ping.data == payload[6]):
+            if ping.screens != new_scr or not ping.name == payload[4] or (not ping.data == payload[6]):
                 ping.screens = new_scr
                 ping.name = payload[4]
                 ping.data = payload[6]
                 pub.sendMessage("update_screens", update=True)
-
             ping.refresh()
         else:
-            self.NODE_LIST.add(Node(payload[0], new_scr, payload[4],
-                                    payload[6]))
+            self.NODE_LIST.add(Node(payload[0], new_scr, payload[4], payload[6]))
             pub.sendMessage("update_screens", update=True)
 
     def find_node(self, node_id):
@@ -603,17 +520,3 @@ class SWNP:
                 n = node
         return n
 
-    def sync_handler(self, msg):
-        """Handler for sync messages.
-
-        .. deprecated:: 0.2
-
-        :param msg: The message.
-        :type msg: :class:`swnp.Message`
-
-        """
-        for id_ in msg.PAYLOAD.split('_'):
-            filtered_list = filter(lambda newid: newid == id_, self.NODE_LIST)
-            if len(filtered_list) == 0:
-                self.NODE_LIST.append(id_)
-        pub.sendMessage("update_screens", update=True)

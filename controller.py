@@ -454,7 +454,6 @@ def AddComputer(name,ip,wos_id):
         if not c:
             logger.debug("no computer instance  found")
             c = Computer(ip=ip_int,name=name,mac=mac,wos_id=wos_id)
-            logger.debug(c)  
             db.add(c)
             db.commit()       
         db.expunge(c)
