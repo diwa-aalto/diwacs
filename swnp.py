@@ -21,14 +21,15 @@ from pubsub import pub
 
 # My imports.
 import controller
+import diwavars
 import utils
 from wos import CloseError
 
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('swnp')
+
 PGM_IP = "239.128.128.1:5555"
-STORAGE = "192.168.1.10"
 PREFIX_CHOICES = ['JOIN', 'LEAVE', 'SYNC', 'MSG', 'PING', 'PONG']
 TIMEOUT = 10
 PING_RATE = 2
@@ -148,7 +149,7 @@ def testIP():
 
 
 def testStorageConnection():
-    return os.path.exists('\\\\' + STORAGE + '\\Projects')
+    return os.path.exists('\\\\' + diwavars.STORAGE + '\\Projects')
 
 
 class SWNP:
@@ -181,7 +182,7 @@ class SWNP:
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
         #Get ip and id
-        self.ip = utils.GetLocalIPAddress(STORAGE)
+        self.ip = utils.GetLocalIPAddress(diwavars.STORAGE)
         logger.debug(self.ip)
         if id:
             self.id = id

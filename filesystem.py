@@ -6,6 +6,7 @@ Created on 17.5.2013
 import base64
 import datetime
 from collections import deque
+import logging
 import os
 import shutil
 import subprocess
@@ -23,10 +24,13 @@ from PIL import Image, ImageOps, ImageGrab
 import controller
 import utils
 import diwavars
-STORAGE = diwavars.STORAGE
-CAMERA_URL = diwavars.CAMERA_URL
-CAMERA_USER = diwavars.CAMERA_USER
-CAMERA_PASS = diwavars.CAMERA_PASS
+
+logging.config.fileConfig(os.path.abspath('logging.conf'))
+logger = logging.getLogger('filesystem')
+
+
+def SetLoggerLevel(level):
+    logger.setLevel(level)
 
 
 def CopyFileToProject(filepath, project_id):
@@ -45,7 +49,7 @@ def CopyFileToProject(filepath, project_id):
             project_dir = controller.GetProjectPath(project_id)
             shutil.copy2(filepath, project_dir)
         except:
-            utils.logger.exception('File copy error')
+            logger.exception('File copy error')
             return False
         return os.path.join(project_dir,
                             os.path.basename(filepath))
@@ -85,7 +89,7 @@ def CreateProjectDir(dir_name):
         try:
             os.makedirs(project_dir)
         except:
-            utils.logger.exception("Error creating project dir.")
+            logger.exception("Error creating project dir.")
             return None
         return project_dir
     return None
@@ -97,7 +101,7 @@ def DeleteDir(path):
         shutil.rmtree(path)
         result = True
     except:
-        utils.logger.exception("Delete dir exception")
+        logger.exception("Delete dir exception")
     return result
 
 
@@ -117,40 +121,53 @@ def FileToBase64(filepath):
 
 # Module global constants.
 __WIN_XP_REG = r'Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme'
-__WIN_VISTA7_REG = r'Control Panel\Desktope'
+__WIN_VISTA7_REG = r'Control Panel\Desktop'
 
 
 def GetCurrentWallpaper(win):
     wallpaper = None
+    wallpaper_path = ''
     key = None
     default_entry = None
     reg_location = None
-    if win == 5:
+    logger.debug('GetCurrentWallpaper: ' + str(win))
+    if win[0] == 5:  # XP == 5,1    XP64 == 5,2
         reg_location = __WIN_XP_REG
-    elif win in [6, 7]:
+    elif win[0] == 6:
         reg_location = __WIN_VISTA7_REG
-        default_entry = 'Microsoft\Windows\Themes\TranscodedWallpaper'
-        if win == 6:
-            default_entry += '.jpg'
+        if win[1] == 0:  # Vista
+            default_entry = 'Microsoft\Windows\Themes\TranscodedWallpaper.jpg'
+        elif win[1] == 1:  # Windows 7
+            default_entry = 'Microsoft\Windows\Themes\TranscodedWallpaper.jpg'
+        elif win[1] == 2:  # Windows 8
+            default_entry = 'Microsoft\Windows\Themes\TranscodedWallpaper'
     try:
         # Try the defualt location if available.
         if default_entry and ('APPDATA' in os.environ):
             wallpaper_path = os.path.join(os.environ['APPDATA'], default_entry)
+            logger.debug('Accessing: ' + wallpaper_path)
         # Get current current_wallpaper from registry if needed.
         if wallpaper_path and os.path.exists(wallpaper_path):
             wallpaper = wallpaper_path
-        elif reg_location:
+        # We might have the default wallpaper now, but let's try
+        # replace it with the current one...
+        if reg_location:
+            logger.debug('reg_location: ' + str(reg_location))
             key = OpenKey(HKEY_CURRENT_USER, reg_location)
+            logger.debug('key: ' + str(key) + ' open!')
             wallpaper_path = QueryValueEx(key, 'Wallpaper')[0]
+            logger.debug('keyval: ' + str(wallpaper_path))
             if wallpaper_path.count("%") > 1:
                 i1 = wallpaper_path.find("%")
                 i2 = wallpaper_path.find("%", i1 + 1)
                 env = wallpaper_path[i1 + 1:i2]
                 end = wallpaper_path[i2 + 2:]
                 wallpaper_path = os.path.join(os.getenv(env), end)
-            wallpaper = wallpaper_path
-    except:
-        wallpaper = None
+            logger.debug('keyval2: ' + str(wallpaper_path))
+            if (wallpaper_path) and len(wallpaper_path):
+                wallpaper = wallpaper_path
+    except Exception, e:
+        logger.exception(str(e))
     if key is not None:
         CloseKey(key)
     return wallpaper
@@ -176,7 +193,8 @@ def GetNodeImg(node):
 
     """
     node = str(node)
-    img_path = '\\\\' + STORAGE + '\\screen_images\\' + str(node) + '.png'
+    img_path = ('\\\\' + diwavars.STORAGE + '\\screen_images\\' +
+                str(node) + '.png')
     if os.path.exists(img_path):
         return img_path
     return os.path.join(os.getcwd(), diwavars.DEFAULT_SCREEN)
@@ -214,7 +232,7 @@ def OpenFile(filepath):
         :type filepath: String.
 
         """
-        utils.logger.debug("%s Opening file %s", (os.name, filepath))
+        logger.debug("%s Opening file %s", (os.name, filepath))
         if os.name == 'mac':
             subprocess.call(('open', filepath))
         elif os.name == 'nt':
@@ -225,7 +243,7 @@ def OpenFile(filepath):
                     except:
                         subprocess.call(('start', filepath), shell=True)
             except:
-                utils.logger.exception("Open file exception")
+                logger.exception("Open file exception")
         elif os.name == 'posix':
             subprocess.call(('xdg-open', filepath))
 
@@ -238,40 +256,42 @@ def RecentFilesQuery():
 def SaveScreen(win, filepath):
     """Saves the background image of the desktop.
 
-    :param filename: The filename for the saved image.
-    :type filename: String.
+    :param win: The windows version tuple of host computer.
+    :type win: (Integer, Integer)
+    :param filepath: The filepath for the saved image.
+    :type filepath: String
 
     """
+    def calculateFrameBox(frame_image):
+        (unused_r, unused_g, unused_b, a) = frame_image.split()
+        if not a:
+            return ((0, 0), (0, 0))
+        # getbbox finds the first non-zero pixel so we need inverse of alpha.
+        a = ImageOps.invert(a)
+        mybox = a.getbbox()
+        if not mybox:
+            return ((0, 0), (0, 0))
+        return ((mybox[0], mybox[1]),
+                (mybox[2] - mybox[0], mybox[3] - mybox[1]))
+    logger.debug('SaveScreen(' + str(win) + ', "' + filepath + '")')
     current_wallpaper = GetCurrentWallpaper(win)
     if current_wallpaper is None:
         return
     try:
-        #From blog :
-        #http://tobias.klpstn.com/2008/02/10/simple-image-masking-with-pil/
-        # the image we want to paste in the transparent mask
         background = Image.open(current_wallpaper)
-        # or take screenshot
-        #: TODO: Consider refactoring out.
-        unused_grab = ImageGrab.grab()
-        # the mask, where we insert our image
-        mask = Image.open(os.path.join("data", "scr_mask.png"))
         # mask, that we overlay
         frame_mask = Image.open(os.path.join("data", "scr_frame_mask.png"))
-        # smooth the mask a little bit, if you want
-        # mask = mask.filter(ImageFilter.SMOOTH)
-        # resize/crop the image to the size of the mask-image
-        cropped_image = ImageOps.fit(background, mask.size,
+        frame_mask = frame_mask.convert('RGBA')
+        # Calculate the area with alpha.
+        (img_pos, img_size) = calculateFrameBox(frame_mask)
+        # Resize the wallpaper to the alpha area.
+        cropped_image = ImageOps.fit(background, img_size,
                                      method=Image.ANTIALIAS)
-        # get the alpha-channel (used for non-replacement)
-        cropped_image = cropped_image.convert("RGBA")
-        mask.load()
-        (unused_r, unused_g, unused_b, a) = mask.split()
-        # paste the frame mask without replacing the alpha mask of the
-        # mask-image.
-        cropped_image.paste(frame_mask, mask=a)
-        cropped_image.save(filepath, format="PNG")
+        # Paste over the alpha area and save the image.
+        frame_mask.paste(cropped_image, box=img_pos)
+        frame_mask.save(filepath, format="PNG")
     except Exception as inst:
-        utils.logger.exception('SaveScreen Exception: %s', str(inst))
+        logger.exception('SaveScreen Exception: %s', str(inst))
 
 
 def ScreenCapture(path, node):
@@ -289,7 +309,7 @@ def ScreenCapture(path, node):
                                 stringform + '.png')
         grab.save(filepath, format='PNG')
     except Exception, e:
-        utils.logger.exception('ScreenCapture exception:%s', str(e))
+        logger.exception('ScreenCapture exception:%s', str(e))
 
 
 def SearchFile(filename, search_path):
@@ -366,26 +386,9 @@ def SnaphotThread(path):
         data = urllib2.urlopen(request, timeout=60).read()
         name = str(event_id) + '_' + (
                     datetime.datetime.now().strftime("%d%m%Y%H%M%S") + '.jpg')
-        utils.logger.debug('Snaphot filename: %s', name)
+        logger.debug('Snaphot filename: %s', name)
         output = open(os.path.join(filepath, name), 'wb')
         output.write(data)
         output.close()
     except Exception, e:
-        utils.logger.exception("Snapshot exception: %s", str(e))
-
-
-def UpdateCameraVars(url, user, passwd):
-    global CAMERA_URL
-    global CAMERA_USER
-    global CAMERA_PASS
-    if url:
-        CAMERA_URL = url
-    if user:
-        CAMERA_USER = user
-    if passwd:
-        CAMERA_PASS = passwd
-
-
-def UpdateStorage(storage):
-    global STORAGE
-    STORAGE = storage
+        logger.exception("Snapshot exception: %s", str(e))

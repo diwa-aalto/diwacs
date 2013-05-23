@@ -3,8 +3,10 @@ Created on 8.5.2012
 
 @author: neriksso
 '''
+
+#: TODO: Clean the imports...
 import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx
-import wx.combo, swnp, wx.lib.statbmp, random, logging, logging.config
+import wx.combo, wx.lib.statbmp, random, logging, logging.config
 import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
 import configobj, datetime, os, SendKeys, random
 sys.stdout = open("data\stdout.log", "wb")
@@ -15,8 +17,6 @@ import zmq
 from pubsub import pub
 from shutil import rmtree
 from sqlalchemy import exc
-from models import *
-from diwavars import *
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from _winreg import KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER, QueryValueEx 
@@ -25,44 +25,62 @@ from collections import deque
 from wx.lib.embeddedimage import PyEmbeddedImage
 try:
     from agw import ultimatelistctrl as ULC
-except ImportError: # if it's not there locally, try the wxPython lib.
+#if it's not there locally, try the wxPython lib.
+except ImportError:
     from wx.lib.agw import ultimatelistctrl as ULC
 
 import controller
+import diwavars
 import filesystem
+from models import *
+import swnp
 import utils
-
 
 
 logging.config.fileConfig('logging.conf')
 wos_logger = logging.getLogger('wos')
 
+
 def SetLoggerLevel(level):
+    """ Used to set wos_logger level.
+    :param level: The level desired.
+    :type level: Integer
+
+    """
     wos_logger.setLevel(level)
 
+
 class AudioRecorder(threading.Thread):
-    """A thread for capturing audio continuously. It keeps a buffer that can be saved to a file."""
+    """A thread for capturing audio continuously.
+    It keeps a buffer that can be saved to a file.
+    By convention AudioRecorder is usually written in mixedcase although we
+    prefer uppercase for threading types.
+
+    :param parent: Parent of the thread.
+    :type parent: :py:class:`threading.Thread`
+
+    """
     def __init__(self, parent):
         threading.Thread.__init__(self, name="AudioRecorder")
         self.parent = parent
         self.pa = pyaudio.PyAudio()
         self.stream = self.open_mic_stream()
-        self.buffer = deque(maxlen=MAX_LENGTH)
+        self.buffer = deque(maxlen=diwavars.MAX_LENGTH)
         self.listening = True
-        
+
     def stop(self):
         self.listening = False
         self.stream.close()
 
     def find_input_device(self):
-        device_index = None            
+        device_index = None
         for i in range(self.pa.get_device_count()):
             # China hack...
             """logger.debug("Selecting audio device %s / %s "%(str(i),str(self.pa.get_device_count())))
             device_index = i
             return device_index
-            """     
-            devinfo = self.pa.get_device_info_by_index(i)   
+            """
+            devinfo = self.pa.get_device_info_by_index(i)
             for keyword in ["mic", "input"]:
                 if keyword in devinfo["name"].lower():
                     device_index = i
@@ -77,22 +95,24 @@ class AudioRecorder(threading.Thread):
         device_index = None
         # uncomment the next line to search for a device 
         #device_index = self.find_input_device()
-        stream = self.pa.open(format=FORMAT,
-                                 channels=CHANNELS,
-                                 rate=RATE,
+        stream = self.pa.open(format=diwavars.FORMAT,
+                                 channels=diwavars.CHANNELS,
+                                 rate=diwavars.RATE,
                                  input=True,
                                  input_device_index=device_index, # use default input
-                                 frames_per_buffer=INPUT_FRAMES_PER_BLOCK)
+                                 frames_per_buffer=diwavars.INPUT_FRAMES_PER_BLOCK)
 
         return stream
 
-           
     def run(self):
-        """Continuously record from the microphone to the buffer. If the buffer is full, the first frame will be removed and the new block appended."""
-        global BUFFER_TIME
+        """Continuously record from the microphone to the buffer.
+        If the buffer is full, the first frame will be removed and
+        the new block appended.
+
+        """
         while self.listening:
             try:
-                data = self.stream.read(INPUT_FRAMES_PER_BLOCK)
+                data = self.stream.read(diwavars.INPUT_FRAMES_PER_BLOCK)
                 if len(self.buffer) == self.buffer.maxlen:
                     d = self.buffer.popleft()
                     del d
@@ -110,9 +130,9 @@ class AudioRecorder(threading.Thread):
                 os.makedirs(filepath)
             filepath = os.path.join(filepath, filename)    
             wf = wave.open(filepath, 'wb')
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(self.pa.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
+            wf.setnchannels(diwavars.CHANNELS)
+            wf.setsampwidth(self.pa.get_sample_size(diwavars.FORMAT))
+            wf.setframerate(diwavars.RATE)
             wf.writeframes(b''.join(self.buffer))
             wf.close()
             wx.CallAfter(self.parent.ClearStatusText)
@@ -124,8 +144,14 @@ class UpdateDialog(wx.Dialog):
     """ A Dialog which notifies about a software update
     """
     def __init__(self, title, url, *args, **kwargs):
-        super(UpdateDialog, self).__init__(parent=wx.GetApp().GetTopWindow(), title="Version %s is available" % title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, *args, **kwargs)
-        self.notice = wx.StaticText(self, label="An application update is available for %s at " % APPLICATION_NAME)
+        super(UpdateDialog, self).__init__(parent=wx.GetApp().GetTopWindow(),
+                                           title="Version %s is available" % title,
+                                           style=wx.DEFAULT_DIALOG_STYLE |
+                                           wx.STAY_ON_TOP,
+                                           *args, **kwargs)
+        self.notice = wx.StaticText(self, label="An application update is "\
+                                    "available for %s at " %
+                                    diwavars.APPLICATION_NAME)
         self.link = wx.HyperlinkCtrl(self, label="here.", url=url)
         self.link.Bind(wx.EVT_HYPERLINK, self.UrlHandler)
         self.ok = wx.Button(self, -1, "OK")
@@ -140,13 +166,14 @@ class UpdateDialog(wx.Dialog):
         self.CenterOnScreen()
         self.vsizer.Fit(self)
         self.SetFocus()
-           
-    def OnOk(self, event):  
+
+    def OnOk(self, event):
         self.EndModal(0)
-    
+
     def UrlHandler(self, event):
         webbrowser.open(self.link.GetURL())
-        
+
+
 class CHECK_UPDATE(threading.Thread):
     """Thread for checking version updates.   
     """
@@ -154,39 +181,40 @@ class CHECK_UPDATE(threading.Thread):
         threading.Thread.__init__(self, name="VersionChecker")
     
     def getPad(self):
-        return urllib2.urlopen(PAD_URL)
-    
+        return urllib2.urlopen(diwavars.PAD_URL)
+
     def showDialog(self, url):
         try:
             dlg = UpdateDialog(self.latest_version, url).Show()
             dlg.Destroy()
         except:
             wos_logger.exception("Update Dialog Exception")
-            
+
     def run(self):
         try:
             padfile = self.getPad()
             tree = etree.parse(padfile)
         except urllib2.URLError:
             wos_logger.exception("update checker exception retrieving padfile")
-            return False    
+            return False
         except etree.ExpatError:
             wos_logger.exception("Update checker exception parsing padfile")
             return False
-        
+
         latest_version = tree.findtext('Program_Info/Program_Version')
         url_primary = tree.findtext('Proram_Info/Web_Info/Application_URLs/Primary_Download_URL')
         url_secondary = tree.findtext('Proram_Info/Web_Info/Application_URLs/Secondary_Download_URL')
         url = url_primary if url_primary else url_secondary
-        if latest_version > VERSION:
+        if latest_version > diwavars.VERSION:
             wx.CallAfter(self.showDialog, url) 
-            
+
+
 class CONN_ERR_TH(threading.Thread):
     """Thread for checking connection errors.
-    
+
     :param parent: Parent object.
     :type parent: wx.Frame.
-    
+
     """
     def __init__ (self, parent):
         threading.Thread.__init__(self, name="Connection Error Checker")
@@ -253,10 +281,11 @@ class BlackOverlay(wx.Frame):
     def DisableFocus(self, evt):
         evt.Skip()
         self.parent.panel.SetFocus() 
-           
+
+
 class WORKER_THREAD(threading.Thread):
     """ Worker thread for non-UI jobs.
-    
+
     :param context: Context for creating sockets.
     :type context: ZeroMQ context.
     :param send_file: Sends files.
@@ -264,22 +293,22 @@ class WORKER_THREAD(threading.Thread):
     :param handle_file: Handles files
     :type handle_file: Function.
     """
-    def __init__ (self, parent):
+    def __init__(self, parent):
         threading.Thread.__init__(self, name="CMFH")
         self.parent = parent
         self._stop = threading.Event()
-        
+
     def stop(self):
         self._stop.set()
-        
+
     def CheckResponsive(self):
-        if not self.parent.responsive and not self.parent.is_responsive:        
-            nodes = controller.GetActiveResponsiveNodes(PGM_GROUP)
+        if not self.parent.responsive and not self.parent.is_responsive:
+            nodes = controller.GetActiveResponsiveNodes(diwavars.PGM_GROUP)
             wos_logger.debug("Responsive checking active: %s" % str(nodes))
             if not nodes:
-                if RESPONSIVE == PGM_GROUP:
+                if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
                     self.parent.SetResponsive()
-                    wos_logger.debug("Setting self as responsive")         
+                    wos_logger.debug("Setting self as responsive")
             else:
                 self.parent.responsive = str(nodes[0][0])
                 if self.parent.responsive == self.parent.swnp.node.id:
@@ -309,7 +338,7 @@ class WORKER_THREAD(threading.Thread):
         :type name: String
         :param id: Node id.
         :type id: Integer.
-        
+
         """
         keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' + str(name), 'command']
         key = ''
@@ -340,13 +369,13 @@ class WORKER_THREAD(threading.Thread):
                                 DeleteKey(key, subkey_name)
                                 subkey_count += 1
                             except WindowsError:
-                                break   
+                                break
                         CloseKey(key)
-                        try:    
+                        try:
                             DeleteKey(main_key, key_name)
                         except:
                             count += 1
-                    else:            
+                    else:
                         count += 1
                 except WindowsError:
                     break
@@ -356,72 +385,73 @@ class WORKER_THREAD(threading.Thread):
 
     def parseConfig(self, config):
         """ Handles config file settings"""
-        global STORAGE, RESPONSIVE, PGM_GROUP, AUDIO
         for key, val in config.items():
             wos_logger.debug('(' + key + '=' + val + ')')
             if 'STORAGE' in key:
-                STORAGE = val
-                controller.UpdateStorage(STORAGE)
-                filesystem.UpdateStorage(STORAGE)
+                diwavars.UpdateStorage(val)
+                controller.UpdateStorage()
             elif 'DB_ADDRESS' in key:
-                UpdateDatabase(ADDRESS=val)
-                controller.UpdateStorage(STORAGE)
+                diwavars.UpdateDatabase(ADDRESS=val)
+                controller.UpdateStorage()
             elif 'DB_NAME' in key:
-                UpdateDatabase(NAME=val)
-                controller.UpdateStorage(STORAGE)
+                diwavars.UpdateDatabase(NAME=val)
+                controller.UpdateStorage()
             elif 'DB_TYPE' in key:
-                UpdateDatabase(TYPE=val)
-                controller.UpdateStorage(STORAGE)
+                diwavars.UpdateDatabase(TYPE=val)
+                controller.UpdateStorage()
             elif 'DB_USER' in key:
-                UpdateDatabase(USER=val)
-                controller.UpdateStorage(STORAGE)
+                diwavars.UpdateDatabase(USER=val)
+                controller.UpdateStorage()
             elif 'DB_PASS' in key:
-                UpdateDatabase(PASS=val)
-                controller.UpdateStorage(STORAGE)
+                diwavars.UpdateDatabase(PASS=val)
+                controller.UpdateStorage()
             elif 'NAME' in key or 'SCREENS' in key:
                 if key == 'NAME':
                     controller.SetNodeName(val)
                 else:
                     controller.SetNodeScreens(int(val))
             elif 'PGM_GROUP' in key:
-                PGM_GROUP = int(val)
+                diwavars.UpdatePGMGroup(int(val))
             elif 'AUDIO' in key:
                 wos_logger.debug("AUDIO in config: %s" % str(val))
                 val = eval(val)
                 if val:
-                    AUDIO = val
+                    diwavars.UpdateAudio(val)
                     wos_logger.debug("Starting audio recorder")
                     self.parent.StartAudioRecorder()
             elif 'LOGGER_LEVEL' in key:
                 SetLoggerLevel(str(val).upper())
                 controller.SetLoggerLevel(str(val).upper())
+                filesystem.SetLoggerLevel(str(val).upper())
                 swnp.SetLoggerLevel(str(val).upper())
-                utils.SetLoggerLevel(str(val).upper()) 
+                utils.SetLoggerLevel(str(val).upper())
             elif "CAMERA_" in key:
                 if "URL" in key:
-                    filesystem.UpdateCameraVars(str(val), None, None)
+                    diwavars.UpdateCameraVars(str(val), None, None)
                 if "USER" in key:
-                    filesystem.UpdateCameraVars(None, str(val), None)
+                    diwavars.UpdateCameraVars(None, str(val), None)
                 if "PASS" in key:
-                    filesystem.UpdateCameraVars(None, None, str(val))
+                    diwavars.UpdateCameraVars(None, None, str(val))
             elif "RESPONSIVE" in key:
                 wos_logger.debug("Setting RESPONSIVE")
-                RESPONSIVE = eval(val)
-                controller.SetIsResponsive(RESPONSIVE)
-                wos_logger.debug("%d" % RESPONSIVE)
+                diwavars.UpdateResponsive(eval(val))
+                wos_logger.debug("%d" % diwavars.RESPONSIVE)
             else:
-                globals()[key] = eval(val) 
-              
+                globals()[key] = eval(val)
+
     def CreateEvent(self, title):
         try:
             ide = controller.AddEvent(self.parent.current_session_id, title, '')
             path = controller.GetProjectPath(self.parent.current_project_id)
             filesystem.Snaphot(path)
-            self.parent.SwnpSend('SYS', 'screenshot;0')         
-            if AUDIO:
-                wos_logger.debug("Buffering audio for %d seconds" % WINDOW_TAIL)
+            self.parent.SwnpSend('SYS', 'screenshot;0')
+            if diwavars.AUDIO:
+                wos_logger.debug("Buffering audio for %d seconds" %
+                                 diwavars.WINDOW_TAIL)
                 self.parent.status_text.SetLabel("Recording...")
-                wx.CallLater(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, path)
+                wx.CallLater(diwavars.WINDOW_TAIL * 1000,
+                             self.parent.audio_recorder.save,
+                             ide, path)
         except:
             wos_logger.exception("Create Event exception") 
                   
@@ -463,7 +493,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
         self.stop_socket.close()
         self.socket.close()
         wos_logger.debug('CMFH closed')
-         
+
     def run(self):
         """Starts the thread"""
         while not self._stop.isSet():
@@ -483,10 +513,12 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
                     self.parent.SetCurrentProject(id)
                     self.socket.send("OK")
                 elif cmd == 'save_audio':
-                    if self.parent.is_responsive and AUDIO:
+                    if self.parent.is_responsive and diwavars.AUDIO:
                         self.socket.send("OK")
                         ide = controller.GetLatestEvent()
-                        threading.Timer(WINDOW_TAIL * 1000, self.parent.audio_recorder.save, ide, controller.GetProjectPath(self.parent.current_project_id)).start()
+                        threading.Timer(diwavars.WINDOW_TAIL * 1000,
+                                        self.parent.audio_recorder.save,
+                                        ide, controller.GetProjectPath(self.parent.current_project_id)).start()
                         wx.CallAfter(self.parent.status_text.SetLabel, "Recording...")
                 elif cmd == 'open':
                     target = eval(path)
@@ -718,7 +750,7 @@ class CURRENT_PROJECT(threading.Thread):
         """Starts the thread."""
         while not self._stop.isSet():
             try:
-                current_project = int(controller.GetActiveProject(PGM_GROUP))
+                current_project = int(controller.GetActiveProject(diwavars.PGM_GROUP))
                 if current_project:
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
@@ -747,7 +779,7 @@ class CURRENT_SESSION(threading.Thread):
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
-            current_session = int(controller.GetActiveSession(PGM_GROUP))
+            current_session = int(controller.GetActiveSession(diwavars.PGM_GROUP))
             """if current_session != self.parent.current_session_id:
                 self.parent.SetCurrentSession(current_session)"""
             self.swnp('SYS', 'current_session;' + str(current_session))
@@ -779,8 +811,9 @@ class DeleteProjectDialog(wx.Dialog):
             self.sizer.Fit(self)
             self.SetFocus()
         except:
-            wos_logger.exception("Dialog exception")    
+            wos_logger.exception("Dialog exception")
             self.EndModal(0)
+
     def OnOk(self, event):
         ret = 0
         if self.yes_delete.GetValue():
@@ -788,6 +821,7 @@ class DeleteProjectDialog(wx.Dialog):
         if self.files_delete.GetValue():
             ret += 10    
         self.EndModal(ret)
+
     def OnCancel(self, event):
         self.EndModal(0) 
 
@@ -1216,25 +1250,24 @@ class PreferencesDialog(wx.Dialog):
         else:
             self.screens_show.SetValue(1)  
         self.name_value.SetValue(name)
-       
-        
+
     #----------------------------------------------------------------------
-    def openConfig(self, event):
-        """Closes the dialog without modifications.
-        
+    def openConfig(self, unused_event):
+        """Opens config file.
+
         :param event: GUI event.
         :type event: Event.
-        
+
         """
-        filesystem.OpenFile(CONFIG_PATH)
-        
+        filesystem.OpenFile(diwavars.CONFIG_PATH)
+
     #----------------------------------------------------------------------
-    def onCancel(self, event):
+    def onCancel(self, unused_event):
         """Closes the dialog without modifications.
-        
+
         :param event: GUI event.
         :type event: Event.
-        
+
         """
         self.EndModal(0)
  
@@ -1378,7 +1411,7 @@ class EventList(wx.Frame):
     def __init__(self, parent, *args, **kwargs):
         self.parent = parent
         dw, dh = wx.DisplaySize()
-        w, h = FRAME_SIZE
+        w, h = diwavars.FRAME_SIZE
         x = ((dw - w) / 2) + w
         y = h / 2
         wx.Frame.__init__(self, parent, -1, style=wx.FRAME_FLOAT_ON_PARENT | wx.FRAME_NO_TASKBAR, pos=(x, y), *args, **kwargs)
@@ -1458,7 +1491,7 @@ class EventList(wx.Frame):
         wos_logger.debug("Custom event %s responsive is %s" % (str(label), str(self.parent.responsive)))
         self.evtlist.Select(i, False)                
         self.selection_made += 1
-        if not self.parent.is_responsive and not DEBUG:
+        if not self.parent.is_responsive and not diwavars.DEBUG:
             self.parent.SwnpSend(self.parent.responsive, "event;%s" % label)           
         elif self.parent.current_project_id and self.parent.current_session_id:
             wx.CallAfter(self.parent.worker.CreateEvent, label)
@@ -1481,7 +1514,7 @@ class EventList(wx.Frame):
 
 class GUI(wx.Frame):
     """WOS Application Frame
-    
+
     :param parent: Parent frame.
     :type parent: :class:`wx.Frame`
     :param title: Title for the frame
@@ -1491,13 +1524,13 @@ class GUI(wx.Frame):
     def __init__(self, parent, title):
         """ Application initing """
         super(GUI, self).__init__(parent, title=title,
-            size=FRAME_SIZE, style=wx.FRAME_NO_TASKBAR)
-        global DEFAULT_CURSOR, BLANK_CURSOR, WINDOWS_MAJOR, STORAGE, RUN_CMD
+            size=diwavars.FRAME_SIZE, style=wx.FRAME_NO_TASKBAR)
+        global DEFAULT_CURSOR, BLANK_CURSOR, WINDOWS_MAJOR, RUN_CMD
         wos_logger.debug("WxPython version %s" % (str(wx.VERSION)))
         self.init_screens_done = False
         MySplash = MySplashScreen()
-        MySplash.Show()   
-        WINDOWS_MAJOR = sys.getwindowsversion().major
+        MySplash.Show()
+        diwavars.UpdateWindowsVersion()
         try:
             self.audio_recorder = AudioRecorder(self)
             self.audio_recorder.daemon = True
@@ -1512,46 +1545,51 @@ class GUI(wx.Frame):
         self.worker.daemon = True
         self.worker.start()
         try:
-            if not os.path.exists(CONFIG_PATH):
+            if not os.path.exists(diwavars.CONFIG_PATH):
                 self.config = self.LoadConfig()
                 self.ShowPreferences(None)
-            else:    
+            else:
                 self.config = self.LoadConfig()
             self.worker.parseConfig(self.config)
-            self.swnp = swnp.SWNP(int(PGM_GROUP), int(self.config['SCREENS']), self.config['NAME'], 'observer' if self.is_responsive else "", error_handler=self.error_th) 
-        except:
-            wos_logger.exception("loading config exception")
+            self.swnp = swnp.SWNP(int(diwavars.PGM_GROUP),
+                                  int(self.config['SCREENS']),
+                                  self.config['NAME'],
+                                  'observer' if self.is_responsive else "",
+                                  error_handler=self.error_th)
+        except Exception, e:
+            wos_logger.exception("loading config exception %s", str(e))
         #if self.swnp.node.id == '3':
-        #    self.is_responsive = True    
-        # Perform initial testing before actual initing   
+        #    self.is_responsive = True
+        # Perform initial testing before actual initing
         it = self.InitTest()
-        
-        if not DEBUG and it:
+
+        if not diwavars.DEBUG and it:
             MySplash.Hide()
             MySplash.Destroy()
             if it:
                 wx.MessageBox(it, 'Application Error', wx.OK | wx.ICON_ERROR).ShowModal()
             self.Destroy()
-            sys.exit(0) 
-        
-          
+            sys.exit(0)
+
         DEFAULT_CURSOR = self.GetCursor()
         BLANK_CURSOR = wx.StockCursor(wx.CURSOR_BLANK)
-        
+
         self.overlay = BlackOverlay((0, 0), wx.DisplaySize(), self)
         self.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
-        
-        try:           
+
+        try:
             self.worker.RemoveAllRegEntries()
-            self.cmfh = SEND_FILE_CONTEX_MENU_HANDLER(self, self.swnp.context, self.SwnpSend, self.HandleFileSend)
+            self.cmfh = SEND_FILE_CONTEX_MENU_HANDLER(self, self.swnp.context,
+                                                      self.SwnpSend,
+                                                      self.HandleFileSend)
             self.cmfh.daemon = True
             self.cmfh.start()
-            
+
             self.current_project_id = 0
             self.current_project = None
             self.current_session_id = 0
             self.current_session = None
-            self.activity = controller.GetActiveActivity(PGM_GROUP)
+            self.activity = controller.GetActiveActivity(diwavars.PGM_GROUP)
             self.session_th = None
             self.project_th = None
             self.project_folder_observer = None
@@ -1564,7 +1602,8 @@ class GUI(wx.Frame):
             self.current_project_id = 0
             self.current_session_id = 0
     
-            self.panel = wx.Panel(self, -1, size=(FRAME_SIZE[0], FRAME_SIZE[1] - 50))
+            self.panel = wx.Panel(self, -1, size=(diwavars.FRAME_SIZE[0], 
+                                                  diwavars.FRAME_SIZE[1] - 50))
             self.panel.SetBackgroundColour(wx.Colour(202, 235, 255))
     
             self.trayicon = SysTray(self)  
@@ -1580,8 +1619,8 @@ class GUI(wx.Frame):
             self.Bind(wx.EVT_CLOSE, self.OnExit)
             #self.trayicon.Bind(wx.EVT_MENU, self.OnCreateTables, id=wx.ID_PREVIEW) 
             self.trayicon.Bind(wx.EVT_MENU, self.OpenProjectDir, id=wx.ID_INDEX)  
-            self.icon = wx.Icon(TRAY_ICON, wx.BITMAP_TYPE_PNG)
-            self.trayicon.SetIcon(self.icon, TRAY_TOOLTIP) 
+            self.icon = wx.Icon(diwavars.TRAY_ICON, wx.BITMAP_TYPE_PNG)
+            self.trayicon.SetIcon(self.icon, diwavars.TRAY_TOOLTIP) 
             wx.EVT_TASKBAR_LEFT_UP(self.trayicon, self.OnTaskBarActivate)
             self.screen_selected = None
             self.InitUI()
@@ -1621,7 +1660,7 @@ class GUI(wx.Frame):
             self.OnExit('conn_err')
         
     def InitTest(self):
-        if DEBUG:
+        if diwavars.DEBUG:
             return True
         error = ""
         if not error and not controller.TestConnection():
@@ -1739,25 +1778,25 @@ class GUI(wx.Frame):
                         self.scan_observer.stop()
             if self.project_folder_observer:
                     self.project_folder_observer.unschedule_all()
-                    self.project_folder_observer.stop()    
-                    
+                    self.project_folder_observer.stop()
+
             CURRENT_PROJECT_PATH = None 
             CURRENT_PROJECT_ID = 0
-            
+
     def SetResponsive(self):
         wos_logger.debug("Set Responsive")
-        controller.SetIsResponsive(PGM_GROUP)
+        diwavars.UpdateResponsive(diwavars.PGM_GROUP)
         self.StartCurrentProject()
         self.is_responsive = True
-        #self.SetObservers()  
+        #self.SetObservers()
         self.StartCurrentSession()
-        
+
     def StopResponsive(self):
-        controller.SetIsResponsive(0)
+        diwavars.UpdateResponsive(0)
         self.RemoveObservers()
         self.EndCurrentProject()
         self.EndCurrentSession()
-        
+
     def EndCurrentProject(self):
         if self.project_th:
             self.project_th.stop()
@@ -1822,14 +1861,17 @@ class GUI(wx.Frame):
                 self.current_session_id = self.current_session.id
                 db.expunge(self.current_session)
                 db.close()
-                controller.AddActivity(self.current_project_id, PGM_GROUP, self.current_session_id, self.activity)
+                controller.AddActivity(self.current_project_id,
+                                       diwavars.PGM_GROUP,
+                                       self.current_session_id, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
-                self.SwnpSend('SYS', 'current_session;' + str(self.current_session_id))
+                self.SwnpSend('SYS', 'current_session;' +
+                              str(self.current_session_id))
                 #controller.addComputerToSession(self.current_session, self.config['NAME'], self.swnp.ip, self.swnp.id)
-                self.panel.SetFocus()                
+                self.panel.SetFocus()
                 self.sesbtn.SetBitmapLabel(self.GetIcon('session_on'))
                 self.evtbtn.Enable(True)
-                self.evtbtn.SetFocus()              
+                self.evtbtn.SetFocus()
                 wos_logger.info('OnSession started')
             except Exception, e:
                 wos_logger.exception("OnSession exception")
@@ -1848,13 +1890,15 @@ class GUI(wx.Frame):
                 #self.SetCurrentProject(0)
                 self.SwnpSend('SYS', 'current_session;0')
                 #self.SwnpSend('SYS', 'current_project;0')
-                controller.AddActivity(self.current_project_id, PGM_GROUP,  None, self.activity)
+                controller.AddActivity(self.current_project_id,
+                                       diwavars.PGM_GROUP, None, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
                 wos_logger.info('Session ended')
-                dlg = wx.MessageDialog(self, "Session ended!", 'Information', wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, "Session ended!", 'Information',
+                                       wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 self.sesbtn.SetBitmapLabel(self.GetIcon('session_off'))
-                self.evtbtn.SetFocus()          
+                self.evtbtn.SetFocus()
             except Exception, e:
                 wos_logger.exception("OnSession exception")
                 
@@ -1923,19 +1967,19 @@ class GUI(wx.Frame):
 
     def LoadConfig(self):
         """ Loads a config file or creates one """
-        if not os.path.exists(CONFIG_PATH):
+        if not os.path.exists(diwavars.CONFIG_PATH):
             self.CreateConfig()
-        return configobj.ConfigObj(CONFIG_PATH)
+        return configobj.ConfigObj(diwavars.CONFIG_PATH)
 
     def CreateConfig(self):
         """ Creates a config file """
-        if not os.path.exists(CONFIG_PATH):
+        if not os.path.exists(diwavars.CONFIG_PATH):
             try:
-                os.makedirs(os.path.dirname(CONFIG_PATH))
+                os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
             except:
                 pass
-            shutil.copy('config.ini', CONFIG_PATH)
-        
+            shutil.copy('config.ini', diwavars.CONFIG_PATH)
+
     def GetIcon(self, icon):
         """Fetches gui icons.
 
@@ -1959,11 +2003,14 @@ class GUI(wx.Frame):
             self.swnp.send(node, 'MSG', message)
         except:
             wos_logger.exception("SwnpSend exception %s to %s" % (message, node))
-            
+
     def InitUI(self):
         """ UI initing """
         self.EXITED = False
-        filesystem.SaveScreen(WINDOWS_MAJOR, os.path.join('\\\\', STORAGE, 'SCREEN_IMAGES', self.swnp.node.id + '.png'))
+        wos_logger.debug('call savescreen!')
+        filesystem.SaveScreen((diwavars.WINDOWS_MAJOR, diwavars.WINDOWS_MINOR),
+                              os.path.join('\\\\' + diwavars.STORAGE, 'SCREEN_IMAGES',
+                                           self.swnp.node.id + '.png'))
         self.screens = wx.BoxSizer(wx.HORIZONTAL)
         self.InitScreens()
         # Subscribe handlers
@@ -2073,7 +2120,7 @@ class GUI(wx.Frame):
         self.list = EventList(self)
         
         # Setting Bottom Banner
-        self.banner_panel = wx.Panel(self, -1, pos=(0, FRAME_SIZE[1] - 50), size=(FRAME_SIZE[0], 50))
+        self.banner_panel = wx.Panel(self, -1, pos=(0, diwavars.FRAME_SIZE[1] - 50), size=(diwavars.FRAME_SIZE[0], 50))
         self.banner_panel.SetBackgroundColour(wx.Colour(45, 137, 255))
         self.logo = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY, bitmap=self.GetIcon('logo'), pos=(5, 0))
         self.logo.Bind(wx.EVT_LEFT_DOWN, self.OnAboutBox)
@@ -2092,8 +2139,8 @@ class GUI(wx.Frame):
         self.diwambbtn.faceDnClr = wx.Colour(45, 137, 255)
         self.diwambbtn.Bind(wx.EVT_BUTTON, self.OnMBBtn)
         self.diwambbtn.SetToolTip(wx.ToolTip("Meeting Browser"))
-        self.status_text = wx.StaticText(self.banner_panel, -1, '', pos=(FRAME_SIZE[0] - 220, 0))
-        self.banner = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY, bitmap=self.GetIcon('balls'), pos=(FRAME_SIZE[0] - 250, 0))  
+        self.status_text = wx.StaticText(self.banner_panel, -1, '', pos=(diwavars.FRAME_SIZE[0] - 220, 0))
+        self.banner = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY, bitmap=self.GetIcon('balls'), pos=(diwavars.FRAME_SIZE[0] - 250, 0))  
         #self.statusbg = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY, bitmap=self.GetIcon('statusbg'), pos=(FRAME_SIZE[0] - 150, 0),size=(150,50))  
         self.infobtn = buttons.GenBitmapButton(self.banner, wx.ID_ANY, self.GetIcon('info'), style=wx.BORDER_NONE, pos=(80, 5), size=(20, 20))
         self.infobtn.SetBackgroundColour(wx.Colour(45, 137, 255))
@@ -2103,7 +2150,8 @@ class GUI(wx.Frame):
         self.infobtn.faceDnClr = wx.Colour(45, 137, 255)
         self.infobtn.Bind(wx.EVT_BUTTON, self.OnInfoBtn)
         self.infobtn.SetToolTip(wx.ToolTip("Info"))
-        version = wx.StaticText(self.banner_panel, -1, ' '.join(["DiWaCS", VERSION]), pos=(5, 35), style=wx.ALIGN_CENTRE)
+        version = wx.StaticText(self.banner_panel, -1, ' '.join(["DiWaCS", diwavars.VERSION]),
+                                pos=(5, 35), style=wx.ALIGN_CENTRE)
         version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_LIGHT))        
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         self.left.Bind(wx.EVT_BUTTON, self.Shift)
@@ -2111,17 +2159,17 @@ class GUI(wx.Frame):
         vbox.Add(screenSizer, 0)
         self.hidden = 0
         self.SetSizer(vbox)
-        pub.sendMessage("update_screens", update=True)             
-        
-    def OnWABtn(self, event):
-        webbrowser.open("http://" + STORAGE + "/")
-        
-    def OnMBBtn(self, event):
-        webbrowser.open("http://" + STORAGE + "/mb/")
-        
-    def OnInfoBtn(self, event):
-        webbrowser.open("http://" + STORAGE + "/help/")    
-           
+        pub.sendMessage("update_screens", update=True)
+
+    def OnWABtn(self, unused_event):
+        webbrowser.open("http://" + diwavars.STORAGE + "/")
+
+    def OnMBBtn(self, unused_event):
+        webbrowser.open("http://" + diwavars.STORAGE + "/mb/")
+
+    def OnInfoBtn(self, unused_event):
+        webbrowser.open("http://" + diwavars.STORAGE + "/help/")
+
     def GetNodeByName(self, name):
         for node in self.nodes:
             if node[2] == name:
@@ -2149,7 +2197,7 @@ class GUI(wx.Frame):
         if not self.is_responsive:
             self.SwnpSend(self.responsive, "event;" + self.event_menu_title_by_id[event.GetId()])           
         elif self.current_project_id and self.current_session_id:
-            wx.CallAfter(WINDOW_TAIL * 1000, self.worker.CreateEvent, self.event_menu_title_by_id[ event.GetId() ])
+            wx.CallAfter(diwavars.WINDOW_TAIL * 1000, self.worker.CreateEvent, self.event_menu_title_by_id[ event.GetId() ])
         
             
             
@@ -2183,7 +2231,7 @@ class GUI(wx.Frame):
                 except NameError:
                     pass       
             self.scan_observer = Observer()
-            path = 'C:\\Scan' if DEBUG else '\\\\' + STORAGE + '\\Pictures'
+            path = 'C:\\Scan' if diwavars.DEBUG else '\\\\' + diwavars.STORAGE + '\\Pictures'
             self.scan_observer.schedule(controller.SCAN_HANDLER(self.current_project_id), path=path, recursive=True)
             #self.scan_observer.schedule(controller.SCAN_HANDLER(self.current_project_id), path='C:\\Scan', recursive=True)
             self.scan_observer.start()
@@ -2213,13 +2261,16 @@ class GUI(wx.Frame):
             self.is_responsive = False
             self.swnp.node.data = ''
             wos_logger.exception("error setting PROJECT observer:%s", str(e))
-                         
+
     def OnProjectSelected(self):
         """ Project selected event handler """
-        controller.InitSyncProjectDir(self.current_project_id)     
-        self.activity = controller.AddActivity(self.current_project_id, PGM_GROUP, self.current_session_id, self.activity) 
+        controller.InitSyncProjectDir(self.current_project_id)
+        self.activity = controller.AddActivity(self.current_project_id,
+                                               diwavars.PGM_GROUP,
+                                               self.current_session_id,
+                                               self.activity) 
         self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
-        
+
     def GetRandomResponsive(self):
         has_nodes = False 
         if len(self.nodes) > 1:
@@ -2303,10 +2354,10 @@ class GUI(wx.Frame):
         i = 0
         self.selected_nodes = []
         try:
-            while i < MAX_SCREENS:
+            while i < diwavars.MAX_SCREENS:
                 s = wx.BoxSizer(wx.VERTICAL)
                 h = wx.BoxSizer(wx.HORIZONTAL)
-                tra = wx.Image(NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+                tra = wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
                 img = wx.StaticBitmap(parent=self.panel, id=i, bitmap=tra)
                 img.Bind(wx.EVT_LEFT_DOWN, self.SelectNode) 
                 self.imgs.insert(i, img)
@@ -2337,7 +2388,7 @@ class GUI(wx.Frame):
         self.right.SetBitmapLabel(self.GetIcon('0'))
         self.left.SetBitmapLabel(self.GetIcon('0'))
         for i in self.imgs:
-            i.SetBitmap(wx.Image(NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+            i.SetBitmap(wx.Image(diwavars.NO_SCREEN, wx.BITMAP_TYPE_PNG).ConvertToBitmap())
             i.SetToolTip(None)
 
     def UpdateScreens(self, update):
@@ -2360,13 +2411,13 @@ class GUI(wx.Frame):
                 if len(self.nodes) > 3:
                     self.left.SetBitmapLabel(self.GetIcon('left_arrow'))
                     self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
-                while i < MAX_SCREENS and i < len(self.nodes): 
+                while i < diwavars.MAX_SCREENS and i < len(self.nodes): 
                     try:
                         img_path = filesystem.GetNodeImg(self.nodes[(i + self.iterator) % len(self.nodes)][0])
                         try:
                             bm = wx.Image(img_path, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
                         except:
-                            bm = wx.Image(DEFAULT_SCREEN, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+                            bm = wx.Image(diwavars.DEFAULT_SCREEN, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
                         img = self.imgs[i]
                         img.SetBitmap(bm)
                         img.SetToolTip(wx.ToolTip(self.nodes[(i + self.iterator) % len(self.nodes)][2]))
@@ -2395,14 +2446,14 @@ class GUI(wx.Frame):
                     wos_logger.debug("On exit self is responsive")
                     self.RemoveObservers()
                     controller.EndSession(self.current_session_id)
-                    controller.UnsetActivity(PGM_GROUP)
+                    controller.UnsetActivity(diwavars.PGM_GROUP)
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     wos_logger.debug("On exit self is last active comp.")
-                    controller.UnsetActivity(PGM_GROUP)
+                    controller.UnsetActivity(diwavars.PGM_GROUP)
                     if self.current_session_id:
                         controller.EndSession(self.current_session_id)
                 utils.MapNetworkShare('W:', 'C:\\')
-                controller.SetIsResponsive(0)
+                diwavars.UpdateResponsive(0)
                 time.sleep(5)
                 self.cmfh.stop()
                 self.worker.RemoveAllRegEntries()
@@ -2426,7 +2477,7 @@ class GUI(wx.Frame):
         :type e: Event.
 
         """
-        description = APPLICATION_NAME + " is the windows client for DiWa - "\
+        description = diwavars.APPLICATION_NAME + " is the windows client for DiWa - "\
             "A distributed meeting room collaboration system.\n\n"\
             "Lead programmer: Nick Eriksson\n"\
             "Contributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen, "\
@@ -2439,8 +2490,8 @@ class GUI(wx.Frame):
 
         info.SetIcon(wx.Icon(os.path.join("data", "splashscreen.png"),
                              wx.BITMAP_TYPE_PNG))
-        info.SetName(APPLICATION_NAME)
-        info.SetVersion(VERSION)
+        info.SetName(diwavars.APPLICATION_NAME)
+        info.SetVersion(diwavars.VERSION)
         info.SetDescription(description)
         info.SetCopyright('(c) 2012-2013 DiWa project by Strategic Usability'\
                           ' Research Group STRATUS, Aalto University School'\
@@ -2497,7 +2548,7 @@ class GUI(wx.Frame):
         """
         global CONTROLLED, CONTROLLING
         try:
-            if DEBUG:
+            if diwavars.DEBUG:
                     wos_logger.debug('ZMQ PUBSUB Message:' + message)
             cmd, target = message.split(';')
             if cmd == 'open':
@@ -2515,7 +2566,7 @@ class GUI(wx.Frame):
                     self.is_responsive = False
                     self.responsive = target
             if cmd == 'event':
-                if self.is_responsive or DEBUG:
+                if self.is_responsive or diwavars.DEBUG:
                     self.worker.CreateEvent(target)
             if cmd == 'key':
                 e, key, scan = target.split(',')
@@ -2569,7 +2620,7 @@ class GUI(wx.Frame):
             if cmd == 'url':
                 webbrowser.open(target)
             if cmd == 'set' and target == 'responsive':
-                if not RESPONSIVE == 0:
+                if not diwavars.RESPONSIVE == 0:
                     self.SetResponsive()
                     self.is_responsive = True
             if cmd == 'screenshot':
@@ -2605,5 +2656,6 @@ if __name__ == '__main__':
     wos_logger.info('Application started')
     #version_checker = CHECK_UPDATE().start()
     app = wx.App()
-    w = GUI(parent=None, title=(APPLICATION_NAME + ' ' + VERSION))
+    w = GUI(parent=None, title=(diwavars.APPLICATION_NAME + ' ' +
+                                diwavars.VERSION))
     app.MainLoop()

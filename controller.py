@@ -31,16 +31,15 @@ import utils
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
-STORAGE = "192.168.1.10"
-DATABASE = ('mysql+pymysql://wazzuup:serval@' + STORAGE +
+
+DATABASE = ('mysql+pymysql://wazzuup:serval@' + diwavars.STORAGE +
             '/WZP?charset=utf8&use_unicode=1')
 ENGINE = create_engine(DATABASE, echo=True)
-PROJECT_PATH = '\\\\' + STORAGE + '\\Projects\\'
+PROJECT_PATH = '\\\\' + diwavars.STORAGE + '\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
 SCANNER_TH = None
 CS_TH = None
 COMPUTER_INS = None
-IS_RESPONSIVE = 0
 NODE_NAME = ""
 NODE_SCREENS = 0
 ACTIONS = {
@@ -58,9 +57,7 @@ def SetLoggerLevel(level):
     logger.setLevel(level)
 
 
-def UpdateStorage(storage):
-    global STORAGE
-    STORAGE = storage
+def UpdateStorage():
     global DATABASE
     try:
         DATABASE = (
@@ -76,12 +73,7 @@ def UpdateStorage(storage):
     global ENGINE
     ENGINE = create_engine(DATABASE, echo=True)
     global PROJECT_PATH
-    PROJECT_PATH = '\\\\' + STORAGE + '\\Projects\\'
-
-
-def SetIsResponsive(responsive):
-    global IS_RESPONSIVE
-    IS_RESPONSIVE = responsive
+    PROJECT_PATH = '\\\\' + diwavars.STORAGE + '\\Projects\\'
 
 
 def SetNodeName(name):
@@ -110,12 +102,14 @@ def CreateAll():
     except Exception, e:
         logger.exception('CreateAll Exception: %s', str(e))
 
+
 def ConnectToDatabase(expire=False):
     """ Connect to the database and return a Session object
-    """ 
-    S = sessionmaker(bind=ENGINE,expire_on_commit=expire)
+    """
+    S = sessionmaker(bind=ENGINE, expire_on_commit=expire)
     session = S()
     return session
+
 
 def TestConnection():
     try:
@@ -125,41 +119,47 @@ def TestConnection():
         return True
     except:
         return False
-    
+
+
 def GetProjectPath(project_id):
     """Fetches the project path from database and return it.
-    
+
     :param project_id: Project id for database.
     :type project_id: Integer.
     :rtype: String.
-    
+
     """
     try:
         db = ConnectToDatabase()
-        path = db.query(Project.dir).filter(Project.id==project_id).one()[0]
+        path = db.query(Project.dir).filter(Project.id == project_id).one()[0]
     except:
         path = False
     db.close()
     return '' if not path else path
 
+
 def UnsetActivity(pgmgroup):
     db = ConnectToDatabase()
-    for c in db.query(Activity).filter(Activity.active==pgmgroup):
+    for c in db.query(Activity).filter(Activity.active == pgmgroup):
         c.active = False
     db.commit()
     db.close()
-    
+
+
 def GetLatestEvent():
     db = ConnectToDatabase()
     event = db.query(Event.id).order_by(Event.id.desc()).first()
     db.close()
     return event[0] if event else 0
-    
+
+
 def GetActiveActivity(pgmgroup):
     db = ConnectToDatabase()
-    act = db.query(Activity).filter(Activity.active==pgmgroup).order_by(desc(Activity.id)).first()
+    filtered = db.query(Activity).filter(Activity.active == pgmgroup)
+    act = filtered.order_by(desc(Activity.id)).first()
     db.close()
     return act.id if act else None
+
 
 def GetActiveProject(pgmgroup):
     activity = GetActiveActivity(pgmgroup)
@@ -167,9 +167,11 @@ def GetActiveProject(pgmgroup):
         return 0
     else:
         db = ConnectToDatabase()
-        project = db.query(Activity).filter(Activity.id==activity).one().project
+        act = db.query(Activity).filter(Activity.id == activity)
+        project = act.one().project
         db.close()
         return project.id
+
 
 def GetActiveSession(pgmgroup):
     activity = GetActiveActivity(pgmgroup)
@@ -177,54 +179,58 @@ def GetActiveSession(pgmgroup):
         return 0
     else:
         db = ConnectToDatabase()
-        session = db.query(Activity).filter(Activity.id==activity).one().session
+        session = db.query(Activity).filter(Activity.id == activity)
+        session = session.one().session
         db.close()
         return session.id
 
 
-def AddActivity(project_id,pgmgroup,session_id=None,act_id=None):
+def AddActivity(project_id, pgmgroup, session_id=None, act_id=None):
     try:
         db = ConnectToDatabase()
-        project = db.query(Project).filter(Project.id==project_id).one()
+        project = db.query(Project).filter(Project.id == project_id).one()
         if session_id:
-            session = db.query(Session).filter(Session.id==session_id).one()
+            session = db.query(Session).filter(Session.id == session_id).one()
         else:
             session = None
         if not act_id:
-                act = Activity(project,session)
+                act = Activity(project, session)
         else:
-            act = db.query(Activity).filter(Activity.id==act_id).one()
+            act = db.query(Activity).filter(Activity.id == act_id).one()
             act.project = project
             act.session = session
-            act.active = pgmgroup  
+            act.active = pgmgroup
         db.add(act)
         db.commit()
         db.expunge(act)
         db.close()
         return act.id
-    except Exception,e:
-        logger.exception('AddActivity exception')   
+    except Exception, e:
+        logger.exception('AddActivity exception %s', str(e))
         return 0
-    
+
+
 def GetProjectIdByActivity(activity):
     db = ConnectToDatabase()
-    act = db.query(Activity).filter(Activity.id==activity).one()
+    act = db.query(Activity).filter(Activity.id == activity).one()
     db.close()
     return act.project_id if act.project_id else 0
 
+
 def GetSessionIdByActivity(activity):
     db = ConnectToDatabase()
-    act = db.query(Activity).filter(Activity.id==activity).one()
+    act = db.query(Activity).filter(Activity.id == activity).one()
     db.close()
     return act.session_id if act.session_id else 0
-  
+
+
 def AddProject(data):
     """Adds a project to database and returns a  project instance
-    
+
     :param data:  Project information
     :type data: A dictionary
     :rtype: an instance of :class:`models.Project`
-    
+
     """
     try:
         logger.debug("Adding project")
@@ -233,7 +239,7 @@ def AddProject(data):
         dir = data["project"]["dir"]
         password = data["project"]["password"]
         company = db.query(Company).filter(Company.name.contains('%s' % data['company']['name'])).first()
-        project = Project(name=name,company=company,password=password)
+        project = Project(name=name, company=company, password=password)
         db.add(project)
         db.commit()
         if dir:
@@ -257,14 +263,15 @@ def CheckPassword(project_id, password):
     else:
         return False
 
-def DeleteRecord(Model,idNum):
+
+def DeleteRecord(Model, idNum):
     """ Delete a record from database
-    
+
     :param Model: The model for which to delete a record.
     :type Model: :func:`sqlalchemy.ext.declarative.declarative_base`.
     :param idNum: Recond id.
     :type idNum: Integer.
-    
+
     """
     try:
         db = ConnectToDatabase()
@@ -273,39 +280,49 @@ def DeleteRecord(Model,idNum):
             for session in record.sessions:
                 logger.debug(session)
                 db.delete(session)
-            db.execute("Delete from activity where project_id=%d"%idNum)
-                    
+            db.execute("Delete from activity where project_id=%d" % idNum)
+
         db.delete(record)
         db.commit()
         db.close()
         return True
     except:
-        logger.exception("Delete record exception model %s id %d." % (Model,idNum))
+        logger.exception("Delete record exception model %s id %d." % (Model,
+                                                                      idNum))
         return False
 
-def LastActiveComputer():    
+
+def LastActiveComputer():
         db = ConnectToDatabase()
-        pcs = db.query(Computer.id).filter(func.timestampdiff(sql.text('second'),Computer.time,func.now())<10).count();
+        pcs = db.query(Computer.id).filter(func.timestampdiff(sql.text('second'),
+                                                              Computer.time,
+                                                              func.now()) < 10
+                                           ).count()
         db.close()
-        return pcs < 2 
-     
+        return pcs < 2
+
+
 def GetActiveComputers(timeout):
-    logger.debug('GetActiveComputers called with timeout %d',int(timeout))
+    logger.debug('GetActiveComputers called with timeout %d', int(timeout))
     if timeout:
         db = ConnectToDatabase()
-        pcs = db.query(Computer.wos_id,Computer.screens,Computer.name).filter(func.timestampdiff(sql.text('second'),Computer.time,func.now())<timeout).all();
+        pcs = (db.query(Computer.wos_id, Computer.screens, Computer.name)
+                       ).filter(func.timestampdiff(sql.text('second'),
+                                                   Computer.time,
+                                                   func.now()) < timeout).all()
         db.close()
         return pcs
-    return [] 
-  
+    return []
+
+
 def EditProject(idNum, row):
     """ Update a project info
-    
+
     :param idNum: Database id number of the project.
     :type idNum: Integer.
     :param row: The new project information.
     :type row: A dictionary
-    
+
     """
     try:
         db = ConnectToDatabase()
@@ -316,97 +333,105 @@ def EditProject(idNum, row):
         db.commit()
         db.close()
     except:
-        logger.exception("EditProject exception")    
-    
+        logger.exception("EditProject exception")
+
+
 def GetProject(project_id):
     """Fetches projects by a company.
-    
+
     :param company_id: A company id from database.
     :type company_id: Integer.
-    
+
     """
     db = ConnectToDatabase()
-    project = db.query(Project).filter(Project.id==project_id).one()
+    project = db.query(Project).filter(Project.id == project_id).one()
     db.close()
-    return project 
-        
+    return project
+
+
 def GetProjectsByCompany(company_id):
     """Fetches projects by a company.
-    
+
     :param company_id: A company id from database.
     :type company_id: Integer.
-    
+
     """
     db = ConnectToDatabase()
-    projects = db.query(Project).filter(Project.company_id==company_id).order_by(Project.name).all()
+    projects = (db.query(Project).filter(Project.company_id == company_id)
+                ).order_by(Project.name).all()
     db.close()
-    return projects 
+    return projects
+
 
 def GetSessionsByProject(project_id):
     """ Fetches sessions for a project.
-    
+
     :param project_id: Project id from database.
     :type project_id: Integer.
-    
+
     """
     db = ConnectToDatabase()
-    sessions = db.query(Session).filter(Session.project_id==project_id).all()
+    sessions = db.query(Session).filter(Session.project_id == project_id).all()
     db.close()
-    return sessions  
+    return sessions
 
-def StartNewSession(project_id,session_id=None,old_session_id=None):
+
+def StartNewSession(project_id, session_id=None, old_session_id=None):
     """Creates a session to the database and return a session object.
-    
+
     :param project_id: Project id from database.
     :type project_id: Integer.
     :param session_id: an existing session id from database.
     :type session_id: Integer.
     :param old_session_id: A session id of a session which will be continued.
     :type old_session_id: Integer.
-    
+
     """
     db = ConnectToDatabase(True)
-    project = db.query(Project).filter(Project.id==project_id).one()
-    recent_path = os.path.join(os.getenv('APPDATA'),'Microsoft\\Windows\\Recent')
+    project = db.query(Project).filter(Project.id == project_id).one()
+    recent_path = os.path.join(os.getenv('APPDATA'),
+                               'Microsoft\\Windows\\Recent')
     session = None
     if session_id:
-        session = db.query(Session).filter(Session.id==session_id).one()       
-    else:    
+        session = db.query(Session).filter(Session.id == session_id).one()
+    else:
         session = Session(project)
         #initial add and commit
         db.add(session)
         db.commit()
         if old_session_id:
             #link two sessions together
-            old_session = db.query(Session).filter(Session.id==old_session_id).one()
+            old_session = db.query(Session).filter(Session.id == old_session_id).one()
             session.previous_session = old_session
             old_session.next_session = session
             db.add(session)
             db.add(old_session)
             db.commit()
-            
+
     db.expunge(session)
     db.close()
-    return session   
+    return session
+
 
 def EndSession(session_id):
     """Ends a session, sets its endtime to database. Ends file scanner.
-    
+
     :param session: Current session.
     :type session: :class:`models.Session` 
-    
+
     """
     try:
         db = ConnectToDatabase(True)
         #db.add(session)
-        session = db.query(Session).filter(Session.id==session_id).one()
+        session = db.query(Session).filter(Session.id == session_id).one()
         db.add(session)
-        session.endtime = sql.func.now()       
+        session.endtime = sql.func.now()
         db.commit()
         db.close()
     except Exception, e:
-        logger.exception('EndSession exception')
-    
+        logger.exception('EndSession exception %s', str(e))
+
+
 def AddEvent(session_id,title,desc):
     """ Adds an event to the database. 
     
@@ -430,16 +455,16 @@ def AddEvent(session_id,title,desc):
         logger.debug('AddEvent complete')
         return ide
     except:
-        logger.exception('AddEvent exception')    
-    
-def AddComputer(name,ip,wos_id):
+        logger.exception('AddEvent exception')
+
+
+def AddComputer(name, ip, wos_id):
     try:
         global COMPUTER_INS
-        
         db = ConnectToDatabase(True)
         pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
         mac = ''
-        mac = utils.GetMacForIp(ip)          
+        mac = utils.GetMacForIp(ip)
         ip_int = utils.DottedIPToInt(ip)
         if mac:
             c = db.query(Computer).filter_by(mac=mac).order_by(desc(Computer.id)).first()
@@ -472,31 +497,32 @@ def GetActiveResponsiveNodes(pgmgroup):
         logger.debug("GetActiveResponsiveNodes exception")
     return nodes
 
+
 def RefreshComputer(computer):
     try:
         db = ConnectToDatabase()
         db.add(computer)
         computer.time = sql.func.now()
-        computer.responsive = IS_RESPONSIVE
-        computer.name = NODE_NAME   
-        computer.screens = NODE_SCREENS  
+        computer.responsive = diwavars.RESPONSIVE
+        computer.name = NODE_NAME
+        computer.screens = NODE_SCREENS
         db.commit()
         db.expunge(computer)
-        db.close()   
+        db.close()
     except exc.DBAPIError:
         db.expunge(computer)
         db.close()
         raise
         logger.debug('exc.DBAPIError detected')
         #pub.sendMessage("connection_error",error=True)
-         
     except Exception as e:
-        logger.exception('refreshcomputer exception:%s',str(e))
-    return computer        
+        logger.exception('refreshcomputer exception:%s', str(e))
+    return computer
 
-def AddComputerToSession(session,name,ip,wos_id):
+
+def AddComputerToSession(session, name, ip, wos_id):
     """Adds a computer to a session.
-    
+
     :param session: A current session.
     :type session: :class:`models.Session`
     :param name: A name of the computer.
@@ -505,7 +531,7 @@ def AddComputerToSession(session,name,ip,wos_id):
     :type ip: Integer.
     :param wos_id: Wos id of the computer.
     :type wos_id: Integer.
-    
+
     """
     global COMPUTER_INS
     try:
@@ -513,7 +539,7 @@ def AddComputerToSession(session,name,ip,wos_id):
         db.add(session)
         mac = utils.GetMacForIp(ip)
         ip_int = utils.DottedIPToInt(ip)
-        c = AddComputer(name,ip,wos_id)
+        c = AddComputer(name, ip, wos_id)
         db.add(c)
         session.computers.append(c)
         #db.add(session)
@@ -522,17 +548,18 @@ def AddComputerToSession(session,name,ip,wos_id):
         db.expunge(c)
         COMPUTER_INS = c
         db.close()
-    except Exception,e:
+    except Exception, e:
         logger.debug("Exception in AddComputerToSession")
-        
+
+
 def GetOrCreate(session, model, **kwargs):
     """Fetches or creates a instance.
-    
+
     :param session: a related session 
     :type session: :class:`models.Session`
     :param model: The model of which an instance is wanted
     :type  model: :func:`sqlalchemy.ext.declarative.declarative_base`.
-    
+
      """
     instance = session.query(model).filter_by(**kwargs).order_by(desc(model.id)).first()
     if instance:
@@ -655,10 +682,11 @@ def GetFilePath(project_id, filename):
     if file:
         return file
     return False
-    
-def CreateFileaction(path,action,session_id,project_id):
+
+
+def CreateFileaction(path, action, session_id, project_id):
     """Logs a file action to the database.
-    
+
     :param path: Filepath.
     :type path: String.
     :param action: File action id.
@@ -667,7 +695,7 @@ def CreateFileaction(path,action,session_id,project_id):
     :type session_id: Integer.
     :param project_id: Project id from database.
     :type project_id: Integer.
-    
+
     """
     global COMPUTER_INS
     db = ConnectToDatabase()

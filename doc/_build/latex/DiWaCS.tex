@@ -14,8 +14,8 @@
 
 
 \title{DiWaCS Documentation}
-\date{May 20, 2013}
-\release{0.9.2.1}
+\date{May 23, 2013}
+\release{0.9.2.2}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-20 at 13:41.
+Documentation generated on 2013-05-23 at 13:17.
 
 
 \section{Add file module}
@@ -176,7 +176,8 @@ Used to add a file in the current project.
 Main function of the sub program.
 
 Sub program is meant to be bound to windows explorer context menu.
-Context menu allows the user to quickly add files to project without interacting with DiWaCS directly.
+Context menu allows the user to quickly add files to project without
+interacting with DiWaCS directly.
 
 Transmits the add\_file command to DiWaCS via interprocess socket.
 \begin{quote}\begin{description}
@@ -214,7 +215,8 @@ Used to send a file to another node.
 Main function of the sub program.
 
 Sub program is meant to be bound to windows explorer context menu.
-Context menu allows the user to quickly send files without interacting with DiWaCS directly.
+Context menu allows the user to quickly send files without interacting
+with DiWaCS directly.
 
 Transmits the send\_to command to DiWaCS via interprocess connection.
 \begin{quote}\begin{description}
@@ -1173,7 +1175,8 @@ Created on 30.4.2012
 \phantomsection\label{api:swnp.Message}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{Message}}{\emph{TAG}, \emph{PREFIX}, \emph{PAYLOAD}}{}
 A class representation of a Message.
 
-Messages are divided into three parts: TAG, PREFIX, PAYLOAD. Messages are encoded to json for transmission.
+Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
+Messages are encoded to json for transmission.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1259,7 +1262,8 @@ Updates the timestamp.
 \phantomsection\label{api:swnp.SWNP}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{SWNP}}{\emph{pgm\_group}, \emph{screens=0}, \emph{name=None}, \emph{id=None}, \emph{context=None}, \emph{error\_handler=None}}{}
 The main class of swnp.
 
-This class has the required ZeroMQ bindings and is responsible for communicating with other instances.
+This class has the required ZeroMQ bindings and is responsible for
+communicating with other instances.
 
 \begin{notice}{warning}{Warning:}
 Only one instance per computer
@@ -1413,7 +1417,7 @@ shuts down all connections, no exit.
 \index{sub\_routine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_url}, \emph{context}}{}
+\phantomsection\label{api:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_url}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1432,7 +1436,7 @@ Subscriber routine for the node ID.
 \index{sub\_routine\_sys() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_url}, \emph{context}}{}
+\phantomsection\label{api:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_url}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1633,8 +1637,14 @@ Calls the recentfilesview.
 \phantomsection\label{api:filesystem.SaveScreen}\pysiglinewithargsret{\code{filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
 Saves the background image of the desktop.
 \begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{filename} (\emph{String.}) -- The filename for the saved image.
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{win} (\emph{(Integer, Integer)}) -- The windows version tuple of host computer.
+
+\item {} 
+\textbf{filepath} (\emph{String}) -- The filepath for the saved image.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -1654,6 +1664,12 @@ Search file in a given path.
 \textbf{search\_path} (\emph{String.}) -- The search path.
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+The path to the file.
+
+\item[{Return type}] \leavevmode
+String
 
 \end{description}\end{quote}
 
@@ -1838,12 +1854,22 @@ Handles ``Close'' button presses
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AudioRecorder}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{AudioRecorder}}{\emph{parent}}{}
-A thread for capturing audio continuously. It keeps a buffer that can be saved to a file.
+A thread for capturing audio continuously.
+It keeps a buffer that can be saved to a file.
+By convention AudioRecorder is usually written in mixedcase although we
+prefer uppercase for threading types.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{parent} (\code{threading.Thread}) -- Parent of the thread.
+
+\end{description}\end{quote}
 \index{run() (wos.AudioRecorder method)}
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AudioRecorder.run}\pysiglinewithargsret{\bfcode{run}}{}{}
-Continuously record from the microphone to the buffer. If the buffer is full, the first frame will be removed and the new block appended.
+Continuously record from the microphone to the buffer.
+If the buffer is full, the first frame will be removed and
+the new block appended.
 
 \end{fulllineitems}
 
@@ -2102,7 +2128,7 @@ Message handler for received messages
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnAboutBox}\pysiglinewithargsret{\bfcode{OnAboutBox}}{\emph{unused\_event}}{}
-About dialog
+About dialog.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{e} (\emph{Event.}) -- GUI Event.
@@ -2482,7 +2508,7 @@ Load the current preferences and fills the text controls
 \index{onCancel() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{event}}{}
+\phantomsection\label{api:wos.PreferencesDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
 Closes the dialog without modifications.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2495,8 +2521,8 @@ Closes the dialog without modifications.
 \index{openConfig() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.openConfig}\pysiglinewithargsret{\bfcode{openConfig}}{\emph{event}}{}
-Closes the dialog without modifications.
+\phantomsection\label{api:wos.PreferencesDialog.openConfig}\pysiglinewithargsret{\bfcode{openConfig}}{\emph{unused\_event}}{}
+Opens config file.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{event} (\emph{Event.}) -- GUI event.
@@ -2651,6 +2677,16 @@ Stops the thread
 
 \end{fulllineitems}
 
+
+\end{fulllineitems}
+
+\index{SetLoggerLevel() (in module wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.SetLoggerLevel}\pysiglinewithargsret{\code{wos.}\bfcode{SetLoggerLevel}}{\emph{level}}{}
+Used to set wos\_logger level.
+:param level: The level desired.
+:type level: Integer
 
 \end{fulllineitems}
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Automated Code Documentation &mdash; DiWaCS 0.9.2.1 documentation</title>
+    <title>Automated Code Documentation &mdash; DiWaCS 0.9.2.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.2.1',
+        VERSION:     '0.9.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.2.1 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.2.2 documentation" href="index.html" />
     <link rel="next" title="Bugs" href="bugs.html" />
     <link rel="prev" title="Welcome to DiWaCS documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to DiWaCS documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-20 at 13:41.</p>
+<p>Documentation generated on 2013-05-23 at 13:17.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -73,7 +73,8 @@
 <tt class="descclassname">add_file.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#add_file.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main function of the sub program.</p>
 <p>Sub program is meant to be bound to windows explorer context menu.
-Context menu allows the user to quickly add files to project without interacting with DiWaCS directly.</p>
+Context menu allows the user to quickly add files to project without
+interacting with DiWaCS directly.</p>
 <p>Transmits the add_file command to DiWaCS via interprocess socket.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -108,7 +109,8 @@ Context menu allows the user to quickly add files to project without interacting
 <tt class="descclassname">send_file_to.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#send_file_to.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main function of the sub program.</p>
 <p>Sub program is meant to be bound to windows explorer context menu.
-Context menu allows the user to quickly send files without interacting with DiWaCS directly.</p>
+Context menu allows the user to quickly send files without interacting
+with DiWaCS directly.</p>
 <p>Transmits the send_to command to DiWaCS via interprocess connection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -903,7 +905,8 @@ DateTime.</p>
 <dt id="swnp.Message">
 <em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">Message</tt><big>(</big><em>TAG</em>, <em>PREFIX</em>, <em>PAYLOAD</em><big>)</big><a class="headerlink" href="#swnp.Message" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a Message.</p>
-<p>Messages are divided into three parts: TAG, PREFIX, PAYLOAD. Messages are encoded to json for transmission.</p>
+<p>Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
+Messages are encoded to json for transmission.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -980,7 +983,8 @@ DateTime.</p>
 <dt id="swnp.SWNP">
 <em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>id=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main class of swnp.</p>
-<p>This class has the required ZeroMQ bindings and is responsible for communicating with other instances.</p>
+<p>This class has the required ZeroMQ bindings and is responsible for
+communicating with other instances.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Only one instance per computer</p>
@@ -1128,7 +1132,7 @@ DateTime.</p>
 
 <dl class="method">
 <dt id="swnp.SWNP.sub_routine">
-<tt class="descname">sub_routine</tt><big>(</big><em>sub_url</em>, <em>context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sub_routine</tt><big>(</big><em>sub_url</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscriber routine for the node ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1146,7 +1150,7 @@ DateTime.</p>
 
 <dl class="method">
 <dt id="swnp.SWNP.sub_routine_sys">
-<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_url</em>, <em>context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_url</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscriber routine for the node ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1347,7 +1351,11 @@ DateTime.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String.</em>) &#8211; The filename for the saved image.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>win</strong> (<em>(Integer, Integer)</em>) &#8211; The windows version tuple of host computer.</li>
+<li><strong>filepath</strong> (<em>String</em>) &#8211; The filepath for the saved image.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1361,10 +1369,16 @@ DateTime.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<em>String.</em>) &#8211; The file name.</li>
 <li><strong>search_path</strong> (<em>String.</em>) &#8211; The search path.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The path to the file.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
 </td>
 </tr>
 </tbody>
@@ -1546,11 +1560,24 @@ last item in the sequence.</p>
 <dl class="class">
 <dt id="wos.AudioRecorder">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">AudioRecorder</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#wos.AudioRecorder" title="Permalink to this definition">¶</a></dt>
-<dd><p>A thread for capturing audio continuously. It keeps a buffer that can be saved to a file.</p>
+<dd><p>A thread for capturing audio continuously.
+It keeps a buffer that can be saved to a file.
+By convention AudioRecorder is usually written in mixedcase although we
+prefer uppercase for threading types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt>) &#8211; Parent of the thread.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="wos.AudioRecorder.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.AudioRecorder.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Continuously record from the microphone to the buffer. If the buffer is full, the first frame will be removed and the new block appended.</p>
+<dd><p>Continuously record from the microphone to the buffer.
+If the buffer is full, the first frame will be removed and
+the new block appended.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1772,7 +1799,7 @@ last item in the sequence.</p>
 <dl class="method">
 <dt id="wos.GUI.OnAboutBox">
 <tt class="descname">OnAboutBox</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.GUI.OnAboutBox" title="Permalink to this definition">¶</a></dt>
-<dd><p>About dialog</p>
+<dd><p>About dialog.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2133,7 +2160,7 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.PreferencesDialog.onCancel">
-<tt class="descname">onCancel</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.PreferencesDialog.onCancel" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">onCancel</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.PreferencesDialog.onCancel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the dialog without modifications.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2147,8 +2174,8 @@ last item in the sequence.</p>
 
 <dl class="method">
 <dt id="wos.PreferencesDialog.openConfig">
-<tt class="descname">openConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#wos.PreferencesDialog.openConfig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Closes the dialog without modifications.</p>
+<tt class="descname">openConfig</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#wos.PreferencesDialog.openConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens config file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2308,6 +2335,14 @@ Shows a dialog of the selected project.</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="wos.SetLoggerLevel">
+<tt class="descclassname">wos.</tt><tt class="descname">SetLoggerLevel</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#wos.SetLoggerLevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to set wos_logger level.
+:param level: The level desired.
+:type level: Integer</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="wos.SysTray">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">SysTray</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#wos.SysTray" title="Permalink to this definition">¶</a></dt>
@@ -2465,7 +2500,7 @@ Shows a dialog of the selected project.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to DiWaCS documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.2.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
