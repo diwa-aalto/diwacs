@@ -619,6 +619,7 @@ def InitSyncProjectDir(project_id):
     """
     try:
         db = ConnectToDatabase()
+        # TODO: Why is this a set inside a list?
         project_files = list(set(db.query(File.path).filter(File.project_id ==
                                                             project_id).all()))
         project_path = GetProjectPath(project_id)
@@ -627,10 +628,7 @@ def InitSyncProjectDir(project_id):
                 if os.path.join(root, f) not in project_files:
                     AddFileToProject(os.path.join(root, f), project_id)
                 else:
-                    # FIXME:
-                    # FIXME: Refactored this dubiously, if something breaks
-                    # look here first.
-                    project_files.remove(os.path.join(root, f))
+                    project_files.remove((os.path.join(root, f),))
         for f in project_files:
             files = db.query(File).filter(File.path == f,
                                           File.project_id == project_id).all()
