@@ -479,7 +479,6 @@ def AddComputer(name, ip, wos_id):
         if not c:
             logger.debug("no computer instance  found")
             c = Computer(ip=ip_int,name=name,mac=mac,wos_id=wos_id)
-            logger.debug(c)  
             db.add(c)
             db.commit()       
         db.expunge(c)
@@ -818,47 +817,3 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         except Exception,e:
             logger.exception("Project file scanner on_modifed exception")      
         
-            
-class FILE_ACTION_SCANNER(threading.Thread):
-    """ A scanner thread for monitoring user actions (Open, Close, Create, etc..) during a session. Utilizes Nirsoft's tools `RecentFilesView <http://www.nirsoft.net/utils/recent_files_view.html>`_ and `OpenedFilesView <http://www.nirsoft.net/utils/opened_files_view.html>`_ .
-    
-    :param session_id: Current session id from database.
-    :type session_id: Integer.
-    :param project_id: Current project id from database.
-    :type project_id: Integer.
-    :param path: Filepath of project folder.
-    :type path: String.
-    
-    """
-    def __init__ (self,session_id,project_id,path):
-        threading.Thread.__init__(self,name="file action scanner")
-        self.session_id = session_id
-        self.project_id = project_id
-        self.path = path
-        self._stop = threading.Event()
-    def stop(self):
-        """Stops the thread."""
-        self._stop.set()
-         
-    def run(self):
-            """Starts the thread."""
-            last_check = datetime.datetime.now()
-            #open files
-            open_files = []
-            #recent files
-            rf = []
-            #opened files
-            of = []
-            while not self._stop.isSet():
-                del rf[:]
-                del of[:]
-                filesystem.RecentFilesQuery()()
-                reader = csv.reader(open('rfv.csv'))
-                rf = [(x[0],x[3]) for x in reader if not os.path.isdir(x[0])]
-                for x in rf:
-                    if datetime.datetime.strptime(x[1],'%d.%m.%Y %H:%M:%S')<last_check:
-                        break                    
-                    CreateFileaction(x[0],6,self.session_id,self.project_id)
-                        #open_files.append(x) 
-                last_check = datetime.datetime.now()
-                time.sleep(5)         
