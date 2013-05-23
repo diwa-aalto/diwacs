@@ -497,14 +497,16 @@ class SWNP:
         ping = self.find_node(payload[0])
         new_scr = int(payload[2])
         if ping:
-            if ping.screens != new_scr or not ping.name == payload[4] or (not ping.data == payload[6]):
+            if (ping.screens != new_scr or not ping.name == payload[4] or
+                    not ping.data == payload[6]):
                 ping.screens = new_scr
                 ping.name = payload[4]
                 ping.data = payload[6]
                 pub.sendMessage("update_screens", update=True)
             ping.refresh()
         else:
-            self.NODE_LIST.add(Node(payload[0], new_scr, payload[4], payload[6]))
+            self.NODE_LIST.add(Node(payload[0], new_scr, payload[4],
+                                    payload[6]))
             pub.sendMessage("update_screens", update=True)
 
     def find_node(self, node_id):
