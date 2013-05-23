@@ -5,17 +5,26 @@ Created on 8.5.2012
 '''
 
 #: TODO: Clean the imports...
-import sys, urllib2, pyaudio, struct, math, wave, threading, time, wx
+import sys
+import wave
+import threading
+import wx
 import wx.combo, wx.lib.statbmp, random, logging, logging.config
 import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
 import configobj, datetime, os, SendKeys, random
+from xml.etree.ElementTree import ElementTree
+from xmlrpclib import ExpatParser
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")  
-from lxml import etree
+import urllib2
 import wx.lib.buttons as buttons
+
+# 3rd party imports.
+from lxml import etree
+import pyaudio
 import zmq
+
 from pubsub import pub
-from shutil import rmtree
 from sqlalchemy import exc
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
@@ -197,16 +206,24 @@ class CHECK_UPDATE(threading.Thread):
         except urllib2.URLError:
             wos_logger.exception("update checker exception retrieving padfile")
             return False
-        except etree.ExpatError:
+        except etree.XMLSyntaxError:
             wos_logger.exception("Update checker exception parsing padfile")
             return False
-
+        except etree.ParseError:
+            wos_logger.exception("Update checker exception parsing padfile")
+            return False
+        except Exception, e:
+            wos_logger.exception("Update checker exception, generic: %s",
+                                 str(e))
+            return False
         latest_version = tree.findtext('Program_Info/Program_Version')
-        url_primary = tree.findtext('Proram_Info/Web_Info/Application_URLs/Primary_Download_URL')
-        url_secondary = tree.findtext('Proram_Info/Web_Info/Application_URLs/Secondary_Download_URL')
+        url_primary = tree.findtext('Proram_Info/Web_Info/Application_URLs/'\
+                                    'Primary_Download_URL')
+        url_secondary = tree.findtext('Proram_Info/Web_Info/Application_URLs/'\
+                                      'Secondary_Download_URL')
         url = url_primary if url_primary else url_secondary
         if latest_version > diwavars.VERSION:
-            wx.CallAfter(self.showDialog, url) 
+            wx.CallAfter(self.showDialog, url)
 
 
 class CONN_ERR_TH(threading.Thread):
@@ -316,10 +333,11 @@ class WORKER_THREAD(threading.Thread):
         wos_logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
 
     def AddProjectReg(self):
-        """ Adds project folder to registry 
+        """ Adds project folder to registry.
 
         """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project', 'command']
+        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project',
+                'command']
         key = ''
         for k, islast in utils.IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -328,12 +346,14 @@ class WORKER_THREAD(threading.Thread):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'add_file.exe ') + ' \"%1\"')
+                    SetValueEx(rkey, "", 0, REG_SZ,
+                               os.path.join(os.getcwd(), 'add_file.exe ') +
+                               ' \"%1\"')
             CloseKey(rkey)
 
     def AddRegEntry(self, name, id):
-        """ Adds a node to registry 
-        
+        """ Adds a node to registry.
+
         :param name: Node name.
         :type name: String
         :param id: Node id.
@@ -2452,7 +2472,7 @@ class GUI(wx.Frame):
                     controller.UnsetActivity(diwavars.PGM_GROUP)
                     if self.current_session_id:
                         controller.EndSession(self.current_session_id)
-                utils.MapNetworkShare('W:', 'C:\\')
+                utils.MapNetworkShare('W:')
                 diwavars.UpdateResponsive(0)
                 time.sleep(5)
                 self.cmfh.stop()

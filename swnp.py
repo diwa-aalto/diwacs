@@ -14,7 +14,6 @@ import json
 import random
 
 # 3rd party imports.
-import netifaces
 from sqlalchemy import exc
 import zmq
 from pubsub import pub
@@ -522,4 +521,3 @@ class SWNP:
             if node and node.id == node_id:
                 n = node
         return n
-

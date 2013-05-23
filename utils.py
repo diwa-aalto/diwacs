@@ -10,8 +10,9 @@ import socket
 import subprocess
 
 # 3rd party imports.
-from win32netcon import RESOURCETYPE_DISK as DISK
+from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK
 import win32wnet
+from winerror import ERROR_NOT_CONNECTED
 import wmi
 
 # My imports.
@@ -153,22 +154,25 @@ def IntToDottedIP(intip):
     return(octet.rstrip('.'))
 
 
-def MapNetworkShare(letter, share):
+def MapNetworkShare(letter, share=None):
     """Maps the network share to a letter.
 
     :param letter: The letter for which to map.
     :type letter: String.
-    :param share: The network share.
-    :type share: String.
+    :param share: The network share, defaults to None which unmaps the letter.
+    :type share: String
 
     """
     try:
-        win32wnet.WNetCancelConnection2(letter, 1, 1)
+        win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
     except Exception, e:
-        logger.exception("error mapping share %s %s %s", letter,
-                                 share, str(e))
-    try:
-        win32wnet.WNetAddConnection2(DISK, letter, share)
-    except Exception, e:
-        logger.exception("error mapping share %s %s %s", letter,
-                                 share, str(e))
+        if int(e[0]) != ERROR_NOT_CONNECTED:
+            logger.exception("error mapping share %s %s %s", letter,
+                             share, str(e))
+    # Special case:
+    if share is not None:
+        try:
+            win32wnet.WNetAddConnection2(DISK, letter, share)
+        except Exception, e:
+            logger.exception("error mapping share %s %s %s", letter, share,
+                             str(e))
