@@ -790,4 +790,3 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         except Exception,e:
             logger.exception("Project file scanner on_modifed exception")      
         
-            
