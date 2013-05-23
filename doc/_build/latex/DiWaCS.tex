@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-23 at 13:17.
+Documentation generated on 2013-05-23 at 18:01.
 
 
 \section{Add file module}
@@ -294,7 +294,8 @@ Adds an event to the database.
 
 \begin{fulllineitems}
 \phantomsection\label{api:controller.AddFileToProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddFileToProject}}{\emph{file}, \emph{project\_id}}{}
-Add a file to project. Copies it to the folder and adds a record to database.
+Add a file to project. Copies it to the folder and adds a record to
+database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -423,44 +424,6 @@ Ends a session, sets its endtime to database. Ends file scanner.
 
 \end{fulllineitems}
 
-\index{FILE\_ACTION\_SCANNER (class in controller)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:controller.FILE_ACTION_SCANNER}\pysiglinewithargsret{\strong{class }\code{controller.}\bfcode{FILE\_ACTION\_SCANNER}}{\emph{session\_id}, \emph{project\_id}, \emph{path}}{}
-A scanner thread for monitoring user actions (Open, Close, Create, etc..) during a session. Utilizes Nirsoft's tools \href{http://www.nirsoft.net/utils/recent\_files\_view.html}{RecentFilesView} and \href{http://www.nirsoft.net/utils/opened\_files\_view.html}{OpenedFilesView} .
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{session\_id} (\emph{Integer.}) -- Current session id from database.
-
-\item {} 
-\textbf{project\_id} (\emph{Integer.}) -- Current project id from database.
-
-\item {} 
-\textbf{path} (\emph{String.}) -- Filepath of project folder.
-
-\end{itemize}
-
-\end{description}\end{quote}
-\index{run() (controller.FILE\_ACTION\_SCANNER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:controller.FILE_ACTION_SCANNER.run}\pysiglinewithargsret{\bfcode{run}}{}{}
-Starts the thread.
-
-\end{fulllineitems}
-
-\index{stop() (controller.FILE\_ACTION\_SCANNER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:controller.FILE_ACTION_SCANNER.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
-Stops the thread.
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
 \index{GetOrCreate() (in module controller)}
 
 \begin{fulllineitems}
@@ -469,10 +432,10 @@ Fetches or creates a instance.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- a related session
+\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- a related session.
 
 \item {} 
-\textbf{model} (\code{sqlalchemy.ext.declarative.declarative\_base()}.) -- The model of which an instance is wanted
+\textbf{model} (\code{sqlalchemy.ext.declarative.declarative\_base()}) -- The model of which an instance is wanted.
 
 \end{itemize}
 
@@ -526,7 +489,8 @@ Fetches projects by a company.
 
 \begin{fulllineitems}
 \phantomsection\label{api:controller.GetRecentFiles}\pysiglinewithargsret{\code{controller.}\bfcode{GetRecentFiles}}{\emph{project\_id}}{}
-Fetches files accessed recently in the project sessions from the database.
+Fetches files accessed recently in the project sessions from the
+database.
 
 \begin{notice}{note}{Todo}
 
@@ -578,7 +542,8 @@ Initial sync of project dir and database.
 
 \begin{fulllineitems}
 \phantomsection\label{api:controller.IsProjectFile}\pysiglinewithargsret{\code{controller.}\bfcode{IsProjectFile}}{\emph{filename}, \emph{project\_id}}{}
-Checks, if a file belongs to a project. Checks both project folder and database.
+Checks, if a file belongs to a project. Checks both project folder
+and database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -691,6 +656,174 @@ Creates a session to the database and return a session object.
 \textbf{old\_session\_id} (\emph{Integer.}) -- A session id of a session which will be continued.
 
 \end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{Filesystem module}
+\label{api:module-filesystem}\label{api:filesystem-module}\index{filesystem (module)}
+Created on 17.5.2013
+\index{CopyFileToProject() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.CopyFileToProject}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
+Copy file to project dir and return new filepath in project dir.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{filepath} (\emph{String.}) -- The file path.
+
+\item {} 
+\textbf{project\_id} (\emph{Integer.}) -- Project id from database.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{CopyToTemp() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.CopyToTemp}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
+Copy a file to temporary folder.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{filepath} (\emph{String.}) -- The file path.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{CreateProjectDir() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.CreateProjectDir}\pysiglinewithargsret{\code{filesystem.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
+Creates a project directory, if one does not exist in the file system
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{dir\_name} (\emph{String.}) -- Name of the directory
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{FileToBase64() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.FileToBase64}\pysiglinewithargsret{\code{filesystem.}\bfcode{FileToBase64}}{\emph{filepath}}{}
+Transform a file to a binary object.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{filepath} (\emph{String.}) -- The file path.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetFileExtension() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.GetFileExtension}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetFileExtension}}{\emph{path}}{}
+Returns the file extension of a file
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{path} (\emph{String}) -- The file path.
+
+\item[{Return type}] \leavevmode
+String.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetNodeImg() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.GetNodeImg}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetNodeImg}}{\emph{node}}{}
+Searches for a node's image in STORAGE.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{node} (\emph{Integer.}) -- The node id.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{IsSubtree() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.IsSubtree}\pysiglinewithargsret{\code{filesystem.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
+Determines, if filename is inside the parent folder.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{filename} (\emph{String.}) -- The file path.
+
+\item {} 
+\textbf{parent} (\emph{String.}) -- The parent file path.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{OpenFile() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.OpenFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{OpenFile}}{\emph{filepath}}{}
+Opens a file path.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{filepath} (\emph{String.}) -- The file path.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{SaveScreen() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.SaveScreen}\pysiglinewithargsret{\code{filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
+Saves the background image of the desktop.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{win} (\emph{(Integer, Integer)}) -- The windows version tuple of host computer.
+
+\item {} 
+\textbf{filepath} (\emph{String}) -- The filepath for the saved image.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{SearchFile() (in module filesystem)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:filesystem.SearchFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
+Search file in a given path.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{filename} (\emph{String.}) -- The file name.
+
+\item {} 
+\textbf{search\_path} (\emph{String.}) -- The search path.
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+The path to the file.
+
+\item[{Return type}] \leavevmode
+String
 
 \end{description}\end{quote}
 
@@ -1452,21 +1585,6 @@ Subscriber routine for the node ID.
 
 \end{fulllineitems}
 
-\index{sync\_handler() (swnp.SWNP method)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sync_handler}\pysiglinewithargsret{\bfcode{sync\_handler}}{\emph{msg}}{}
-Handler for sync messages.
-
-\DUspan{}{Deprecated since version 0.2.}
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{msg} ({\hyperref[api:swnp.Message]{\code{swnp.Message}}}) -- The message.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{sys\_handler() (swnp.SWNP method)}
 
 \begin{fulllineitems}
@@ -1488,190 +1606,6 @@ Routine for checking node list and removing nodes with timeout.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-
-
-\section{Filesystem module}
-\label{api:module-filesystem}\label{api:filesystem-module}\index{filesystem (module)}
-Created on 17.5.2013
-\index{CopyFileToProject() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.CopyFileToProject}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
-Copy file to project dir and return new filepath in project dir.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{filepath} (\emph{String.}) -- The file path.
-
-\item {} 
-\textbf{project\_id} (\emph{Integer.}) -- Project id from database.
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{CopyToTemp() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.CopyToTemp}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
-Copy a file to temporary folder.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{filepath} (\emph{String.}) -- The file path.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{CreateProjectDir() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.CreateProjectDir}\pysiglinewithargsret{\code{filesystem.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
-Creates a project directory, if one does not exist in the file system
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{dir\_name} (\emph{String.}) -- Name of the directory
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{FileToBase64() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.FileToBase64}\pysiglinewithargsret{\code{filesystem.}\bfcode{FileToBase64}}{\emph{filepath}}{}
-Transform a file to a binary object.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{filepath} (\emph{String.}) -- The file path.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{GetFileExtension() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.GetFileExtension}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetFileExtension}}{\emph{path}}{}
-Returns the file extension of a file
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{path} (\emph{String}) -- The file path.
-
-\item[{Return type}] \leavevmode
-String.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{GetNodeImg() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.GetNodeImg}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetNodeImg}}{\emph{node}}{}
-Searches for a node's image in STORAGE.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{node} (\emph{Integer.}) -- The node id.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{IsSubtree() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.IsSubtree}\pysiglinewithargsret{\code{filesystem.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
-Determines, if filename is inside the parent folder.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{filename} (\emph{String.}) -- The file path.
-
-\item {} 
-\textbf{parent} (\emph{String.}) -- The parent file path.
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{OpenFile() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.OpenFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{OpenFile}}{\emph{filepath}}{}
-Opens a file path.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{filepath} (\emph{String.}) -- The file path.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{OpenedFilesQuery() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.OpenedFilesQuery}\pysiglinewithargsret{\code{filesystem.}\bfcode{OpenedFilesQuery}}{}{}
-Calls the openedfilesview.
-
-\end{fulllineitems}
-
-\index{RecentFilesQuery() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.RecentFilesQuery}\pysiglinewithargsret{\code{filesystem.}\bfcode{RecentFilesQuery}}{}{}
-Calls the recentfilesview.
-
-\end{fulllineitems}
-
-\index{SaveScreen() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.SaveScreen}\pysiglinewithargsret{\code{filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
-Saves the background image of the desktop.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{win} (\emph{(Integer, Integer)}) -- The windows version tuple of host computer.
-
-\item {} 
-\textbf{filepath} (\emph{String}) -- The filepath for the saved image.
-
-\end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{SearchFile() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{api:filesystem.SearchFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
-Search file in a given path.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{filename} (\emph{String.}) -- The file name.
-
-\item {} 
-\textbf{search\_path} (\emph{String.}) -- The search path.
-
-\end{itemize}
-
-\item[{Returns}] \leavevmode
-The path to the file.
-
-\item[{Return type}] \leavevmode
-String
-
-\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -1782,7 +1716,7 @@ last item in the sequence.
 \index{MapNetworkShare() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share}}{}
+\phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share=None}}{}
 Maps the network share to a letter.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1790,7 +1724,7 @@ Maps the network share to a letter.
 \textbf{letter} (\emph{String.}) -- The letter for which to map.
 
 \item {} 
-\textbf{share} (\emph{String.}) -- The network share.
+\textbf{share} (\emph{String}) -- The network share, defaults to None which unmaps the letter.
 
 \end{itemize}
 
@@ -2214,7 +2148,7 @@ Session button pressed
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnTaskBarActivate}\pysiglinewithargsret{\bfcode{OnTaskBarActivate}}{\emph{evt}}{}
-Taskbar activate event handler
+Taskbar activate event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2403,7 +2337,7 @@ Sends a message to the node.
 Called when screens need to be updated and redrawn
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{update} (\emph{Boolean.}) -- Pubsub needs one param, therefore it is called update.
+\textbf{update} (\emph{Boolean}) -- Pubsub needs one param, therefore it is called update.
 
 \end{description}\end{quote}
 
@@ -2755,7 +2689,7 @@ Worker thread for non-UI jobs.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.WORKER_THREAD.AddProjectReg}\pysiglinewithargsret{\bfcode{AddProjectReg}}{}{}
-Adds project folder to registry
+Adds project folder to registry.
 
 \end{fulllineitems}
 
@@ -2763,7 +2697,7 @@ Adds project folder to registry
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.WORKER_THREAD.AddRegEntry}\pysiglinewithargsret{\bfcode{AddRegEntry}}{\emph{name}, \emph{id}}{}
-Adds a node to registry
+Adds a node to registry.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 

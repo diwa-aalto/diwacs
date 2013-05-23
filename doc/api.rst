@@ -20,7 +20,12 @@ Controller module
 ----------------- 
 .. automodule:: controller
    :members:
-   
+
+Filesystem module
+-----------------------
+.. automodule:: filesystem
+   :members:
+
 Models module
 -------------
 .. automodule:: models
@@ -29,11 +34,6 @@ Models module
 SWNP module
 -----------
 .. automodule:: swnp
-   :members:
-
-Filesystem module
------------------------
-.. automodule:: filesystem
    :members:
 
 Utils module

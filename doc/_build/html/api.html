@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-23 at 13:17.</p>
+<p>Documentation generated on 2013-05-23 at 18:01.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -178,7 +178,8 @@ with DiWaCS directly.</p>
 <dl class="function">
 <dt id="controller.AddFileToProject">
 <tt class="descclassname">controller.</tt><tt class="descname">AddFileToProject</tt><big>(</big><em>file</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.AddFileToProject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a file to project. Copies it to the folder and adds a record to database.</p>
+<dd><p>Add a file to project. Copies it to the folder and adds a record to
+database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -297,37 +298,6 @@ with DiWaCS directly.</p>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="controller.FILE_ACTION_SCANNER">
-<em class="property">class </em><tt class="descclassname">controller.</tt><tt class="descname">FILE_ACTION_SCANNER</tt><big>(</big><em>session_id</em>, <em>project_id</em>, <em>path</em><big>)</big><a class="headerlink" href="#controller.FILE_ACTION_SCANNER" title="Permalink to this definition">¶</a></dt>
-<dd><p>A scanner thread for monitoring user actions (Open, Close, Create, etc..) during a session. Utilizes Nirsoft&#8217;s tools <a class="reference external" href="http://www.nirsoft.net/utils/recent_files_view.html">RecentFilesView</a> and <a class="reference external" href="http://www.nirsoft.net/utils/opened_files_view.html">OpenedFilesView</a> .</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>session_id</strong> (<em>Integer.</em>) &#8211; Current session id from database.</li>
-<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Current project id from database.</li>
-<li><strong>path</strong> (<em>String.</em>) &#8211; Filepath of project folder.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="controller.FILE_ACTION_SCANNER.run">
-<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.FILE_ACTION_SCANNER.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts the thread.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="controller.FILE_ACTION_SCANNER.stop">
-<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.FILE_ACTION_SCANNER.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops the thread.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="controller.GetOrCreate">
 <tt class="descclassname">controller.</tt><tt class="descname">GetOrCreate</tt><big>(</big><em>session</em>, <em>model</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#controller.GetOrCreate" title="Permalink to this definition">¶</a></dt>
@@ -337,8 +307,8 @@ with DiWaCS directly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; a related session</li>
-<li><strong>model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>.) &#8211; The model of which an instance is wanted</li>
+<li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; a related session.</li>
+<li><strong>model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>) &#8211; The model of which an instance is wanted.</li>
 </ul>
 </td>
 </tr>
@@ -393,7 +363,8 @@ with DiWaCS directly.</p>
 <dl class="function">
 <dt id="controller.GetRecentFiles">
 <tt class="descclassname">controller.</tt><tt class="descname">GetRecentFiles</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetRecentFiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches files accessed recently in the project sessions from the database.</p>
+<dd><p>Fetches files accessed recently in the project sessions from the
+database.</p>
 <div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">Add a limit parameter, currently fetches all files.</p>
@@ -445,7 +416,8 @@ with DiWaCS directly.</p>
 <dl class="function">
 <dt id="controller.IsProjectFile">
 <tt class="descclassname">controller.</tt><tt class="descname">IsProjectFile</tt><big>(</big><em>filename</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.IsProjectFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks, if a file belongs to a project. Checks both project folder and database.</p>
+<dd><p>Checks, if a file belongs to a project. Checks both project folder
+and database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -560,6 +532,174 @@ with DiWaCS directly.</p>
 <li><strong>session_id</strong> (<em>Integer.</em>) &#8211; an existing session id from database.</li>
 <li><strong>old_session_id</strong> (<em>Integer.</em>) &#8211; A session id of a session which will be continued.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-filesystem">
+<span id="filesystem-module"></span><h2>Filesystem module<a class="headerlink" href="#module-filesystem" title="Permalink to this headline">¶</a></h2>
+<p>Created on 17.5.2013</p>
+<dl class="function">
+<dt id="filesystem.CopyFileToProject">
+<tt class="descclassname">filesystem.</tt><tt class="descname">CopyFileToProject</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#filesystem.CopyFileToProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy file to project dir and return new filepath in project dir.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</li>
+<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.CopyToTemp">
+<tt class="descclassname">filesystem.</tt><tt class="descname">CopyToTemp</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.CopyToTemp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a file to temporary folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.CreateProjectDir">
+<tt class="descclassname">filesystem.</tt><tt class="descname">CreateProjectDir</tt><big>(</big><em>dir_name</em><big>)</big><a class="headerlink" href="#filesystem.CreateProjectDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a project directory, if one does not exist in the file system</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir_name</strong> (<em>String.</em>) &#8211; Name of the directory</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.FileToBase64">
+<tt class="descclassname">filesystem.</tt><tt class="descname">FileToBase64</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.FileToBase64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform a file to a binary object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.GetFileExtension">
+<tt class="descclassname">filesystem.</tt><tt class="descname">GetFileExtension</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.GetFileExtension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the file extension of a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; The file path.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.GetNodeImg">
+<tt class="descclassname">filesystem.</tt><tt class="descname">GetNodeImg</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#filesystem.GetNodeImg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for a node&#8217;s image in STORAGE.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>Integer.</em>) &#8211; The node id.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.IsSubtree">
+<tt class="descclassname">filesystem.</tt><tt class="descname">IsSubtree</tt><big>(</big><em>filename</em>, <em>parent</em><big>)</big><a class="headerlink" href="#filesystem.IsSubtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines, if filename is inside the parent folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>String.</em>) &#8211; The file path.</li>
+<li><strong>parent</strong> (<em>String.</em>) &#8211; The parent file path.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.OpenFile">
+<tt class="descclassname">filesystem.</tt><tt class="descname">OpenFile</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.OpenFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.SaveScreen">
+<tt class="descclassname">filesystem.</tt><tt class="descname">SaveScreen</tt><big>(</big><em>win</em>, <em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.SaveScreen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the background image of the desktop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>win</strong> (<em>(Integer, Integer)</em>) &#8211; The windows version tuple of host computer.</li>
+<li><strong>filepath</strong> (<em>String</em>) &#8211; The filepath for the saved image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filesystem.SearchFile">
+<tt class="descclassname">filesystem.</tt><tt class="descname">SearchFile</tt><big>(</big><em>filename</em>, <em>search_path</em><big>)</big><a class="headerlink" href="#filesystem.SearchFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search file in a given path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>String.</em>) &#8211; The file name.</li>
+<li><strong>search_path</strong> (<em>String.</em>) &#8211; The search path.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The path to the file.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
 </td>
 </tr>
 </tbody>
@@ -1167,23 +1307,6 @@ communicating with other instances.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="swnp.SWNP.sync_handler">
-<tt class="descname">sync_handler</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sync_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for sync messages.</p>
-<div class="deprecated">
-<p><span>Deprecated since version 0.2.</span></p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<a class="reference internal" href="#swnp.Message" title="swnp.Message"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Message</span></tt></a>) &#8211; The message.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="swnp.SWNP.sys_handler">
 <tt class="descname">sys_handler</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sys_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler for &#8220;SYS&#8221; messages.</p>
@@ -1203,186 +1326,6 @@ communicating with other instances.</p>
 <dd><p>Routine for checking node list and removing nodes with timeout.</p>
 </dd></dl>
 
-</dd></dl>
-
-</div>
-<div class="section" id="module-filesystem">
-<span id="filesystem-module"></span><h2>Filesystem module<a class="headerlink" href="#module-filesystem" title="Permalink to this headline">¶</a></h2>
-<p>Created on 17.5.2013</p>
-<dl class="function">
-<dt id="filesystem.CopyFileToProject">
-<tt class="descclassname">filesystem.</tt><tt class="descname">CopyFileToProject</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#filesystem.CopyFileToProject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copy file to project dir and return new filepath in project dir.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</li>
-<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.CopyToTemp">
-<tt class="descclassname">filesystem.</tt><tt class="descname">CopyToTemp</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.CopyToTemp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copy a file to temporary folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.CreateProjectDir">
-<tt class="descclassname">filesystem.</tt><tt class="descname">CreateProjectDir</tt><big>(</big><em>dir_name</em><big>)</big><a class="headerlink" href="#filesystem.CreateProjectDir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a project directory, if one does not exist in the file system</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir_name</strong> (<em>String.</em>) &#8211; Name of the directory</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.FileToBase64">
-<tt class="descclassname">filesystem.</tt><tt class="descname">FileToBase64</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.FileToBase64" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform a file to a binary object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.GetFileExtension">
-<tt class="descclassname">filesystem.</tt><tt class="descname">GetFileExtension</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.GetFileExtension" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the file extension of a file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; The file path.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.GetNodeImg">
-<tt class="descclassname">filesystem.</tt><tt class="descname">GetNodeImg</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#filesystem.GetNodeImg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches for a node&#8217;s image in STORAGE.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>Integer.</em>) &#8211; The node id.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.IsSubtree">
-<tt class="descclassname">filesystem.</tt><tt class="descname">IsSubtree</tt><big>(</big><em>filename</em>, <em>parent</em><big>)</big><a class="headerlink" href="#filesystem.IsSubtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines, if filename is inside the parent folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<em>String.</em>) &#8211; The file path.</li>
-<li><strong>parent</strong> (<em>String.</em>) &#8211; The parent file path.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.OpenFile">
-<tt class="descclassname">filesystem.</tt><tt class="descname">OpenFile</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.OpenFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens a file path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String.</em>) &#8211; The file path.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.OpenedFilesQuery">
-<tt class="descclassname">filesystem.</tt><tt class="descname">OpenedFilesQuery</tt><big>(</big><big>)</big><a class="headerlink" href="#filesystem.OpenedFilesQuery" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls the openedfilesview.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.RecentFilesQuery">
-<tt class="descclassname">filesystem.</tt><tt class="descname">RecentFilesQuery</tt><big>(</big><big>)</big><a class="headerlink" href="#filesystem.RecentFilesQuery" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls the recentfilesview.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.SaveScreen">
-<tt class="descclassname">filesystem.</tt><tt class="descname">SaveScreen</tt><big>(</big><em>win</em>, <em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.SaveScreen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the background image of the desktop.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>win</strong> (<em>(Integer, Integer)</em>) &#8211; The windows version tuple of host computer.</li>
-<li><strong>filepath</strong> (<em>String</em>) &#8211; The filepath for the saved image.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.SearchFile">
-<tt class="descclassname">filesystem.</tt><tt class="descname">SearchFile</tt><big>(</big><em>filename</em>, <em>search_path</em><big>)</big><a class="headerlink" href="#filesystem.SearchFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search file in a given path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>String.</em>) &#8211; The file name.</li>
-<li><strong>search_path</strong> (<em>String.</em>) &#8211; The search path.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The path to the file.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>
@@ -1490,7 +1433,7 @@ last item in the sequence.</p>
 
 <dl class="function">
 <dt id="utils.MapNetworkShare">
-<tt class="descclassname">utils.</tt><tt class="descname">MapNetworkShare</tt><big>(</big><em>letter</em>, <em>share</em><big>)</big><a class="headerlink" href="#utils.MapNetworkShare" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">utils.</tt><tt class="descname">MapNetworkShare</tt><big>(</big><em>letter</em>, <em>share=None</em><big>)</big><a class="headerlink" href="#utils.MapNetworkShare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maps the network share to a letter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1498,7 +1441,7 @@ last item in the sequence.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>letter</strong> (<em>String.</em>) &#8211; The letter for which to map.</li>
-<li><strong>share</strong> (<em>String.</em>) &#8211; The network share.</li>
+<li><strong>share</strong> (<em>String</em>) &#8211; The network share, defaults to None which unmaps the letter.</li>
 </ul>
 </td>
 </tr>
@@ -1889,7 +1832,7 @@ the new block appended.</p>
 <dl class="method">
 <dt id="wos.GUI.OnTaskBarActivate">
 <tt class="descname">OnTaskBarActivate</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.OnTaskBarActivate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Taskbar activate event handler</p>
+<dd><p>Taskbar activate event handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2078,7 +2021,7 @@ the new block appended.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>update</strong> (<em>Boolean.</em>) &#8211; Pubsub needs one param, therefore it is called update.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>update</strong> (<em>Boolean</em>) &#8211; Pubsub needs one param, therefore it is called update.</td>
 </tr>
 </tbody>
 </table>
@@ -2403,13 +2346,13 @@ Shows a dialog of the selected project.</p>
 <dl class="method">
 <dt id="wos.WORKER_THREAD.AddProjectReg">
 <tt class="descname">AddProjectReg</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds project folder to registry</p>
+<dd><p>Adds project folder to registry.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="wos.WORKER_THREAD.AddRegEntry">
 <tt class="descname">AddRegEntry</tt><big>(</big><em>name</em>, <em>id</em><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddRegEntry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a node to registry</p>
+<dd><p>Adds a node to registry.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2453,9 +2396,9 @@ Shows a dialog of the selected project.</p>
 <li><a class="reference internal" href="#module-add_file">Add file module</a></li>
 <li><a class="reference internal" href="#module-send_file_to">Send file module</a></li>
 <li><a class="reference internal" href="#module-controller">Controller module</a></li>
+<li><a class="reference internal" href="#module-filesystem">Filesystem module</a></li>
 <li><a class="reference internal" href="#module-models">Models module</a></li>
 <li><a class="reference internal" href="#module-swnp">SWNP module</a></li>
-<li><a class="reference internal" href="#module-filesystem">Filesystem module</a></li>
 <li><a class="reference internal" href="#module-utils">Utils module</a></li>
 <li><a class="reference internal" href="#module-wos">Wos module</a></li>
 </ul>
