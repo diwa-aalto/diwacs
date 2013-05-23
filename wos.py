@@ -5,45 +5,58 @@ Created on 8.5.2012
 '''
 
 #: TODO: Clean the imports...
-import sys
-import random
-import wave
-import threading
-import wx
-import wx.combo
-import wx.lib.statbmp
+from collections import deque
+import datetime
 import logging
-import macro, pythoncom, pyHook, Queue, webbrowser, shutil, re, subprocess
-import configobj, datetime, os, SendKeys, random
-from xml.etree.ElementTree import ElementTree
+import os
+import Queue
+from random import Random
+#import re
+import shutil
+from subprocess import Popen
+import sys
+import threading
+import urllib2
+import wave
+import webbrowser
+from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
+                     CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER,
+                     QueryValueEx)
 from xmlrpclib import ExpatParser
 sys.stdout = open("data\stdout.log", "wb")
-sys.stderr = open("data\stderr.log", "wb")  
-import urllib2
-import wx.lib.buttons as buttons
+sys.stderr = open("data\stderr.log", "wb")
+
+
 
 # 3rd party imports.
+import configobj
 from lxml import etree
-import pyaudio
-import zmq
-
 from pubsub import pub
+import pyaudio
+import pyHook
+import pythoncom
 from sqlalchemy import exc
+from urlparse import urlparse
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
-from _winreg import KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey, CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER, QueryValueEx 
-from urlparse import urlparse
-from collections import deque
+import wx
+import wx.combo
+import wx.lib.buttons as buttons
 from wx.lib.embeddedimage import PyEmbeddedImage
+import wx.lib.statbmp
+import zmq
+
 try:
     from agw import ultimatelistctrl as ULC
 #if it's not there locally, try the wxPython lib.
 except ImportError:
     from wx.lib.agw import ultimatelistctrl as ULC
 
+# Own imports.
 import controller
 import diwavars
 import filesystem
+import macro
 from models import *
 import swnp
 import utils
@@ -105,15 +118,16 @@ class AudioRecorder(threading.Thread):
 
     def open_mic_stream(self):
         device_index = None
-        # uncomment the next line to search for a device 
-        #device_index = self.find_input_device()
-        stream = self.pa.open(format=diwavars.FORMAT,
-                                 channels=diwavars.CHANNELS,
-                                 rate=diwavars.RATE,
-                                 input=True,
-                                 input_device_index=device_index, # use default input
-                                 frames_per_buffer=diwavars.INPUT_FRAMES_PER_BLOCK)
-
+        # uncomment the next line to search for a device.
+        # device_index = self.find_input_device()
+        stream = self.pa.open(
+                        format=diwavars.FORMAT,
+                        channels=diwavars.CHANNELS,
+                        rate=diwavars.RATE,
+                        input=True,
+                        input_device_index=device_index,
+                        frames_per_buffer=diwavars.INPUT_FRAMES_PER_BLOCK
+                        )
         return stream
 
     def run(self):
@@ -131,16 +145,17 @@ class AudioRecorder(threading.Thread):
                 self.buffer.append(data)
             except IOError, e:
                 wos_logger.exception("Error recording: %s" % (e))
-                
+
     def save(self, ide, path):
         """Save the buffer to a file."""
         try:
-      
-            filename = str(ide) + "_" + datetime.datetime.now().strftime("%d%m%Y%H%M") + ".wav"
+            filename = (str(ide) + "_" +
+                        datetime.datetime.now().strftime("%d%m%Y%H%M") +
+                        ".wav")
             filepath = os.path.join(path, 'Audio')
             if not os.path.exists(filepath):
                 os.makedirs(filepath)
-            filepath = os.path.join(filepath, filename)    
+            filepath = os.path.join(filepath, filename)
             wf = wave.open(filepath, 'wb')
             wf.setnchannels(diwavars.CHANNELS)
             wf.setsampwidth(self.pa.get_sample_size(diwavars.FORMAT))
@@ -150,14 +165,22 @@ class AudioRecorder(threading.Thread):
             wx.CallAfter(self.parent.ClearStatusText)
         except:
             wos_logger.exception("audio save exception")
-            wx.CallAfter(self.parent.ClearStatusText)    
-            
+            wx.CallAfter(self.parent.ClearStatusText)
+
+
 class UpdateDialog(wx.Dialog):
-    """ A Dialog which notifies about a software update
+    """ A Dialog which notifies about a software update.
+    Contains the URL which the user can click on.
+
+    :param title: Title of the dialog.
+    :type title: String
+    :param url: URL of the update.
+    :type url: String
     """
     def __init__(self, title, url, *args, **kwargs):
         super(UpdateDialog, self).__init__(parent=wx.GetApp().GetTopWindow(),
-                                           title="Version %s is available" % title,
+                                           title="Version %s is available" %
+                                           title,
                                            style=wx.DEFAULT_DIALOG_STYLE |
                                            wx.STAY_ON_TOP,
                                            *args, **kwargs)
@@ -179,19 +202,19 @@ class UpdateDialog(wx.Dialog):
         self.vsizer.Fit(self)
         self.SetFocus()
 
-    def OnOk(self, event):
+    def OnOk(self, unused_event):
         self.EndModal(0)
 
-    def UrlHandler(self, event):
+    def UrlHandler(self, unused_event):
         webbrowser.open(self.link.GetURL())
 
 
 class CHECK_UPDATE(threading.Thread):
-    """Thread for checking version updates.   
+    """Thread for checking version updates.
     """
-    def __init__ (self):
+    def __init__(self):
         threading.Thread.__init__(self, name="VersionChecker")
-    
+
     def getPad(self):
         return urllib2.urlopen(diwavars.PAD_URL)
 
@@ -236,38 +259,49 @@ class CONN_ERR_TH(threading.Thread):
     :type parent: wx.Frame.
 
     """
-    def __init__ (self, parent):
+    def __init__(self, parent):
         threading.Thread.__init__(self, name="Connection Error Checker")
         self._stop = threading.Event()
         self.queue = Queue.Queue()
         self.parent = parent
-        
+
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
             if not self.queue.empty():
                 try:
                     self.queue.get()
-                    wx.CallAfter(pub.sendMessage, "ConnectionErrorHandler", error=True) 
+                    wx.CallAfter(pub.sendMessage, "ConnectionErrorHandler",
+                                 error=True)
                 except Exception:
                     wos_logger.exception('connection error checker exception')
-                    
+
+
 class CloseError(Exception):
+    """ Class describing an error while closing application.
+
+    """
     def __init__(self, *args, **kwds):
         Exception.__init__(self, *args, **kwds)
+
     def __str__(self):
         return 'CloseError'
-    
+
+
 class BlackOverlay(wx.Frame):
+    """
+    Create a frame, size is full display size, wx.DisplaySize()
+    gives width, height tuple of display screen.
+
+    """
     def __init__(self, pos, size, parent):
-        """
-        create a frame, size is full display size, wx.DisplaySize()
-        gives width, height tuple of display screen
-        """
-        wx.Frame.__init__(self, parent, wx.ID_ANY, '', pos=pos, size=size, style=0)#,style=wx.STAY_ON_TOP)
+        wx.Frame.__init__(self, parent, wx.ID_ANY, '', pos=pos, size=size,
+                          style=0)  # style=wx.STAY_ON_TOP)
         self.panel = wx.Panel(self, -1, size=size)
         pos = [x / 2 for x in wx.DisplaySize()]
-        self.exit_label = wx.StaticText(self.panel, -1, label="Press alt + win to end remote control.", style=wx.ALIGN_CENTER)
+        labeltext = "Press alt + win to end remote control."
+        self.exit_label = wx.StaticText(self.panel, -1, label=labeltext,
+                                        style=wx.ALIGN_CENTER)
         font = wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL)
         self.exit_label.SetFont(font)
         self.exit_label.SetForegroundColour('white')
@@ -276,7 +310,7 @@ class BlackOverlay(wx.Frame):
         self.parent = parent
         # set the cursor for the window
         self.SetCursor(BLANK_CURSOR)
-            
+
     def ParseMouseEvents(self):
         mx = -1
         my = -1
@@ -289,18 +323,22 @@ class BlackOverlay(wx.Frame):
                     dy = my - event[2] if my > 0 else event[2]
                     mx = event[1]
                     my = event[2]
-                    
-                    for id in self.parent.selected_nodes:
-                        wos_logger.debug('mouse_move;%d,%d' % (int(dx), int(dy)))
-                        self.swnp(id, 'mouse_move;%d,%d' % (int(dx), int(dy)))
+
+                    for id_ in self.parent.selected_nodes:
+                        wos_logger.debug('mouse_move;%d,%d' % (int(dx),
+                                                               int(dy)))
+                        self.swnp(id_, 'mouse_move;%d,%d' % (int(dx), int(dy)))
                 else:
-                    for id in self.parent.selected_nodes:
-                        wos_logger.debug('mouse_event;%d,%d' % (int(event.Message), int(event.Wheel)))
-                        self.swnp(id, 'mouse_event;%d,%d' % (int(event.Message), int(event.Wheel)))   
-        
+                    for id_ in self.parent.selected_nodes:
+                        wos_logger.debug('mouse_event;%d,%d' %
+                                         (int(event.Message), int(event.Wheel))
+                                         )
+                        self.swnp(id_, 'mouse_event;%d,%d' %
+                                  (int(event.Message), int(event.Wheel)))
+
     def DisableFocus(self, evt):
         evt.Skip()
-        self.parent.panel.SetFocus() 
+        self.parent.panel.SetFocus()
 
 
 class WORKER_THREAD(threading.Thread):
@@ -333,7 +371,8 @@ class WORKER_THREAD(threading.Thread):
                 self.parent.responsive = str(nodes[0][0])
                 if self.parent.responsive == self.parent.swnp.node.id:
                     self.parent.SetResponsive()
-        wos_logger.debug("Responsive checked. Current responsive is %s" % str(self.parent.responsive))
+        wos_logger.debug("Responsive checked. Current responsive is %s" %
+                         str(self.parent.responsive))
 
     def AddProjectReg(self):
         """ Adds project folder to registry.
@@ -363,7 +402,8 @@ class WORKER_THREAD(threading.Thread):
         :type id: Integer.
 
         """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' + str(name), 'command']
+        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' +
+                str(name), 'command']
         key = ''
         for k, islast in utils.IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -372,13 +412,16 @@ class WORKER_THREAD(threading.Thread):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    SetValueEx(rkey, "", 0, REG_SZ, os.path.join(os.getcwd(), 'send_file_to.exe ' + str(id) + ' \"%1\"'))
+                    SetValueEx(rkey, "", 0, REG_SZ,
+                               os.path.join(os.getcwd(), 'send_file_to.exe ' +
+                                            str(id) + ' \"%1\"'))
             CloseKey(rkey)
 
     def RemoveAllRegEntries(self):
         """ Removes all related registry entries """
         try:
-            main_key = OpenKey(HKEY_CURRENT_USER, r'Software\Classes\*\shell', 0, KEY_ALL_ACCESS)
+            main_key = OpenKey(HKEY_CURRENT_USER, r'Software\Classes\*\shell',
+                               0, KEY_ALL_ACCESS)
             count = 0
             while 1:
                 try:
@@ -1566,7 +1609,7 @@ class GUI(wx.Frame):
         self.responsive = ''
         self.is_responsive = False
         self.error_th = CONN_ERR_TH(self)
-        self.rand = random.Random()
+        self.rand = Random()
         self.error_th.daemon = True
         self.error_th.start()
         self.worker = WORKER_THREAD(self)
@@ -1728,7 +1771,7 @@ class GUI(wx.Frame):
             except:
                 CURRENT_PROJECT_PATH = False
             if CURRENT_PROJECT_PATH:
-                subprocess.Popen('explorer ' + CURRENT_PROJECT_PATH) 
+                Popen('explorer ' + CURRENT_PROJECT_PATH)
             else:
                 dlg = wx.MessageDialog(self, "Could not open directory.", 'Error', wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()  
@@ -1744,7 +1787,7 @@ class GUI(wx.Frame):
         if session_id > 0 and session_id != self.current_session_id:
             if self.current_session_id:
                 controller.EndSession(self.current_session_id)
-            self.current_session_id = session_id      
+            self.current_session_id = session_id
             self.current_session = controller.StartNewSession(project_id=self.current_project_id, session_id=session_id)
             if self.is_responsive and not self.session_th:
                 self.session_th = CURRENT_SESSION(self, self.SwnpSend)
