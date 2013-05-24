@@ -101,7 +101,8 @@ class AudioRecorder(threading.Thread):
         device_index = None
         for i in range(self.pa.get_device_count()):
             # China hack...
-            """logger.debug("Selecting audio device %s / %s "%(str(i),str(self.pa.get_device_count())))
+            """logger.debug("Selecting audio device %s / %s " %
+            (str(i),str(self.pa.get_device_count())))
             device_index = i
             return device_index
             """
@@ -507,7 +508,8 @@ class WORKER_THREAD(threading.Thread):
 
     def CreateEvent(self, title):
         try:
-            ide = controller.AddEvent(self.parent.current_session_id, title, '')
+            ide = controller.AddEvent(self.parent.current_session_id, title,
+                                      '')
             path = controller.GetProjectPath(self.parent.current_project_id)
             filesystem.Snaphot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')
@@ -519,12 +521,13 @@ class WORKER_THREAD(threading.Thread):
                              self.parent.audio_recorder.save,
                              ide, path)
         except:
-            wos_logger.exception("Create Event exception") 
-                  
+            wos_logger.exception("Create Event exception")
+
     def run(self):
         while not self._stop.isSet():
-            pass   
-         
+            pass
+
+
 class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
     """ Thread for OS contex menu actions like file sending to other node.
 
@@ -663,11 +666,11 @@ class INPUT_CAPTURE(threading.Thread):
         self.ResetMouseEvents()
         self.hm.HookKeyboard()
         self.hm.HookMouse()
-        
+
     def ResetMouseEvents(self):
         self.mx = False
         self.my = False
-        
+
     def ParseMouseEvents(self):
         while True:
             if self.mouse_queue:
@@ -683,44 +686,46 @@ class INPUT_CAPTURE(threading.Thread):
                             self.my = ny
                         dx = event.Position[0] - self.mx
                         dy = event.Position[1] - self.my
-                        for id in self.parent.selected_nodes:
-                            self.swnp(id, 'mouse_move;%d,%d' % (int(dx), int(dy)))
+                        for id_ in self.parent.selected_nodes:
+                            self.swnp(id_, 'mouse_move;%d,%d' %
+                                      (int(dx), int(dy)))
                 else:
-                    for id in self.parent.selected_nodes:
-                        self.swnp(id, 'mouse_event;%d,%d' % (int(event.Message), int(event.Wheel))) 
-                                
-    def OnMouseButton(self, event):
+                    for id_ in self.parent.selected_nodes:
+                        self.swnp(id_, 'mouse_event;%d,%d' %
+                                  (int(event.Message), int(event.Wheel)))
+
+    def OnMouseButton(self, unused_event):
         if CAPTURE:
             return False
         return True
 
     def OnMouseEvent(self, event):
-        # print 'MessageName:',event.Message 
-        """ 
+        # print 'MessageName:',event.Message.
+        """
         WM_MOUSEFIRST = 0x200
-        
+
         WM_MOUSEMOVE = 0x200
-        
+
         WM_LBUTTONDOWN = 0x201
-        
+
         WM_LBUTTONUP = 0x202
-        
+
         WM_LBUTTONDBLCLK = 0x203
-        
+
         WM_RBUTTONDOWN = 0x204
-        
+
         WM_RBUTTONUP = 0x205
-        
+
         WM_RBUTTONDBLCLK = 0x206
-        
+
         WM_MBUTTONDOWN = 0x207
-        
+
         WM_MBUTTONUP = 0x208
-        
+
         WM_MBUTTONDBLCLK = 0x209
-        
+
         WM_MOUSEWHEEL = 0x20A
-        
+
         WM_MOUSEHWHEEL = 0x20E
         """
         # called when mouse events are received
@@ -734,25 +739,26 @@ class INPUT_CAPTURE(threading.Thread):
         print 'Injected:',event.Injected
         print '---'
         """
-        
+
         """if event.Message == 0x200:
         dx = event.Position[0] - self.mx
         dy = event.Position[1] - self.my
         #print 'move',dx,dy
         self.mx = event.Position[0]
         self.my = event.Position[1]
-        """  
-        try:     
+        """
+        try:
             if CAPTURE:
-                    self.mouse_queue.append(event)               
+                self.mouse_queue.append(event)
         except:
             wos_logger.exception('MouseEventCatch exception')
         # return True to pass the event to other handlers
         return not CAPTURE
-       
+
     def OnKeyboardEvent(self, event):
         global CAPTURE
-        """print 'MessageName:',event.MessageName
+        """
+        print 'MessageName:',event.MessageName
         print 'Message:',event.Message
         print 'Time:',event.Time
         print 'Window:',event.Window
@@ -766,26 +772,29 @@ class INPUT_CAPTURE(threading.Thread):
         print 'Alt', event.Alt
         print 'Transition', event.Transition
         print '---'
-        print event"""
-        if  event.Alt and (event.KeyID == 91 or event.KeyID == 92)  and CAPTURE:
+        print event
+
+        """
+        if event.Alt and (event.KeyID in [91, 92])  and CAPTURE:
             wos_logger.debug('ESC')
             CAPTURE = False
             self.ResetMouseEvents()
-            for id in self.parent.selected_nodes:
-                self.swnp(id, 'key;%d,%d,%d' % (257, 18, 56))
-                self.swnp(id, 'remote_end;%s' % self.parent.swnp.node.id)
-            del self.parent.selected_nodes[:]        
+            for id_ in self.parent.selected_nodes:
+                self.swnp(id_, 'key;%d,%d,%d' % (257, 18, 56))
+                self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
+            del self.parent.selected_nodes[:]
             self.parent.overlay.Hide()
             self.unhook()
             return False
         if CAPTURE:
             #send key + KeyID
-            for id in self.parent.selected_nodes:
-                self.swnp(id, 'key;%d,%d,%d' % (event.Message, event.KeyID, event.ScanCode))
-            return False    
+            for id_ in self.parent.selected_nodes:
+                self.swnp(id_, 'key;%d,%d,%d' % (event.Message, event.KeyID,
+                                                 event.ScanCode))
+            return False
         # return True to pass the event to other handlers
         return True
-    
+
     def run(self):
         """Starts the thread."""
         # create a hook manager
@@ -796,75 +805,90 @@ class INPUT_CAPTURE(threading.Thread):
         self.hm.MouseAll = self.OnMouseEvent
         # wait forever
         pythoncom.PumpMessages()
-        
+
+
 class CURRENT_PROJECT(threading.Thread):
-    """Thread for transmitting current project selection. When user selects a project, an instance is started. When a new selection is made, by any Chimaira instance, the old instance is terminated.
-    
+    """Thread for transmitting current project selection.
+    When user selects a project, an instance is started.
+    When a new selection is made, by any Chimaira instance,
+    the old instance is terminated.
+
     :param project_id: Project id from the database.
     :type project_id: Integer.
     :param swnp: SWNP instance for sending data to the network.
     :type swnp: :class:`swnp.SWNP`
-    
+
     """
-    def __init__ (self, project_id, swnp):
+    def __init__(self, project_id, swnp):
         threading.Thread.__init__(self, name="current project")
         self.project_id = int(project_id)
         self.swnp = swnp
         self._stop = threading.Event()
         wos_logger.debug("Current Project created")
+
     def stop(self):
         """Stops the thread."""
         self._stop.set()
-         
+
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
             try:
-                current_project = int(controller.GetActiveProject(diwavars.PGM_GROUP))
+                ipgm = diwavars.PGM_GROUP
+                current_project = int(controller.GetActiveProject(ipgm))
                 if current_project:
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
                 wos_logger.exception("Exception in current project")
-            time.sleep(5) 
+            time.sleep(5)
 
-          
+
 class CURRENT_SESSION(threading.Thread):
-    """Thread for transmitting current session id, when one is started by the user.  When the session is ended, by any Chimaira instance, the instance is terminated.
-    
+    """Thread for transmitting current session id, when one is started by
+    the user.  When the session is ended, by any Chimaira instance, the
+    instance is terminated.
+
     :param session_id: Session id from the database.
     :type session_id: Integer.
     :param swnp: SWNP instance for sending data to the network.
-    :type swnp: :class:`swnp.SWNP`
-    
+    :type swnp: :py:class:`swnp.SWNP`
+
     """
-    def __init__ (self, parent, swnp):
+    def __init__(self, parent, swnp):
         threading.Thread.__init__(self, name="current session")
         self.parent = parent
         self.swnp = swnp
         self._stop = threading.Event()
+
     def stop(self):
         """Stops the thread"""
         self._stop.set()
-         
+
     def run(self):
         """Starts the thread."""
         while not self._stop.isSet():
-            current_session = int(controller.GetActiveSession(diwavars.PGM_GROUP))
+            ipgm = diwavars.PGM_GROUP
+            current_session = int(controller.GetActiveSession(ipgm))
             """if current_session != self.parent.current_session_id:
                 self.parent.SetCurrentSession(current_session)"""
             self.swnp('SYS', 'current_session;' + str(current_session))
-            time.sleep(5) 
-            
+            time.sleep(5)
+
+
 class DeleteProjectDialog(wx.Dialog):
     def __init__(self, parent, title, project_id):
         super(DeleteProjectDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, size=(250, 200))
+            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+            size=(250, 200))
         try:
             self.project_name = controller.GetProject(project_id).name
-            self.notice = wx.StaticText(self, label="You are about to delete project %s permanently. Are you really sure?" % self.project_name)
+            self.notice = wx.StaticText(self, label=("You are about to delete'\
+                        ' project %s permanently. Are you really sure?" %
+                        self.project_name))
 
-            self.yes_delete = wx.CheckBox (self, -1, 'Yes, delete the project.')
-            self.files_delete = wx.CheckBox (self, -1, 'Also delete all saved project files.')
+            self.yes_delete = wx.CheckBox(self, -1, 'Yes, delete the project.')
+            self.files_delete = wx.CheckBox(self, -1, ('Also delete all saved'\
+                                                       'project files.'))
             self.ok = wx.Button(self, -1, "OK")
             self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
             self.cancel = wx.Button(self, -1, "Cancel")
@@ -884,26 +908,30 @@ class DeleteProjectDialog(wx.Dialog):
             wos_logger.exception("Dialog exception")
             self.EndModal(0)
 
-    def OnOk(self, event):
+    def OnOk(self, unused_event):
         ret = 0
         if self.yes_delete.GetValue():
             ret += 1
         if self.files_delete.GetValue():
-            ret += 10    
+            ret += 10
         self.EndModal(ret)
 
-    def OnCancel(self, event):
-        self.EndModal(0) 
+    def OnCancel(self, unused_event):
+        self.EndModal(0)
 
 
 class ProjectSelectedDialog(wx.Dialog):
     def __init__(self, parent, title, project_id):
         super(ProjectSelectedDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, size=(250, 200))
+            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+            size=(250, 200))
         try:
             self.project_name = controller.GetProject(project_id).name
-            self.notice = wx.StaticText(self, label="Project %s has been selected. A new session will now be started." % self.project_name)
-            self.cb = wx.CheckBox (self, -1, 'No, do not start a new session.')
+            self.notice = wx.StaticText(self, label=("Project %s has been "\
+                                                     "selected. A new session"\
+                                                     " will now be started." %
+                                                     self.project_name))
+            self.cb = wx.CheckBox(self, -1, 'No, do not start a new session.')
             self.ok = wx.Button(self, -1, "OK")
             self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -914,15 +942,18 @@ class ProjectSelectedDialog(wx.Dialog):
             self.sizer.Fit(self)
             self.SetFocus()
         except:
-            wos_logger.exception("Dialog exception")    
+            wos_logger.exception("Dialog exception")
             self.EndModal(0)
-    def OnOk(self, event):
-        self.EndModal(0 if self.cb.GetValue() else 1) 
-        
+
+    def OnOk(self, unused_event):
+        self.EndModal(0 if self.cb.GetValue() else 1)
+
+
 class CreateProjectDialog(wx.Dialog):
     def __init__(self, parent):
         super(CreateProjectDialog, self).__init__(parent=parent,
-            title="Create a project", style=wx.DEFAULT_DIALOG_STYLE, size=(250, 200))
+            title="Create a project", style=wx.DEFAULT_DIALOG_STYLE,
+            size=(250, 200))
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(wx.StaticText(self, -1, label="Project Name"), 0)
         self.name = wx.TextCtrl(self, -1, "")
@@ -940,41 +971,49 @@ class CreateProjectDialog(wx.Dialog):
         vbox.Add(hbox, 0, wx.ALIGN_RIGHT)
         self.SetSizer(vbox)
 
-    def OnAdd(self, event):
-        if self.name.GetValue() == '': #or not self.passw.GetValue():
-            dlg = wx.MessageDialog(self, 'Please fill all necessary fields', 'Missing fields', wx.OK | wx.ICON_ERROR)
+    def OnAdd(self, unused_event):
+        if self.name.GetValue() == '':  # or not self.passw.GetValue():
+            dlg = wx.MessageDialog(self, 'Please fill all necessary fields',
+                                   'Missing fields', wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             return
         """if self.project_id:
-            controller.EditProject(self.project_id, {'name':self.name.GetValue(),'dir':self.dir.GetValue()})
+            controller.EditProject(self.project_id, {
+            'name':self.name.GetValue(),'dir':self.dir.GetValue()})
             self.Destroy()
             return
         else:"""
-        try:    
+        try:
             db = controller.ConnectToDatabase()
             company = db.query(Company).filter(Company.id == 1).one()
             company_name = company.name
-            data = {'project':{'name':self.name.GetValue(), 'dir':self.dir.GetValue(), 'password': None}, 'company':{'name':company_name}}
-            self.project = controller.AddProject(data)  
+            data = {'project': {'name': self.name.GetValue(),
+                                'dir': self.dir.GetValue(),
+                                'password': None},
+                    'company': {'name': company_name}
+                    }
+            self.project = controller.AddProject(data)
             self.Destroy()
         except:
-            wos_logger.exception("create project exception")    
-        
-    def OnCancel(self, event):
+            wos_logger.exception("create project exception")
+
+    def OnCancel(self, unused_event):
         self.Destroy()
-        
+
+
 class AddProjectDialog(wx.Dialog):
     """A dialog for adding a new project
-    
+
     :param parent: Parent frame.
     :type parent: :class:`wx.Frame`
     :param title: A title for the dialog.
     :type title: String.
-    
+
      """
     def __init__(self, parent, title, project_id=None):
         super(AddProjectDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, size=(250, 200))
+            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+            size=(250, 200))
         self.add_label = 'Create'
         dir_label_text = 'Project Folder Name (optional):'
         self.project_id = 0
@@ -987,11 +1026,11 @@ class AddProjectDialog(wx.Dialog):
         self.parent = parent
         name_label = wx.StaticText(self, label='Project Name')
         self.name = wx.TextCtrl(self, wx.ID_ANY)
-        vbox.Add(name_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)  
-        vbox.Add(self.name, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)   
+        vbox.Add(name_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
+        vbox.Add(self.name, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         dir_label = wx.StaticText(self, label=dir_label_text)
         self.dir = wx.TextCtrl(self, wx.ID_ANY)
-        vbox.Add(dir_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)  
+        vbox.Add(dir_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         vbox.Add(self.dir, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, label=self.add_label)
@@ -1000,7 +1039,7 @@ class AddProjectDialog(wx.Dialog):
         hbox2.Add(closeButton, flag=wx.LEFT, border=5)
         vbox.Add(hbox2, flag=wx.ALIGN_CENTER, border=0)
         self.SetSizer(vbox)
-        
+
         if project_id:
             project = controller.GetProject(self.project_id)
             self.name.SetValue(project.name)
@@ -1008,42 +1047,49 @@ class AddProjectDialog(wx.Dialog):
         okButton.Bind(wx.EVT_BUTTON, self.OnAdd)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
         vbox.Fit(self)
-        
-        
+
     def OnAdd(self, e):
-        """Handles the addition of a project to database, when "Add" button is pressed.
-        
+        """Handles the addition of a project to database, when
+        "Add" button is pressed.
+
         :param e: GUI Event.
         :type e: Event.
-        
-         """
-        
-        if self.name.GetValue() == '': #or not self.passw.GetValue():
-            dlg = wx.MessageDialog(self, 'Please fill all necessary fields', 'Missing fields', wx.OK | wx.ICON_ERROR)
+
+        """
+        e = e  # Get rid of unused parameter.
+        if self.name.GetValue() == '':  # or not self.passw.GetValue():
+            dlg = wx.MessageDialog(self, 'Please fill all necessary fields',
+                                   'Missing fields', wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             return
         if self.project_id:
-            controller.EditProject(self.project_id, {'name':self.name.GetValue(), 'dir':self.dir.GetValue()})
+            controller.EditProject(self.project_id,
+                                   {'name': self.name.GetValue(),
+                                    'dir': self.dir.GetValue()})
             self.Destroy()
             wos_logger.debug(self.project_id)
             self.Endmodal(self.project_id)
-        else:    
+        else:
             db = controller.ConnectToDatabase()
             company = db.query(Company).filter(Company.id == 1).one()
             company_name = company.name
-            data = {'project':{'name':self.name.GetValue(), 'dir':self.dir.GetValue(), 'password': None}, 'company':{'name':company_name}}
-            project = controller.AddProject(data) 
-            wos_logger.debug(project) 
+            data = {'project': {'name': self.name.GetValue(),
+                                'dir': self.dir.GetValue(),
+                                'password': None},
+                    'company': {'name': company_name}
+                    }
+            project = controller.AddProject(data)
+            wos_logger.debug(project)
             self.EndModal(project.id)
-        
-        
-        """if project.id != self.parent.current_project_id:           
+
+        """if project.id != self.parent.current_project_id:
             self.parent.SetCurrentProject(project.id)
             self.parent.StartCurrentProject()
             self.parent.OnProjectSelected()
             logger.debug('Current Project set')
-          
-        dlg = wx.MessageDialog(self, 'Do you want to start a new session?', 'Session', wx.YES_NO|wx.ICON_QUESTION)
+
+        dlg = wx.MessageDialog(self, 'Do you want to start a new session?',
+        'Session', wx.YES_NO|wx.ICON_QUESTION)
         try:
             result = dlg.ShowModal()
             if  result == wx.ID_YES:
@@ -1051,14 +1097,14 @@ class AddProjectDialog(wx.Dialog):
         finally:
             dlg.Destroy()
         """
-            
+
     def OnClose(self, e):
         """Handles "Close" button presses
-        
         :param e: GUI Event.
         :type e: Event.
 
         """
+        e = e
         self.Destroy()
 
 
@@ -1126,7 +1172,7 @@ class ProjectSelectDialog(wx.Dialog):
 
         """
         self.EndModal(0)
- 
+
     #----------------------------------------------------------------------
     def EditEvent(self, unused_event):
         """Shows a modal dialog for adding a new project.
@@ -1180,8 +1226,10 @@ class ProjectSelectDialog(wx.Dialog):
         index = self.project_index[self.project_list.GetSelection()]
         unused_project_name = self.projects[self.project_list.GetSelection()]
         if index == self.parent.current_project_id:
-            wx.MessageDialog(self, "You cannot delete currently active project.",
-                             "Error", wx.OK | wx.ICON_ERROR).Show()
+            wx.MessageDialog(self,
+                             "You cannot delete currently active project.",
+                             "Error",
+                             wx.OK | wx.ICON_ERROR).Show()
             return
         dlg = DeleteProjectDialog(self, 'Delete Project', index)
         try:
@@ -1226,7 +1274,8 @@ class ProjectSelectDialog(wx.Dialog):
     def GetProjects(self, company_id=1):
         """Fetches all projects from the database, based on the company.
 
-        :param company_id: A company id, the owner of the projects. Defaults to 1.
+        :param company_id: A company id, the owner of the projects.
+        Defaults to 1.
         :type company_id: Integer.
 
         """
@@ -1235,7 +1284,9 @@ class ProjectSelectDialog(wx.Dialog):
             projects = []
             self.project_index = []
             index = 0
-            for p in db.query(Project).filter(Project.company_id == company_id).order_by(Project.name).all():
+            for p in db.query(Project).filter(Project.company_id ==
+                                              company_id
+                                    ).order_by(Project.name).all():
                 projects.append(p.name)
                 self.project_index.insert(index, p.id)
                 index += 1
@@ -1243,32 +1294,43 @@ class ProjectSelectDialog(wx.Dialog):
             return projects
         except (exc.OperationalError, exc.DBAPIError):
             ConnectionErrorDialog(self.parent)
-        except Exception, e:
+        except Exception, unused_e:
             wos_logger.exception("Project Select Dialog exception")
 
 
 class PreferencesDialog(wx.Dialog):
-    """ Creates and displays a preferences dialog that allows the user to change some settings.
-    
+    """ Creates and displays a preferences dialog that allows the user to
+    change some settings.
+
     :param config: a Config object
     :type parent: :class:`configobj.ConfigObj`
-    
+
     """
- 
+
     #----------------------------------------------------------------------
     def __init__(self, config, evtlist):
-        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Preferences', style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP, size=(550, 300))
+        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Preferences',
+                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+                           size=(550, 300))
         self.config = config
         self.evtlist = evtlist
         # ---------------------------------------------------------------------
         # Create widgets
-        
-        font = wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD)
+
         screens_label = wx.StaticText(self, wx.ID_ANY, "Screen visibility:")
-        self.screens_hidden = wx.RadioButton(self, -1, 'Off (recommended)', style=wx.RB_GROUP)
-        self.screens_hidden.SetToolTip(wx.ToolTip("This setting hides your computer from others, but you are still able to send files   etc. to other screens and control them."))
+        self.screens_hidden = wx.RadioButton(self, -1, 'Off (recommended)',
+                                             style=wx.RB_GROUP)
+        self.screens_hidden.SetToolTip(wx.ToolTip("This setting hides your "\
+                                                  "computer from others, but"\
+                                                  " you are still able to"\
+                                                  " send files   etc. to "\
+                                                  "other screens and "\
+                                                  "control them."))
         self.screens_show = wx.RadioButton(self, -1, 'On (not recommended)')
-        self.screens_show.SetToolTip(wx.ToolTip("This setting makes your computer visible to others, so others can send files etc to it and control it."))
+        self.screens_show.SetToolTip(wx.ToolTip("This setting makes your "\
+                                                "computer visible to others,"\
+                                                " so others can send files "\
+                                                "etc to it and control it."))
         name_label = wx.StaticText(self, wx.ID_ANY, "Name:")
         self.name_value = wx.TextCtrl(self, wx.ID_ANY, "")
         openBtn = wx.Button(self, wx.ID_ANY, "Config File")
@@ -1277,11 +1339,10 @@ class PreferencesDialog(wx.Dialog):
         saveBtn.Bind(wx.EVT_BUTTON, self.savePreferences)
         cancelBtn = wx.Button(self, wx.ID_ANY, "Cancel")
         cancelBtn.Bind(wx.EVT_BUTTON, self.onCancel)
- 
+
         #widgets = [name_label,self.name_value,saveBtn, cancelBtn]
         #for widget in widgets:
         #    widget.SetFont(font)
- 
         # ---------------------------------------------------------------------
         # layout widgets
         mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -1291,7 +1352,8 @@ class PreferencesDialog(wx.Dialog):
         prefSizer.AddGrowableCol(1)
         radioSizer.Add(self.screens_hidden)
         radioSizer.Add(self.screens_show)
-        prefSizer.Add(screens_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        prefSizer.Add(screens_label, 0, wx.ALIGN_LEFT |
+                      wx.ALIGN_CENTER_VERTICAL)
         prefSizer.Add(radioSizer, 0, wx.EXPAND)
         prefSizer.Add(name_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         prefSizer.Add(self.name_value, 0, wx.EXPAND)
@@ -1302,12 +1364,11 @@ class PreferencesDialog(wx.Dialog):
         mainSizer.Add(btnSizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
         self.SetSizer(mainSizer)
         mainSizer.Fit(self)
-        
         # ---------------------------------------------------------------------
         # load preferences
         self.loadPreferences()
         self.SetFocus()
- 
+
     #----------------------------------------------------------------------
     def loadPreferences(self):
         """Load the current preferences and fills the text controls
@@ -1315,10 +1376,10 @@ class PreferencesDialog(wx.Dialog):
         screens = self.config['SCREENS']
         name = self.config['NAME']
         wos_logger.debug("config:%s" % str(self.config))
-        if int(self.config['SCREENS']) == 0:
+        if int(screens) == 0:
             self.screens_hidden.SetValue(1)
         else:
-            self.screens_show.SetValue(1)  
+            self.screens_show.SetValue(1)
         self.name_value.SetValue(name)
 
     #----------------------------------------------------------------------
@@ -1340,31 +1401,36 @@ class PreferencesDialog(wx.Dialog):
 
         """
         self.EndModal(0)
- 
+
     #----------------------------------------------------------------------
     def savePreferences(self, event):
         """Save the preferences.
-        
+
         :param event: GUI Event.
         :type event: Event.
-        
+
         """
         global CUSTOM_EVENT_1_LABEL, CUSTOM_EVENT_2_LABEL
+        event = event
         self.config['SCREENS'] = 1 if self.screens_show.GetValue() else 0
         controller.SetNodeScreens(self.config['SCREENS'])
         self.config['NAME'] = self.name_value.GetValue()
         controller.SetNodeName(self.config['NAME'])
-        self.config.write()     
-        dlg = wx.MessageDialog(self, "Preferences Saved!", 'Information', wx.OK | wx.ICON_INFORMATION)
+        self.config.write()
+        dlg = wx.MessageDialog(self, "Preferences Saved!", 'Information',
+                               wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         self.EndModal(0)
 
-        
+
 class DropTarget(wx.PyDropTarget):
-    """Implements drop target functionality to receive files, bitmaps and text"""
+    """Implements drop target functionality to receive files, bitmaps and text.
+
+    """
     def __init__(self, window, parent, i):
         wx.PyDropTarget.__init__(self)
-        self.do = wx.DataObjectComposite()  # the dataobject that gets filled with the appropriate data
+        # the dataobject that gets filled with the appropriate data.
+        self.do = wx.DataObjectComposite()
         self.window = window
         self.parent = parent
         self.id = i
@@ -1376,75 +1442,79 @@ class DropTarget(wx.PyDropTarget):
         self.do.Add(self.textdo)
         self.SetDataObject(self.do)
 
-
     def OnData(self, x, y, d):
         """
         Handles drag/dropping files/text or a bitmap
         """
+        x = x
+        y = y
         if self.GetData():
             df = self.do.GetReceivedFormat().GetType()
+            iterated = self.parent.nodes[self.id + self.parent.iterator][0]
 
             if df in [wx.DF_UNICODETEXT, wx.DF_TEXT]:
                 text = self.textdo.GetText()
                 p = urlparse(text)
                 if p.scheme == 'http' or p.scheme == 'https':
                     msg = 'url;' + text
-                    self.parent.SwnpSend(str(self.parent.nodes[self.id + self.parent.iterator][0]), msg)
-
+                    self.parent.SwnpSend(str(iterated), msg)
             elif df == wx.DF_FILENAME:
                 filenames = self.filedo.GetFilenames()
                 try:
-                    for i, file in enumerate(filenames):
-                        path = self.parent.HandleFileSend(file)
+                    for i, fname in enumerate(filenames):
+                        path = self.parent.HandleFileSend(fname)
                         if path:
-                            filenames[i] = path          
-                    command = "open;" + str(filenames)              
-                    self.parent.SwnpSend(str(self.parent.nodes[self.id + self.parent.iterator][0]), command)
+                            filenames[i] = path
+                    command = "open;" + str(filenames)
+                    self.parent.SwnpSend(str(iterated), command)
                 except Exception, error:
-                    wos_logger.exception('OnData exception: %s', filenames)
-
+                    wos_logger.exception('OnData exception: %s - %s',
+                                         filenames, str(error))
             elif df == wx.DF_BITMAP:
                 pass
-
         return d  # you must return this
-                
-class SysTray(wx.TaskBarIcon):  
-    """Taskbar Icon class
-    
+
+
+class SysTray(wx.TaskBarIcon):
+    """Taskbar Icon class.
+
     :param parent: Parent frame
     :type parent: :class:`wx.Frame`
-    
+
     """
     def __init__(self, parent):
-        """ Init tray """  
-        wx.TaskBarIcon.__init__(self)  
+        """ Init tray """
+        wx.TaskBarIcon.__init__(self)
         self.parentApp = parent
-        self.CreateMenu()  
+        self.CreateMenu()
 
     def CreateMenu(self):
-        """Create systray menu """  
-        self.Bind(wx.EVT_TASKBAR_RIGHT_UP, self.ShowMenu)  
-        self.menu = wx.Menu()  
+        """Create systray menu """
+        self.Bind(wx.EVT_TASKBAR_RIGHT_UP, self.ShowMenu)
+        self.menu = wx.Menu()
         self.menu.Append(wx.ID_VIEW_LIST, "Select a Project")
         self.menu.Append(wx.ID_NEW, "Session")
         self.menu.Append(wx.ID_INDEX, "Open Project Dir")
         self.menu.Append(wx.ID_SETUP, "Preferences")
         self.menu.Append(wx.ID_ABOUT, "About")
-        self.menu.AppendSeparator()  
-        self.menu.Append(wx.ID_EXIT, "Exit")  
-        
+        self.menu.AppendSeparator()
+        self.menu.Append(wx.ID_EXIT, "Exit")
+
     def on_exit(self, event):
+        event = event
         wx.CallAfter(self.Destroy)
+
     def ShowMenu(self, event):
         """Show popup menu
-        
+
         :param event: GUI event.
         :type event: Event.
-        
-        """  
+
+        """
+        event = event
         self.PopupMenu(self.menu)
-    
-    
+
+
 class MySplashScreen(wx.SplashScreen):
     """
 Create a splash screen widget.
@@ -1454,54 +1524,73 @@ Create a splash screen widget.
         aBitmap = aBitmap.ConvertToBitmap()
         splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_NO_TIMEOUT
         splashDuration = 1000  # milliseconds
-        wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
+        wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration,
+                                 parent)
+
 
 class ConnectionErrorDialog(wx.ProgressDialog):
+
     def __init__(self, parent):
-        max = 80
+        imax = 80
         self.parent = parent
         wx.ProgressDialog.__init__(self, "Connection Error",
-                               "Reconnecting.. DiWaCS will shutdown in 20 seconds, if no connection is made. ",
-                               maximum=max,
-                               parent=self.parent,
-                               style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
+                                "Reconnecting.. DiWaCS will shutdown in 20"\
+                                " seconds, if no connection is made.",
+                                maximum=imax,
+                                parent=self.parent,
+                                style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
                                 )
         keepGoing = True
-        count = 0 
-        while keepGoing and count < max:
+        count = 0
+        while keepGoing and count < imax:
             count += 1
             wx.MilliSleep(250)
-            keepGoing = not (swnp.testStorageConnection() and controller.TestConnection())
+            keepGoing = (not (swnp.testStorageConnection() and
+                              controller.TestConnection()))
             if count % 4 == 0:
-                self.Update(count, "Reconnecting.. DiWaCS will shutdown in %d seconds, if no connection is made. " % ((max - count) / 4))                  
-        self.result = keepGoing  
+                self.Update(count, "Reconnecting.. DiWaCS will shutdown in %d"\
+                            " seconds, if no connection is made. " %
+                            ((max - count) / 4))
+        self.result = keepGoing
+
 
 class EventList(wx.Frame):
-    """A Frame which displays the possible event titles and handles the event creation."""
+    """A Frame which displays the possible event titles and
+    handles the event creation.
+
+    """
+
     def __init__(self, parent, *args, **kwargs):
         self.parent = parent
-        dw, dh = wx.DisplaySize()
+        dw = wx.DisplaySize()[0]
         w, h = diwavars.FRAME_SIZE
         x = ((dw - w) / 2) + w
         y = h / 2
-        wx.Frame.__init__(self, parent, -1, style=wx.FRAME_FLOAT_ON_PARENT | wx.FRAME_NO_TASKBAR, pos=(x, y), *args, **kwargs)
+        wx.Frame.__init__(self, parent, -1, style=wx.FRAME_FLOAT_ON_PARENT |
+                          wx.FRAME_NO_TASKBAR, pos=(x, y), *args, **kwargs)
         self.SetBackgroundColour(wx.Colour(255, 255, 255))
-        self.event_menu_titles = ["Important", "Decision", "Action Point", "Discussion", "Future Agenda"]
+        self.event_menu_titles = ["Important", "Decision", "Action Point",
+                                  "Discussion", "Future Agenda"]
         il = wx.ImageList(32, 32, True)
         for event in self.event_menu_titles:
             event = event.lower().replace(" ", "_")
             il.Add(self.GetIcon(event))
-        self.evtlist = ULC.UltimateListCtrl(self, -1, agwStyle=wx.LC_REPORT | wx.LC_NO_HEADER | ULC.ULC_NO_HIGHLIGHT, size=(210, (len(self.event_menu_titles)) * 38))
+        msize = len(self.event_menu_titles) * 38
+        self.evtlist = ULC.UltimateListCtrl(self, -1, agwStyle=wx.LC_REPORT |
+                                            wx.LC_NO_HEADER |
+                                            ULC.ULC_NO_HIGHLIGHT,
+                                            size=(210, msize))
         info = ULC.UltimateListItem()
-        info._mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT | ULC.ULC_MASK_CHECK
+        info._mask = (wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE |
+                      wx.LIST_MASK_FORMAT | ULC.ULC_MASK_CHECK)
         info._image = []
         info._format = 0
         info._kind = 0
         info._text = "Icon"
         self.evtlist.InsertColumnInfo(0, info)
         self.evtlist.AssignImageList(il, wx.IMAGE_LIST_SMALL)
-        
-        for idx, item in enumerate(self.event_menu_titles):        
+
+        for idx, item in enumerate(self.event_menu_titles):
             self.evtlist.InsertImageStringItem(idx, item, idx, it_kind=0)
         self.custom1_id = -1
         self.evtlist.SetColumnWidth(0, 200)
@@ -1523,55 +1612,58 @@ class EventList(wx.Frame):
         self.Bind(wx.EVT_KILL_FOCUS, self.focus_killed)
         self.selection_made = 0
         self.sizer.Fit(self)
-        
-    def OnEnter(self, event):  
+
+    def OnEnter(self, event):
         event.Skip()
         label = self.custom_event.GetValue()
         if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, "event;%s" % label)           
+            self.parent.SwnpSend(self.parent.responsive, "event;%s" % label)
         elif self.parent.current_project_id and self.parent.current_session_id:
             wx.CallAfter(self.parent.worker.CreateEvent, label)
-        self.custom_event.SetValue("") 
+        self.custom_event.SetValue("")
         wx.CallLater(1000, self.HideNow)
-        
+
     def OnText(self, event):
         event.Skip()
         self.on_text = True
-        
+
     def focus_killed(self, event):
-        self.Hide()      
-                
+        event = event
+        self.Hide()
+
     def ShowNow(self):
         self.on_text = False
-        self.Show()    
-        wx.CallLater(5000, self.CheckVisibility, self.selection_made) 
-                                
+        self.Show()
+        wx.CallLater(5000, self.CheckVisibility, self.selection_made)
+
     def HideNow(self):
         self.Hide()
         i = self.evtlist.GetNextItem(-1)
         while i != -1:
             self.evtlist.SetItemBackgroundColour(i, wx.Colour(255, 255, 255))
             i = self.evtlist.GetNextItem(i)
-            
+
     def selected(self, event):
         event.Skip()
         i = self.evtlist.GetNextSelected(-1)
         self.evtlist.SetItemBackgroundColour(i, wx.Colour(45, 137, 255))
         label = self.evtlist.GetItemText(i)
-        wos_logger.debug("Custom event %s responsive is %s" % (str(label), str(self.parent.responsive)))
-        self.evtlist.Select(i, False)                
+        wos_logger.debug("Custom event %s responsive is %s" %
+                         (str(label), str(self.parent.responsive)))
+        self.evtlist.Select(i, False)
         self.selection_made += 1
         if not self.parent.is_responsive and not diwavars.DEBUG:
-            self.parent.SwnpSend(self.parent.responsive, "event;%s" % label)           
+            self.parent.SwnpSend(self.parent.responsive, "event;%s" % label)
         elif self.parent.current_project_id and self.parent.current_session_id:
             wx.CallAfter(self.parent.worker.CreateEvent, label)
         wx.CallLater(1000, self.HideNow)
 
     def CheckVisibility(self, selection):
-        if selection == self.selection_made and self.IsShown() and not self.on_text:
+        if (selection == self.selection_made and self.IsShown() and
+                not self.on_text):
             self.HideNow()
-            self.ClearItemBackground() 
-                
+            self.ClearItemBackground()
+
     def GetIcon(self, icon):
         """Fetches gui icons.
 
@@ -1580,7 +1672,12 @@ class EventList(wx.Frame):
         :rtype: :class:`wx.Image`
 
         """
-        return wx.Image('icons/' + icon + '.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+        try:
+            img = wx.Image('icons/' + icon + '.png', wx.BITMAP_TYPE_PNG)
+            return img.ConvertToBitmap()
+        except:
+            return None
+
 
 class GUI(wx.Frame):
     """WOS Application Frame
