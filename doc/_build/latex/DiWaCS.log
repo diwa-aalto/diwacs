@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.16)  20 MAY 2013 13:43
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.16)  27 MAY 2013 18:14
 entering extended mode
 **C:/Users/Kristian/workspace/diwacs/doc/_build/latex/DiWaCS.tex
 (C:/Users/Kristian/workspace/diwacs/doc/_build/latex/DiWaCS.tex
@@ -936,43 +936,43 @@ File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 175.
  [3] [4] [5]
-[6] [7]
-Overfull \hbox (6.50493pt too wide) in paragraph at lines 827--828
+[6] [7] [8]
+Overfull \hbox (6.50493pt too wide) in paragraph at lines 962--963
 []\T1/pcr/m/n/10 screens \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.schema.Colum
 n(sqlalchemy.dialects.mysql.SMALLINT)\T1/ptm/m/n/10 )
  []
 
 
-Overfull \hbox (18.50493pt too wide) in paragraph at lines 830--831
+Overfull \hbox (18.50493pt too wide) in paragraph at lines 965--966
 []\T1/pcr/m/n/10 responsive \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.schema.Co
 lumn(sqlalchemy.dialects.mysql.TINYINT)\T1/ptm/m/n/10 )
  []
 
-[8]
-Overfull \hbox (30.50493pt too wide) in paragraph at lines 927--928
+[9]
+Overfull \hbox (30.50493pt too wide) in paragraph at lines 1062--1063
 []\T1/pcr/m/n/10 action_time \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.schema.C
 olumn(sqlalchemy.dialects.mysql.DATETIME)\T1/ptm/m/n/10 )
  []
 
-[9]
-Overfull \hbox (18.50493pt too wide) in paragraph at lines 1038--1039
+[10]
+Overfull \hbox (18.50493pt too wide) in paragraph at lines 1173--1174
 []\T1/pcr/m/n/10 starttime \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.schema.Col
 umn(sqlalchemy.dialects.mysql.DATETIME)\T1/ptm/m/n/10 )
  []
 
 
-Overfull \hbox (6.50493pt too wide) in paragraph at lines 1041--1042
+Overfull \hbox (6.50493pt too wide) in paragraph at lines 1176--1177
 []\T1/pcr/m/n/10 endtime \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.schema.Colum
 n(sqlalchemy.dialects.mysql.DATETIME)\T1/ptm/m/n/10 )
  []
 
 
-Overfull \hbox (18.50493pt too wide) in paragraph at lines 1044--1045
+Overfull \hbox (18.50493pt too wide) in paragraph at lines 1179--1180
 []\T1/pcr/m/n/10 previous_session_id \T1/ptm/m/n/10 (\T1/pcr/m/n/10 sqlalchemy.
 schema.Column(sqlalchemy.types.Integer)\T1/ptm/m/n/10 )
  []
 
-[10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22]
+[11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22]
 Chapter 2.
 [23
 
@@ -988,15 +988,15 @@ Chapter 4.
 
 ]
 Chapter 5.
-<screencap.png, id=536, 532.99126pt x 192.72pt>
+<screencap.png, id=530, 532.99126pt x 192.72pt>
 File: screencap.png Graphic file (type png)
  <use screencap.png>
-Package pdftex.def Info: screencap.png used on input line 3187.
+Package pdftex.def Info: screencap.png used on input line 3191.
 (pdftex.def)             Requested size: 532.98996pt x 192.71951pt.
 File: screencap.png Graphic file (type png)
 
 <use screencap.png>
-Package pdftex.def Info: screencap.png used on input line 3187.
+Package pdftex.def Info: screencap.png used on input line 3191.
 (pdftex.def)             Requested size: 469.755pt x 169.85876pt.
  [33 <C:/Users/Kristian/workspace/diwacs/doc/_build/latex/screencap.png>] [34
 
@@ -1014,51 +1014,51 @@ Chapter 6.
 ] [39
 
 ]
-Overfull \hbox (25.19078pt too wide) in paragraph at lines 124--126
+Overfull \hbox (25.19078pt too wide) in paragraph at lines 128--130
 []\T1/ptm/m/n/10 on_created() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Overfull \hbox (25.20078pt too wide) in paragraph at lines 127--129
+Overfull \hbox (25.20078pt too wide) in paragraph at lines 131--133
 []\T1/ptm/m/n/10 on_deleted() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Overfull \hbox (31.88083pt too wide) in paragraph at lines 129--131
+Overfull \hbox (31.88083pt too wide) in paragraph at lines 133--135
 []\T1/ptm/m/n/10 on_modified() (con-troller.PROJECT_FILE_EVENT_HANDLER
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--169
+Underfull \hbox (badness 10000) in paragraph at lines 169--171
 []\T1/ptm/m/n/10 RemoveAllRegEntries() (wos.WORKER_THREAD
  []
 
 
-Overfull \hbox (2.17117pt too wide) in paragraph at lines 211--213
+Overfull \hbox (2.17117pt too wide) in paragraph at lines 212--214
 []\T1/ptm/m/n/10 stop() (wos.SEND_FILE_CONTEX_MENU_HANDLER
  []
 
 [40] [41
 
 ])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3281.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 3281.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3285.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 3285.
  (C:\Users\Kristian\workspace\diwacs\doc\_build\latex\DiWaCS.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 3281.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 3281.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 3285.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 3285.
 
 Package rerunfilecheck Info: File `DiWaCS.out' has not changed.
-(rerunfilecheck)             Checksum: 48999E8212C9671163A72AFCC0006D70;2061.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 3281.
+(rerunfilecheck)             Checksum: 974AA5E57BC9EC4B46E17A29EDF5916E;2061.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 3285.
  ) 
 Here is how much of TeX's memory you used:
- 9346 strings out of 493921
- 131860 string characters out of 3146471
- 227439 words of memory out of 3000000
- 12161 multiletter control sequences out of 15000+200000
+ 9340 strings out of 493921
+ 131679 string characters out of 3146471
+ 227279 words of memory out of 3000000
+ 12158 multiletter control sequences out of 15000+200000
  53492 words of font info for 60 fonts, out of 3000000 for 9000
  842 hyphenation exceptions out of 8191
- 36i,12n,45p,606b,576s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,12n,45p,606b,569s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files (x86)/MiKTeX/fonts/enc/dvips/fontname/8r.enc}<C:/Program Fi
 les (x86)/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x
 86)/MiKTeX/fonts/type1/urw/courier/ucrb8a.pfb><C:/Program Files (x86)/MiKTeX/fo
@@ -1068,9 +1068,9 @@ vbo8a.pfb><C:/Program Files (x86)/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C
 :/Program Files (x86)/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files
  (x86)/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX/f
 onts/type1/urw/times/utmri8a.pfb>
-Output written on DiWaCS.pdf (45 pages, 317642 bytes).
+Output written on DiWaCS.pdf (45 pages, 316337 bytes).
 PDF statistics:
- 848 PDF objects out of 1000 (max. 8388607)
- 247 named destinations out of 1000 (max. 500000)
+ 838 PDF objects out of 1000 (max. 8388607)
+ 244 named destinations out of 1000 (max. 500000)
  282 words of extra memory for PDF output out of 10000 (max. 10000000)
 
