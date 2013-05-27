@@ -33,6 +33,21 @@ class TestUtils(unittest.TestCase):
         myhash = utils.GetProjectPassword(project_id)
         self.assertEquals(myhash, expected_hash)
 
+    def test_iterislast(self):
+        testIterator = [5, 7, 9, 22]
+        testLast = [False, False, False, True]
+        x = 0
+        for (item, islast) in utils.IterIsLast(testIterator):
+            self.assertEqual(testIterator[x], item)
+            self.assertEqual(testLast[x], islast)
+            x += 1
+        testIterator = ['double', 'fun', 'half', 'time']
+        x = 0
+        for (item, islast) in utils.IterIsLast(testIterator):
+            self.assertEqual(testIterator[x], item)
+            self.assertEqual(testLast[x], islast)
+            x += 1
+
 
 class TestFilesystem(unittest.TestCase):
 
