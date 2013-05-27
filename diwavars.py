@@ -49,7 +49,7 @@ CONFIG = None
 RUN_CMD = False
 
 # The location of the main server
-STORAGE = "192.168.1.10"
+STORAGE = ''
 
 
 def UpdateStorage(storage):
@@ -146,11 +146,11 @@ def UpdateResponsive(resp):
 
 
 # DATABASE CONFIGS
-DB_ADDRESS = '192.168.1.10'
-DB_NAME = 'WZP'
-DB_TYPE = 'mysql'
-DB_USER = 'wazzuup'
-DB_PASS = 'serval'
+DB_ADDRESS = ''
+DB_NAME = ''
+DB_TYPE = ''
+DB_USER = ''
+DB_PASS = ''
 DB_DRIVER = {
              'mysql': 'pymysql',
              #'oracle': 'cx_oracle',

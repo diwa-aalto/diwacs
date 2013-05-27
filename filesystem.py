@@ -318,7 +318,6 @@ def SearchFile(filename, search_path):
             return os.path.isfile(os.path.join(rr, nn))
         except:
             return False
-
     if not search_path or not os.path.exists(search_path):
         return None
     root = search_path
@@ -332,6 +331,7 @@ def SearchFile(filename, search_path):
         if filename in names:
             myqueue.clear()
             return os.path.join(root, filename)
+        names = []
         for v in dirs:
             myqueue.append(os.path.join(root, v))
         if len(myqueue):
