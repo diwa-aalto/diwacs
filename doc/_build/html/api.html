@@ -54,7 +54,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-23 at 18:01.</p>
+<p>Documentation generated on 2013-05-27 at 12:19.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -1473,7 +1473,8 @@ last item in the sequence.</p>
 <dl class="method">
 <dt id="wos.AddProjectDialog.OnAdd">
 <tt class="descname">OnAdd</tt><big>(</big><em>e</em><big>)</big><a class="headerlink" href="#wos.AddProjectDialog.OnAdd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles the addition of a project to database, when &#8220;Add&#8221; button is pressed.</p>
+<dd><p>Handles the addition of a project to database, when
+&#8220;Add&#8221; button is pressed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1487,15 +1488,9 @@ last item in the sequence.</p>
 <dl class="method">
 <dt id="wos.AddProjectDialog.OnClose">
 <tt class="descname">OnClose</tt><big>(</big><em>e</em><big>)</big><a class="headerlink" href="#wos.AddProjectDialog.OnClose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles &#8220;Close&#8221; button presses</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>e</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Handles &#8220;Close&#8221; button presses
+:param e: GUI Event.
+:type e: Event.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1532,6 +1527,13 @@ the new block appended.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="wos.BlackOverlay">
+<em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">BlackOverlay</tt><big>(</big><em>pos</em>, <em>size</em>, <em>parent</em><big>)</big><a class="headerlink" href="#wos.BlackOverlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a frame, size is full display size, wx.DisplaySize()
+gives width, height tuple of display screen.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="wos.CHECK_UPDATE">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">CHECK_UPDATE</tt><a class="headerlink" href="#wos.CHECK_UPDATE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thread for checking version updates.</p>
@@ -1560,7 +1562,10 @@ the new block appended.</p>
 <dl class="class">
 <dt id="wos.CURRENT_PROJECT">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">CURRENT_PROJECT</tt><big>(</big><em>project_id</em>, <em>swnp</em><big>)</big><a class="headerlink" href="#wos.CURRENT_PROJECT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thread for transmitting current project selection. When user selects a project, an instance is started. When a new selection is made, by any Chimaira instance, the old instance is terminated.</p>
+<dd><p>Thread for transmitting current project selection.
+When user selects a project, an instance is started.
+When a new selection is made, by any Chimaira instance,
+the old instance is terminated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1590,7 +1595,9 @@ the new block appended.</p>
 <dl class="class">
 <dt id="wos.CURRENT_SESSION">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">CURRENT_SESSION</tt><big>(</big><em>parent</em>, <em>swnp</em><big>)</big><a class="headerlink" href="#wos.CURRENT_SESSION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thread for transmitting current session id, when one is started by the user.  When the session is ended, by any Chimaira instance, the instance is terminated.</p>
+<dd><p>Thread for transmitting current session id, when one is started by
+the user.  When the session is ended, by any Chimaira instance, the
+instance is terminated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1617,10 +1624,16 @@ the new block appended.</p>
 
 </dd></dl>
 
+<dl class="exception">
+<dt id="wos.CloseError">
+<em class="property">exception </em><tt class="descclassname">wos.</tt><tt class="descname">CloseError</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#wos.CloseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class describing an error while closing application.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="wos.DropTarget">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">DropTarget</tt><big>(</big><em>window</em>, <em>parent</em>, <em>i</em><big>)</big><a class="headerlink" href="#wos.DropTarget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements drop target functionality to receive files, bitmaps and text</p>
+<dd><p>Implements drop target functionality to receive files, bitmaps and text.</p>
 <dl class="method">
 <dt id="wos.DropTarget.OnData">
 <tt class="descname">OnData</tt><big>(</big><em>x</em>, <em>y</em>, <em>d</em><big>)</big><a class="headerlink" href="#wos.DropTarget.OnData" title="Permalink to this definition">¶</a></dt>
@@ -1632,7 +1645,8 @@ the new block appended.</p>
 <dl class="class">
 <dt id="wos.EventList">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">EventList</tt><big>(</big><em>parent</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#wos.EventList" title="Permalink to this definition">¶</a></dt>
-<dd><p>A Frame which displays the possible event titles and handles the event creation.</p>
+<dd><p>A Frame which displays the possible event titles and
+handles the event creation.</p>
 <dl class="method">
 <dt id="wos.EventList.GetIcon">
 <tt class="descname">GetIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#wos.EventList.GetIcon" title="Permalink to this definition">¶</a></dt>
@@ -1687,7 +1701,7 @@ the new block appended.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>icon</strong> (<em>String.</em>) &#8211; The icon file name.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>icon</strong> (<em>String</em>) &#8211; The icon file name.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">wx.Image</span></tt></td>
 </tr>
@@ -1697,7 +1711,7 @@ the new block appended.</p>
 
 <dl class="method">
 <dt id="wos.GUI.HandleFileSend">
-<tt class="descname">HandleFileSend</tt><big>(</big><em>file</em><big>)</big><a class="headerlink" href="#wos.GUI.HandleFileSend" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">HandleFileSend</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#wos.GUI.HandleFileSend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a file link to another node</p>
 </dd></dl>
 
@@ -1770,7 +1784,7 @@ the new block appended.</p>
 <dl class="method">
 <dt id="wos.GUI.OnEvtBtn">
 <tt class="descname">OnEvtBtn</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.OnEvtBtn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event Button handler</p>
+<dd><p>Event Button handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1910,12 +1924,12 @@ the new block appended.</p>
 <dl class="method">
 <dt id="wos.GUI.SelectProjectDialog">
 <tt class="descname">SelectProjectDialog</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.SelectProjectDialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select project event handler</p>
+<dd><p>Select project event handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -1924,7 +1938,7 @@ the new block appended.</p>
 <dl class="method">
 <dt id="wos.GUI.SetCurrentProject">
 <tt class="descname">SetCurrentProject</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#wos.GUI.SetCurrentProject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start current project loop 
+<dd><p>Start current project loop
 :param project_id: The project id from database.
 :type project_id: Integer.</p>
 </dd></dl>
@@ -1937,7 +1951,7 @@ the new block appended.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session_id</strong> (<em>Integer.</em>) &#8211; a session id from database.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session_id</strong> (<em>Integer</em>) &#8211; a session id from database.</td>
 </tr>
 </tbody>
 </table>
@@ -1952,13 +1966,13 @@ the new block appended.</p>
 <dl class="method">
 <dt id="wos.GUI.SetScanObserver">
 <tt class="descname">SetScanObserver</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.GUI.SetScanObserver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Observer for created files in scanned or taken with camera</p>
+<dd><p>Observer for created files in scanned or taken with camera.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="wos.GUI.Shift">
 <tt class="descname">Shift</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#wos.GUI.Shift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Caroussel Shift function</p>
+<dd><p>Caroussel Shift function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2086,7 +2100,8 @@ the new block appended.</p>
 <dl class="class">
 <dt id="wos.PreferencesDialog">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">PreferencesDialog</tt><big>(</big><em>config</em>, <em>evtlist</em><big>)</big><a class="headerlink" href="#wos.PreferencesDialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates and displays a preferences dialog that allows the user to change some settings.</p>
+<dd><p>Creates and displays a preferences dialog that allows the user to
+change some settings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2165,7 +2180,7 @@ the new block appended.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -2181,7 +2196,7 @@ Shows a dialog of the selected project.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -2195,7 +2210,7 @@ Shows a dialog of the selected project.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -2209,7 +2224,7 @@ Shows a dialog of the selected project.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id, the owner of the projects. Defaults to 1.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id, the owner of the projects.</td>
 </tr>
 </tbody>
 </table>
@@ -2225,7 +2240,7 @@ Shows a dialog of the selected project.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -2239,7 +2254,7 @@ Shows a dialog of the selected project.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event.</em>) &#8211; GUI Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
 </tr>
 </tbody>
 </table>
@@ -2289,7 +2304,7 @@ Shows a dialog of the selected project.</p>
 <dl class="class">
 <dt id="wos.SysTray">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">SysTray</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#wos.SysTray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Taskbar Icon class</p>
+<dd><p>Taskbar Icon class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2323,7 +2338,20 @@ Shows a dialog of the selected project.</p>
 <dl class="class">
 <dt id="wos.UpdateDialog">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">UpdateDialog</tt><big>(</big><em>title</em>, <em>url</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#wos.UpdateDialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>A Dialog which notifies about a software update</p>
+<dd><p>A Dialog which notifies about a software update.
+Contains the URL which the user can click on.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> (<em>String</em>) &#8211; Title of the dialog.</li>
+<li><strong>url</strong> (<em>String</em>) &#8211; URL of the update.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -2359,7 +2387,7 @@ Shows a dialog of the selected project.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<em>String</em>) &#8211; Node name.</li>
-<li><strong>id</strong> (<em>Integer.</em>) &#8211; Node id.</li>
+<li><strong>id</strong> (<em>Integer</em>) &#8211; Node id.</li>
 </ul>
 </td>
 </tr>
@@ -2370,7 +2398,7 @@ Shows a dialog of the selected project.</p>
 <dl class="method">
 <dt id="wos.WORKER_THREAD.RemoveAllRegEntries">
 <tt class="descname">RemoveAllRegEntries</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.RemoveAllRegEntries" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes all related registry entries</p>
+<dd><p>Removes all related registry entries.</p>
 </dd></dl>
 
 <dl class="method">

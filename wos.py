@@ -1168,7 +1168,7 @@ class ProjectSelectDialog(wx.Dialog):
         """Handles "Cancel" button presses.
 
         :param event: GUI Event.
-        :type event: Event.
+        :type event: Event
 
         """
         self.EndModal(0)
@@ -1178,7 +1178,7 @@ class ProjectSelectDialog(wx.Dialog):
         """Shows a modal dialog for adding a new project.
 
         :param event: GUI Event.
-        :type event: Event.
+        :type event: Event
 
         """
         try:
@@ -1197,7 +1197,7 @@ class ProjectSelectDialog(wx.Dialog):
         """Shows a modal dialog for adding a new project.
 
         :param event: GUI Event.
-        :type event: Event.
+        :type event: Event
 
         """
         try:
@@ -1220,7 +1220,7 @@ class ProjectSelectDialog(wx.Dialog):
         Shows a dialog of the selected project.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         index = self.project_index[self.project_list.GetSelection()]
@@ -1251,7 +1251,7 @@ class ProjectSelectDialog(wx.Dialog):
         Shows a dialog of the selected project.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         wos_logger.debug('Project selected')
@@ -1275,7 +1275,6 @@ class ProjectSelectDialog(wx.Dialog):
         """Fetches all projects from the database, based on the company.
 
         :param company_id: A company id, the owner of the projects.
-        Defaults to 1.
         :type company_id: Integer.
 
         """

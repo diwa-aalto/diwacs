@@ -322,7 +322,7 @@ def send_input(type_, data, flags, scan=0, mouseData=0):
         k.ki = KeyBdInput(data, 0, flags, scan, pointer(extra))
         kinput = Inputs((1, k))
     if kinput is not None:
-        windll.user32.SendInput(1, pointer(kinput), sizeof(input[0]))
+        windll.user32.SendInput(1, pointer(kinput), sizeof(kinput[0]))
 
 
 def key(event, kcode):

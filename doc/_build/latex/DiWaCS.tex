@@ -14,7 +14,7 @@
 
 
 \title{DiWaCS Documentation}
-\date{May 23, 2013}
+\date{May 27, 2013}
 \release{0.9.2.2}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-23 at 18:01.
+Documentation generated on 2013-05-27 at 12:19.
 
 
 \section{Add file module}
@@ -1759,7 +1759,8 @@ A dialog for adding a new project
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AddProjectDialog.OnAdd}\pysiglinewithargsret{\bfcode{OnAdd}}{\emph{e}}{}
-Handles the addition of a project to database, when ``Add'' button is pressed.
+Handles the addition of a project to database, when
+``Add'' button is pressed.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{e} (\emph{Event.}) -- GUI Event.
@@ -1773,11 +1774,8 @@ Handles the addition of a project to database, when ``Add'' button is pressed.
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AddProjectDialog.OnClose}\pysiglinewithargsret{\bfcode{OnClose}}{\emph{e}}{}
 Handles ``Close'' button presses
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{e} (\emph{Event.}) -- GUI Event.
-
-\end{description}\end{quote}
+:param e: GUI Event.
+:type e: Event.
 
 \end{fulllineitems}
 
@@ -1818,6 +1816,15 @@ Save the buffer to a file.
 
 \end{fulllineitems}
 
+\index{BlackOverlay (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.BlackOverlay}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{BlackOverlay}}{\emph{pos}, \emph{size}, \emph{parent}}{}
+Create a frame, size is full display size, wx.DisplaySize()
+gives width, height tuple of display screen.
+
+\end{fulllineitems}
+
 \index{CHECK\_UPDATE (class in wos)}
 
 \begin{fulllineitems}
@@ -1851,7 +1858,10 @@ Starts the thread.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.CURRENT_PROJECT}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_PROJECT}}{\emph{project\_id}, \emph{swnp}}{}
-Thread for transmitting current project selection. When user selects a project, an instance is started. When a new selection is made, by any Chimaira instance, the old instance is terminated.
+Thread for transmitting current project selection.
+When user selects a project, an instance is started.
+When a new selection is made, by any Chimaira instance,
+the old instance is terminated.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1886,7 +1896,9 @@ Stops the thread.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.CURRENT_SESSION}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_SESSION}}{\emph{parent}, \emph{swnp}}{}
-Thread for transmitting current session id, when one is started by the user.  When the session is ended, by any Chimaira instance, the instance is terminated.
+Thread for transmitting current session id, when one is started by
+the user.  When the session is ended, by any Chimaira instance, the
+instance is terminated.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1917,11 +1929,19 @@ Stops the thread
 
 \end{fulllineitems}
 
+\index{CloseError}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.CloseError}\pysiglinewithargsret{\strong{exception }\code{wos.}\bfcode{CloseError}}{\emph{*args}, \emph{**kwds}}{}
+Class describing an error while closing application.
+
+\end{fulllineitems}
+
 \index{DropTarget (class in wos)}
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.DropTarget}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DropTarget}}{\emph{window}, \emph{parent}, \emph{i}}{}
-Implements drop target functionality to receive files, bitmaps and text
+Implements drop target functionality to receive files, bitmaps and text.
 \index{OnData() (wos.DropTarget method)}
 
 \begin{fulllineitems}
@@ -1937,7 +1957,8 @@ Handles drag/dropping files/text or a bitmap
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.EventList}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{EventList}}{\emph{parent}, \emph{*args}, \emph{**kwargs}}{}
-A Frame which displays the possible event titles and handles the event creation.
+A Frame which displays the possible event titles and
+handles the event creation.
 \index{GetIcon() (wos.EventList method)}
 
 \begin{fulllineitems}
@@ -1996,7 +2017,7 @@ Creates a config file
 Fetches gui icons.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{icon} (\emph{String.}) -- The icon file name.
+\textbf{icon} (\emph{String}) -- The icon file name.
 
 \item[{Return type}] \leavevmode
 \code{wx.Image}
@@ -2008,7 +2029,7 @@ Fetches gui icons.
 \index{HandleFileSend() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.HandleFileSend}\pysiglinewithargsret{\bfcode{HandleFileSend}}{\emph{file}}{}
+\phantomsection\label{api:wos.GUI.HandleFileSend}\pysiglinewithargsret{\bfcode{HandleFileSend}}{\emph{filename}}{}
 Sends a file link to another node
 
 \end{fulllineitems}
@@ -2088,7 +2109,7 @@ Create necessary db tables
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnEvtBtn}\pysiglinewithargsret{\bfcode{OnEvtBtn}}{\emph{evt}}{}
-Event Button handler
+Event Button handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2221,10 +2242,10 @@ For future use.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.SelectProjectDialog}\pysiglinewithargsret{\bfcode{SelectProjectDialog}}{\emph{evt}}{}
-Select project event handler
+Select project event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2234,7 +2255,7 @@ Select project event handler
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.SetCurrentProject}\pysiglinewithargsret{\bfcode{SetCurrentProject}}{\emph{project\_id}}{}
-Start current project loop 
+Start current project loop
 :param project\_id: The project id from database.
 :type project\_id: Integer.
 
@@ -2247,7 +2268,7 @@ Start current project loop
 Set current session
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{session\_id} (\emph{Integer.}) -- a session id from database.
+\textbf{session\_id} (\emph{Integer}) -- a session id from database.
 
 \end{description}\end{quote}
 
@@ -2265,7 +2286,7 @@ Observer for filechanges in project dir
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.SetScanObserver}\pysiglinewithargsret{\bfcode{SetScanObserver}}{}{}
-Observer for created files in scanned or taken with camera
+Observer for created files in scanned or taken with camera.
 
 \end{fulllineitems}
 
@@ -2273,7 +2294,7 @@ Observer for created files in scanned or taken with camera
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.Shift}\pysiglinewithargsret{\bfcode{Shift}}{\emph{evt}}{}
-Caroussel Shift function
+Caroussel Shift function.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event.}) -- GUI Event.
@@ -2425,7 +2446,8 @@ Create a splash screen widget.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.PreferencesDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{PreferencesDialog}}{\emph{config}, \emph{evtlist}}{}
-Creates and displays a preferences dialog that allows the user to change some settings.
+Creates and displays a preferences dialog that allows the user to
+change some settings.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{config} -- a Config object
@@ -2498,7 +2520,7 @@ A dialog for selecting a project.
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI Event.
+\textbf{event} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2513,7 +2535,7 @@ Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if n
 Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2526,7 +2548,7 @@ Shows a dialog of the selected project.
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI Event.
+\textbf{event} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2539,7 +2561,7 @@ Shows a modal dialog for adding a new project.
 Fetches all projects from the database, based on the company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{company\_id} (\emph{Integer.}) -- A company id, the owner of the projects. Defaults to 1.
+\textbf{company\_id} (\emph{Integer.}) -- A company id, the owner of the projects.
 
 \end{description}\end{quote}
 
@@ -2554,7 +2576,7 @@ Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if n
 Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2567,7 +2589,7 @@ Shows a dialog of the selected project.
 Handles ``Cancel'' button presses.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI Event.
+\textbf{event} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2628,7 +2650,7 @@ Used to set wos\_logger level.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.SysTray}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{SysTray}}{\emph{parent}}{}
-Taskbar Icon class
+Taskbar Icon class.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{parent} (\code{wx.Frame}) -- Parent frame
@@ -2662,7 +2684,19 @@ Show popup menu
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.UpdateDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{UpdateDialog}}{\emph{title}, \emph{url}, \emph{*args}, \emph{**kwargs}}{}
-A Dialog which notifies about a software update
+A Dialog which notifies about a software update.
+Contains the URL which the user can click on.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{title} (\emph{String}) -- Title of the dialog.
+
+\item {} 
+\textbf{url} (\emph{String}) -- URL of the update.
+
+\end{itemize}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2704,7 +2738,7 @@ Adds a node to registry.
 \textbf{name} (\emph{String}) -- Node name.
 
 \item {} 
-\textbf{id} (\emph{Integer.}) -- Node id.
+\textbf{id} (\emph{Integer}) -- Node id.
 
 \end{itemize}
 
@@ -2716,7 +2750,7 @@ Adds a node to registry.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.WORKER_THREAD.RemoveAllRegEntries}\pysiglinewithargsret{\bfcode{RemoveAllRegEntries}}{}{}
-Removes all related registry entries
+Removes all related registry entries.
 
 \end{fulllineitems}
 
