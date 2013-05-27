@@ -33,8 +33,7 @@ import utils
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 
-DATABASE = ('mysql+pymysql://wazzuup:serval@' + diwavars.STORAGE +
-            '/WZP?charset=utf8&use_unicode=1')
+DATABASE = 'mysql+pymysql://wazzuup:serval@192.168.1.10/DIWA?charset=utf8&use_unicode=1'
 ENGINE = create_engine(DATABASE, echo=True)
 PROJECT_PATH = '\\\\' + diwavars.STORAGE + '\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
@@ -60,12 +59,17 @@ def SetLoggerLevel(level):
 
 def UpdateStorage():
     global DATABASE
+    if ((not diwavars.DB_TYPE) or (not diwavars.DB_ADDRESS) or
+        (not diwavars.DB_NAME) or (not diwavars.DB_PASS) or
+        (not diwavars.DB_USER)):
+        return
     try:
         DATABASE = (
                     ('%s+%s://' % (diwavars.DB_TYPE,
                                    diwavars.DB_DRIVER[diwavars.DB_TYPE])) +
                     ('%s:%s@' % (diwavars.DB_USER, diwavars.DB_PASS)) +
-                    diwavars.DB_ADDRESS + '/' + diwavars.DB_NAME
+                    diwavars.DB_ADDRESS + '/' + diwavars.DB_NAME +
+                    '?charset=utf8&use_unicode=1'
                     )
         logger.debug('DB = ' + DATABASE)
     except Exception, e:
@@ -675,7 +679,7 @@ def IsProjectFile(filename, project_id):
     :type filename: String.
     :param project_id: Project id from database.
     :type project_id: Integer.
-    :rtype: Boolean.
+    :rtype: Boolean
 
     """
     try:
@@ -694,16 +698,16 @@ def IsProjectFile(filename, project_id):
         logger.exception("IsProjectFile query exception: %s", str(e))
         files = []
     for f in files:
-            filebase = os.path.basename(f[0])
-            if isinstance(filebase, str):
-                filebase = unicode(filebase, errors='replace')
-            if filebase == basename:
-                return filebase
+        filebase = os.path.basename(f[0])
+        if isinstance(filebase, str):
+            filebase = unicode(filebase, errors='replace')
+        if filebase == basename:
+            return f[0]
     f = filesystem.SearchFile(os.path.basename(filename),
                               GetProjectPath(project_id))
     if f:
         return AddFileToProject(f, project_id)
-    return False
+    return ''
 
 
 def GetFilePath(project_id, filename):

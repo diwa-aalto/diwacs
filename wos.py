@@ -499,6 +499,8 @@ class WORKER_THREAD(threading.Thread):
                     diwavars.UpdateCameraVars(None, str(val), None)
                 if "PASS" in key:
                     diwavars.UpdateCameraVars(None, None, str(val))
+            elif "PAD_URL" in key:
+                diwavars.UpdatePadfile(str(val))
             elif "RESPONSIVE" in key:
                 wos_logger.debug("Setting RESPONSIVE")
                 diwavars.UpdateResponsive(eval(val))

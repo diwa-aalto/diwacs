@@ -16,7 +16,7 @@ BLANK_CURSOR = None
 APPLICATION_NAME = "DiWaCS"
 
 # current application version
-VERSION = "0.9.2.2"
+VERSION = "0.9.2.3"
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -68,7 +68,12 @@ DEBUG = False
 CAPTURE = False
 
 # The URL of the PAD file. For version checking purposes
-PAD_URL = "http://54.248.255.70/pad_file.xml"
+PAD_URL = ''
+
+
+def UpdatePadfile(padurl):
+    global PAD_URL
+    PAD_URL = padurl
 
 # Is this application remote controlling some computer(s)
 CONTROLLING = False
@@ -108,9 +113,9 @@ def UpdatePGMGroup(new_group):
 
 
 # IP CAMERA VARS
-CAMERA_URL = "http://192.168.1.85/image/jpeg.cgi"
-CAMERA_USER = "admin"
-CAMERA_PASS = "wosadmin"
+CAMERA_URL = ''
+CAMERA_USER = ''
+CAMERA_PASS = ''
 
 
 def UpdateCameraVars(url, user, passwd):
