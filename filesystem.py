@@ -25,7 +25,7 @@ from PIL import Image, ImageOps, ImageGrab
 import controller
 import diwavars
 
-logging.config.fileConfig(os.path.abspath('logging.conf'))
+logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('filesystem')
 
 

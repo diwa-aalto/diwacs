@@ -17,7 +17,7 @@ import wmi
 
 # My imports.
 import controller
-logging.config.fileConfig(os.path.abspath('logging.conf'))
+logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('utils')
 
 

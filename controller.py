@@ -9,6 +9,7 @@ sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")
 import datetime
 import logging
+import logging.config
 import time
 import shutil
 import socket
@@ -26,7 +27,7 @@ from watchdog.events import FileSystemEventHandler
 # Own imports
 import diwavars
 import filesystem
-from models import *
+from models import * # Base, Project
 import utils
 
 

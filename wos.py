@@ -6,7 +6,7 @@ Created on 8.5.2012
 
 #: TODO: Clean the imports...
 from collections import deque
-import datetime
+from datetime import datetime
 import logging
 import os
 import Queue
@@ -16,15 +16,15 @@ import shutil
 from subprocess import Popen
 import sys
 import threading
+from time import sleep
 import urllib2
 import wave
 import webbrowser
 from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
                      CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
-from xmlrpclib import ExpatParser
+#from xmlrpclib import ExpatParser
 sys.stdout = open("data\stdout.log", "wb")
 sys.stderr = open("data\stderr.log", "wb")
-
 
 
 # 3rd party imports.
@@ -37,12 +37,8 @@ import pythoncom
 from sqlalchemy import exc
 from urlparse import urlparse
 from watchdog.observers import Observer
-from watchdog.events import LoggingEventHandler
 import wx
-import wx.combo
 import wx.lib.buttons as buttons
-from wx.lib.embeddedimage import PyEmbeddedImage
-import wx.lib.statbmp
 import zmq
 
 try:
@@ -56,7 +52,7 @@ import controller
 import diwavars
 import filesystem
 import macro
-from models import *
+from models import Company, Project
 import swnp
 import utils
 
@@ -150,8 +146,7 @@ class AudioRecorder(threading.Thread):
         """Save the buffer to a file."""
         try:
             filename = (str(ide) + "_" +
-                        datetime.datetime.now().strftime("%d%m%Y%H%M") +
-                        ".wav")
+                        datetime.now().strftime("%d%m%Y%H%M") + ".wav")
             filepath = os.path.join(path, 'Audio')
             if not os.path.exists(filepath):
                 os.makedirs(filepath)
@@ -388,9 +383,8 @@ class WORKER_THREAD(threading.Thread):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    SetValueEx(rkey, "", 0, REG_SZ,
-                               os.path.join(os.getcwd(), 'add_file.exe ') +
-                               ' \"%1\"')
+                    mypath = os.path.join(os.getcwd(), 'add_file.exe ')
+                    SetValueEx(rkey, "", 0, REG_SZ, mypath + ' \"%1\"')
             CloseKey(rkey)
 
     def AddRegEntry(self, name, id):
@@ -842,7 +836,7 @@ class CURRENT_PROJECT(threading.Thread):
                     self.swnp('SYS', 'current_project;' + str(current_project))
             except:
                 wos_logger.exception("Exception in current project")
-            time.sleep(5)
+            sleep(5)
 
 
 class CURRENT_SESSION(threading.Thread):
@@ -874,7 +868,7 @@ class CURRENT_SESSION(threading.Thread):
             """if current_session != self.parent.current_session_id:
                 self.parent.SetCurrentSession(current_session)"""
             self.swnp('SYS', 'current_session;' + str(current_session))
-            time.sleep(5)
+            sleep(5)
 
 
 class DeleteProjectDialog(wx.Dialog):
@@ -1878,6 +1872,7 @@ class GUI(wx.Frame):
                     filepath = copied_file
             else:
                 temp = filesystem.CopyToTemp(filename.encode('utf-8'))
+                wos_logger.debug('TEMP: %s' % temp)
                 if temp:
                     filepath = temp
         return filepath
