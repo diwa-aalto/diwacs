@@ -59,6 +59,8 @@ import utils
 
 logging.config.fileConfig('logging.conf')
 wos_logger = logging.getLogger('wos')
+CONTROLLED = False
+CONTROLLING = False
 
 
 def SetLoggerLevel(level):
@@ -776,7 +778,7 @@ class INPUT_CAPTURE(threading.Thread):
             CAPTURE = False
             self.ResetMouseEvents()
             for id_ in self.parent.selected_nodes:
-                self.swnp(id_, 'key;%d,%d,%d' % (257, 18, 56))
+                self.swnp(id_, 'key;%d,%d,%d' % (257, 164, 56))
                 self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
             del self.parent.selected_nodes[:]
             self.parent.overlay.Hide()
@@ -1862,7 +1864,8 @@ class GUI(wx.Frame):
                                     'Adding files to project',
                                     wx.YES_NO | wx.NO_DEFAULT |
                                     wx.ICON_QUESTION | wx.STAY_ON_TOP)
-            result = dial.ShowModal()
+            result = dial.ShowModal() if self.current_project_id else wx.ID_NO
+            del dial
             if result == wx.ID_YES:
                 copied_file = controller.AddFileToProject(
                                         filename,
@@ -2716,10 +2719,10 @@ class GUI(wx.Frame):
                         controller.EndSession(self.current_session_id)
                 utils.MapNetworkShare('W:')
                 diwavars.UpdateResponsive(0)
-                time.sleep(5)
+                sleep(5)
                 self.cmfh.stop()
                 self.worker.RemoveAllRegEntries()
-                self.swnp.close()
+                #self.swnp.close()
                 self.Destroy()
                 wos_logger.info('Application closed')
                 sys.exit(0)

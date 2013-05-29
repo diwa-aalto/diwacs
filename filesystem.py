@@ -42,17 +42,15 @@ def CopyFileToProject(filepath, project_id):
     :type project_id: Integer.
 
     """
-    s = SearchFile(os.path.basename(filepath),
-                   controller.GetProjectPath(project_id))
+    ppath = controller.GetProjectPath(project_id)
+    s = SearchFile(os.path.basename(filepath), ppath)
     if not s:
         try:
-            project_dir = controller.GetProjectPath(project_id)
-            shutil.copy2(filepath, project_dir)
+            shutil.copy2(filepath, ppath)
         except:
             logger.exception('File copy error')
             return False
-        return os.path.join(project_dir,
-                            os.path.basename(filepath))
+        return os.path.join(ppath, os.path.basename(filepath))
     else:
         return s
 

@@ -16,7 +16,7 @@ BLANK_CURSOR = None
 APPLICATION_NAME = "DiWaCS"
 
 # current application version
-VERSION = "0.9.2.3"
+VERSION = "0.9.2.4"
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -76,10 +76,10 @@ def UpdatePadfile(padurl):
     PAD_URL = padurl
 
 # Is this application remote controlling some computer(s)
-CONTROLLING = False
+#CONTROLLING = False
 
 # Is this computer being controlled by another application
-CONTROLLED = False
+#CONTROLLED = False
 
 # Audio Recorder settings
 FORMAT = pyaudio.paInt16

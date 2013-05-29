@@ -175,8 +175,10 @@ class SWNP:
             self.id = random.randint(1, 154)
         self.node = Node(self.id, int(screens), name)
         #prevent overflow slow subscribers
+        xvers = zmq.zmq_version_info()[0]
+        logger.debug('ZMQ Major version: ' + str(xvers))
         self.publisher.setsockopt(zmq.LINGER, 0)
-        self.publisher.setsockopt(zmq.HWM, 1)
+        self.publisher.setsockopt(zmq.SNDHWM if xvers > 2 else zmq.HWM, 1)
         self.publisher.setsockopt(zmq.RATE, 1000000)
         #bind publisher
         self.publisher.bind("epgm://" + self.ip + ";" + PGM_IP)
@@ -290,12 +292,13 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, self.id)
         self.subscriber.connect(sub_url)
-        while True:
+        while not self.subscriber.closed:
             # Read envelope with address
             try:
                 [unused_address, contents] = self.subscriber.recv_multipart()
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
-                logger.debug('Message: %s', str(msg_obj))
+                logger.debug('Received: %s;%s' % (msg_obj.PREFIX,
+                                                  msg_obj.PAYLOAD))
                 if msg_obj.PAYLOAD == self.id and msg_obj.PREFIX == 'LEAVE':
                     logger.debug('LEAVE msg catched')
                     break
@@ -338,13 +341,15 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber_sys.setsockopt(zmq.RATE, 1000000)
         self.subscriber_sys.connect(sub_url)
-        while True:
+        while not self.subscriber_sys.closed:
             try:
                 # Read envelope with address
                 [unused_address, contents] = (
                             self.subscriber_sys.recv_multipart()
                     )
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
+                logger.debug('SYS-Received: %s;%s' % (msg_obj.PREFIX,
+                             msg_obj.PAYLOAD))
                 if msg_obj.PREFIX == 'LEAVE' and msg_obj.PAYLOAD == self.id:
                     break
                 self.sys_handler(msg_obj)
@@ -372,7 +377,8 @@ class SWNP:
             time.sleep(1)
             i += 1
         self.publisher.close()
-        self.context.term()
+        if not self.context.closed:
+            self.context.term()
 
     def close(self):
         """Closes all connections and exits."""
@@ -397,7 +403,8 @@ class SWNP:
         try:
             self.publisher.close()
             logger.debug('publisher closed')
-            self.context.term()
+            if not self.context.closed:
+                self.context.term()
             logger.debug('context terminated')
         except:
             logger.exception('swnp close exception')
@@ -414,11 +421,21 @@ class SWNP:
         :type message: String.
 
         """
+        if self.publisher.closed:
+            return
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
-            self.publisher.send_multipart([msg.TAG, json.dumps(msg,
+            logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
+            try:
+                self.publisher.send_multipart([msg.TAG, json.dumps(msg,
                                                     default=Message.to_dict)
-                                          ])
+                                               ])
+            except Exception, e:
+                logger.exception('SENT EXCEPTION: %s', str(e))
+        else:
+            logger.debug('debug skipping msg: %s,%s,%s' % (str(tag), 
+                                                           str(prefix),
+                                                           str(message)))
 
     def get_buffer(self):
         """Gets the buffered messages and returns them

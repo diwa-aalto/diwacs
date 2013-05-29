@@ -28,6 +28,7 @@ try:
 except ImportError:
     # no build path setup, no worries.
     pass
+
 from distutils.core import setup
 import py2exe
 from glob import glob
@@ -50,15 +51,16 @@ setup(name="DiwaCS",
       options={'py2exe':
                     {'typelibs': [('{565783C6-CB41-11D1-8B02-00600806D9B6}',
                                    0, 1, 2)],
-                    'bundle_files': 3,
-                    'includes': ['zmq.utils.strtypes', 'zmq.utils.jsonapi',
-                                  'zmq.core.pysocket', 'sqlalchemy',
-                                  'sqlalchemy.dialects.mysql', 'pymysql',
-                                  'PIL', 'pathtools', 'migrate', 'wmi',
-                                  'migrate.changeset.databases.mysql',
-                                  'pyodbc', 'pg8000'],
+                    'bundle_files': 1,
+                    'optimize': 2,
+                    'compressed': True,
+                    'includes': ['sqlalchemy', 'sqlalchemy.dialects.mysql',
+                                 'pymysql', 'PIL', 'pathtools', 'migrate',
+                                 'wmi', 'migrate.changeset.databases.mysql',
+                                 'pyodbc', 'pg8000'],
                      "packages": ['pubsub', 'zmq', 'configobj', 'migrate',
-                                   'lxml', 'pyaudio', 'wave', 'wxversion'],
+                                   'lxml', 'pyaudio', 'wave', 'wxversion',
+                                   'cffi', 'pycparser'],
                      'dist_dir': 'wosdist',
                      "dll_excludes": ["libzmq.dll", "libpq.dll", "MPR.dll",
                                       "IPHLPAPI.dll", "OCI.dll"],
@@ -83,9 +85,10 @@ setup(name="DiwaCS",
                   #("rfv", glob(r'rfv\*.*')),
                   ("icons//filetypes", glob(r'icons\filetypes\*.*')),
                   ("data", mydata_content),
-                  (".", ['C:\Users\Kristian\Documents\libzmq\libzmq.dll',
+                  (".", [r'C:\Python27\Lib\site-packages\zmq\libzmq.dll',
                          'logging.conf',
                          'config.ini'
                          ])
-                 ]
+                 ],
+      zipfile='diwa.lib'
 )

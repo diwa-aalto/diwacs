@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DiwaCS"
-#define MyAppVersion "0.9.2.1"
+#define MyAppVersion "0.9.2.4"
 #define MyAppPublisher "Aalto University"
 #define MyAppExeName "DiwaCS.exe"
 
@@ -17,7 +17,7 @@ AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=C:\Users\neriksso\Documents\workspace\diwacs_amazon\installer
+OutputDir=C:\Users\Kristian\Documents\workspace\diwacs\installer
 OutputBaseFilename=DiwaCS-setup-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
@@ -33,23 +33,24 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\neriksso\Documents\workspace\diwacs_amazon\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\neriksso\Documents\workspace\diwacs_amazon\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Kristian\Documents\workspace\diwacs\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Kristian\Documents\workspace\diwacs\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "DeleteUpdateTask.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon.ico"
-Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"; IconFilename: "{app}\icon.ico"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\icon.ico"
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon; IconFilename: "{app}\icon.ico"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\data\icon.ico"
+Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"; IconFilename: "{app}\data\icon.ico"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\data\icon.ico"
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon; IconFilename: "{app}\data\icon.ico"
 
 [Run]
 ;Filename: "{tmp}\DeleteUpdateTask.exe"; Flags: runhidden
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Dirs]
-Name: "{app}\data"; Permissions: users-modify 
+Name: "{app}\data"; Permissions: users-modify
+;Name: "{app}\icons"; Permissions: users-modify 
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{%HOMEPATH}\.wos"

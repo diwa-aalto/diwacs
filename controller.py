@@ -5,9 +5,8 @@ Created on 28.5.2012
 '''
 #import MySQLdb
 import sys
-sys.stdout = open("data\stdout.log", "wb")
-sys.stderr = open("data\stderr.log", "wb")
-import datetime
+sys.stdout = open("data\\stdout.log", "wb")
+sys.stderr = open("data\\stderr.log", "wb")
 import logging
 import logging.config
 import time
@@ -38,7 +37,6 @@ DATABASE = 'mysql+pymysql://wazzuup:serval@192.168.1.10/DIWA?charset=utf8&use_un
 ENGINE = create_engine(DATABASE, echo=True)
 PROJECT_PATH = '\\\\' + diwavars.STORAGE + '\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
-SCANNER_TH = None
 CS_TH = None
 COMPUTER_INS = None
 NODE_NAME = ""
@@ -656,7 +654,12 @@ def AddFileToProject(file, project_id):
     :type projecT_id: Integer.
     :return: New filepath.
     :rtype: String
+
     """
+    if not project_id:
+        mypath = r'\\' + diwavars.STORAGE + '\\'
+        f = filesystem.CopyFileToProject(file, project_id)
+        return f if f else ""
     try:
         db = ConnectToDatabase()
         project = db.query(Project).filter(Project.id == project_id).one()
@@ -668,7 +671,8 @@ def AddFileToProject(file, project_id):
             db.close()
         return filepath
     except Exception, e:
-        logger.exception('Add file to project exception: %s', str(e))
+        logger.exception('Add file to project(%s) exception: %s',
+                         str(project_id), str(e))
         return ""
 
 
@@ -760,6 +764,7 @@ class SCAN_HANDLER(FileSystemEventHandler):
     """
     def __init__(self, project_id):
         self.project_id = project_id
+        logger.debug('SCAN_HANDLER initialized for project: %d' % project_id)
 
     def on_created(self, event):
         """On_created event handler. Logs to database.
@@ -772,17 +777,21 @@ class SCAN_HANDLER(FileSystemEventHandler):
             project_path = GetProjectPath(self.project_id)
             if not project_path:
                 return
+            logger.debug('on_created at: %s (%s)' % (project_path,
+                                os.path.basename(event.src_path)))
             new_path = os.path.join(project_path,
                                     os.path.basename(event.src_path))
-            if 'Scan' in  event.src_path:
+            if 'Scan' in event.src_path:
                 time.sleep(60)
             shutil.copy2(event.src_path, new_path)
             db = ConnectToDatabase()
-            f = File(path=new_path,
-                     project=db.query(Project).filter(Project.id ==
-                                                      self.project_id).one())
+            proj = db.query(Project).filter(Project.id ==
+                                            self.project_id).one()
+            logger.debug('File(%s, %s)' % (new_path, str(proj)))
+            f = File(path=new_path, project=proj)
             fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
                                                                    1).one())
+            logger.debug('FileAction: %s', str(fa))
             db.add(f)
             db.add(fa)
             db.commit()
@@ -812,11 +821,14 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             db = ConnectToDatabase()
             logger.debug("PROJECT FILE CREATED %s %s" %
                          (str(type(event.src_path)), event.src_path))
-            f = File(path=event.src_path,
-                     project=db.query(Project).filter(Project.id ==
-                                                      self.project_id).one())
+            proj = db.query(Project).filter(Project.id ==
+                                            self.project_id).one()
+            logger.debug("Adding to project: %s" % str(proj))
+            f = File(path=event.src_path, project=proj)
+            logger.debug("File: %s" % str(f))
             fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
                                                                    1).one())
+            logger.debug("FileAction: %s" % str(f))
             db.merge(f)
             db.merge(fa)
             db.commit()
@@ -855,13 +867,17 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         """
         try:
             db = ConnectToDatabase()
+            logger.debug('on_modified(%s)' % str(event))
             f = db.query(File).filter(File.path == event.src_path,
                                       File.project_id == self.project_id
                                       ).order_by(File.id.desc()).first()
+            logger.debug('on_modified - query = %s', str(f))
             if not f:
                 f = self.on_created(event)
+                logger.debub('on_created result: ' % str(f))
             fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
                                                                    3).one())
+            logger.debug('on_modified - fileaction = %s', str(fa))
             db.merge(f)
             db.merge(fa)
             db.commit()
