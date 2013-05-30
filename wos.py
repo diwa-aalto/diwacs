@@ -1497,7 +1497,7 @@ class SysTray(wx.TaskBarIcon):
         self.menu.Append(wx.ID_VIEW_LIST, "Select a Project")
         self.menu.Append(wx.ID_NEW, "Session")
         self.menu.Append(wx.ID_INDEX, "Open Project Dir")
-        self.menu.Append(9666, "TLDR")
+        self.menu.Append(wx.ID_HELP_INDEX, "TLDR")
         self.menu.Append(wx.ID_SETUP, "Preferences")
         self.menu.Append(wx.ID_ABOUT, "About")
         self.menu.AppendSeparator()
@@ -1788,7 +1788,7 @@ class GUI(wx.Frame):
                                id=wx.ID_SETUP)
             self.trayicon.Bind(wx.EVT_MENU, self.OnSession, id=wx.ID_NEW)
             self.trayicon.Bind(wx.EVT_MENU, self.OnAboutBox, id=wx.ID_ABOUT)
-            self.trayicon.Bind(wx.EVT_MENU, self.OnTLDR, id=9666)
+            self.trayicon.Bind(wx.EVT_MENU, self.OnTLDR, id=wx.ID_HELP_INDEX)
             #---------------------------
             # self.trayicon.Bind(wx.EVT_MENU, self.UpdateScreens,
             #                    id=wx.ID_REPLACE)
@@ -1850,8 +1850,7 @@ class GUI(wx.Frame):
         if result:
             self.OnExit('conn_err')
 
-    def OnTLDR(self):
-        wos_logger.debug('WHAT????')
+    def OnTLDR(self,event):
         swnp.setTLDR(not swnp.TLDR)
 
     def InitTest(self):

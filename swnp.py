@@ -186,25 +186,32 @@ class SWNP:
         xvers = zmq.zmq_version_info()[0]
         logger.debug('ZMQ Major version: ' + str(xvers))
         self.publisher.setsockopt(zmq.LINGER, 0)
-        self.publisher.setsockopt(zmq.SNDHWM if xvers > 2 else zmq.HWM, 1)
+        self.publisher.setsockopt(zmq.SNDHWM if xvers > 2 else zmq.HWM, 5)
         self.publisher.setsockopt(zmq.RATE, 1000000)
         #bind publisher
-        tladdr = "epgm://" + self.ip + ";" + PGM_IP
-        self.publisher.bind(tladdr)
+        self.tladdr = "epgm://" + self.ip + ";" + PGM_IP
+        self.publisher.bind(self.tladdr)
         #Subscriber threads
-        self.sub_thread = threading.Thread(target=self.sub_routine,
+        self.sub_thread = None
+        self.StartSubRoutine(self.sub_thread, self.sub_routine, "Sub thread", 
+                             (self.tladdr, self.context,))
+        """self.sub_thread = threading.Thread(target=self.sub_routine,
                                            name="Sub_thread",
                                            args=(tladdr, self.context,)
                                            )
         self.sub_thread.daemon = True
-        self.sub_thread.start()
-        self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
+        self.sub_thread.start()"""
+        self.sub_thread_sys = None
+        self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
+                             "Sub sys thread", (self.tladdr, self.context,))
+        """self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
                                                name="Sub sys thread",
                                                args=(tladdr, self.context,)
                                                )
-        logger.debug('Bound listeners on: %s', str(tladdr))
         self.sub_thread_sys.daemon = True
-        self.sub_thread_sys.start()
+        self.sub_thread_sys.start()"""
+        logger.debug('Bound listeners on: %s', str(self.tladdr))
+        
         self.send("SYS", PREFIX_CHOICES[0], ("%s_SCREENS_%d_NAME_%s_DATA_%s" %
                                              (self.node.id, self.node.screens,
                                               self.node.name, self.node.data)
@@ -226,7 +233,15 @@ class SWNP:
                                                name="timeout thread")
         self.timeout_thread.daemon = True
         self.timeout_thread.start()
-
+    
+    def StartSubRoutine(self,target,routine,name,args):
+        if isinstance(target,threading.Thread) and target.isAlive():
+            return
+        target = threading.Thread(target=routine, name=name, args=args)
+        target.daemon = True
+        target.start()
+        logger.debug("%s started"%name)
+    
     def timeout_routine(self):
         """
         Routine for checking node list and removing nodes with timeout.
@@ -246,6 +261,17 @@ class SWNP:
                     pub.sendMessage("update_screens", update=True)
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
+            if not self.sub_thread_sys.isAlive():
+                logger.debug("Restarting sub thread sys")
+                setTLDR(True)
+                self.sub_thread_sys = None
+                self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
+                             "Sub sys thread", (self.tladdr, self.context,))
+            if not self.sub_thread.isAlive():
+                logger.debug("Restarting sub thread")
+                self.sub_thread = None
+                self.StartSubRoutine(self.sub_thread, self.sub_routine,
+                             "Sub thread", (self.tladdr, self.context,))
             time.sleep(TIMEOUT)
 
     def do_ping(self):
@@ -303,7 +329,7 @@ class SWNP:
         self.subscriber.setsockopt(zmq.SUBSCRIBE, self.id)
         self.subscriber.connect(sub_url)
         logger.debug('Listener Active!')
-        while (not self.subscriber.closed) and TLDR:
+        while (not self.subscriber.closed):
             # Read envelope with address
             try:
                 [unused_address, contents] = self.subscriber.recv_multipart(
@@ -323,6 +349,13 @@ class SWNP:
                 pass
             except SystemExit:
                 break
+            except zmq.Again, e:
+                # Non-blocking mode was requested and no messages 
+                # are available at the moment.
+                pass
+            except zmq.ContextTerminated, e:
+                # context associated with the specified socket was terminated.
+                break               
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine:%s", str(e))
                 break
@@ -373,6 +406,13 @@ class SWNP:
                 pass
             except SystemExit:
                 break
+            except zmq.Again, e:
+                # Non-blocking mode was requested and no messages 
+                # are available at the moment.
+                pass
+            except zmq.ContextTerminated, e:
+                # context associated with the specified socket was terminated.
+                break               
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine sys:%s", str(e))
                 break
