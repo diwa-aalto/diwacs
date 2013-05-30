@@ -192,8 +192,7 @@ class SWNP:
         self.tladdr = "epgm://" + self.ip + ";" + PGM_IP
         self.publisher.bind(self.tladdr)
         #Subscriber threads
-        self.sub_thread = None
-        self.StartSubRoutine(self.sub_thread, self.sub_routine, "Sub thread", 
+        self.sub_thread = self.StartSubRoutine( None, self.sub_routine, "Sub thread", 
                              (self.tladdr, self.context,))
         """self.sub_thread = threading.Thread(target=self.sub_routine,
                                            name="Sub_thread",
@@ -201,8 +200,7 @@ class SWNP:
                                            )
         self.sub_thread.daemon = True
         self.sub_thread.start()"""
-        self.sub_thread_sys = None
-        self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
+        self.sub_thread_sys = self.StartSubRoutine(None,self.sub_routine_sys,
                              "Sub sys thread", (self.tladdr, self.context,))
         """self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
                                                name="Sub sys thread",
@@ -234,13 +232,14 @@ class SWNP:
         self.timeout_thread.daemon = True
         self.timeout_thread.start()
     
-    def StartSubRoutine(self,target,routine,name,args):
-        if isinstance(target,threading.Thread) and target.isAlive():
+    def StartSubRoutine(self,target, routine,name,args):
+        if isinstance(target,threading.Thread) and target and target.isAlive():
             return
         target = threading.Thread(target=routine, name=name, args=args)
         target.daemon = True
         target.start()
         logger.debug("%s started"%name)
+        return target
     
     def timeout_routine(self):
         """
@@ -261,16 +260,14 @@ class SWNP:
                     pub.sendMessage("update_screens", update=True)
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
-            if not self.sub_thread_sys.isAlive():
+            if self.sub_thread_sys and not self.sub_thread_sys.isAlive():
                 logger.debug("Restarting sub thread sys")
                 setTLDR(True)
-                self.sub_thread_sys = None
-                self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
+                self.sub_thread_sys = self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
                              "Sub sys thread", (self.tladdr, self.context,))
-            if not self.sub_thread.isAlive():
+            if self.sub_thread and not self.sub_thread.isAlive():
                 logger.debug("Restarting sub thread")
-                self.sub_thread = None
-                self.StartSubRoutine(self.sub_thread, self.sub_routine,
+                self.sub_thread = self.StartSubRoutine(self.sub_thread, self.sub_routine,
                              "Sub thread", (self.tladdr, self.context,))
             time.sleep(TIMEOUT)
 

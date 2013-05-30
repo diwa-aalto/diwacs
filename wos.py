@@ -1851,7 +1851,7 @@ class GUI(wx.Frame):
             self.OnExit('conn_err')
 
     def OnTLDR(self,event):
-        swnp.setTLDR(not swnp.TLDR)
+        swnp.setTLDR(False)
 
     def InitTest(self):
         if diwavars.DEBUG:
@@ -2789,7 +2789,7 @@ class GUI(wx.Frame):
                 sleep(5)
                 self.cmfh.stop()
                 self.worker.RemoveAllRegEntries()
-                #self.swnp.close()
+                self.swnp.close()
                 self.Destroy()
                 wos_logger.info('Application closed')
                 sys.exit(0)
