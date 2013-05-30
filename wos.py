@@ -371,11 +371,16 @@ class WORKER_THREAD(threading.Thread):
         wos_logger.debug("Responsive checked. Current responsive is %s" %
                          str(self.parent.responsive))
 
-    def AddProjectReg(self):
-        """ Adds project folder to registry.
+    def AddProjectReg(self, reg_type):
+        """ Adds "Add to project" context menu item to registry. The item 
+        will be added to Software\Classes\<reg_type>, where <reg_type>
+        can be e.g. '*' for all files or 'Folder' for folders.  
+
+        :param reg_type: Registry type.
+        :type reg_type: String
 
         """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Add to project',
+        keys = ['Software', 'Classes', reg_type, 'shell', 'DiWaCS: Add to project',
                 'command']
         key = ''
         for k, islast in utils.IterIsLast(keys):
