@@ -200,7 +200,7 @@ class SWNP:
                                            )
         self.sub_thread.daemon = True
         self.sub_thread.start()"""
-        self.sub_thread_sys = self.StartSubRoutine(None,self.sub_routine_sys,
+        self.sub_thread_sys = self.StartSubRoutine(None, self.sub_routine_sys,
                              "Sub sys thread", (self.tladdr, self.context,))
         """self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
                                                name="Sub sys thread",
@@ -483,6 +483,9 @@ class SWNP:
             msg = Message(tag, prefix, message)
             logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
             try:
+                # NEW IN ZMQ 3.X, Multicast loopback has been disabled,
+                # we need to send it in another way to the listener.
+                # - Kristian.
                 self.publisher.send_multipart([msg.TAG, json.dumps(msg,
                                                     default=Message.to_dict)
                                                ])
