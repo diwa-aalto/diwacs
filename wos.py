@@ -1863,6 +1863,61 @@ class GUI(wx.Frame):
 
     def HandleFileSend(self, filename):
         """ Sends a file link to another node"""
+        isFolder = os.path.isdir(filename)
+        if isFolder:
+            proj_fp = os.path.abspath(filename)
+            proj_fp = proj_fp[proj_fp.rfind(os.path.sep):]
+            if proj_fp.startswith(os.path.sep):
+                proj_fp = proj_fp[1:]
+            proj_remote = os.path.join(r'\\' +
+                                       diwavars.STORAGE,
+                                       'Projects')
+            cpid = self.current_project_id
+            dial = wx.MessageDialog(None, 'Add ' + filename +
+                                    ' folder to project?',
+                                    'Adding files to project',
+                                    wx.YES_NO | wx.NO_DEFAULT |
+                                    wx.ICON_QUESTION | wx.STAY_ON_TOP)
+            result = (dial.ShowModal() if self.current_project_id > 0
+                      else wx.ID_NO)
+            if (cpid and cpid > 0) and result == wx.ID_YES:
+                proj_remote = controller.GetProjectPath(cpid)
+            else:
+                cpid = 0
+            rdir = os.path.join(proj_remote, proj_fp)
+            try:
+                if not os.path.exists(rdir):
+                    os.mkdir(os.path.join(rdir))
+            except:
+                wos_logger.exception('Failed to create ' +
+                                     'folder for %s in %s' %
+                                     (filename, rdir))
+                return ''
+            for root, dirs, files in os.walk(filename):
+                proj_path = root[len(filename) - len(proj_fp):]
+                proj_path = os.path.join(proj_remote,
+                                         proj_path)
+                try:
+                    for d in dirs:
+                        os.mkdir(os.path.join(proj_path, d))
+                except Exception, e:
+                    wos_logger.exception('Error %s', str(e))
+                    continue
+                for (source, target) in [
+                            (os.path.join(root, fk),
+                             os.path.join(proj_path, fk))
+                            for fk in files]:
+                    wos_logger.debug('Sending file: %s to %s' %
+                                     (source, target))
+                    try:
+                        shutil.copyfile(source, target)
+                        if cpid > 0:
+                            controller.CreateFileaction(target, 1,
+                                                    self.current_session_id,
+                                                    cpid)
+                    except Exception, e:
+                        wos_logger.exception('Send file exception: %s', str(e))
+            return rdir
         filepath = controller.IsProjectFile(filename, self.current_project_id)
         if not filepath:
             basename = os.path.basename(filename)
@@ -1870,7 +1925,8 @@ class GUI(wx.Frame):
                                     'Adding files to project',
                                     wx.YES_NO | wx.NO_DEFAULT |
                                     wx.ICON_QUESTION | wx.STAY_ON_TOP)
-            result = dial.ShowModal() if self.current_project_id else wx.ID_NO
+            result = (dial.ShowModal() if self.current_project_id > 0
+                      else wx.ID_NO)
             del dial
             if result == wx.ID_YES:
                 copied_file = controller.AddFileToProject(

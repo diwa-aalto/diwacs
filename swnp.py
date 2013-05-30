@@ -189,21 +189,20 @@ class SWNP:
         self.publisher.setsockopt(zmq.SNDHWM if xvers > 2 else zmq.HWM, 1)
         self.publisher.setsockopt(zmq.RATE, 1000000)
         #bind publisher
-        self.publisher.bind("epgm://" + self.ip + ";" + PGM_IP)
+        tladdr = "epgm://" + self.ip + ";" + PGM_IP
+        self.publisher.bind(tladdr)
         #Subscriber threads
         self.sub_thread = threading.Thread(target=self.sub_routine,
-                                           name="Sub_thread", args=(
-                                                "epgm://" + self.ip + ";" +
-                                                PGM_IP, self.context,)
+                                           name="Sub_thread",
+                                           args=(tladdr, self.context,)
                                            )
         self.sub_thread.daemon = True
         self.sub_thread.start()
         self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
                                                name="Sub sys thread",
-                                               args=("epgm://" + self.ip +
-                                                     ";" + PGM_IP,
-                                                     self.context,)
+                                               args=(tladdr, self.context,)
                                                )
+        logger.debug('Bound listeners on: %s', str(tladdr))
         self.sub_thread_sys.daemon = True
         self.sub_thread_sys.start()
         self.send("SYS", PREFIX_CHOICES[0], ("%s_SCREENS_%d_NAME_%s_DATA_%s" %
@@ -303,10 +302,12 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, self.id)
         self.subscriber.connect(sub_url)
+        logger.debug('Listener Active!')
         while (not self.subscriber.closed) and TLDR:
             # Read envelope with address
             try:
-                [unused_address, contents] = self.subscriber.recv_multipart()
+                [unused_address, contents] = self.subscriber.recv_multipart(
+                                                            flags=zmq.NOBLOCK)
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
                 logger.debug('Received: %s;%s' % (msg_obj.PREFIX,
                                                   msg_obj.PAYLOAD))
@@ -354,11 +355,13 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber_sys.setsockopt(zmq.RATE, 1000000)
         self.subscriber_sys.connect(sub_url)
+        logger.debug('SYS-listener active')
         while (not self.subscriber_sys.closed) and TLDR:
             try:
                 # Read envelope with address
                 [unused_address, contents] = (
-                            self.subscriber_sys.recv_multipart()
+                            self.subscriber_sys.recv_multipart(
+                                                    flags=zmq.NOBLOCK)
                     )
                 msg_obj = json.loads(contents, object_hook=Message.from_json)
                 logger.debug('SYS-Received: %s;%s' % (msg_obj.PREFIX,
