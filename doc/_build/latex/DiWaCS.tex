@@ -14,8 +14,8 @@
 
 
 \title{DiWaCS Documentation}
-\date{May 27, 2013}
-\release{0.9.2.3}
+\date{May 30, 2013}
+\release{0.9.2.4}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -154,7 +154,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-27 at 18:10.
+Documentation generated on 2013-05-30 at 09:00.
 
 
 \section{Add file module}
@@ -293,13 +293,13 @@ Adds an event to the database.
 \index{AddFileToProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.AddFileToProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddFileToProject}}{\emph{file}, \emph{project\_id}}{}
+\phantomsection\label{api:controller.AddFileToProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
 Add a file to project. Copies it to the folder and adds a record to
 database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{file} (\emph{String}) -- A filepath.
+\textbf{filepath} (\emph{String}) -- A filepath.
 
 \item {} 
 \textbf{project\_id} -- Project id from database.
@@ -854,10 +854,10 @@ the action.
 \begin{description}
 \item[{Field:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the action, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the action, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of the action (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the action (Max 50 characters).
 
 \end{itemize}
 
@@ -878,22 +878,22 @@ A class representation of an activity.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of activity, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of activity, used as primary key in database table.
 
 \item {} 
-\code{session\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the session activity belongs to.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the session activity belongs to.
 
 \item {} 
-\code{session} (\code{sqlalchemy.orm.relationship}) - Session relationship.
+\code{session} (\code{sqlalchemy.orm.relationship})        - Session relationship.
 
 \item {} 
-\code{project\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the project activity belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the project activity belongs to.
 
 \item {} 
-\code{project} (\code{sqlalchemy.orm.relationship}) - Project relationship.
+\code{project} (\code{sqlalchemy.orm.relationship})        - Project relationship.
 
 \item {} 
-\code{active} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Boolean)}) - Boolean flag indicating that the project is active.
+\code{active}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Boolean)})        - Boolean flag indicating that the project is active.
 
 \end{itemize}
 
@@ -920,10 +920,10 @@ A class representation of a company.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the company, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the company, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of the company (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the company (Max 50 characters).
 
 \end{itemize}
 
@@ -944,34 +944,34 @@ A class representation of a computer.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of computer, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of computer, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of the computer.
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the computer.
 
 \item {} 
-\code{ip} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)}) - Internet Protocol address of the computer (Defined as unsigned).
+\code{ip}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)})        - Internet Protocol address of the computer (Defined as unsigned).
 
 \item {} 
-\code{mac} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Media Access Control address of the computer.
+\code{mac}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}        - Media Access Control address of the computer.
 
 \item {} 
-\code{time} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)}) - Time of the last network activity from the computer.
+\code{time}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)})        - Time of the last network activity from the computer.
 
 \item {} 
-\code{screens} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)}) - Number of screens on the computer.
+\code{screens}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)})        - Number of screens on the computer.
 
 \item {} 
-\code{responsive} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)}) - The responsive value of the computer.
+\code{responsive}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)})        - The responsive value of the computer.
 
 \item {} 
-\code{user\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the user currently using the computer.
+\code{user\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the user currently using the computer.
 
 \item {} 
-\code{user} (\code{sqlalchemy.orm.relationship}) - The current user.
+\code{user} (\code{sqlalchemy.orm.relationship})        - The current user.
 
 \item {} 
-\code{wos\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - \textbf{WOS} ID.
+\code{wos\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - \textbf{WOS} ID.
 
 \end{itemize}
 
@@ -988,22 +988,22 @@ session.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the event, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the event, used as primary key in database table.
 
 \item {} 
-\code{title} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Title of the event (Max 40 characters).
+\code{title}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Title of the event (Max 40 characters).
 
 \item {} 
-\code{desc} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - More in-depth description of the event (Max 500 characters).
+\code{desc}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - More in-depth description of the event (Max 500 characters).
 
 \item {} 
-\code{time} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)}) - Time the event took place.
+\code{time}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)})        - Time the event took place.
 
 \item {} 
-\code{session\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the session this event belongs to.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the session this event belongs to.
 
 \item {} 
-\code{session} (\code{sqlalchemy.orm.relationship}) - Session this event belongs to.
+\code{session} (\code{sqlalchemy.orm.relationship})        - Session this event belongs to.
 
 \end{itemize}
 
@@ -1019,16 +1019,16 @@ A class representation of a file.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the file, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the file, used as primary key in database table.
 
 \item {} 
-\code{path} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Path of the file on DiWa (max 255 chars).
+\code{path}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Path of the file on DiWa (max 255 chars).
 
 \item {} 
-\code{project\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the project this file belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the project this file belongs to.
 
 \item {} 
-\code{project} (\code{sqlalchemy.orm.relationship}) - Project this file belongs to.
+\code{project} (\code{sqlalchemy.orm.relationship})        - Project this file belongs to.
 
 \end{itemize}
 
@@ -1044,40 +1044,40 @@ A class representation of a fileaction.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the FileAction, used as primary key in the database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the FileAction, used as primary key in the database table.
 
 \item {} 
-\code{file\_id} (\code{sqlalchemy.schema.Column(sqlaclhemy.types.Integer)}) - ID of the file this FileAction affects.
+\code{file\_id}        (\code{sqlalchemy.schema.Column(sqlaclhemy.types.Integer)})        - ID of the file this FileAction affects.
 
 \item {} 
-\code{file} (\code{sqlalchemy.orm.relationship)}) - The file this FileAction affects.
+\code{file} (\code{sqlalchemy.orm.relationship)})        - The file this FileAction affects.
 
 \item {} 
-\code{action\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the action affecting the file.
+\code{action\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the action affecting the file.
 
 \item {} 
-\code{action} (\code{sqlalchemy.orm.relationship)}) - Action affecting the file.
+\code{action} (\code{sqlalchemy.orm.relationship)})        - Action affecting the file.
 
 \item {} 
-\code{action\_time} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)}) - Time the action took place on.
+\code{action\_time}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)})        - Time the action took place on.
 
 \item {} 
-\code{user\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the user performing the action.
+\code{user\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the user performing the action.
 
 \item {} 
-\code{user} (\code{sqlalchemy.orm.relationship}) - User peforming the action.
+\code{user} (\code{sqlalchemy.orm.relationship})        - User peforming the action.
 
 \item {} 
-\code{computer\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the computer user performed the action on.
+\code{computer\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the computer user performed the action on.
 
 \item {} 
-\code{computer} (\code{sqlalchemy.orm.relationship}) - Computer user performed the action on.
+\code{computer} (\code{sqlalchemy.orm.relationship})        - Computer user performed the action on.
 
 \item {} 
-\code{session\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the session user performed the action in.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the session user performed the action in.
 
 \item {} 
-\code{session} (\code{sqlalchemy.orm.relationship}) - Session user performed the action in.
+\code{session} (\code{sqlalchemy.orm.relationship})        - Session user performed the action in.
 
 \end{itemize}
 
@@ -1113,25 +1113,25 @@ A class representation of a project.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of project, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of project, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of the project (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the project (Max 50 characters).
 
 \item {} 
-\code{company\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the company that owns the project.
+\code{company\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the company that owns the project.
 
 \item {} 
-\code{company} (\code{sqlalchemy.orm.relationship}) - The company that owns the project.
+\code{company} (\code{sqlalchemy.orm.relationship})        - The company that owns the project.
 
 \item {} 
-\code{dir} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Directory path for the project files (Max 255 characters).
+\code{dir}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Directory path for the project files (Max 255 characters).
 
 \item {} 
-\code{password} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Password for the project (Max 40 characters).
+\code{password}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Password for the project (Max 40 characters).
 
 \item {} 
-\code{members} (\code{sqlalchemy.orm.relationship}) - The users that work on the project.
+\code{members} (\code{sqlalchemy.orm.relationship})        - The users that work on the project.
 
 \end{itemize}
 
@@ -1158,34 +1158,34 @@ A class representation of a session.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of session, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of session, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of session (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of session (Max 50 characters).
 
 \item {} 
-\code{project\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the project the session belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the project the session belongs to.
 
 \item {} 
-\code{project} (\code{sqlalchemy.orm.relationship}) - The project the session belongs to.
+\code{project} (\code{sqlalchemy.orm.relationship})        - The project the session belongs to.
 
 \item {} 
-\code{starttime} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)}) - Time the session began, defaults to \emph{now()}.
+\code{starttime}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)})        - Time the session began, defaults to \emph{now()}.
 
 \item {} 
-\code{endtime} (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)}) - The time session ended.
+\code{endtime}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)})        - The time session ended.
 
 \item {} 
-\code{previous\_session\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the previous session.
+\code{previous\_session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the previous session.
 
 \item {} 
-\code{previous\_session} (\code{sqlalchemy.orm.relationship}) - The previous session.
+\code{previous\_session}        (\code{sqlalchemy.orm.relationship}) - The previous session.
 
 \item {} 
-\code{participants} (\code{sqlalchemy.orm.relationship}) - Users that belong to this session.
+\code{participants} (\code{sqlalchemy.orm.relationship})        - Users that belong to this session.
 
 \item {} 
-\code{computers} (\code{sqlalchemy.orm.relationship}) - Computers that belong to this session.
+\code{computers} (\code{sqlalchemy.orm.relationship})        - Computers that belong to this session.
 
 \end{itemize}
 
@@ -1258,25 +1258,25 @@ A class representation of a user.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - ID of the user, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - ID of the user, used as primary key in database table.
 
 \item {} 
-\code{name} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Name of the user (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the user (Max 50 characters).
 
 \item {} 
-\code{email} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Email address of the user (Max 100 characters).
+\code{email}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Email address of the user (Max 100 characters).
 
 \item {} 
-\code{title} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Title of the user in the company (Max 50 characters).
+\code{title}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Title of the user in the company (Max 50 characters).
 
 \item {} 
-\code{department} (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}) - Department of the user in the company (Max 100 characters).
+\code{department}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Department of the user in the company (Max 100 characters).
 
 \item {} 
-\code{company\_id} (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)}) - Company id of the employing company.
+\code{company\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.Integer)})        - Company id of the employing company.
 
 \item {} 
-\code{company} (\code{sqlalchemy.orm.relationship}) - Company relationship.
+\code{company} (\code{sqlalchemy.orm.relationship})        - Company relationship.
 
 \end{itemize}
 
@@ -3189,7 +3189,7 @@ Cecill v. 2.0
 \capstart
 
 \includegraphics{screencap.png}
-\caption{The UI of Chimaira; Several icons for different functions.}\end{figure}
+\caption{The UI of DiWaCS; Several icons for different functions.}\end{figure}
 
 The screen icons identify different screens nodes. The user can drop files on to these icons, causing the dropped files to be opened in the specific node. The arrows control the carousel of nodes, and are visble only if more than three nodes are connected. The drop-down list in holds recently viewed files in the selected project.
 

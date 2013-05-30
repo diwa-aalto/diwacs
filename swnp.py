@@ -35,6 +35,14 @@ PING_RATE = 2
 sys.stdout = open("data\swnp_stdout.log", "wb")
 sys.stderr = open("data\swnp_stderr.log", "wb")
 
+TLDR = True
+
+
+def setTLDR(value):
+    global TLDR
+    TLDR = value
+    logger.debug('TLDR: %s' % str(value))
+
 
 def SetLoggerLevel(level):
     global logger
@@ -221,7 +229,10 @@ class SWNP:
         self.timeout_thread.start()
 
     def timeout_routine(self):
-        """Routine for checking node list and removing nodes with timeout."""
+        """
+        Routine for checking node list and removing nodes with timeout.
+
+        """
         timeout = timedelta(seconds=TIMEOUT)
         while not self.timeout_stop.isSet():
             try:
@@ -292,7 +303,7 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, self.id)
         self.subscriber.connect(sub_url)
-        while not self.subscriber.closed:
+        while (not self.subscriber.closed) and TLDR:
             # Read envelope with address
             try:
                 [unused_address, contents] = self.subscriber.recv_multipart()
@@ -314,6 +325,8 @@ class SWNP:
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine:%s", str(e))
                 break
+            except Exception, e:
+                logger.exception("SWNP EXCEPTION: %s", str(e))
         logger.debug('Closing sub')
         self.subscriber.close()
 
@@ -341,7 +354,7 @@ class SWNP:
         self.subscriber.setsockopt(zmq.LINGER, 0)
         self.subscriber_sys.setsockopt(zmq.RATE, 1000000)
         self.subscriber_sys.connect(sub_url)
-        while not self.subscriber_sys.closed:
+        while (not self.subscriber_sys.closed) and TLDR:
             try:
                 # Read envelope with address
                 [unused_address, contents] = (
@@ -359,6 +372,9 @@ class SWNP:
                 break
             except zmq.ZMQError, e:
                 logger.exception("ZMQerror sub routine sys:%s", str(e))
+                break
+            except Exception, e:
+                logger.exception("SWNP_SYS EXCEPTION: %s", str(e))
                 break
         logger.debug('Closing sys sub')
         self.subscriber_sys.close()
@@ -433,7 +449,7 @@ class SWNP:
             except Exception, e:
                 logger.exception('SENT EXCEPTION: %s', str(e))
         else:
-            logger.debug('debug skipping msg: %s,%s,%s' % (str(tag), 
+            logger.debug('debug skipping msg: %s,%s,%s' % (str(tag),
                                                            str(prefix),
                                                            str(message)))
 

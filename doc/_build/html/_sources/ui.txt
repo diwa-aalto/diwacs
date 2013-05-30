@@ -4,7 +4,7 @@ User Interface
 .. figure::  screencap.png
    :align:   center
    
-   The UI of Chimaira; Several icons for different functions.
+   The UI of DiWaCS; Several icons for different functions.
 
 The screen icons identify different screens nodes. The user can drop files on to these icons, causing the dropped files to be opened in the specific node. The arrows control the carousel of nodes, and are visble only if more than three nodes are connected. The drop-down list in holds recently viewed files in the selected project.    
    

@@ -15,7 +15,6 @@ import socket
 import threading
 
 # 3rd party imports
-import csv
 from pubsub import pub
 from sqlalchemy import create_engine, func, sql, desc, or_
 from sqlalchemy.orm import sessionmaker
@@ -26,14 +25,15 @@ from watchdog.events import FileSystemEventHandler
 # Own imports
 import diwavars
 import filesystem
-from models import * # Base, Project
+from models import *  # Base, Project
 import utils
 
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('controller')
 
-DATABASE = 'mysql+pymysql://wazzuup:serval@192.168.1.10/DIWA?charset=utf8&use_unicode=1'
+DATABASE = ('mysql+pymysql://username:password@192.168.1.10/DIWA' +
+            '?charset=utf8&use_unicode=1')
 ENGINE = create_engine(DATABASE, echo=True)
 PROJECT_PATH = '\\\\' + diwavars.STORAGE + '\\Projects\\'
 #PROJECT_PATH = 'C:\\Projects'
@@ -644,12 +644,12 @@ def InitSyncProjectDir(project_id):
         logger.exception('Init sync project dir error: %s', str(e))
 
 
-def AddFileToProject(file, project_id):
+def AddFileToProject(filepath, project_id):
     """Add a file to project. Copies it to the folder and adds a record to
     database.
 
-    :param file: A filepath.
-    :type file: String
+    :param filepath: A filepath.
+    :type filepath: String
     :param project_id: Project id from database.
     :type projecT_id: Integer.
     :return: New filepath.
@@ -657,19 +657,18 @@ def AddFileToProject(file, project_id):
 
     """
     if not project_id:
-        mypath = r'\\' + diwavars.STORAGE + '\\'
-        f = filesystem.CopyFileToProject(file, project_id)
-        return f if f else ""
+        f = filesystem.CopyFileToProject(filepath, project_id)
+        return f if f else ''
     try:
         db = ConnectToDatabase()
         project = db.query(Project).filter(Project.id == project_id).one()
-        filepath = filesystem.CopyFileToProject(file, project_id)
-        if filepath:
-            f = File(path=filepath, project=project)
+        newpath = filesystem.CopyFileToProject(filepath, project_id)
+        if newpath:
+            f = File(path=newpath, project=project)
             db.add(f)
             db.commit()
             db.close()
-        return filepath
+        return newpath
     except Exception, e:
         logger.exception('Add file to project(%s) exception: %s',
                          str(project_id), str(e))

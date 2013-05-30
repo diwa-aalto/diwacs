@@ -27,8 +27,13 @@ class Company(Base):
     """ A class representation of a company.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the company, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the company (Max 50 characters).
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the company, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of the company (Max 50 characters).
 
     :param name: The name of the company.
     :type name: :py:class:`String`
@@ -47,13 +52,32 @@ class User(Base):
     """A class representation of a user.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the user (Max 50 characters).
-        * :py:attr:`email` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Email address of the user (Max 100 characters).
-        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the user in the company (Max 50 characters).
-        * :py:attr:`department` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Department of the user in the company (Max 100 characters).
-        * :py:attr:`company_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - Company id of the employing company.
-        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - Company relationship.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the user, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of the user (Max 50 characters).
+
+        * :py:attr:`email`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Email address of the user (Max 100 characters).
+
+        * :py:attr:`title`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Title of the user in the company (Max 50 characters).
+
+        * :py:attr:`department`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Department of the user in the company (Max 100 characters).
+
+        * :py:attr:`company_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - Company id of the employing company.
+
+        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Company relationship.
 
     :param name: Name of the user.
     :type name: :py:class:`String`
@@ -97,12 +121,27 @@ class Activity(Base):
     """ A class representation of an activity.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of activity, used as primary key in database table.
-        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session activity belongs to.
-        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session relationship.
-        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project activity belongs to.
-        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project relationship.
-        * :py:attr:`active` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Boolean)`) - Boolean flag indicating that the project is active.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of activity, used as primary key in database table.
+
+        * :py:attr:`session_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the session activity belongs to.
+
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Session relationship.
+
+        * :py:attr:`project_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the project activity belongs to.
+
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Project relationship.
+
+        * :py:attr:`active`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Boolean)`)\
+        - Boolean flag indicating that the project is active.
 
     :param project: Project activity belongs to.
     :type project: :py:class:`models.Project`
@@ -131,13 +170,31 @@ class Project(Base):
     """A class representation of a project.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of project, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the project (Max 50 characters).
-        * :py:attr:`company_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the company that owns the project.
-        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`) - The company that owns the project.
-        * :py:attr:`dir` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Directory path for the project files (Max 255 characters).
-        * :py:attr:`password` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Password for the project (Max 40 characters).
-        * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`) - The users that work on the project.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of project, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of the project (Max 50 characters).
+
+        * :py:attr:`company_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the company that owns the project.
+
+        * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\
+        - The company that owns the project.
+
+        * :py:attr:`dir`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Directory path for the project files (Max 255 characters).
+
+        * :py:attr:`password`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Password for the project (Max 40 characters).
+
+        * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`)\
+        - The users that work on the project.
 
     :param name: Name of the project.
     :type name: :py:class:`String`
@@ -178,16 +235,44 @@ class Computer(Base):
     """A class representation of a computer.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of computer, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the computer.
-        * :py:attr:`ip` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)`) - Internet Protocol address of the computer (Defined as unsigned).
-        * :py:attr:`mac` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Media Access Control address of the computer.
-        * :py:attr:`time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time of the last network activity from the computer.
-        * :py:attr:`screens` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)`) - Number of screens on the computer.
-        * :py:attr:`responsive` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)`) - The responsive value of the computer.
-        * :py:attr:`user_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user currently using the computer.
-        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`) - The current user.
-        * :py:attr:`wos_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - **WOS** ID.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of computer, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of the computer.
+
+        * :py:attr:`ip`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)`)\
+        - Internet Protocol address of the computer (Defined as unsigned).
+
+        * :py:attr:`mac`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`\
+        - Media Access Control address of the computer.
+
+        * :py:attr:`time`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`)\
+        - Time of the last network activity from the computer.
+
+        * :py:attr:`screens`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)`)\
+        - Number of screens on the computer.
+
+        * :py:attr:`responsive`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)`)\
+        - The responsive value of the computer.
+
+        * :py:attr:`user_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the user currently using the computer.
+
+        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
+        - The current user.
+
+        * :py:attr:`wos_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - **WOS** ID.
 
     """
     __tablename__ = "computer"
@@ -216,16 +301,41 @@ class Session(Base):
     """A class representation of a session.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of session, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of session (Max 50 characters).
-        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project the session belongs to.
-        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - The project the session belongs to.
-        * :py:attr:`starttime` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the session began, defaults to `now()`.
-        * :py:attr:`endtime` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - The time session ended.
-        * :py:attr:`previous_session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the previous session.
-        * :py:attr:`previous_session` (:py:class:`sqlalchemy.orm.relationship`) - The previous session.
-        * :py:attr:`participants` (:py:class:`sqlalchemy.orm.relationship`) - Users that belong to this session.
-        * :py:attr:`computers` (:py:class:`sqlalchemy.orm.relationship`) - Computers that belong to this session.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of session, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of session (Max 50 characters).
+
+        * :py:attr:`project_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the project the session belongs to.
+
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
+        - The project the session belongs to.
+
+        * :py:attr:`starttime`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`)\
+        - Time the session began, defaults to `now()`.
+
+        * :py:attr:`endtime`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`)\
+        - The time session ended.
+
+        * :py:attr:`previous_session_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the previous session.
+
+        * :py:attr:`previous_session`\
+        (:py:class:`sqlalchemy.orm.relationship`) - The previous session.
+
+        * :py:attr:`participants` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Users that belong to this session.
+
+        * :py:attr:`computers` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Computers that belong to this session.
 
     :param project: The project for the session.
     :type project: :py:class:`models.Project`
@@ -325,12 +435,28 @@ class Event(Base):
     session.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the event, used as primary key in database table.
-        * :py:attr:`title` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Title of the event (Max 40 characters).
-        * :py:attr:`desc` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - More in-depth description of the event (Max 500 characters).
-        * :py:attr:`time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the event took place.
-        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session this event belongs to.
-        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session this event belongs to.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the event, used as primary key in database table.
+
+        * :py:attr:`title`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Title of the event (Max 40 characters).
+
+        * :py:attr:`desc`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - More in-depth description of the event (Max 500 characters).
+
+        * :py:attr:`time`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`)\
+        - Time the event took place.
+
+        * :py:attr:`session_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the session this event belongs to.
+
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Session this event belongs to.
 
     """
     __tablename__ = 'event'
@@ -348,8 +474,13 @@ class Action(Base):
     the action.
 
     Field:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action, used as primary key in database table.
-        * :py:attr:`name` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Name of the action (Max 50 characters).
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the action, used as primary key in database table.
+
+        * :py:attr:`name`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Name of the action (Max 50 characters).
 
     :param name: Name of the action.
     :type name: :py:class:`String`
@@ -369,10 +500,20 @@ class File(Base):
     """A class representation of a file.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the file, used as primary key in database table.
-        * :py:attr:`path` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`) - Path of the file on DiWa (max 255 chars).
-        * :py:attr:`project_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the project this file belongs to.
-        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`) - Project this file belongs to.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the file, used as primary key in database table.
+
+        * :py:attr:`path`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        - Path of the file on DiWa (max 255 chars).
+
+        * :py:attr:`project_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the project this file belongs to.
+
+        * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Project this file belongs to.
 
     """
     __tablename__ = 'file'
@@ -390,18 +531,48 @@ class FileAction(Base):
     """A class representation of a fileaction.
 
     Fields:
-        * :py:attr:`id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the FileAction, used as primary key in the database table.
-        * :py:attr:`file_id` (:py:class:`sqlalchemy.schema.Column(sqlaclhemy.types.Integer)`) - ID of the file this FileAction affects.
-        * :py:attr:`file` (:py:class:`sqlalchemy.orm.relationship)`) - The file this FileAction affects.
-        * :py:attr:`action_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the action affecting the file.
-        * :py:attr:`action` (:py:class:`sqlalchemy.orm.relationship)`) - Action affecting the file.
-        * :py:attr:`action_time` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`) - Time the action took place on.
-        * :py:attr:`user_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the user performing the action.
-        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`) - User peforming the action.
-        * :py:attr:`computer_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the computer user performed the action on.
-        * :py:attr:`computer` (:py:class:`sqlalchemy.orm.relationship`) - Computer user performed the action on.
-        * :py:attr:`session_id` (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`) - ID of the session user performed the action in.
-        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`) - Session user performed the action in.
+        * :py:attr:`id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the FileAction, used as primary key in the database table.
+
+        * :py:attr:`file_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlaclhemy.types.Integer)`)\
+        - ID of the file this FileAction affects.
+
+        * :py:attr:`file` (:py:class:`sqlalchemy.orm.relationship)`)\
+        - The file this FileAction affects.
+
+        * :py:attr:`action_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the action affecting the file.
+
+        * :py:attr:`action` (:py:class:`sqlalchemy.orm.relationship)`)\
+        - Action affecting the file.
+
+        * :py:attr:`action_time`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)`)\
+        - Time the action took place on.
+
+        * :py:attr:`user_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the user performing the action.
+
+        * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
+        - User peforming the action.
+
+        * :py:attr:`computer_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the computer user performed the action on.
+
+        * :py:attr:`computer` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Computer user performed the action on.
+
+        * :py:attr:`session_id`\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        - ID of the session user performed the action in.
+
+        * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
+        - Session user performed the action in.
 
     :param file: The file which is subjected to the action.
     :type file: :py:class:`models.File`
