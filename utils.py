@@ -5,7 +5,6 @@ Created on 17.5.2013
 # System imports.
 import hashlib
 import logging
-import os
 import socket
 import subprocess
 
@@ -17,21 +16,29 @@ import wmi
 
 # My imports.
 import controller
+import diwavars
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('utils')
 
 
-def GetProjectPassword(project_id):
-    project = controller.GetProject(project_id)
+def GetEncryptedDirName(name, hashed_password):
+    """Returns the encrypted name for project directory."""
     m = hashlib.sha1()
-    m.update(str(project.id) + project.password if project.password else '')
+    m.update(name + hashed_password)
     return m.hexdigest()
 
 
 def HashPassword(password):
+    """Hashes the provided password."""
+    if not password:
+        return ''
     m = hashlib.sha1()
-    m.update(password)
+    m.update(diwavars.PASSWORD_SALT + password)
     return m.hexdigest()
+
+def CheckProjectPassword(project_id, password):
+    """Compares the the provided password with the project password."""
+    return controller.GetProjectPassword(project_id)==HashPassword(password)
 
 
 def IterIsLast(iterable):

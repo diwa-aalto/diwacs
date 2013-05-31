@@ -3,7 +3,6 @@ Created on 8.5.2012
 
 @author: neriksso
 '''
-
 #: TODO: Clean the imports...
 from collections import deque
 from datetime import datetime
@@ -922,7 +921,37 @@ class DeleteProjectDialog(wx.Dialog):
     def OnCancel(self, unused_event):
         self.EndModal(0)
 
+class ProjectAuthenticationDialog(wx.Dialog):
+    """ A dialog for project authentication."""
+    def __init__(self, parent, title, project_id):
+        super(ProjectAuthenticationDialog, self).__init__(parent=parent,
+            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
+            size=(250, 200))
+        try:
+            self.parent = parent
+            self.project = controller.GetProject(project_id)
+            self.notice = wx.StaticText(self, label=("Please enter password \
+for Project %s" %self.project.name))
+            self.password = wx.TextCtrl(self, -1, '', style=
+                                        wx.TE_PASSWORD|wx.TE_PROCESS_ENTER)
+            self.ok = wx.Button(self, -1, "OK")
+            self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
+            self.password.Bind(wx.EVT_TEXT_ENTER, self.OnOk)
+            self.sizer = wx.BoxSizer(wx.VERTICAL)
+            self.sizer.Add(self.notice, 0, wx.ALL, 5)
+            self.sizer.Add(self.password, 1, wx.ALL|wx.EXPAND, 5)
+            self.sizer.Add(self.ok, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+            self.SetSizer(self.sizer)
+            self.sizer.Fit(self)
+            self.SetFocus()
+        except:
+            wos_logger.exception("Dialog exception")
+            self.EndModal(1)
 
+    def OnOk(self, unused_event):
+        self.EndModal(0 if utils.CheckProjectPassword(self.project.id,
+                                            self.password.GetValue()) else 1)
+        
 class ProjectSelectedDialog(wx.Dialog):
     def __init__(self, parent, title, project_id):
         super(ProjectSelectedDialog, self).__init__(parent=parent,
@@ -964,6 +993,7 @@ class CreateProjectDialog(wx.Dialog):
         vbox.Add(wx.StaticText(self, -1, label="Folder name (optional)"), 0)
         self.dir = wx.TextCtrl(self, -1)
         vbox.Add(self.dir, 0)
+        
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         addBtn = wx.Button(self, -1, label="OK")
         addBtn.Bind(wx.EVT_BUTTON, self.OnAdd)
@@ -980,25 +1010,24 @@ class CreateProjectDialog(wx.Dialog):
                                    'Missing fields', wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             return
-        """if self.project_id:
+        if self.project_id:
             controller.EditProject(self.project_id, {
             'name':self.name.GetValue(),'dir':self.dir.GetValue()})
             self.Destroy()
-            return
-        else:"""
-        try:
-            db = controller.ConnectToDatabase()
-            company = db.query(Company).filter(Company.id == 1).one()
-            company_name = company.name
-            data = {'project': {'name': self.name.GetValue(),
-                                'dir': self.dir.GetValue(),
-                                'password': None},
-                    'company': {'name': company_name}
-                    }
-            self.project = controller.AddProject(data)
-            self.Destroy()
-        except:
-            wos_logger.exception("create project exception")
+        else:
+            try:
+                db = controller.ConnectToDatabase()
+                company = db.query(Company).filter(Company.id == 1).one()
+                company_name = company.name
+                data = {'project': {'name': self.name.GetValue(),
+                                    'dir': self.dir.GetValue(),
+                                    'password': self.password.GetValue()},
+                        'company': {'name': company_name}
+                        }
+                self.project = controller.AddProject(data)
+                self.Destroy()
+            except:
+                wos_logger.exception("create project exception")
 
     def OnCancel(self, unused_event):
         self.Destroy()
@@ -1019,6 +1048,7 @@ class AddProjectDialog(wx.Dialog):
             size=(250, 200))
         self.add_label = 'Create'
         dir_label_text = 'Project Folder Name (optional):'
+        password_label_text = 'Project Password (optional):'
         self.project_id = 0
         wos_logger.debug(project_id)
         if project_id:
@@ -1035,6 +1065,10 @@ class AddProjectDialog(wx.Dialog):
         self.dir = wx.TextCtrl(self, wx.ID_ANY)
         vbox.Add(dir_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         vbox.Add(self.dir, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
+        password_label = wx.StaticText(self, label=password_label_text)
+        self.password = wx.TextCtrl(self, wx.ID_ANY,style=wx.TE_PASSWORD)
+        vbox.Add(password_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
+        vbox.Add(self.password, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, label=self.add_label)
         closeButton = wx.Button(self, label='Cancel')
@@ -1078,7 +1112,7 @@ class AddProjectDialog(wx.Dialog):
             company_name = company.name
             data = {'project': {'name': self.name.GetValue(),
                                 'dir': self.dir.GetValue(),
-                                'password': None},
+                                'password': self.password.GetValue()},
                     'company': {'name': company_name}
                     }
             project = controller.AddProject(data)
@@ -1257,8 +1291,17 @@ class ProjectSelectDialog(wx.Dialog):
         :type evt: Event
 
         """
-        wos_logger.debug('Project selected')
         index = self.project_index[self.project_list.GetSelection()]
+        if controller.GetProject(index).password:
+            auth = ProjectAuthenticationDialog(self.parent,'Project Authentication',
+                                                      index).ShowModal()                                       
+            if not auth==0:
+                dlg = wx.MessageDialog(self,"Project Authentication Failed",
+                                 style=wx.OK|wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()                 
+                return
+        wos_logger.debug('Project selected')
         if index != self.parent.current_project_id:
             self.parent.SetCurrentProject(index)
             self.parent.OnProjectSelected()
