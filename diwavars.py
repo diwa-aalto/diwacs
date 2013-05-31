@@ -51,6 +51,8 @@ RUN_CMD = False
 # The location of the main server
 STORAGE = ''
 
+# The salt for the password
+PASSWORD_SALT = "d1b729d398411d256ed1a092f88f4da4fbdaade6"
 
 def UpdateStorage(storage):
     global STORAGE

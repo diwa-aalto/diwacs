@@ -125,6 +125,10 @@ def TestConnection():
         return False
 
 
+def GetProjectPassword(project_id):
+    """Returns the project password."""
+    return GetProject(project_id).password
+
 def GetProjectPath(project_id):
     """Fetches the project path from database and return it.
 
@@ -242,6 +246,9 @@ def AddProject(data):
         name = data["project"]["name"]
         directory = data["project"]["dir"]
         password = data["project"]["password"]
+        if password:
+            password = utils.HashPassword(password)
+            directory = utils.GetEncryptedDirName(name, password)
         company = db.query(Company).filter(
                         Company.name.contains('%s' % data['company']['name'])
                         ).first()
