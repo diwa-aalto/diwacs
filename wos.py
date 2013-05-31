@@ -1918,7 +1918,7 @@ class GUI(wx.Frame):
                 proj_fp = proj_fp[1:]
             proj_remote = os.path.join(r'\\' +
                                        diwavars.STORAGE,
-                                       'Projects')
+                                       'Projects', 'temp')
             cpid = self.current_project_id
             dial = wx.MessageDialog(None, 'Add ' + filename +
                                     ' folder to project?',
