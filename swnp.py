@@ -420,7 +420,7 @@ class SWNP:
             if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
                 subscribers[i].setsockopt(zmq.RATE, 1000000)
             subscribers[i].setsockopt(zmq.LINGER, 0)
-            subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
+            subscribers[i].setsockopt(zmq.SUBSCRIBE, "SYS")
             subscribers[i].connect(sub_url)
         logger.debug('SYS-listener active')
         while TLDR:
