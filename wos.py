@@ -2817,6 +2817,7 @@ class GUI(wx.Frame):
                 self.Hide()
                 self.trayicon.RemoveIcon()
                 self.trayicon.Destroy()
+                del sel.trayicon
                 self.closebtn.SetToolTip(None)
                 if not event == 'conn_err' and self.is_responsive:
                     wos_logger.debug("On exit self is responsive")

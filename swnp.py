@@ -385,7 +385,8 @@ class SWNP:
                     logger.debug('SystemExit')
                     break
                 except zmq.ContextTerminated, e:
-                    # context associated with the specified socket was terminated.
+                    # context associated with the specified
+                    # socket was terminated.
                     TLDR = False
                     logger.debug('ContextTerminated: %s' % str(e))
                     break
@@ -470,6 +471,7 @@ class SWNP:
 
     def shutdown(self):
         """shuts down all connections, no exit."""
+        global TLDR
         i = 0
         limit = 5
         while self.sub_thread_sys.isAlive() and i < limit:
@@ -483,11 +485,13 @@ class SWNP:
             i += 1
         self.publisher.close()
         self.publisher_loopback.close()
+        TLDR = False
         if not self.context.closed:
             self.context.term()
 
     def close(self):
         """Closes all connections and exits."""
+        global TLDR
         self.ping_stop.set()
         self.timeout_stop.set()
         i = 0
@@ -506,6 +510,7 @@ class SWNP:
             time.sleep(1)
             i += 1
         logger.debug('sub_thread   closed' + str(self.sub_thread.isAlive()))
+        TLDR = False
         try:
             self.publisher.close()
             self.publisher_loopback.close()
