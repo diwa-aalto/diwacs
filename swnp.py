@@ -272,6 +272,7 @@ class SWNP:
                     pub.sendMessage("update_screens", update=True)
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
+            """
             if self.sub_thread_sys and not self.sub_thread_sys.isAlive():
                 logger.debug("Restarting sub thread sys")
                 setTLDR(True)
@@ -289,6 +290,7 @@ class SWNP:
                                                        ([self.tladdr,
                                                          self.ipraddr],
                                                         self.context,))
+            """
             time.sleep(TIMEOUT)
 
     def do_ping(self):
@@ -357,8 +359,10 @@ class SWNP:
                     [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
                     msg_obj = json.loads(contents,
                                          object_hook=Message.from_json)
+                    """
                     logger.debug('Received: %s;%s' % (msg_obj.PREFIX,
                                                       msg_obj.PAYLOAD))
+                    """
                     if (msg_obj.PAYLOAD == self.id and
                             msg_obj.PREFIX == 'LEAVE'):
                         logger.debug('LEAVE msg catched')
@@ -392,7 +396,7 @@ class SWNP:
                 except Exception, e:
                     logger.exception("SWNP EXCEPTION: %s", str(e))
         logger.debug('Closing sub')
-        self.subscriber.close()
+        (subscriber.close() for subscriber in subscribers)
 
     def set_screens(self, screens):
         """Sets the number of screens for the instance.
@@ -430,8 +434,10 @@ class SWNP:
                     [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
                     msg_obj = json.loads(contents,
                                          object_hook=Message.from_json)
+                    """
                     logger.debug('SYS-Received: %s;%s' %
                                  (msg_obj.PREFIX, msg_obj.PAYLOAD))
+                    """
                     if (msg_obj.PREFIX == 'LEAVE' and
                             msg_obj.PAYLOAD == self.id):
                         TLDR = False
@@ -460,7 +466,7 @@ class SWNP:
                     TLDR = False
                     break
         logger.debug('Closing sys sub')
-        self.subscriber_sys.close()
+        (subscriber.close() for subscriber in subscribers)
 
     def shutdown(self):
         """shuts down all connections, no exit."""
@@ -476,6 +482,7 @@ class SWNP:
             time.sleep(1)
             i += 1
         self.publisher.close()
+        self.publisher_loopback.close()
         if not self.context.closed:
             self.context.term()
 
@@ -501,6 +508,7 @@ class SWNP:
         logger.debug('sub_thread   closed' + str(self.sub_thread.isAlive()))
         try:
             self.publisher.close()
+            self.publisher_loopback.close()
             logger.debug('publisher closed')
             if not self.context.closed:
                 self.context.term()
@@ -524,7 +532,9 @@ class SWNP:
             return
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
+            """
             logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
+            """
             try:
                 myMess = [msg.TAG, json.dumps(msg, default=Message.to_dict)]
                 self.publisher_loopback.send_multipart(myMess)

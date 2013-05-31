@@ -1596,7 +1596,7 @@ class ConnectionErrorDialog(wx.ProgressDialog):
             if count % 4 == 0:
                 self.Update(count, "Reconnecting.. DiWaCS will shutdown in %d"\
                             " seconds, if no connection is made. " %
-                            ((max - count) / 4))
+                            ((imax - count) / 4))
         self.result = keepGoing
 
 
@@ -1739,8 +1739,8 @@ class GUI(wx.Frame):
         super(GUI, self).__init__(parent, title=title,
             size=diwavars.FRAME_SIZE, style=wx.FRAME_NO_TASKBAR)
         global DEFAULT_CURSOR, BLANK_CURSOR, WINDOWS_MAJOR, RUN_CMD
-        wos_logger.debug("WxPython version %s" % (str(wx.VERSION)))
         self.init_screens_done = False
+        wos_logger.debug("WxPython version %s" % (str(wx.VERSION)))
         MySplash = MySplashScreen()
         MySplash.Show()
         diwavars.UpdateWindowsVersion()
@@ -1854,6 +1854,9 @@ class GUI(wx.Frame):
             self.InitUI()
             self.Layout()
             self.AlignCenterTop()
+            pub.subscribe(self.UpdateScreens, "update_screens")
+            pub.subscribe(self.MessageHandler, "message_received")
+            pub.sendMessage("update_screens", update=True)
 
             self.Show(True)
             pub.subscribe(self.ConnectionErrorHandler,
@@ -1893,7 +1896,7 @@ class GUI(wx.Frame):
         if result:
             self.OnExit('conn_err')
 
-    def OnTLDR(self,event):
+    def OnTLDR(self, event):
         swnp.setTLDR(False)
 
     def InitTest(self):
@@ -2340,8 +2343,6 @@ class GUI(wx.Frame):
         self.screens = wx.BoxSizer(wx.HORIZONTAL)
         self.InitScreens()
         # Subscribe handlers
-        pub.subscribe(self.UpdateScreens, "update_screens")
-        pub.subscribe(self.MessageHandler, "message_received")
         #create UI
         try:
             vbox = wx.BoxSizer(wx.VERTICAL)
@@ -2528,7 +2529,7 @@ class GUI(wx.Frame):
         vbox.Add(screenSizer, 0)
         self.hidden = 0
         self.SetSizer(vbox)
-        pub.sendMessage("update_screens", update=True)
+        # pub.sendMessage("update_screens", update=True)
 
     def OnWABtn(self, unused_event):
         webbrowser.open("http://" + diwavars.STORAGE + "/")
@@ -2820,8 +2821,8 @@ class GUI(wx.Frame):
                 if not event == 'conn_err' and self.is_responsive:
                     wos_logger.debug("On exit self is responsive")
                     self.RemoveObservers()
-                    controller.EndSession(self.current_session_id)
-                    controller.UnsetActivity(diwavars.PGM_GROUP)
+                    # controller.EndSession(self.current_session_id)
+                    # controller.UnsetActivity(diwavars.PGM_GROUP)
                 if not event == 'conn_err' and controller.LastActiveComputer():
                     wos_logger.debug("On exit self is last active comp.")
                     controller.UnsetActivity(diwavars.PGM_GROUP)
