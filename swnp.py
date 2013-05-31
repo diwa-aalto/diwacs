@@ -199,26 +199,21 @@ class SWNP:
         #Subscriber threads
         self.sub_thread = self.StartSubRoutine(None, self.sub_routine,
                                                "Sub thread",
-                                               (self.tladdr,
+                                               ([self.tladdr, self.ipraddr],
                                                 self.context,))
-        self.sub_interproc_thread = self.StartSubRoutine(None,
-                                                         self.sub_routine,
-                                                         "Inproc thread",
-                                                         (self.ipraddr,
-                                                          self.context,))
         """self.sub_thread = threading.Thread(target=self.sub_routine,
                                            name="Sub_thread",
                                            args=(tladdr, self.context,)
                                            )
         self.sub_thread.daemon = True
         self.sub_thread.start()"""
-        self.sub_thread_sys = self.StartSubRoutine(None, self.sub_routine_sys,
-                             "Sub sys thread", (self.tladdr, self.context,))
-        self.sub_interproc_sys_thread = (
-                self.StartSubRoutine(None, self.sub_routine_sys,
-                                     "Interproc sys thread",
-                                     (self.ipraddr, self.context))
-                )
+        self.sub_thread_sys = self.StartSubRoutine(None,
+                                                   self.sub_routine_sys,
+                                                   "Sub sys thread",
+                                                   (
+                                                    [self.tladdr, self.ipraddr]
+                                                    , self.context,
+                                                    ))
         """self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
                                                name="Sub sys thread",
                                                args=(tladdr, self.context,)
@@ -280,12 +275,20 @@ class SWNP:
             if self.sub_thread_sys and not self.sub_thread_sys.isAlive():
                 logger.debug("Restarting sub thread sys")
                 setTLDR(True)
-                self.sub_thread_sys = self.StartSubRoutine(self.sub_thread_sys, self.sub_routine_sys,
-                             "Sub sys thread", (self.tladdr, self.context,))
+                self.sub_thread_sys = self.StartSubRoutine(self.sub_thread_sys,
+                                                           self.sub_routine_sys,
+                                                           "Sub sys thread",
+                                                           ([self.tladdr,
+                                                             self.ipraddr],
+                                                            self.context,))
             if self.sub_thread and not self.sub_thread.isAlive():
                 logger.debug("Restarting sub thread")
-                self.sub_thread = self.StartSubRoutine(self.sub_thread, self.sub_routine,
-                             "Sub thread", (self.tladdr, self.context,))
+                self.sub_thread = self.StartSubRoutine(self.sub_thread,
+                                                       self.sub_routine,
+                                                       "Sub thread",
+                                                       ([self.tladdr,
+                                                         self.ipraddr],
+                                                        self.context,))
             time.sleep(TIMEOUT)
 
     def do_ping(self):
@@ -327,7 +330,7 @@ class SWNP:
                 logger.exception('Ping_routine exception: %s', str(e))
         logger.debug("Ping routine closed")
 
-    def sub_routine(self, sub_url, unused_context):
+    def sub_routine(self, sub_urls, unused_context):
         """Subscriber routine for the node ID.
 
         :param sub_url: Subscribing URL.
@@ -337,55 +340,59 @@ class SWNP:
 
         """
         # Socket to talk to dispatcher
-        isInproc = sub_url.startswith('inproc')
-        if isInproc:
-            self.subscriber_loopback = self.context.socket(zmq.SUB)
-            self.subscriber_loopback.setsockopt(zmq.SUBSCRIBE, self.id)
-            self.subscriber_loopback.connect(sub_url)
-        else:
-            self.subscriber = self.context.socket(zmq.SUB)
-            self.subscriber.setsockopt(zmq.RATE, 1000000)
-            self.subscriber.setsockopt(zmq.LINGER, 0)
-            self.subscriber.setsockopt(zmq.SUBSCRIBE, self.id)
-            self.subscriber.connect(sub_url)
-        logger.debug('Listener %sActive!' % ('inproc ' if isInproc else ''))
-        while (not (self.subscriber_loopback if isInproc else self.subscriber
-                    ).closed):
+        global TLDR
+        subscribers = []
+        for i, sub_url in enumerate(sub_urls):
+            subscribers.append(self.context.socket(zmq.SUB))
+            if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
+                subscribers[i].setsockopt(zmq.RATE, 1000000)
+            subscribers[i].setsockopt(zmq.LINGER, 0)
+            subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
+            subscribers[i].connect(sub_url)
+        logger.debug('Listener Active!')
+        while TLDR:
             # Read envelope with address
-            try:
-                [unused_address, contents] = (
-                    self.subscriber_loopback if isInproc else self.subscriber
-                    ).recv_multipart()
-                msg_obj = json.loads(contents, object_hook=Message.from_json)
-                logger.debug('Received%s: %s;%s' %
-                             (' inproc' if isInproc else '',  msg_obj.PREFIX,
-                              msg_obj.PAYLOAD))
-                if msg_obj.PAYLOAD == self.id and msg_obj.PREFIX == 'LEAVE':
-                    logger.debug('LEAVE msg catched')
+            for s in subscribers:
+                try:
+                    [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    msg_obj = json.loads(contents,
+                                         object_hook=Message.from_json)
+                    logger.debug('Received: %s;%s' % (msg_obj.PREFIX,
+                                                      msg_obj.PAYLOAD))
+                    if (msg_obj.PAYLOAD == self.id and
+                            msg_obj.PREFIX == 'LEAVE'):
+                        logger.debug('LEAVE msg catched')
+                        TLDR = False
+                        break
+                    if msg_obj.PREFIX == 'SYNC':
+                        self.sync_handler(msg_obj)
+                    if msg_obj.PREFIX == 'MSG':
+                        pub.sendMessage("message_received",
+                                        message=msg_obj.PAYLOAD)
+                except zmq.Again, e:
+                    # Non-blocking mode was requested and no messages
+                    # are available at the moment.
+                    pass
+                except ValueError:
+                    logger.debug('ValueError')
+                    pass
+                except SystemExit:
+                    TLDR = False
+                    logger.debug('SystemExit')
                     break
-                if msg_obj.PREFIX == 'SYNC':
-                    self.sync_handler(msg_obj)
-                if msg_obj.PREFIX == 'MSG':
-                    pub.sendMessage("message_received",
-                                    message=msg_obj.PAYLOAD)
-            except ValueError:
-                pass
-            except SystemExit:
-                break
-            except zmq.Again, e:
-                # Non-blocking mode was requested and no messages
-                # are available at the moment.
-                pass
-            except zmq.ContextTerminated, e:
-                # context associated with the specified socket was terminated.
-                break
-            except zmq.ZMQError, e:
-                logger.exception("ZMQerror sub routine:%s", str(e))
-                break
-            except Exception, e:
-                logger.exception("SWNP EXCEPTION: %s", str(e))
-        logger.debug('Closing %ssub' % ('inproc ' if isInproc else ''))
-        (self.subscriber_loopback if isInproc else self.subscriber).close()
+                except zmq.ContextTerminated, e:
+                    # context associated with the specified socket was terminated.
+                    TLDR = False
+                    logger.debug('ContextTerminated: %s' % str(e))
+                    break
+                except zmq.ZMQError, e:
+                    logger.exception("ZMQerror sub routine:%s", str(e))
+                    TLDR = False
+                    break
+                except Exception, e:
+                    logger.exception("SWNP EXCEPTION: %s", str(e))
+        logger.debug('Closing sub')
+        self.subscriber.close()
 
     def set_screens(self, screens):
         """Sets the number of screens for the instance.
@@ -396,7 +403,7 @@ class SWNP:
         """
         self.node.screens = screens
 
-    def sub_routine_sys(self, sub_url, unused_context):
+    def sub_routine_sys(self, sub_urls, unused_context):
         """Subscriber routine for the node ID.
 
         :param sub_url: Subscribing URL.
@@ -406,54 +413,54 @@ class SWNP:
 
         """
         # Socket to talk to dispatcher
-        isInproc = sub_url.startswith('inproc')
-        mySub = None
-        if isInproc:
-            self.subscriber_sysloopback = self.context.socket(zmq.SUB)
-            self.subscriber_sysloopback.setsockopt(zmq.SUBSCRIBE, 'SYS')
-            self.subscriber_sysloopback.connect(sub_url)
-        else:
-            self.subscriber_sys = self.context.socket(zmq.SUB)
-            self.subscriber_sys.setsockopt(zmq.LINGER, 0)
-            self.subscriber_sys.setsockopt(zmq.RATE, 1000000)
-            self.subscriber_sys.setsockopt(zmq.SUBSCRIBE, 'SYS')
-            self.subscriber_sys.connect(sub_url)
-        logger.debug('SYS-%slistener active' % ('inproc ' if isInproc else ''))
-        while (not (self.subscriber_sysloopback if isInproc
-                    else self.subscriber_sys).closed) and TLDR:
-            try:
-                # Read envelope with address
-                [unused_address, contents] = (self.subscriber_sysloopback
-                                              if isInproc
-                                              else self.subscriber_sys
-                                              ).recv_multipart()
-                msg_obj = json.loads(contents, object_hook=Message.from_json)
-                logger.debug('SYS-%sReceived: %s;%s' %
-                             ('inproc ' if (isInproc) else '',
-                             msg_obj.PREFIX, msg_obj.PAYLOAD))
-                if msg_obj.PREFIX == 'LEAVE' and msg_obj.PAYLOAD == self.id:
+        global TLDR
+        subscribers = []
+        for i, sub_url in enumerate(sub_urls):
+            subscribers.append(self.context.socket(zmq.SUB))
+            if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
+                subscribers[i].setsockopt(zmq.RATE, 1000000)
+            subscribers[i].setsockopt(zmq.LINGER, 0)
+            subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
+            subscribers[i].connect(sub_url)
+        logger.debug('SYS-listener active')
+        while TLDR:
+            # Read envelope with address.
+            for s in subscribers:
+                try:
+                    [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    msg_obj = json.loads(contents,
+                                         object_hook=Message.from_json)
+                    logger.debug('SYS-Received: %s;%s' %
+                                 (msg_obj.PREFIX, msg_obj.PAYLOAD))
+                    if (msg_obj.PREFIX == 'LEAVE' and
+                            msg_obj.PAYLOAD == self.id):
+                        TLDR = False
+                        break
+                    self.sys_handler(msg_obj)
+                except ValueError:
+                    pass
+                except SystemExit:
+                    TLDR = False
                     break
-                self.sys_handler(msg_obj)
-            except ValueError:
-                pass
-            except SystemExit:
-                break
-            except zmq.Again, e:
-                # Non-blocking mode was requested and no messages
-                # are available at the moment.
-                pass
-            except zmq.ContextTerminated, e:
-                # context associated with the specified socket was terminated.
-                break
-            except zmq.ZMQError, e:
-                logger.exception("ZMQerror sub routine sys:%s", str(e))
-                break
-            except Exception, e:
-                logger.exception("SWNP_SYS EXCEPTION: %s", str(e))
-                break
+                except zmq.Again, e:
+                    # Non-blocking mode was requested and no messages
+                    # are available at the moment.
+                    pass
+                except zmq.ContextTerminated, e:
+                    # context associated with the specified
+                    # socket was terminated.
+                    TLDR = False
+                    break
+                except zmq.ZMQError, e:
+                    logger.exception("ZMQerror sub routine sys:%s", str(e))
+                    TLDR = False
+                    break
+                except Exception, e:
+                    logger.exception("SWNP_SYS EXCEPTION: %s", str(e))
+                    TLDR = False
+                    break
         logger.debug('Closing sys sub')
-        (self.subscriber_sysloopback if isInproc else self.subscriber_sys
-        ).close()
+        self.subscriber_sys.close()
 
     def shutdown(self):
         """shuts down all connections, no exit."""
@@ -513,21 +520,15 @@ class SWNP:
         :type message: String
 
         """
-        if self.publisher.closed or self.publisher_loopback.closed:
+        if self.publisher.closed:
             return
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
             logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
             try:
-                # NEW IN ZMQ 3.X, Multicast loopback has been disabled,
-                # we need to send it in another way to the listener.
-                # - Kristian.
-                self.publisher_loopback.send_multipart(
-                            [msg.TAG, json.dumps(msg, default=Message.to_dict)]
-                            )
-                self.publisher.send_multipart([msg.TAG, json.dumps(msg,
-                                                    default=Message.to_dict)
-                                               ])
+                myMess = [msg.TAG, json.dumps(msg, default=Message.to_dict)]
+                self.publisher_loopback.send_multipart(myMess)
+                self.publisher.send_multipart(myMess)
             except Exception, e:
                 logger.exception('SENT EXCEPTION: %s', str(e))
         else:
