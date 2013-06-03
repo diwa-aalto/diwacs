@@ -1501,10 +1501,11 @@ class PreferencesDialog(wx.Dialog):
 
     #----------------------------------------------------------------------
     def openConfig(self, unused_event):
-        """Opens config file.
+        """
+        Opens config file.
 
         :param event: GUI event.
-        :type event: Event.
+        :type event: Event
 
         """
         filesystem.OpenFile(diwavars.CONFIG_PATH)
@@ -1514,7 +1515,7 @@ class PreferencesDialog(wx.Dialog):
         """Closes the dialog without modifications.
 
         :param event: GUI event.
-        :type event: Event.
+        :type event: Event
 
         """
         self.EndModal(0)
@@ -1524,7 +1525,7 @@ class PreferencesDialog(wx.Dialog):
         """Save the preferences.
 
         :param event: GUI Event.
-        :type event: Event.
+        :type event: Event
 
         """
         global CUSTOM_EVENT_1_LABEL, CUSTOM_EVENT_2_LABEL
@@ -1541,7 +1542,8 @@ class PreferencesDialog(wx.Dialog):
 
 
 class DropTarget(wx.PyDropTarget):
-    """Implements drop target functionality to receive files, bitmaps and text.
+    """
+    Implements drop target functionality to receive files, bitmaps and text.
 
     """
     def __init__(self, window, parent, i):
@@ -1561,7 +1563,8 @@ class DropTarget(wx.PyDropTarget):
 
     def OnData(self, x, y, d):
         """
-        Handles drag/dropping files/text or a bitmap
+        Handles drag/dropping files/text or a bitmap.
+
         """
         x = x
         y = y
@@ -1593,20 +1596,27 @@ class DropTarget(wx.PyDropTarget):
 
 
 class SysTray(wx.TaskBarIcon):
-    """Taskbar Icon class.
+    """
+    Taskbar Icon class.
 
     :param parent: Parent frame
     :type parent: :class:`wx.Frame`
 
     """
     def __init__(self, parent):
-        """ Init tray """
+        """
+        Init tray.
+
+        """
         wx.TaskBarIcon.__init__(self)
         self.parentApp = parent
         self.CreateMenu()
 
     def CreateMenu(self):
-        """Create systray menu """
+        """
+        Create systray menu.
+
+        """
         self.Bind(wx.EVT_TASKBAR_RIGHT_UP, self.ShowMenu)
         self.menu = wx.Menu()
         self.menu.Append(wx.ID_VIEW_LIST, "Select a Project")
@@ -1623,10 +1633,11 @@ class SysTray(wx.TaskBarIcon):
         wx.CallAfter(self.Destroy)
 
     def ShowMenu(self, event):
-        """Show popup menu
+        """
+        Show popup menu.
 
         :param event: GUI event.
-        :type event: Event.
+        :type event: Event
 
         """
         event = event
@@ -1635,7 +1646,8 @@ class SysTray(wx.TaskBarIcon):
 
 class MySplashScreen(wx.SplashScreen):
     """
-Create a splash screen widget.
+    Create a splash screen widget.
+
     """
     def __init__(self, parent=None):
         aBitmap = wx.Image(name=os.path.join("data", "splashscreen.png"))
@@ -1647,7 +1659,11 @@ Create a splash screen widget.
 
 
 class ConnectionErrorDialog(wx.ProgressDialog):
+    """
+    Create a connection error dialog that informs the user about reconnection
+    attempts made by the software.
 
+    """
     def __init__(self, parent):
         imax = 80
         self.parent = parent
@@ -1673,11 +1689,11 @@ class ConnectionErrorDialog(wx.ProgressDialog):
 
 
 class EventList(wx.Frame):
-    """A Frame which displays the possible event titles and
-    handles the event creation.
+    """
+    A Frame which displays the possible event titles and handles the event
+    creation.
 
     """
-
     def __init__(self, parent, *args, **kwargs):
         self.parent = parent
         dw = wx.DisplaySize()[0]
@@ -1783,10 +1799,12 @@ class EventList(wx.Frame):
             self.ClearItemBackground()
 
     def GetIcon(self, icon):
-        """Fetches gui icons.
+        """
+        Fetches gui icons.
 
         :param icon: The icon file name.
-        :type icon: String.
+        :type icon: String
+
         :rtype: :class:`wx.Image`
 
         """
@@ -1798,12 +1816,15 @@ class EventList(wx.Frame):
 
 
 class GUI(wx.Frame):
-    """WOS Application Frame
+    """
+    WOS Application Frame.
 
     :param parent: Parent frame.
     :type parent: :class:`wx.Frame`
+
     :param title: Title for the frame
-    :type title: String.
+    :type title: String
+
     """
 
     def __init__(self, parent, title):
@@ -1985,7 +2006,10 @@ class GUI(wx.Frame):
         return False
 
     def HandleFileSend(self, filename):
-        """ Sends a file link to another node"""
+        """
+        Sends a file link to another node.
+
+        """
         isFolder = os.path.isdir(filename)
         if isFolder:
             proj_fp = os.path.abspath(filename)
@@ -2066,10 +2090,11 @@ class GUI(wx.Frame):
         return filepath
 
     def OpenProjectDir(self, evt):
-            """Opens project directory in windows explorer
+            """
+            Opens project directory in windows explorer.
 
             :param evt: The GUI event.
-            :type evt: event.
+            :type evt: Event
 
             """
             global CURRENT_PROJECT_PATH
@@ -2087,10 +2112,11 @@ class GUI(wx.Frame):
                 dlg.ShowModal()
 
     def SetCurrentSession(self, session_id):
-        """Set current session
+        """
+        Set current session.
 
-            :param session_id: a session id from database.
-            :type session_id: Integer
+        :param session_id: a session id from database.
+        :type session_id: Integer
 
         """
         session_id = int(session_id)
@@ -2216,7 +2242,8 @@ class GUI(wx.Frame):
             self.SetProjectObserver()
 
     def OnCreateTables(self, evt):
-        """ Create necessary db tables
+        """
+        Create necessary db tables.
 
         :param evt: GUI event.
         :type evt: Event
@@ -2237,7 +2264,8 @@ class GUI(wx.Frame):
             db.commit()
 
     def OnSession(self, evt):
-        """Session button pressed
+        """
+        Session button pressed.
 
         :param evt: GUI Event.
         :type evt: Event
@@ -2302,7 +2330,10 @@ class GUI(wx.Frame):
                 wos_logger.exception("OnSession exception: %s", str(e))
 
     def StartCurrentProject(self):
-        """Start current project loop"""
+        """
+        Start current project loop.
+
+        """
         if self.project_th:
             self.project_th.stop()
             self.project_th = None
@@ -2327,7 +2358,8 @@ class GUI(wx.Frame):
         self.session_th.start()
 
     def SelectProjectDialog(self, evt):
-        """ Select project event handler.
+        """
+        Select project event handler.
 
         :param evt: GUI Event.
         :type evt: Event
@@ -2352,10 +2384,11 @@ class GUI(wx.Frame):
             wos_logger.exception('ShowSelectProjectDialog exception')
 
     def ShowPreferences(self, evt):
-        """ Preferences dialog event handler
+        """
+        Preferences dialog event handler.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         evt = evt
@@ -2375,13 +2408,19 @@ class GUI(wx.Frame):
             wos_logger.exception("showprefs exception")
 
     def LoadConfig(self):
-        """ Loads a config file or creates one """
+        """
+        Loads a config file or creates one.
+
+        """
         if not os.path.exists(diwavars.CONFIG_PATH):
             self.CreateConfig()
         return configobj.ConfigObj(diwavars.CONFIG_PATH)
 
     def CreateConfig(self):
-        """ Creates a config file """
+        """
+        Creates a config file.
+
+        """
         if not os.path.exists(diwavars.CONFIG_PATH):
             try:
                 os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
@@ -2390,10 +2429,12 @@ class GUI(wx.Frame):
             shutil.copy('config.ini', diwavars.CONFIG_PATH)
 
     def GetIcon(self, icon):
-        """Fetches gui icons.
+        """
+        Fetches gui icons.
 
         :param icon: The icon file name.
         :type icon: String
+
         :rtype: :class:`wx.Image`
 
         """
@@ -2401,12 +2442,14 @@ class GUI(wx.Frame):
                         wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 
     def SwnpSend(self, node, message):
-        """Sends a message to the node.
+        """
+        Sends a message to the node.
 
         :param node: The node for which to send a message.
-        :type node: String.
+        :type node: String
+
         :param message: The message.
-        :type message: String.
+        :type message: String
 
         """
         try:
@@ -2416,7 +2459,10 @@ class GUI(wx.Frame):
                                  (message, node))
 
     def InitUI(self):
-        """ UI initing """
+        """
+        UI initing.
+
+        """
         self.EXITED = False
         wos_logger.debug('call savescreen!')
         img_path = os.path.join(r'\\' + diwavars.STORAGE, 'SCREEN_IMAGES',
@@ -2638,7 +2684,7 @@ class GUI(wx.Frame):
         Event Button handler.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         #create default event
@@ -2656,10 +2702,11 @@ class GUI(wx.Frame):
                          title)
 
     def Shift(self, evt):
-        """ Caroussel Shift function.
+        """
+        Caroussel Shift function.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         evt.Skip()
@@ -2673,7 +2720,10 @@ class GUI(wx.Frame):
             pub.sendMessage("update_screens", update=True)
 
     def SetScanObserver(self):
-        """ Observer for created files in scanned or taken with camera. """
+        """
+        Observer for created files in scanned or taken with camera.
+
+        """
         try:
             wos_logger.debug("Setting scan observer")
             if self.scan_observer:
@@ -2759,12 +2809,13 @@ class GUI(wx.Frame):
         self.SwnpSend(item, 'set;responsive')
 
     def PaintSelect(self, evt):
-        """Paints the selection of a node.
+        """
+        Paints the selection of a node.
 
         .. note:: For future use.
 
         :param evt: GUI Event
-        :type evt: Event.
+        :type evt: Event
 
         """
         dc = wx.ClientDC(self.panel)
@@ -2781,12 +2832,13 @@ class GUI(wx.Frame):
             dc.EndDrawing()
 
     def SelectNode(self, evt):
-        """Handles the selection of a node, start remote control.
+        """
+        Handles the selection of a node, start remote control.
 
         .. note:: For future use.
 
         :param evt: GUI Event
-        :type evt: Event.
+        :type evt: Event
 
         """
         global MOUSE_X, MOUSE_Y, CAPTURE
@@ -2815,7 +2867,10 @@ class GUI(wx.Frame):
             self.overlay.Show()
 
     def InitScreens(self):
-        """ Inits Screens """
+        """
+        Inits Screens.
+
+        """
         wos_logger.debug("init screens start")
         i = 0
         self.selected_nodes = []
@@ -2840,14 +2895,20 @@ class GUI(wx.Frame):
         self.init_screens_done = True
 
     def AlignCenterTop(self):
-        """Aligns frame to Horizontal center and vertical top"""
+        """
+        Aligns frame to Horizontal center and vertical top.
+
+        """
         dw = wx.DisplaySize()[0]
         w = self.GetSize()[0]
         x = (dw - w) / 2
         self.SetPosition((x, 0))
 
     def HideScreens(self):
-        """ Hides all screens """
+        """
+        Hides all screens.
+
+        """
         self.right.SetBitmapLabel(self.GetIcon('0'))
         self.left.SetBitmapLabel(self.GetIcon('0'))
         for i in self.imgs:
@@ -2857,7 +2918,7 @@ class GUI(wx.Frame):
 
     def UpdateScreens(self, update):
         """
-        Called when screens need to be updated and redrawn
+        Called when screens need to be updated and redrawn.
 
         :param update: Pubsub needs one param, therefore it is called update.
         :type update: Boolean
@@ -2899,10 +2960,11 @@ class GUI(wx.Frame):
         self.Refresh()
 
     def OnExit(self, event):
-        """ Exits program.
+        """
+        Exits program.
 
         :param event: GUI Event
-        :type event: Event.
+        :type event: Event
 
         """
         if not self.EXITED:
@@ -2943,10 +3005,11 @@ class GUI(wx.Frame):
                 sys.exit(0)
 
     def OnAboutBox(self, unused_event):
-        """ About dialog.
+        """
+        About dialog.
 
         :param e: GUI Event.
-        :type e: Event.
+        :type e: Event
 
         """
         description = diwavars.APPLICATION_NAME + " is the windows client for"\
@@ -2972,10 +3035,11 @@ class GUI(wx.Frame):
         wx.AboutBox(info)
 
     def OnIconify(self, unused_event):
-        """ Window minimize event handler
+        """
+        Window minimize event handler.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         if self.IsIconized():
@@ -2987,10 +3051,11 @@ class GUI(wx.Frame):
             self.Hide()
 
     def OnTaskBarActivate(self, evt):
-        """ Taskbar activate event handler.
+        """
+        Taskbar activate event handler.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         evt.Skip()
@@ -3003,16 +3068,18 @@ class GUI(wx.Frame):
             self.Hide()
 
     def OnTaskBarClose(self, unused_event):
-        """ Taskbar close event handler.
+        """
+        Taskbar close event handler.
 
         :param evt: GUI Event.
-        :type evt: Event.
+        :type evt: Event
 
         """
         wx.CallAfter(self.Close)
 
     def MessageHandler(self, message):
-        """Message handler for received messages
+        """
+        Message handler for received messages.
 
         :param message: Received message.
         :type message: an instance of :class:`swnp.Message`
@@ -3124,7 +3191,7 @@ class GUI(wx.Frame):
 
 
 if __name__ == '__main__':
-    wos_logger.info("\n\n\n")
+    wos_logger.info('\n\n\n')
     wos_logger.info('Application started')
     #version_checker = CHECK_UPDATE().start()
     app = wx.App()
