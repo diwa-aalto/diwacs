@@ -54,6 +54,7 @@ STORAGE = ''
 # The salt for the password
 PASSWORD_SALT = "d1b729d398411d256ed1a092f88f4da4fbdaade6"
 
+
 def UpdateStorage(storage):
     global STORAGE
     STORAGE = storage
@@ -76,6 +77,7 @@ PAD_URL = ''
 def UpdatePadfile(padurl):
     global PAD_URL
     PAD_URL = padurl
+
 
 # Is this application remote controlling some computer(s)
 #CONTROLLING = False
@@ -105,6 +107,9 @@ def UpdateWindowsVersion():
     WINDOWS_MINOR = sys.getwindowsversion().minor
 
 
+UpdateWindowsVersion()
+
+
 # PGM GROUP ADDRESS
 PGM_GROUP = 1
 
@@ -132,7 +137,7 @@ def UpdateCameraVars(url, user, passwd):
         CAMERA_PASS = passwd
 
 
-#Is audio recorded
+# Is audio recorded
 AUDIO = False
 
 
@@ -140,10 +145,11 @@ def UpdateAudio(audio):
     global AUDIO
     AUDIO = audio
 
+
 # If the node can act as RESPONSIVE.
 # -1 Not Setup.
 #  0 Will NOT act as responsive.
-#  1 WILL act as responsive.
+#  Same as PGM_Group WILL act as responsive.
 RESPONSIVE = -1
 
 

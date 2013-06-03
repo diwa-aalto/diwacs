@@ -3,9 +3,13 @@ Created on 20.5.2013
 
 @author: Kristian
 '''
+# System imports
 import os
 import unittest
 
+
+# Own imports
+import controller
 import filesystem
 import utils
 
@@ -30,7 +34,7 @@ class TestUtils(unittest.TestCase):
         project_id = 84
         expected_prehash = str(project_id) + correct_password
         expected_hash = utils.HashPassword(expected_prehash)
-        myhash = utils.GetProjectPassword(project_id)
+        myhash = controller.GetProjectPassword(project_id)
         self.assertEquals(myhash, expected_hash)
 
     def test_iterislast(self):

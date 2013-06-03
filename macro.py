@@ -1,34 +1,5 @@
 """
-macro.py imports a SendKeys module which may be downloaded at:
-http://www.rutherfurd.net/python/sendkeys/
-
-It also defines the following functions:
-
-Click() -- calls left mouse click.
-Hold() -- presses and holds left mouse button.
-Release() -- releases left mouse button.
-
-Rightclick() -- calls right mouse click.
-Righthold() -- calls right mouse hold.
-Rightrelease() -- calls right mouse release.
-
-Middleclick() -- calls middle mouse click.
-Middlehold() -- calls middle mouse hold.
-Middlerelease() -- calls middle mouse release.
-
-
-MoveTo(x, y) -- moves mouse to x/y coordinates (in pixels).
-
-SlideTo(x, y) -- slides mouse to x/y coodinates (in pixels)
-              also supports optional speed='slow', speed='fast'.
-
-The imported SendKeys has many features, but the basics are as
-follows: SendKeys("Text goes here",pause=0.5,with_spaces=True)
-The first string is typed on screep with a 0.5 second pause.
-with_spaces = True means to NOT ignore spaces.
-
-SendKeys("{ENTER}",pause=0.1) ; "{ENTER}" (in curly brackets) is
-not typed, but instead presses the enter button on the keyboard.
+macro.py defines a few user input functions.
 
 """
 
@@ -220,7 +191,8 @@ SENDKEYS_TABLE = (
 
 
 def GetSendkeys(code):
-    """Returns a character for a key code.
+    """
+    Returns a character for a key code.
 
     :param code: The character code.
     :type code: Integer
@@ -271,6 +243,14 @@ class Input(Structure):
 
 
 class POINT(Structure):
+    """
+    Stores the x and y components of coordinates.
+
+    :attribute x: c_ulong
+
+    :attribute y: c_ulong
+
+    """
     _fields_ = [("x", c_ulong),
              ("y", c_ulong)]
 

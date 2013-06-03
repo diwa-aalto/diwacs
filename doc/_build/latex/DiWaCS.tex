@@ -3,7 +3,6 @@
 \documentclass[letterpaper,10pt,english]{sphinxmanual}
 \usepackage[utf8]{inputenc}
 \DeclareUnicodeCharacter{00A0}{\nobreakspace}
-\usepackage{cmap}
 \usepackage[T1]{fontenc}
 \usepackage{babel}
 \usepackage{times}
@@ -14,7 +13,7 @@
 
 
 \title{DiWaCS Documentation}
-\date{May 30, 2013}
+\date{June 03, 2013}
 \release{0.9.2.4}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
@@ -34,7 +33,7 @@
 
 \expandafter\def\csname PYG@tok@gd\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
 \expandafter\def\csname PYG@tok@gu\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
-\expandafter\def\csname PYG@tok@gt\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PYG@tok@gt\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.00,0.25,0.82}{##1}}}
 \expandafter\def\csname PYG@tok@gs\endcsname{\let\PYG@bf=\textbf}
 \expandafter\def\csname PYG@tok@gr\endcsname{\def\PYG@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
 \expandafter\def\csname PYG@tok@cm\endcsname{\let\PYG@it=\textit\def\PYG@tc##1{\textcolor[rgb]{0.25,0.50,0.56}{##1}}}
@@ -45,7 +44,7 @@
 \expandafter\def\csname PYG@tok@ge\endcsname{\let\PYG@it=\textit}
 \expandafter\def\csname PYG@tok@vc\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.73,0.38,0.84}{##1}}}
 \expandafter\def\csname PYG@tok@il\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.13,0.50,0.31}{##1}}}
-\expandafter\def\csname PYG@tok@go\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.20,0.20,0.20}{##1}}}
+\expandafter\def\csname PYG@tok@go\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.19,0.19,0.19}{##1}}}
 \expandafter\def\csname PYG@tok@cp\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.00,0.44,0.13}{##1}}}
 \expandafter\def\csname PYG@tok@gi\endcsname{\def\PYG@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
 \expandafter\def\csname PYG@tok@gh\endcsname{\let\PYG@bf=\textbf\def\PYG@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
@@ -104,9 +103,6 @@
 \def\PYGZsh{\char`\#}
 \def\PYGZpc{\char`\%}
 \def\PYGZdl{\char`\$}
-\def\PYGZhy{\char`\-}
-\def\PYGZsq{\char`\'}
-\def\PYGZdq{\char`\"}
 \def\PYGZti{\char`\~}
 % for compatibility with earlier versions
 \def\PYGZat{@}
@@ -154,7 +150,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-05-30 at 09:00.
+Documentation generated on 2013-06-03 at 10:35.
 
 
 \section{Add file module}
@@ -453,6 +449,14 @@ Fetches projects by a company.
 \textbf{company\_id} (\emph{Integer.}) -- A company id from database.
 
 \end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetProjectPassword() (in module controller)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:controller.GetProjectPassword}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectPassword}}{\emph{project\_id}}{}
+Returns the project password.
 
 \end{fulllineitems}
 
@@ -824,6 +828,256 @@ The path to the file.
 
 \item[{Return type}] \leavevmode
 String
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{Macro module}
+\label{api:macro-module}\label{api:module-macro}\index{macro (module)}
+macro.py defines a few user input functions.
+\index{Click() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Click}\pysiglinewithargsret{\code{macro.}\bfcode{Click}}{}{}
+Send a mouse click: LeftButton down, LeftButton up.
+
+\end{fulllineitems}
+
+\index{GetPos() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.GetPos}\pysiglinewithargsret{\code{macro.}\bfcode{GetPos}}{}{}
+Return the current position of the mouse.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+The position of the mouse.
+
+\item[{Return type}] \leavevmode
+{\hyperref[api:macro.POINT]{\code{POINT}}}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetSendkeys() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.GetSendkeys}\pysiglinewithargsret{\code{macro.}\bfcode{GetSendkeys}}{\emph{code}}{}
+Returns a character for a key code.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{code} (\emph{Integer}) -- The character code.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Hold() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Hold}\pysiglinewithargsret{\code{macro.}\bfcode{Hold}}{}{}
+Send a mouse hold: LeftButton down.
+
+\end{fulllineitems}
+
+\index{Key() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Key}\pysiglinewithargsret{\code{macro.}\bfcode{Key}}{\emph{event}, \emph{kcode}}{}
+Used to send a single virtual keycode to the system.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{event} (\code{wx.Event}) -- Captured key event.
+
+\item {} 
+\textbf{kcode} (\emph{Integer}) -- Keycode.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MiddleClick() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.MiddleClick}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleClick}}{}{}
+Send a mouse middle click: MiddleButton down, MiddleButton up.
+
+\end{fulllineitems}
+
+\index{MiddleHold() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.MiddleHold}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleHold}}{}{}
+Send a mouse middle click: MiddleButton down.
+
+\end{fulllineitems}
+
+\index{MiddleRelease() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.MiddleRelease}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleRelease}}{}{}
+Send a mouse middle click: MiddleButton up.
+
+\end{fulllineitems}
+
+\index{Move() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Move}\pysiglinewithargsret{\code{macro.}\bfcode{Move}}{\emph{x}, \emph{y}}{}
+Move the cursor for x amount in horizontal direction and y amount in
+vertical direction.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} (\emph{Integer}) -- Amount to move in horizontal direction.
+
+\item {} 
+\textbf{y} (\emph{Integer}) -- Amount to move in vertical direction.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{MoveTo() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.MoveTo}\pysiglinewithargsret{\code{macro.}\bfcode{MoveTo}}{\emph{x}, \emph{y}}{}
+Move the mouse cursor to point (x, y) on screen.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} (\emph{Integer}) -- X coordinate of the desired position.
+
+\item {} 
+\textbf{y} (\emph{Integer}) -- Y coordinate of the desired position.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{POINT (class in macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.POINT}\pysigline{\strong{class }\code{macro.}\bfcode{POINT}}
+Stores the x and y components of coordinates.
+\begin{quote}\begin{description}
+\item[{Attribute x}] \leavevmode
+c\_ulong
+
+\item[{Attribute y}] \leavevmode
+c\_ulong
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Release() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Release}\pysiglinewithargsret{\code{macro.}\bfcode{Release}}{}{}
+Send a mouse release: LeftButton up.
+
+\end{fulllineitems}
+
+\index{RightClick() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.RightClick}\pysiglinewithargsret{\code{macro.}\bfcode{RightClick}}{}{}
+Send a mouse right click: RightButton down, RightButton up.
+
+\end{fulllineitems}
+
+\index{RightHold() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.RightHold}\pysiglinewithargsret{\code{macro.}\bfcode{RightHold}}{}{}
+Send a mouse right hold: RightButton down.
+
+\end{fulllineitems}
+
+\index{RightRelease() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.RightRelease}\pysiglinewithargsret{\code{macro.}\bfcode{RightRelease}}{}{}
+Send a mouse right release: RightButton up.
+
+\end{fulllineitems}
+
+\index{SendInput() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.SendInput}\pysiglinewithargsret{\code{macro.}\bfcode{SendInput}}{\emph{intype}, \emph{data}, \emph{flags}, \emph{scan=0}, \emph{mouse\_data=0}}{}
+SendInput sends virtual user input.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{intype} (\emph{String}) -- Input type, either `m' for mouse input or `k' for                   keyboard input.
+
+\item {} 
+\textbf{data} (\emph{Integer or (Integer, Integer).}) -- Input data, keycode to input or a tuple of (x, y) for mouse.
+
+\item {} 
+\textbf{flags} (\emph{Integer}) -- Input flags, used to separate keyup and keydown events.
+
+\item {} 
+\textbf{scan} (\emph{Integer}) -- Input scancode. More info in:                 \href{http://en.wikipedia.org/wiki/Scancode}{http://en.wikipedia.org/wiki/Scancode}
+
+\item {} 
+\textbf{mouse\_data} (\emph{Integer}) -- Represents additional information about mouse events                       for example wheel amount.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{Slide() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.Slide}\pysiglinewithargsret{\code{macro.}\bfcode{Slide}}{\emph{x}, \emph{y}}{}
+Slide the mouse for x amount in horizontal direction and y amount in
+vertical direction.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} (\emph{Integer}) -- The amount to slide in horizontal direction.
+
+\item {} 
+\textbf{y} (\emph{Integer}) -- The amount to slide in vertical direction.
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{SlideTo() (in module macro)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:macro.SlideTo}\pysiglinewithargsret{\code{macro.}\bfcode{SlideTo}}{\emph{x}, \emph{y}, \emph{speed=0}}{}
+Slides the mouse to point (x, y)
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{x} (\emph{Integer}) -- The target X coordinate.
+
+\item {} 
+\textbf{y} (\emph{Integer}) -- The target Y coordinate.
+
+\item {} 
+\textbf{speed} (\emph{String}) -- The speed of motion `slow' or `fast', default 0.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -1512,13 +1766,13 @@ Send a message to the network.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{tag} (\emph{String.}) -- The tag of the message; recipient.
+\textbf{tag} (\emph{String}) -- The tag of the message; recipient.
 
 \item {} 
-\textbf{prefix} (\emph{String.}) -- The prefix of the message.
+\textbf{prefix} (\emph{String}) -- The prefix of the message.
 
 \item {} 
-\textbf{message} (\emph{String.}) -- The payload of the message.
+\textbf{message} (\emph{String}) -- The payload of the message.
 
 \end{itemize}
 
@@ -1533,7 +1787,7 @@ Send a message to the network.
 Sets the number of screens for the instance.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{screens} (\emph{Integer.}) -- New number of screens.
+\textbf{screens} (\emph{Integer}) -- New number of screens.
 
 \end{description}\end{quote}
 
@@ -1550,7 +1804,7 @@ shuts down all connections, no exit.
 \index{sub\_routine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_url}, \emph{unused\_context}}{}
+\phantomsection\label{api:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_urls}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1558,7 +1812,7 @@ Subscriber routine for the node ID.
 \textbf{sub\_url} (\emph{String}) -- Subscribing URL.
 
 \item {} 
-\textbf{context} (\code{zmq.core.context.Context}) -- ZeroMQ context for message sending
+\textbf{context} (\code{zmq.core.context.Context}) -- ZeroMQ context for message sending.
 
 \end{itemize}
 
@@ -1569,7 +1823,7 @@ Subscriber routine for the node ID.
 \index{sub\_routine\_sys() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_url}, \emph{unused\_context}}{}
+\phantomsection\label{api:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_urls}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1577,7 +1831,7 @@ Subscriber routine for the node ID.
 \textbf{sub\_url} (\emph{String}) -- Subscribing URL.
 
 \item {} 
-\textbf{context} (\code{zmq.core.context.Context}) -- ZeroMQ context for message sending
+\textbf{context} (\code{zmq.core.context.Context}) -- ZeroMQ context for message sending.
 
 \end{itemize}
 
@@ -1614,6 +1868,14 @@ Routine for checking node list and removing nodes with timeout.
 \section{Utils module}
 \label{api:utils-module}\label{api:module-utils}\index{utils (module)}
 Created on 17.5.2013
+\index{CheckProjectPassword() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.CheckProjectPassword}\pysiglinewithargsret{\code{utils.}\bfcode{CheckProjectPassword}}{\emph{project\_id}, \emph{password}}{}
+Compares the the provided password with the project password.
+
+\end{fulllineitems}
+
 \index{DottedIPToInt() (in module utils)}
 
 \begin{fulllineitems}
@@ -1630,6 +1892,14 @@ The IP address.
 Integer
 
 \end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{GetEncryptedDirName() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.GetEncryptedDirName}\pysiglinewithargsret{\code{utils.}\bfcode{GetEncryptedDirName}}{\emph{name}, \emph{hashed\_password}}{}
+Returns the encrypted name for project directory.
 
 \end{fulllineitems}
 
@@ -1676,6 +1946,14 @@ Returns the mac address for an local IP address.
 \textbf{ip} (\emph{String.}) -- IP address
 
 \end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{HashPassword() (in module utils)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:utils.HashPassword}\pysiglinewithargsret{\code{utils.}\bfcode{HashPassword}}{\emph{password}}{}
+Hashes the provided password.
 
 \end{fulllineitems}
 
@@ -2503,6 +2781,14 @@ Save the preferences.
 
 \end{fulllineitems}
 
+\index{ProjectAuthenticationDialog (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.ProjectAuthenticationDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectAuthenticationDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+A dialog for project authentication.
+
+\end{fulllineitems}
+
 \index{ProjectSelectDialog (class in wos)}
 
 \begin{fulllineitems}
@@ -2722,8 +3008,15 @@ Worker thread for non-UI jobs.
 \index{AddProjectReg() (wos.WORKER\_THREAD method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD.AddProjectReg}\pysiglinewithargsret{\bfcode{AddProjectReg}}{}{}
-Adds project folder to registry.
+\phantomsection\label{api:wos.WORKER_THREAD.AddProjectReg}\pysiglinewithargsret{\bfcode{AddProjectReg}}{\emph{reg\_type}}{}
+Adds ``Add to project'' context menu item to registry. The item
+will be added to SoftwareClasses\textless{}reg\_type\textgreater{}, where \textless{}reg\_type\textgreater{}
+can be e.g. `*' for all files or `Folder' for folders.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{reg\_type} (\emph{String}) -- Registry type.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2771,11 +3064,11 @@ Handles config file settings
 \label{bugs::doc}\label{bugs:bugs}
 \begin{tabulary}{\linewidth}{|L|L|L|}
 \hline
-\textbf{\relax 
+\textbf{
 Bug
-} & \textbf{\relax 
+} & \textbf{
 Description
-} & \textbf{\relax 
+} & \textbf{
 Status
 }\\\hline
 
@@ -2793,9 +3086,9 @@ Open / Closed / Will not be fixed
 \label{features::doc}\label{features:features}
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{\relax 
+\textbf{
 Feature
-} & \textbf{\relax 
+} & \textbf{
 Description
 }\\\hline
 
@@ -3199,9 +3492,9 @@ The screen icons identify different screens nodes. The user can drop files on to
 
 \begin{tabulary}{\linewidth}{|L|L|}
 \hline
-\textbf{\relax 
+\textbf{
 Icon
-} & \textbf{\relax 
+} & \textbf{
 Description
 }\\\hline
 
@@ -3267,6 +3560,7 @@ Exit the application
 \item {\texttt{filesystem}}, \pageref{api:module-filesystem}
 \indexspace
 \bigletter{m}
+\item {\texttt{macro}}, \pageref{api:module-macro}
 \item {\texttt{models}}, \pageref{api:module-models}
 \indexspace
 \bigletter{s}

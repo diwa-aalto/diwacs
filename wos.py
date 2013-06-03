@@ -1,8 +1,9 @@
-'''
+"""
 Created on 8.5.2012
 
 @author: neriksso
-'''
+
+"""
 #: TODO: Clean the imports...
 from collections import deque
 from datetime import datetime

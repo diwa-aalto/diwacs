@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -13,7 +15,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '',
         VERSION:     '0.9.2.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -54,7 +56,7 @@
             
   <div class="section" id="automated-code-documentation">
 <h1>Automated Code Documentation<a class="headerlink" href="#automated-code-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Documentation generated on 2013-05-30 at 09:00.</p>
+<p>Documentation generated on 2013-06-03 at 10:22.</p>
 <div class="section" id="module-add_file">
 <span id="add-file-module"></span><h2>Add file module<a class="headerlink" href="#module-add_file" title="Permalink to this headline">¶</a></h2>
 <p>Created on 5.6.2012</p>
@@ -328,6 +330,12 @@ database.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetProjectPassword">
+<tt class="descclassname">controller.</tt><tt class="descname">GetProjectPassword</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectPassword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the project password.</p>
 </dd></dl>
 
 <dl class="function">
@@ -700,6 +708,224 @@ and database.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-macro">
+<span id="macro-module"></span><h2>Macro module<a class="headerlink" href="#module-macro" title="Permalink to this headline">¶</a></h2>
+<p>macro.py defines a few user input functions.</p>
+<dl class="function">
+<dt id="macro.Click">
+<tt class="descclassname">macro.</tt><tt class="descname">Click</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse click: LeftButton down, LeftButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.GetPos">
+<tt class="descclassname">macro.</tt><tt class="descname">GetPos</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.GetPos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current position of the mouse.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The position of the mouse.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#macro.POINT" title="macro.POINT"><tt class="xref py py-class docutils literal"><span class="pre">POINT</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.GetSendkeys">
+<tt class="descclassname">macro.</tt><tt class="descname">GetSendkeys</tt><big>(</big><em>code</em><big>)</big><a class="headerlink" href="#macro.GetSendkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a character for a key code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>code</strong> (<em>Integer</em>) &#8211; The character code.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.Hold">
+<tt class="descclassname">macro.</tt><tt class="descname">Hold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse hold: LeftButton down.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.Key">
+<tt class="descclassname">macro.</tt><tt class="descname">Key</tt><big>(</big><em>event</em>, <em>kcode</em><big>)</big><a class="headerlink" href="#macro.Key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to send a single virtual keycode to the system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; Captured key event.</li>
+<li><strong>kcode</strong> (<em>Integer</em>) &#8211; Keycode.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.MiddleClick">
+<tt class="descclassname">macro.</tt><tt class="descname">MiddleClick</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleClick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click: MiddleButton down, MiddleButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.MiddleHold">
+<tt class="descclassname">macro.</tt><tt class="descname">MiddleHold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleHold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click: MiddleButton down.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.MiddleRelease">
+<tt class="descclassname">macro.</tt><tt class="descname">MiddleRelease</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleRelease" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click: MiddleButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.Move">
+<tt class="descclassname">macro.</tt><tt class="descname">Move</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.Move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the cursor for x amount in horizontal direction and y amount in
+vertical direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>Integer</em>) &#8211; Amount to move in horizontal direction.</li>
+<li><strong>y</strong> (<em>Integer</em>) &#8211; Amount to move in vertical direction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.MoveTo">
+<tt class="descclassname">macro.</tt><tt class="descname">MoveTo</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.MoveTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the mouse cursor to point (x, y) on screen.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>Integer</em>) &#8211; X coordinate of the desired position.</li>
+<li><strong>y</strong> (<em>Integer</em>) &#8211; Y coordinate of the desired position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.POINT">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">POINT</tt><a class="headerlink" href="#macro.POINT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the x and y components of coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attribute x:</th><td class="field-body">c_ulong</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attribute y:</th><td class="field-body">c_ulong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.Release">
+<tt class="descclassname">macro.</tt><tt class="descname">Release</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse release: LeftButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.RightClick">
+<tt class="descclassname">macro.</tt><tt class="descname">RightClick</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightClick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse right click: RightButton down, RightButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.RightHold">
+<tt class="descclassname">macro.</tt><tt class="descname">RightHold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightHold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse right hold: RightButton down.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.RightRelease">
+<tt class="descclassname">macro.</tt><tt class="descname">RightRelease</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightRelease" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse right release: RightButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.SendInput">
+<tt class="descclassname">macro.</tt><tt class="descname">SendInput</tt><big>(</big><em>intype</em>, <em>data</em>, <em>flags</em>, <em>scan=0</em>, <em>mouse_data=0</em><big>)</big><a class="headerlink" href="#macro.SendInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>SendInput sends virtual user input.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>intype</strong> (<em>String</em>) &#8211; Input type, either &#8216;m&#8217; for mouse input or &#8216;k&#8217; for                   keyboard input.</li>
+<li><strong>data</strong> (<em>Integer or (Integer, Integer).</em>) &#8211; Input data, keycode to input or a tuple of (x, y) for mouse.</li>
+<li><strong>flags</strong> (<em>Integer</em>) &#8211; Input flags, used to separate keyup and keydown events.</li>
+<li><strong>scan</strong> (<em>Integer</em>) &#8211; Input scancode. More info in:                 <a class="reference external" href="http://en.wikipedia.org/wiki/Scancode">http://en.wikipedia.org/wiki/Scancode</a></li>
+<li><strong>mouse_data</strong> (<em>Integer</em>) &#8211; Represents additional information about mouse events                       for example wheel amount.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.Slide">
+<tt class="descclassname">macro.</tt><tt class="descname">Slide</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.Slide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slide the mouse for x amount in horizontal direction and y amount in
+vertical direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>Integer</em>) &#8211; The amount to slide in horizontal direction.</li>
+<li><strong>y</strong> (<em>Integer</em>) &#8211; The amount to slide in vertical direction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.SlideTo">
+<tt class="descclassname">macro.</tt><tt class="descname">SlideTo</tt><big>(</big><em>x</em>, <em>y</em>, <em>speed=0</em><big>)</big><a class="headerlink" href="#macro.SlideTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slides the mouse to point (x, y)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>Integer</em>) &#8211; The target X coordinate.</li>
+<li><strong>y</strong> (<em>Integer</em>) &#8211; The target Y coordinate.</li>
+<li><strong>speed</strong> (<em>String</em>) &#8211; The speed of motion &#8216;slow&#8217; or &#8216;fast&#8217;, default 0.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -1240,9 +1466,9 @@ communicating with other instances.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>tag</strong> (<em>String.</em>) &#8211; The tag of the message; recipient.</li>
-<li><strong>prefix</strong> (<em>String.</em>) &#8211; The prefix of the message.</li>
-<li><strong>message</strong> (<em>String.</em>) &#8211; The payload of the message.</li>
+<li><strong>tag</strong> (<em>String</em>) &#8211; The tag of the message; recipient.</li>
+<li><strong>prefix</strong> (<em>String</em>) &#8211; The prefix of the message.</li>
+<li><strong>message</strong> (<em>String</em>) &#8211; The payload of the message.</li>
 </ul>
 </td>
 </tr>
@@ -1258,7 +1484,7 @@ communicating with other instances.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>screens</strong> (<em>Integer.</em>) &#8211; New number of screens.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>screens</strong> (<em>Integer</em>) &#8211; New number of screens.</td>
 </tr>
 </tbody>
 </table>
@@ -1272,7 +1498,7 @@ communicating with other instances.</p>
 
 <dl class="method">
 <dt id="swnp.SWNP.sub_routine">
-<tt class="descname">sub_routine</tt><big>(</big><em>sub_url</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sub_routine</tt><big>(</big><em>sub_urls</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscriber routine for the node ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1280,7 +1506,7 @@ communicating with other instances.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sub_url</strong> (<em>String</em>) &#8211; Subscribing URL.</li>
-<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending</li>
+<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending.</li>
 </ul>
 </td>
 </tr>
@@ -1290,7 +1516,7 @@ communicating with other instances.</p>
 
 <dl class="method">
 <dt id="swnp.SWNP.sub_routine_sys">
-<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_url</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_urls</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscriber routine for the node ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1298,7 +1524,7 @@ communicating with other instances.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>sub_url</strong> (<em>String</em>) &#8211; Subscribing URL.</li>
-<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending</li>
+<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending.</li>
 </ul>
 </td>
 </tr>
@@ -1333,6 +1559,12 @@ communicating with other instances.</p>
 <span id="utils-module"></span><h2>Utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
 <p>Created on 17.5.2013</p>
 <dl class="function">
+<dt id="utils.CheckProjectPassword">
+<tt class="descclassname">utils.</tt><tt class="descname">CheckProjectPassword</tt><big>(</big><em>project_id</em>, <em>password</em><big>)</big><a class="headerlink" href="#utils.CheckProjectPassword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares the the provided password with the project password.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="utils.DottedIPToInt">
 <tt class="descclassname">utils.</tt><tt class="descname">DottedIPToInt</tt><big>(</big><em>dotted_ip</em><big>)</big><a class="headerlink" href="#utils.DottedIPToInt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms a dotted IP address to Integer.</p>
@@ -1348,6 +1580,12 @@ communicating with other instances.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.GetEncryptedDirName">
+<tt class="descclassname">utils.</tt><tt class="descname">GetEncryptedDirName</tt><big>(</big><em>name</em>, <em>hashed_password</em><big>)</big><a class="headerlink" href="#utils.GetEncryptedDirName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the encrypted name for project directory.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1395,6 +1633,12 @@ communicating with other instances.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.HashPassword">
+<tt class="descclassname">utils.</tt><tt class="descname">HashPassword</tt><big>(</big><em>password</em><big>)</big><a class="headerlink" href="#utils.HashPassword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hashes the provided password.</p>
 </dd></dl>
 
 <dl class="function">
@@ -2161,6 +2405,12 @@ change some settings.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="wos.ProjectAuthenticationDialog">
+<em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">ProjectAuthenticationDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#wos.ProjectAuthenticationDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for project authentication.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="wos.ProjectSelectDialog">
 <em class="property">class </em><tt class="descclassname">wos.</tt><tt class="descname">ProjectSelectDialog</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#wos.ProjectSelectDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog for selecting a project.</p>
@@ -2373,8 +2623,18 @@ Contains the URL which the user can click on.</p>
 </table>
 <dl class="method">
 <dt id="wos.WORKER_THREAD.AddProjectReg">
-<tt class="descname">AddProjectReg</tt><big>(</big><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds project folder to registry.</p>
+<tt class="descname">AddProjectReg</tt><big>(</big><em>reg_type</em><big>)</big><a class="headerlink" href="#wos.WORKER_THREAD.AddProjectReg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds &#8220;Add to project&#8221; context menu item to registry. The item
+will be added to SoftwareClasses&lt;reg_type&gt;, where &lt;reg_type&gt;
+can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg_type</strong> (<em>String</em>) &#8211; Registry type.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2425,6 +2685,7 @@ Contains the URL which the user can click on.</p>
 <li><a class="reference internal" href="#module-send_file_to">Send file module</a></li>
 <li><a class="reference internal" href="#module-controller">Controller module</a></li>
 <li><a class="reference internal" href="#module-filesystem">Filesystem module</a></li>
+<li><a class="reference internal" href="#module-macro">Macro module</a></li>
 <li><a class="reference internal" href="#module-models">Models module</a></li>
 <li><a class="reference internal" href="#module-swnp">SWNP module</a></li>
 <li><a class="reference internal" href="#module-utils">Utils module</a></li>
@@ -2476,7 +2737,7 @@ Contains the URL which the user can click on.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Nick Eriksson.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

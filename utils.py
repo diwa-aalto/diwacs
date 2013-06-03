@@ -36,9 +36,10 @@ def HashPassword(password):
     m.update(diwavars.PASSWORD_SALT + password)
     return m.hexdigest()
 
+
 def CheckProjectPassword(project_id, password):
     """Compares the the provided password with the project password."""
-    return controller.GetProjectPassword(project_id)==HashPassword(password)
+    return controller.GetProjectPassword(project_id) == HashPassword(password)
 
 
 def IterIsLast(iterable):

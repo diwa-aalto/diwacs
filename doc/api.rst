@@ -22,8 +22,13 @@ Controller module
    :members:
 
 Filesystem module
------------------------
+-----------------
 .. automodule:: filesystem
+   :members:
+
+Macro module
+------------
+.. automodule:: macro
    :members:
 
 Models module

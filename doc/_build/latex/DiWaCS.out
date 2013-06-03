@@ -3,30 +3,31 @@
 \BOOKMARK [1][-]{section.1.2}{Send file module}{chapter.1}% 3
 \BOOKMARK [1][-]{section.1.3}{Controller module}{chapter.1}% 4
 \BOOKMARK [1][-]{section.1.4}{Filesystem module}{chapter.1}% 5
-\BOOKMARK [1][-]{section.1.5}{Models module}{chapter.1}% 6
-\BOOKMARK [1][-]{section.1.6}{SWNP module}{chapter.1}% 7
-\BOOKMARK [1][-]{section.1.7}{Utils module}{chapter.1}% 8
-\BOOKMARK [1][-]{section.1.8}{Wos module}{chapter.1}% 9
-\BOOKMARK [0][-]{chapter.2}{Bugs}{}% 10
-\BOOKMARK [0][-]{chapter.3}{Features}{}% 11
-\BOOKMARK [0][-]{chapter.4}{License}{}% 12
-\BOOKMARK [1][-]{section.4.1}{1. Definitions}{chapter.4}% 13
-\BOOKMARK [1][-]{section.4.2}{2. Scope of the rights granted by the Licence}{chapter.4}% 14
-\BOOKMARK [1][-]{section.4.3}{3. Communication of the Source Code}{chapter.4}% 15
-\BOOKMARK [1][-]{section.4.4}{4. Limitations on copyright}{chapter.4}% 16
-\BOOKMARK [1][-]{section.4.5}{5. Obligations of the Licensee}{chapter.4}% 17
-\BOOKMARK [1][-]{section.4.6}{6. Chain of Authorship}{chapter.4}% 18
-\BOOKMARK [1][-]{section.4.7}{7. Disclaimer of Warranty}{chapter.4}% 19
-\BOOKMARK [1][-]{section.4.8}{8. Disclaimer of Liability}{chapter.4}% 20
-\BOOKMARK [1][-]{section.4.9}{9. Additional agreements}{chapter.4}% 21
-\BOOKMARK [1][-]{section.4.10}{10. Acceptance of the Licence}{chapter.4}% 22
-\BOOKMARK [1][-]{section.4.11}{11. Information to the public}{chapter.4}% 23
-\BOOKMARK [1][-]{section.4.12}{12. Termination of the Licence}{chapter.4}% 24
-\BOOKMARK [1][-]{section.4.13}{13. Miscellaneous}{chapter.4}% 25
-\BOOKMARK [1][-]{section.4.14}{14. Jurisdiction}{chapter.4}% 26
-\BOOKMARK [1][-]{section.4.15}{15. Applicable Law}{chapter.4}% 27
-\BOOKMARK [1][-]{section.4.16}{Appendix}{chapter.4}% 28
-\BOOKMARK [0][-]{chapter.5}{User Interface}{}% 29
-\BOOKMARK [0][-]{chapter.6}{Indices and tables}{}% 30
-\BOOKMARK [0][-]{section*.166}{Python Module Index}{}% 31
-\BOOKMARK [0][-]{section*.167}{Index}{}% 32
+\BOOKMARK [1][-]{section.1.5}{Macro module}{chapter.1}% 6
+\BOOKMARK [1][-]{section.1.6}{Models module}{chapter.1}% 7
+\BOOKMARK [1][-]{section.1.7}{SWNP module}{chapter.1}% 8
+\BOOKMARK [1][-]{section.1.8}{Utils module}{chapter.1}% 9
+\BOOKMARK [1][-]{section.1.9}{Wos module}{chapter.1}% 10
+\BOOKMARK [0][-]{chapter.2}{Bugs}{}% 11
+\BOOKMARK [0][-]{chapter.3}{Features}{}% 12
+\BOOKMARK [0][-]{chapter.4}{License}{}% 13
+\BOOKMARK [1][-]{section.4.1}{1. Definitions}{chapter.4}% 14
+\BOOKMARK [1][-]{section.4.2}{2. Scope of the rights granted by the Licence}{chapter.4}% 15
+\BOOKMARK [1][-]{section.4.3}{3. Communication of the Source Code}{chapter.4}% 16
+\BOOKMARK [1][-]{section.4.4}{4. Limitations on copyright}{chapter.4}% 17
+\BOOKMARK [1][-]{section.4.5}{5. Obligations of the Licensee}{chapter.4}% 18
+\BOOKMARK [1][-]{section.4.6}{6. Chain of Authorship}{chapter.4}% 19
+\BOOKMARK [1][-]{section.4.7}{7. Disclaimer of Warranty}{chapter.4}% 20
+\BOOKMARK [1][-]{section.4.8}{8. Disclaimer of Liability}{chapter.4}% 21
+\BOOKMARK [1][-]{section.4.9}{9. Additional agreements}{chapter.4}% 22
+\BOOKMARK [1][-]{section.4.10}{10. Acceptance of the Licence}{chapter.4}% 23
+\BOOKMARK [1][-]{section.4.11}{11. Information to the public}{chapter.4}% 24
+\BOOKMARK [1][-]{section.4.12}{12. Termination of the Licence}{chapter.4}% 25
+\BOOKMARK [1][-]{section.4.13}{13. Miscellaneous}{chapter.4}% 26
+\BOOKMARK [1][-]{section.4.14}{14. Jurisdiction}{chapter.4}% 27
+\BOOKMARK [1][-]{section.4.15}{15. Applicable Law}{chapter.4}% 28
+\BOOKMARK [1][-]{section.4.16}{Appendix}{chapter.4}% 29
+\BOOKMARK [0][-]{chapter.5}{User Interface}{}% 30
+\BOOKMARK [0][-]{chapter.6}{Indices and tables}{}% 31
+\BOOKMARK [0][-]{section*.189}{Python Module Index}{}% 32
+\BOOKMARK [0][-]{section*.190}{Index}{}% 33

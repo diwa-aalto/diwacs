@@ -145,7 +145,8 @@ def testStorageConnection():
 
 
 class SWNP:
-    """The main class of swnp.
+    """
+    The main class of swnp.
 
     This class has the required ZeroMQ bindings and is responsible for
     communicating with other instances.
@@ -197,39 +198,23 @@ class SWNP:
         self.publisher.bind(self.tladdr)
         self.publisher_loopback.bind(self.ipraddr)
         #Subscriber threads
+        targs = ([self.tladdr, self.ipraddr], self.context, )
         self.sub_thread = self.StartSubRoutine(None, self.sub_routine,
                                                "Sub thread",
-                                               ([self.tladdr, self.ipraddr],
-                                                self.context,))
-        """self.sub_thread = threading.Thread(target=self.sub_routine,
-                                           name="Sub_thread",
-                                           args=(tladdr, self.context,)
-                                           )
-        self.sub_thread.daemon = True
-        self.sub_thread.start()"""
+                                               targs)
         self.sub_thread_sys = self.StartSubRoutine(None,
                                                    self.sub_routine_sys,
                                                    "Sub sys thread",
-                                                   (
-                                                    [self.tladdr, self.ipraddr]
-                                                    , self.context,
-                                                    ))
-        """self.sub_thread_sys = threading.Thread(target=self.sub_routine_sys,
-                                               name="Sub sys thread",
-                                               args=(tladdr, self.context,)
-                                               )
-        self.sub_thread_sys.daemon = True
-        self.sub_thread_sys.start()"""
-        logger.debug('Bound listeners on: %s', str(self.tladdr))
+                                                   targs)
+        logger.debug('Bound listeners on: %s (%s)', str(self.tladdr))
 
-        self.send("SYS", PREFIX_CHOICES[0], ("%s_SCREENS_%d_NAME_%s_DATA_%s" %
-                                             (self.node.id, self.node.screens,
-                                              self.node.name, self.node.data)
-                                            )
-                  )
+        join_str = ("%s_SCREENS_%d_NAME_%s_DATA_%s" % self.node.id,
+                    self.node.screens, self.node.name, self.node.data)
+        self.send("SYS", PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
         self.NODE_LIST.add(self.node)
         self.do_ping()
+
         #heartbeat
         self.ping_stop = threading.Event()
         self.ping_thread = threading.Thread(target=self.ping_routine,
@@ -245,12 +230,13 @@ class SWNP:
         self.timeout_thread.start()
 
     def StartSubRoutine(self, target, routine, name, args):
-        if isinstance(target, threading.Thread) and target and target.isAlive():
+        if (isinstance(target, threading.Thread) and
+                target and target.isAlive()):
             return
         target = threading.Thread(target=routine, name=name, args=args)
         target.daemon = True
         target.start()
-        logger.debug("%s started"%name)
+        logger.debug("%s started" % name)
         return target
 
     def timeout_routine(self):
@@ -333,15 +319,16 @@ class SWNP:
         logger.debug("Ping routine closed")
 
     def sub_routine(self, sub_urls, unused_context):
-        """Subscriber routine for the node ID.
+        """
+        Subscriber routine for the node ID.
 
         :param sub_url: Subscribing URL.
         :type sub_url: String
-        :param context: ZeroMQ context for message sending
+
+        :param context: ZeroMQ context for message sending.
         :type context: :class:`zmq.core.context.Context`
 
         """
-        # Socket to talk to dispatcher
         global TLDR
         subscribers = []
         for i, sub_url in enumerate(sub_urls):
@@ -353,15 +340,15 @@ class SWNP:
             subscribers[i].connect(sub_url)
         logger.debug('Listener Active!')
         while TLDR:
-            # Read envelope with address
             for s in subscribers:
                 try:
                     [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
                     msg_obj = json.loads(contents,
                                          object_hook=Message.from_json)
                     """
-                    logger.debug('Received: %s;%s' % (msg_obj.PREFIX,
-                                                      msg_obj.PAYLOAD))
+                    logger.debug('Received: %s;%s' %
+                    (msg_obj.PREFIX,msg_obj.PAYLOAD))
+
                     """
                     if (msg_obj.PAYLOAD == self.id and
                             msg_obj.PREFIX == 'LEAVE'):
@@ -371,7 +358,7 @@ class SWNP:
                     if msg_obj.PREFIX == 'SYNC':
                         self.sync_handler(msg_obj)
                     if msg_obj.PREFIX == 'MSG':
-                        pub.sendMessage("message_received",
+                        pub.sendMessage('message_received',
                                         message=msg_obj.PAYLOAD)
                 except zmq.Again, e:
                     # Non-blocking mode was requested and no messages
@@ -388,32 +375,35 @@ class SWNP:
                     # context associated with the specified
                     # socket was terminated.
                     TLDR = False
-                    logger.debug('ContextTerminated: %s' % str(e))
+                    logger.debug('ContextTerminated: %s', str(e))
                     break
                 except zmq.ZMQError, e:
-                    logger.exception("ZMQerror sub routine:%s", str(e))
+                    logger.exception('ZMQerror sub routine: %s', str(e))
                     TLDR = False
                     break
                 except Exception, e:
-                    logger.exception("SWNP EXCEPTION: %s", str(e))
+                    logger.exception('SWNP EXCEPTION: %s', str(e))
         logger.debug('Closing sub')
         (subscriber.close() for subscriber in subscribers)
 
     def set_screens(self, screens):
-        """Sets the number of screens for the instance.
+        """
+        Sets the number of screens for the instance.
 
         :param screens: New number of screens.
-        :type screens: Integer.
+        :type screens: Integer
 
         """
         self.node.screens = screens
 
     def sub_routine_sys(self, sub_urls, unused_context):
-        """Subscriber routine for the node ID.
+        """
+        Subscriber routine for the node ID.
 
         :param sub_url: Subscribing URL.
         :type sub_url: String
-        :param context: ZeroMQ context for message sending
+
+        :param context: ZeroMQ context for message sending.
         :type context: :class:`zmq.core.context.Context`
 
         """
@@ -437,7 +427,8 @@ class SWNP:
                                          object_hook=Message.from_json)
                     """
                     logger.debug('SYS-Received: %s;%s' %
-                                 (msg_obj.PREFIX, msg_obj.PAYLOAD))
+                    (msg_obj.PREFIX, msg_obj.PAYLOAD))
+
                     """
                     if (msg_obj.PREFIX == 'LEAVE' and
                             msg_obj.PAYLOAD == self.id):
