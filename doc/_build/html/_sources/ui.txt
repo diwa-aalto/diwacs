@@ -1,6 +1,7 @@
 User Interface
 ==============
 
+
 .. figure::  screencap.png
    :align:   center
    

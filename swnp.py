@@ -10,7 +10,7 @@ import logging
 import sys
 import os
 import threading
-import time
+from time import sleep
 import json
 import random
 
@@ -174,11 +174,23 @@ class SWNP:
 
     .. warning:: Only one instance per computer
 
+    :param pgm_group: The Multicast Group this node wants to be a part of.
+    :type pgm_group: Integer
+
     :param screens: The number of visible screens. Defaults to 0.
     :type screens: Integer
 
-    :param name: The name of the instance. Optional.
+    :param name: The name of the instance.
     :type name: String
+
+    :param id: ID of the instance.
+    :type id: Integer
+
+    :param context: ZeroMQ context to use.
+    :type context: :py:class:`zmq.Context`
+
+    :param error_handler: Error handler for the init constructor.
+    :type error_handler: :py:class:`wos.CONN_ERR_TH`
 
     """
     NODE_LIST = set()
@@ -253,6 +265,24 @@ class SWNP:
         self.timeout_thread.start()
 
     def StartSubRoutine(self, target, routine, name, args):
+        """
+        A wrapper for starting up subroutine threads.
+
+        :param target: Variable that contains the current thread for routine.
+        :type target: :py:class:`threading.Thread`
+
+        :param routine: The routine to run.
+
+        :param name: Name of the routine.
+        :type name: String
+
+        :param args: Arguments for the routine.
+        :type args: List
+
+        :returns: The thread of subroutine.
+        :rtype: :py:class:`threading.Thread`
+
+        """
         if (isinstance(target, threading.Thread) and
                 target and target.isAlive()):
             return
@@ -281,40 +311,25 @@ class SWNP:
                     pub.sendMessage("update_screens", update=True)
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
-            """
-            if self.sub_thread_sys and not self.sub_thread_sys.isAlive():
-                logger.debug("Restarting sub thread sys")
-                setTLDR(True)
-                self.sub_thread_sys = self.StartSubRoutine(self.sub_thread_sys,
-                                                           self.sub_routine_sys,
-                                                           "Sub sys thread",
-                                                           ([self.tladdr,
-                                                             self.ipraddr],
-                                                            self.context,))
-            if self.sub_thread and not self.sub_thread.isAlive():
-                logger.debug("Restarting sub thread")
-                self.sub_thread = self.StartSubRoutine(self.sub_thread,
-                                                       self.sub_routine,
-                                                       "Sub thread",
-                                                       ([self.tladdr,
-                                                         self.ipraddr],
-                                                        self.context,))
-            """
-            time.sleep(TIMEOUT)
+            sleep(TIMEOUT)
 
     def do_ping(self):
-        """Send a PING message to the network."""
+        """
+        Send a PING message to the network.
+
+        """
         try:
-            self.send("SYS", PREFIX_CHOICES[4],
-                      "%s_SCREENS_%d_NAME_%s_DATA_%s" %
-                      (self.id, int(self.node.screens),
-                       self.node.name, self.node.data)
-                      )
+            msg = "%s_SCREENS_%d_NAME_%s_DATA_%s" % (self.id,
+                  int(self.node.screens), self.node.name, self.node.data)
+            self.send("SYS", PREFIX_CHOICES[4], msg)
         except Exception, e:
             logger.exception('do_ping exception: %s', str(e))
 
     def ping_routine(self, error_handler):
-        """A routine for sending PING messages at regular intervals."""
+        """
+        A routine for sending PING messages at regular intervals.
+
+        """
         logger.debug("Ping routine initializing...")
         try:
             c = controller.AddComputer(self.node.name, self.ip, self.id)
@@ -332,7 +347,7 @@ class SWNP:
                     c.screens = self.node.screens
                     controller.RefreshComputer(c)
                 error = False
-                time.sleep(PING_RATE)
+                sleep(PING_RATE)
             except (exc.OperationalError, exc.DBAPIError):
                     if not error:
                         error = True
@@ -490,12 +505,12 @@ class SWNP:
         limit = 5
         while self.sub_thread_sys.isAlive() and i < limit:
             self.send("SYS", PREFIX_CHOICES[1], self.id)
-            time.sleep(1)
+            sleep(1)
             i += 1
         i = 0
         while self.sub_thread.isAlive() and i < limit:
             self.send(self.id, PREFIX_CHOICES[1], self.id)
-            time.sleep(1)
+            sleep(1)
             i += 1
         self.publisher.close()
         self.publisher_loopback.close()
@@ -513,7 +528,7 @@ class SWNP:
         logger.debug('closing threads')
         while self.sub_thread_sys.isAlive() and i < limit:
             self.send("SYS", PREFIX_CHOICES[1], self.id)
-            time.sleep(1)
+            sleep(1)
             i += 1
         i = 0
         logger.debug('sub_thread sys closed' + str(
@@ -521,7 +536,7 @@ class SWNP:
                     )
         while self.sub_thread.isAlive() and i < limit:
             self.send(self.id, PREFIX_CHOICES[1], self.id)
-            time.sleep(1)
+            sleep(1)
             i += 1
         logger.debug('sub_thread   closed' + str(self.sub_thread.isAlive()))
         TLDR = False
@@ -556,7 +571,8 @@ class SWNP:
             """
             try:
                 myMess = [msg.TAG, json.dumps(msg, default=Message.to_dict)]
-                self.publisher_loopback.send_multipart(myMess)
+                if msg.PREFIX != 'PING':
+                    self.publisher_loopback.send_multipart(myMess)
                 self.publisher.send_multipart(myMess)
             except Exception, e:
                 logger.exception('SENT EXCEPTION: %s', str(e))
@@ -632,7 +648,7 @@ class SWNP:
         """A handler for PING messages. Sends update_screens, if necessary.
 
         :param payload: The payload of a PING message.
-        :type payload: String.
+        :type payload: String
 
         """
         payload = payload.split('_')
