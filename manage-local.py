@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 from migrate.versioning.shell import main
 
+
+USERNAME = 'USERNAME'
+PASSWORD = 'PASSWORD'
+DATABASE = 'DATABASENAME'
+PROTOCOL = 'mysql'
+
+
 if __name__ == '__main__':
-    main(url='mysql://wazzuup:serval@127.0.0.1/WZP', debug='False', repository='migraterepo')
+    con_url = (PROTOCOL + '://' + USERNAME + ':' + PASSWORD + '@127.0.0.1/' +
+               DATABASE)
+    main(url=con_url, debug='False', repository='migraterepo')
