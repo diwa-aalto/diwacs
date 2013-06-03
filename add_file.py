@@ -13,7 +13,8 @@ import zmq
 
 
 def main():
-    """Main function of the sub program.
+    """
+    Main function of the sub program.
 
     Sub program is meant to be bound to windows explorer context menu.
     Context menu allows the user to quickly add files to project without
@@ -23,8 +24,10 @@ def main():
 
     :argument filepath: Path of the file to be added.
     :type filepath: String
+
     :returns: windows success code (0 on success).
     :rtype: Integer
+
     """
     if len(sys.argv) == 2:
         try:

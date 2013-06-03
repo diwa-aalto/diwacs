@@ -24,10 +24,10 @@ def main():
 
     :argument node_id: ID of the node to send the file to.
     :type node_id: Integer
-    
+
     :argument filepath: Path of the file to be sent.
     :type filepath: String
-    
+
     :returns: windows success code (0 on success).
     :rtype: Integer
 
