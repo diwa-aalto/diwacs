@@ -1,25 +1,26 @@
-"""macro.py imports a SendKeys module which may be downloaded at:
+"""
+macro.py imports a SendKeys module which may be downloaded at:
 http://www.rutherfurd.net/python/sendkeys/
 
 It also defines the following functions:
 
-click() -- calls left mouse click
-hold() -- presses and holds left mouse button
-release() -- releases left mouse button
+Click() -- calls left mouse click.
+Hold() -- presses and holds left mouse button.
+Release() -- releases left mouse button.
 
-rightclick() -- calls right mouse click
-righthold() -- calls right mouse hold
-rightrelease() -- calls right mouse release
+Rightclick() -- calls right mouse click.
+Righthold() -- calls right mouse hold.
+Rightrelease() -- calls right mouse release.
 
-middleclick() -- calls middle mouse click
-middlehold() -- calls middle mouse hold
-middlerelease() -- calls middle mouse release
+Middleclick() -- calls middle mouse click.
+Middlehold() -- calls middle mouse hold.
+Middlerelease() -- calls middle mouse release.
 
 
-move(x, y) -- moves mouse to x/y coordinates (in pixels)
+MoveTo(x, y) -- moves mouse to x/y coordinates (in pixels).
 
-slide(x, y) -- slides mouse to x/y coodinates (in pixels)
-              also supports optional speed='slow', speed='fast'
+SlideTo(x, y) -- slides mouse to x/y coodinates (in pixels)
+              also supports optional speed='slow', speed='fast'.
 
 The imported SendKeys has many features, but the basics are as
 follows: SendKeys("Text goes here",pause=0.5,with_spaces=True)
@@ -222,7 +223,9 @@ def GetSendkeys(code):
     """Returns a character for a key code.
 
     :param code: The character code.
-    :type code: Integer."""
+    :type code: Integer
+
+    """
     if code >= 65 and code <= 122:
         return chr(code)
     else:
@@ -309,15 +312,37 @@ x3 = FInputs((0, release))
 #user32.SendInput(2, pointer(x3), sizeof(x3[0])) RELEASE HOLD
 
 
-def send_input(type_, data, flags, scan=0, mouseData=0):
+def SendInput(intype, data, flags, scan=0, mouse_data=0):
+    """
+    SendInput sends virtual user input.
+
+    :param intype: Input type, either 'm' for mouse input or 'k' for\
+                   keyboard input.
+    :type intype: String
+
+    :param data: Input data, keycode to input or a tuple of (x, y) for mouse.
+    :type data: Integer or (Integer, Integer).
+
+    :param flags: Input flags, used to separate keyup and keydown events.
+    :type flags: Integer
+
+    :param scan: Input scancode. More info in:\
+                 http://en.wikipedia.org/wiki/Scancode
+    :type scan: Integer
+
+    :param mouse_data: Represents additional information about mouse events\
+                       for example wheel amount.
+    :type mouse_data: Integer
+
+    """
     Inputs = Input * 1
     kinput = None
-    if type_ == 'm':
+    if intype == 'm':
         m = Input_I()
-        m.mi = MouseInput(data[0], data[1], mouseData, flags, 0,
+        m.mi = MouseInput(data[0], data[1], mouse_data, flags, 0,
                           pointer(extra))
         kinput = Inputs((0, m))
-    elif type_ == 'k':
+    elif intype == 'k':
         k = Input_I()
         k.ki = KeyBdInput(data, 0, flags, scan, pointer(extra))
         kinput = Inputs((1, k))
@@ -325,27 +350,78 @@ def send_input(type_, data, flags, scan=0, mouseData=0):
         windll.user32.SendInput(1, pointer(kinput), sizeof(kinput[0]))
 
 
-def key(event, kcode):
+def Key(event, kcode):
+    """
+    Used to send a single virtual keycode to the system.
+
+    :param event: Captured key event.
+    :type event: :py:class:`wx.Event`
+
+    :param kcode: Keycode.
+    :type kcode: Integer
+
+    """
     windll.user32.keybd_event(kcode, 0, 0 if event == 257 else 2, 0)
 
 
-def move(x, y):
+def MoveTo(x, y):
+    """
+    Move the mouse cursor to point (x, y) on screen.
+
+    :param x: X coordinate of the desired position.
+    :type x: Integer
+
+    :param y: Y coordinate of the desired position.
+    :type y: Integer
+
+    """
     windll.user32.SetCursorPos(x, y)
 
 
-def getpos():
+def GetPos():
+    """
+    Return the current position of the mouse.
+
+    :return: The position of the mouse.
+    :rtype: :py:class:`POINT`
+
+    """
     global pt
     pt = POINT()
     windll.user32.GetCursorPos(byref(pt))
     return (pt.x, pt.y)
 
 
-def move_to(x, y):
-    (curx, cury) = getpos()
-    return move(curx + x, cury + y)
+def Move(x, y):
+    """
+    Move the cursor for x amount in horizontal direction and y amount in
+    vertical direction.
+
+    :param x: Amount to move in horizontal direction.
+    :type x: Integer
+
+    :param y: Amount to move in vertical direction.
+    :type y: Integer
+
+    """
+    (curx, cury) = GetPos()
+    return MoveTo(curx + x, cury + y)
 
 
-def slide(a, b, speed=0):
+def SlideTo(x, y, speed=0):
+    """
+    Slides the mouse to point (x, y)
+
+    :param x: The target X coordinate.
+    :type x: Integer
+
+    :param y: The target Y coordinate.
+    :type y: Integer
+
+    :param speed: The speed of motion 'slow' or 'fast', default 0.
+    :type speed: String
+
+    """
     while True:
         if speed == 'slow':
             time.sleep(0.005)
@@ -356,61 +432,107 @@ def slide(a, b, speed=0):
         if speed == 0:
             time.sleep(0.001)
             Tspeed = 3
-        x = getpos()[0]
-        y = getpos()[1]
-        if abs(x - a) < 5:
-            if abs(y - b) < 5:
+        (cx, cy) = GetPos()
+        if abs(cx - x) < 5:
+            if abs(cy - y) < 5:
                 break
 
-        if a < x:
-            x -= Tspeed
-        if a > x:
-            x += Tspeed
-        if b < y:
-            y -= Tspeed
-        if b > y:
-            y += Tspeed
-        move(x, y)
+        if x < cx:
+            cx -= Tspeed
+        if x > cx:
+            cx += Tspeed
+        if y < cy:
+            cy -= Tspeed
+        if y > cy:
+            cy += Tspeed
+        MoveTo(cx, cy)
 
 
-def slide_to(x, y):
-    (curx, cury) = getpos()
-    return slide(curx + x, cury + y)
+def Slide(x, y):
+    """
+    Slide the mouse for x amount in horizontal direction and y amount in
+    vertical direction.
+
+    :param x: The amount to slide in horizontal direction.
+    :type x: Integer
+
+    :param y: The amount to slide in vertical direction.
+    :type y: Integer
+
+    """
+    (curx, cury) = GetPos()
+    return SlideTo(curx + x, cury + y)
 
 
-def click():
+def Click():
+    """
+    Send a mouse click: LeftButton down, LeftButton up.
+
+    """
     windll.user32.SendInput(2, pointer(x), sizeof(x[0]))
 
 
-def hold():
+def Hold():
+    """
+    Send a mouse hold: LeftButton down.
+
+    """
     windll.user32.SendInput(2, pointer(x2), sizeof(x2[0]))
 
 
-def release():
+def Release():
+    """
+    Send a mouse release: LeftButton up.
+
+    """
     windll.user32.SendInput(2, pointer(x3), sizeof(x3[0]))
 
 
-def rightclick():
+def RightClick():
+    """
+    Send a mouse right click: RightButton down, RightButton up.
+
+    """
     windll.user32.mouse_event(RIGHTDOWN, 0, 0, 0, 0)
     windll.user32.mouse_event(RIGHTUP, 0, 0, 0, 0)
 
 
-def righthold():
+def RightHold():
+    """
+    Send a mouse right hold: RightButton down.
+
+    """
     windll.user32.mouse_event(RIGHTDOWN, 0, 0, 0, 0)
 
 
-def rightrelease():
+def RightRelease():
+    """
+    Send a mouse right release: RightButton up.
+
+    """
     windll.user32.mouse_event(RIGHTUP, 0, 0, 0, 0)
 
 
-def middleclick():
+def MiddleClick():
+    """
+    Send a mouse middle click: MiddleButton down, MiddleButton up.
+
+    """
     windll.user32.mouse_event(MIDDLEDOWN, 0, 0, 0, 0)
     windll.user32.mouse_event(MIDDLEUP, 0, 0, 0, 0)
 
 
-def middledown():
+def MiddleHold():
+    """
+    Send a mouse middle click: MiddleButton down.
+
+    """
     windll.user32.mouse_event(MIDDLEDOWN, 0, 0, 0, 0)
 
 
-def middleup():
+def MiddleRelease():
+    """
+    Send a mouse middle click: MiddleButton up.
+
+    """
     windll.user32.mouse_event(MIDDLEUP, 0, 0, 0, 0)

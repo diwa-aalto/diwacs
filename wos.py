@@ -2951,13 +2951,13 @@ class GUI(wx.Frame):
                 flags = 0
                 if e == 257:
                     flags = 2
-                macro.send_input('k', int(key), flags, int(scan))
+                macro.SendInput('k', int(key), flags, int(scan))
             if cmd == 'remote_start':
                 CONTROLLED = target
             if cmd == 'remote_end':
                 if CONTROLLED:
                     #release alt
-                    macro.send_input('k', 18, 2, 56)
+                    macro.SendInput('k', 18, 2, 56)
                 if CONTROLLING:
                     global CAPTURE
                     self.SetCursor(DEFAULT_CURSOR)
@@ -2969,7 +2969,7 @@ class GUI(wx.Frame):
                 CONTROLLING = False
             if cmd == 'mouse_move':
                 x, y = target.split(',')
-                macro.send_input('m', [int(x), int(y)], 0x0001)
+                macro.SendInput('m', [int(x), int(y)], 0x0001)
             if cmd == 'mouse_event':
                 target, wheel = target.split(',')
                 flags = 0
@@ -2992,8 +2992,8 @@ class GUI(wx.Frame):
                 elif int(target) == 0x20E:
                     flags = 0x01000
                     mouseData = int(wheel) * 120
-                macro.send_input('m', [0, 0], flags, scan=0,
-                                 mouseData=mouseData)
+                macro.SendInput('m', [0, 0], flags, scan=0,
+                                 mouse_data=mouseData)
             if cmd == 'url':
                 webbrowser.open(target)
             if cmd == 'set' and target == 'responsive':
