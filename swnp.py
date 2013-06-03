@@ -29,12 +29,12 @@ from wos import CloseError
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('swnp')
 
-PGM_IP = "239.128.128.1:5555"
+PGM_IP = '239.128.128.1:5555'
 PREFIX_CHOICES = ['JOIN', 'LEAVE', 'SYNC', 'MSG', 'PING', 'PONG']
 TIMEOUT = 10
 PING_RATE = 2
-sys.stdout = open("data\swnp_stdout.log", "wb")
-sys.stderr = open("data\swnp_stderr.log", "wb")
+sys.stdout = open(r'data\swnp_stdout.log', 'wb')
+sys.stderr = open(r'data\swnp_stderr.log', 'wb')
 
 TLDR = True
 
@@ -301,14 +301,15 @@ class SWNP:
         while not self.timeout_stop.isSet():
             try:
                 to_be_removed = []
+                ct = datetime.now()
                 for node in list(self.NODE_LIST):
-                    if not node == self.node and (
-                            datetime.now() - node.timestamp > timeout):
+                    if (not node == self.node and
+                            (ct - node.timestamp > timeout)):
                         to_be_removed.append(node)
                 for node in to_be_removed:
                     self.NODE_LIST.discard(node)
                 if len(to_be_removed) > 0:
-                    pub.sendMessage("update_screens", update=True)
+                    pub.sendMessage('update_screens', update=True)
             except Exception, e:
                 logger.exception('Timeout Exception: %s', str(e))
             sleep(TIMEOUT)
@@ -360,8 +361,8 @@ class SWNP:
         """
         Subscriber routine for the node ID.
 
-        :param sub_url: Subscribing URL.
-        :type sub_url: String
+        :param sub_urls: Subscribing URLs.
+        :type sub_urls: List of Strings
 
         :param context: ZeroMQ context for message sending.
         :type context: :class:`zmq.core.context.Context`
@@ -438,8 +439,8 @@ class SWNP:
         """
         Subscriber routine for the node ID.
 
-        :param sub_url: Subscribing URL.
-        :type sub_url: String
+        :param sub_urls: Subscribing URLs.
+        :type sub_urls: List of Strings
 
         :param context: ZeroMQ context for message sending.
         :type context: :class:`zmq.core.context.Context`
@@ -499,7 +500,10 @@ class SWNP:
         (subscriber.close() for subscriber in subscribers)
 
     def shutdown(self):
-        """shuts down all connections, no exit."""
+        """
+        Shuts down all connections, no exit.
+
+        """
         global TLDR
         i = 0
         limit = 5
@@ -519,7 +523,10 @@ class SWNP:
             self.context.term()
 
     def close(self):
-        """Closes all connections and exits."""
+        """
+        Closes all connections and exits.
+
+        """
         global TLDR
         self.ping_stop.set()
         self.timeout_stop.set()
@@ -552,12 +559,15 @@ class SWNP:
         logger.debug('swnp closed completely')
 
     def send(self, tag, prefix, message):
-        """Send a message to the network.
+        """
+        Send a message to the network.
 
         :param tag: The tag of the message; recipient.
         :type tag: String
+
         :param prefix: The prefix of the message.
         :type prefix: String
+
         :param message: The payload of the message.
         :type message: String
 
@@ -582,9 +592,10 @@ class SWNP:
                                                            str(message)))
 
     def get_buffer(self):
-        """Gets the buffered messages and returns them
+        """
+        Gets the buffered messages and returns them
 
-        :rtype: json.
+        :rtype: json
 
         """
         buffer_json = json.dumps(self.MSG_BUFFER, default=Message.to_dict)
@@ -592,9 +603,10 @@ class SWNP:
         return buffer_json
 
     def get_list(self):
-        """Returns a list of all nodes
+        """
+        Returns a list of all nodes
 
-        :rtype: list.
+        :rtype: list
 
         """
         ls = []
@@ -603,7 +615,8 @@ class SWNP:
         return ls
 
     def get_screen_list(self):
-        """Returns a list of screens nodes.
+        """
+        Returns a list of screens nodes.
 
         :rtype: list.
 
@@ -615,7 +628,8 @@ class SWNP:
         return ls
 
     def sys_handler(self, msg):
-        """Handler for "SYS" messages.
+        """
+        Handler for "SYS" messages.
 
         :param msg: The received message.
         :type msg: :class:`swnp.Message`
@@ -645,7 +659,8 @@ class SWNP:
             self.ping_handler(msg.PAYLOAD)
 
     def ping_handler(self, payload):
-        """A handler for PING messages. Sends update_screens, if necessary.
+        """
+        A handler for PING messages. Sends update_screens, if necessary.
 
         :param payload: The payload of a PING message.
         :type payload: String
@@ -670,10 +685,12 @@ class SWNP:
             pub.sendMessage("update_screens", update=True)
 
     def find_node(self, node_id):
-        """Search the node list for a specific node.
+        """
+        Search the node list for a specific node.
 
         :param node_id: The id of the searched node.
-        :type node_id: Integer.
+        :type node_id: Integer
+
         :rtype: :class:`swnp.Node`
 
         """

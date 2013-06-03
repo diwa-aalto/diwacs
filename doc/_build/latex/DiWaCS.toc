@@ -7,8 +7,8 @@
 \contentsline {section}{\numberline {1.5}Macro module}{8}{section.1.5}
 \contentsline {section}{\numberline {1.6}Models module}{10}{section.1.6}
 \contentsline {section}{\numberline {1.7}SWNP module}{14}{section.1.7}
-\contentsline {section}{\numberline {1.8}Utils module}{16}{section.1.8}
-\contentsline {section}{\numberline {1.9}Wos module}{17}{section.1.9}
+\contentsline {section}{\numberline {1.8}Utils module}{17}{section.1.8}
+\contentsline {section}{\numberline {1.9}Wos module}{18}{section.1.9}
 \contentsline {chapter}{\numberline {2}Bugs}{25}{chapter.2}
 \contentsline {chapter}{\numberline {3}Features}{27}{chapter.3}
 \contentsline {chapter}{\numberline {4}License}{29}{chapter.4}
@@ -30,5 +30,5 @@
 \contentsline {section}{\numberline {4.16}Appendix}{33}{section.4.16}
 \contentsline {chapter}{\numberline {5}User Interface}{35}{chapter.5}
 \contentsline {chapter}{\numberline {6}Indices and tables}{37}{chapter.6}
-\contentsline {chapter}{Python Module Index}{39}{section*.189}
-\contentsline {chapter}{Index}{41}{section*.190}
+\contentsline {chapter}{Python Module Index}{39}{section*.191}
+\contentsline {chapter}{Index}{41}{section*.192}
