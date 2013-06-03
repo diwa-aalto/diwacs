@@ -351,10 +351,11 @@ class BlackOverlay(wx.Frame):
 
 
 class WORKER_THREAD(threading.Thread):
-    """ Worker thread for non-UI jobs.
+    """
+    Worker thread for non-UI jobs.
 
-    :param context: Context for creating sockets.
-    :type context: ZeroMQ context
+    :param context: ZeroMQ Context for creating sockets.
+    :type context: :py:class:`zmq.Context`
 
     :param send_file: Sends files.
     :type send_file: Function

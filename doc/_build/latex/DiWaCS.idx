@@ -119,7 +119,7 @@
 \indexentry{BlackOverlay (class in wos)|hyperpage}{18}
 \indexentry{CHECK\_UPDATE (class in wos)|hyperpage}{18}
 \indexentry{CONN\_ERR\_TH (class in wos)|hyperpage}{18}
-\indexentry{run() (wos.CONN\_ERR\_TH method)|hyperpage}{18}
+\indexentry{run() (wos.CONN\_ERR\_TH method)|hyperpage}{19}
 \indexentry{CURRENT\_PROJECT (class in wos)|hyperpage}{19}
 \indexentry{run() (wos.CURRENT\_PROJECT method)|hyperpage}{19}
 \indexentry{stop() (wos.CURRENT\_PROJECT method)|hyperpage}{19}
@@ -127,13 +127,16 @@
 \indexentry{run() (wos.CURRENT\_SESSION method)|hyperpage}{19}
 \indexentry{stop() (wos.CURRENT\_SESSION method)|hyperpage}{19}
 \indexentry{CloseError|hyperpage}{19}
+\indexentry{ConnectionErrorDialog (class in wos)|hyperpage}{19}
+\indexentry{CreateProjectDialog (class in wos)|hyperpage}{19}
+\indexentry{DeleteProjectDialog (class in wos)|hyperpage}{19}
 \indexentry{DropTarget (class in wos)|hyperpage}{19}
 \indexentry{OnData() (wos.DropTarget method)|hyperpage}{19}
 \indexentry{EventList (class in wos)|hyperpage}{19}
 \indexentry{GetIcon() (wos.EventList method)|hyperpage}{19}
 \indexentry{GUI (class in wos)|hyperpage}{19}
-\indexentry{AlignCenterTop() (wos.GUI method)|hyperpage}{19}
-\indexentry{CreateConfig() (wos.GUI method)|hyperpage}{19}
+\indexentry{AlignCenterTop() (wos.GUI method)|hyperpage}{20}
+\indexentry{CreateConfig() (wos.GUI method)|hyperpage}{20}
 \indexentry{GetIcon() (wos.GUI method)|hyperpage}{20}
 \indexentry{HandleFileSend() (wos.GUI method)|hyperpage}{20}
 \indexentry{HideScreens() (wos.GUI method)|hyperpage}{20}
@@ -147,8 +150,8 @@
 \indexentry{OnExit() (wos.GUI method)|hyperpage}{20}
 \indexentry{OnIconify() (wos.GUI method)|hyperpage}{20}
 \indexentry{OnProjectSelected() (wos.GUI method)|hyperpage}{20}
-\indexentry{OnSession() (wos.GUI method)|hyperpage}{20}
-\indexentry{OnTaskBarActivate() (wos.GUI method)|hyperpage}{20}
+\indexentry{OnSession() (wos.GUI method)|hyperpage}{21}
+\indexentry{OnTaskBarActivate() (wos.GUI method)|hyperpage}{21}
 \indexentry{OnTaskBarClose() (wos.GUI method)|hyperpage}{21}
 \indexentry{OpenProjectDir() (wos.GUI method)|hyperpage}{21}
 \indexentry{PaintSelect() (wos.GUI method)|hyperpage}{21}
@@ -159,18 +162,19 @@
 \indexentry{SetProjectObserver() (wos.GUI method)|hyperpage}{21}
 \indexentry{SetScanObserver() (wos.GUI method)|hyperpage}{21}
 \indexentry{Shift() (wos.GUI method)|hyperpage}{21}
-\indexentry{ShowPreferences() (wos.GUI method)|hyperpage}{21}
-\indexentry{StartCurrentProject() (wos.GUI method)|hyperpage}{21}
-\indexentry{StartCurrentSession() (wos.GUI method)|hyperpage}{21}
+\indexentry{ShowPreferences() (wos.GUI method)|hyperpage}{22}
+\indexentry{StartCurrentProject() (wos.GUI method)|hyperpage}{22}
+\indexentry{StartCurrentSession() (wos.GUI method)|hyperpage}{22}
 \indexentry{SwnpSend() (wos.GUI method)|hyperpage}{22}
 \indexentry{UpdateScreens() (wos.GUI method)|hyperpage}{22}
 \indexentry{INPUT\_CAPTURE (class in wos)|hyperpage}{22}
+\indexentry{OnKeyboardEvent() (wos.INPUT\_CAPTURE method)|hyperpage}{22}
 \indexentry{OnMouseEvent() (wos.INPUT\_CAPTURE method)|hyperpage}{22}
 \indexentry{run() (wos.INPUT\_CAPTURE method)|hyperpage}{22}
-\indexentry{stop() (wos.INPUT\_CAPTURE method)|hyperpage}{22}
-\indexentry{MySplashScreen (class in wos)|hyperpage}{22}
-\indexentry{PreferencesDialog (class in wos)|hyperpage}{22}
-\indexentry{loadPreferences() (wos.PreferencesDialog method)|hyperpage}{22}
+\indexentry{stop() (wos.INPUT\_CAPTURE method)|hyperpage}{23}
+\indexentry{MySplashScreen (class in wos)|hyperpage}{23}
+\indexentry{PreferencesDialog (class in wos)|hyperpage}{23}
+\indexentry{loadPreferences() (wos.PreferencesDialog method)|hyperpage}{23}
 \indexentry{onCancel() (wos.PreferencesDialog method)|hyperpage}{23}
 \indexentry{openConfig() (wos.PreferencesDialog method)|hyperpage}{23}
 \indexentry{savePreferences() (wos.PreferencesDialog method)|hyperpage}{23}
@@ -181,8 +185,9 @@
 \indexentry{EditEvent() (wos.ProjectSelectDialog method)|hyperpage}{23}
 \indexentry{GetProjects() (wos.ProjectSelectDialog method)|hyperpage}{23}
 \indexentry{SelEvent() (wos.ProjectSelectDialog method)|hyperpage}{23}
-\indexentry{onCancel() (wos.ProjectSelectDialog method)|hyperpage}{23}
-\indexentry{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in wos)|hyperpage}{23}
+\indexentry{onCancel() (wos.ProjectSelectDialog method)|hyperpage}{24}
+\indexentry{ProjectSelectedDialog (class in wos)|hyperpage}{24}
+\indexentry{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in wos)|hyperpage}{24}
 \indexentry{run() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{24}
 \indexentry{stop() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{24}
 \indexentry{SetLoggerLevel() (in module wos)|hyperpage}{24}
@@ -192,6 +197,6 @@
 \indexentry{UpdateDialog (class in wos)|hyperpage}{24}
 \indexentry{WORKER\_THREAD (class in wos)|hyperpage}{24}
 \indexentry{AddProjectReg() (wos.WORKER\_THREAD method)|hyperpage}{24}
-\indexentry{AddRegEntry() (wos.WORKER\_THREAD method)|hyperpage}{24}
-\indexentry{RemoveAllRegEntries() (wos.WORKER\_THREAD method)|hyperpage}{24}
-\indexentry{parseConfig() (wos.WORKER\_THREAD method)|hyperpage}{24}
+\indexentry{AddRegEntry() (wos.WORKER\_THREAD method)|hyperpage}{25}
+\indexentry{RemoveAllRegEntries() (wos.WORKER\_THREAD method)|hyperpage}{25}
+\indexentry{parseConfig() (wos.WORKER\_THREAD method)|hyperpage}{25}

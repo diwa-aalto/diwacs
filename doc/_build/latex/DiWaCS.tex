@@ -150,7 +150,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-06-03 at 12:43.
+Documentation generated on 2013-06-03 at 16:15.
 
 
 \section{Add file module}
@@ -2093,7 +2093,7 @@ A dialog for adding a new project
 \textbf{parent} (\code{wx.Frame}) -- Parent frame.
 
 \item {} 
-\textbf{title} (\emph{String.}) -- A title for the dialog.
+\textbf{title} (\emph{String}) -- A title for the dialog.
 
 \end{itemize}
 
@@ -2102,11 +2102,11 @@ A dialog for adding a new project
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AddProjectDialog.OnAdd}\pysiglinewithargsret{\bfcode{OnAdd}}{\emph{e}}{}
-Handles the addition of a project to database, when
-``Add'' button is pressed.
+Handles the addition of a project to database, when ``Add'' button
+is pressed.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{e} (\emph{Event.}) -- GUI Event.
+\textbf{e} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2116,9 +2116,12 @@ Handles the addition of a project to database, when
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.AddProjectDialog.OnClose}\pysiglinewithargsret{\bfcode{OnClose}}{\emph{e}}{}
-Handles ``Close'' button presses
-:param e: GUI Event.
-:type e: Event.
+Handles ``Close'' button presses.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{e} (\emph{Event}) -- GUI Event.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2208,7 +2211,7 @@ the old instance is terminated.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{project\_id} (\emph{Integer.}) -- Project id from the database.
+\textbf{project\_id} (\emph{Integer}) -- Project id from the database.
 
 \item {} 
 \textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
@@ -2240,12 +2243,12 @@ Stops the thread.
 \begin{fulllineitems}
 \phantomsection\label{api:wos.CURRENT_SESSION}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_SESSION}}{\emph{parent}, \emph{swnp}}{}
 Thread for transmitting current session id, when one is started by
-the user.  When the session is ended, by any Chimaira instance, the
+the user.  When the session is ended, by any DiWaCS instance, the
 instance is terminated.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{session\_id} (\emph{Integer.}) -- Session id from the database.
+\textbf{session\_id} (\emph{Integer}) -- Session id from the database.
 
 \item {} 
 \textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
@@ -2280,6 +2283,31 @@ Class describing an error while closing application.
 
 \end{fulllineitems}
 
+\index{ConnectionErrorDialog (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.ConnectionErrorDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ConnectionErrorDialog}}{\emph{parent}}{}
+Create a connection error dialog that informs the user about reconnection
+attempts made by the software.
+
+\end{fulllineitems}
+
+\index{CreateProjectDialog (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.CreateProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CreateProjectDialog}}{\emph{parent}}{}
+A dialog for project creation.
+
+\end{fulllineitems}
+
+\index{DeleteProjectDialog (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.DeleteProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DeleteProjectDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+A dialog for deleting project.
+
+\end{fulllineitems}
+
 \index{DropTarget (class in wos)}
 
 \begin{fulllineitems}
@@ -2289,7 +2317,7 @@ Implements drop target functionality to receive files, bitmaps and text.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.DropTarget.OnData}\pysiglinewithargsret{\bfcode{OnData}}{\emph{x}, \emph{y}, \emph{d}}{}
-Handles drag/dropping files/text or a bitmap
+Handles drag/dropping files/text or a bitmap.
 
 \end{fulllineitems}
 
@@ -2300,8 +2328,8 @@ Handles drag/dropping files/text or a bitmap
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.EventList}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{EventList}}{\emph{parent}, \emph{*args}, \emph{**kwargs}}{}
-A Frame which displays the possible event titles and
-handles the event creation.
+A Frame which displays the possible event titles and handles the event
+creation.
 \index{GetIcon() (wos.EventList method)}
 
 \begin{fulllineitems}
@@ -2309,7 +2337,7 @@ handles the event creation.
 Fetches gui icons.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{icon} (\emph{String.}) -- The icon file name.
+\textbf{icon} (\emph{String}) -- The icon file name.
 
 \item[{Return type}] \leavevmode
 \code{wx.Image}
@@ -2325,14 +2353,14 @@ Fetches gui icons.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{GUI}}{\emph{parent}, \emph{title}}{}
-WOS Application Frame
+WOS Application Frame.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \textbf{parent} (\code{wx.Frame}) -- Parent frame.
 
 \item {} 
-\textbf{title} (\emph{String.}) -- Title for the frame
+\textbf{title} (\emph{String}) -- Title for the frame
 
 \end{itemize}
 
@@ -2341,7 +2369,7 @@ WOS Application Frame
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.AlignCenterTop}\pysiglinewithargsret{\bfcode{AlignCenterTop}}{}{}
-Aligns frame to Horizontal center and vertical top
+Aligns frame to Horizontal center and vertical top.
 
 \end{fulllineitems}
 
@@ -2349,7 +2377,7 @@ Aligns frame to Horizontal center and vertical top
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.CreateConfig}\pysiglinewithargsret{\bfcode{CreateConfig}}{}{}
-Creates a config file
+Creates a config file.
 
 \end{fulllineitems}
 
@@ -2373,7 +2401,7 @@ Fetches gui icons.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.HandleFileSend}\pysiglinewithargsret{\bfcode{HandleFileSend}}{\emph{filename}}{}
-Sends a file link to another node
+Sends a file link to another node.
 
 \end{fulllineitems}
 
@@ -2381,7 +2409,7 @@ Sends a file link to another node
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.HideScreens}\pysiglinewithargsret{\bfcode{HideScreens}}{}{}
-Hides all screens
+Hides all screens.
 
 \end{fulllineitems}
 
@@ -2389,7 +2417,7 @@ Hides all screens
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.InitScreens}\pysiglinewithargsret{\bfcode{InitScreens}}{}{}
-Inits Screens
+Inits Screens.
 
 \end{fulllineitems}
 
@@ -2397,7 +2425,7 @@ Inits Screens
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.InitUI}\pysiglinewithargsret{\bfcode{InitUI}}{}{}
-UI initing
+UI initing.
 
 \end{fulllineitems}
 
@@ -2405,7 +2433,7 @@ UI initing
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.LoadConfig}\pysiglinewithargsret{\bfcode{LoadConfig}}{}{}
-Loads a config file or creates one
+Loads a config file or creates one.
 
 \end{fulllineitems}
 
@@ -2413,7 +2441,7 @@ Loads a config file or creates one
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.MessageHandler}\pysiglinewithargsret{\bfcode{MessageHandler}}{\emph{message}}{}
-Message handler for received messages
+Message handler for received messages.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{message} (an instance of {\hyperref[api:swnp.Message]{\code{swnp.Message}}}) -- Received message.
@@ -2429,7 +2457,7 @@ Message handler for received messages
 About dialog.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{e} (\emph{Event.}) -- GUI Event.
+\textbf{e} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2439,7 +2467,7 @@ About dialog.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnCreateTables}\pysiglinewithargsret{\bfcode{OnCreateTables}}{\emph{evt}}{}
-Create necessary db tables
+Create necessary db tables.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event}) -- GUI event.
@@ -2455,7 +2483,7 @@ Create necessary db tables
 Event Button handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2468,7 +2496,7 @@ Event Button handler.
 Exits program.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI Event
+\textbf{event} (\emph{Event}) -- GUI Event
 
 \end{description}\end{quote}
 
@@ -2478,10 +2506,10 @@ Exits program.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnIconify}\pysiglinewithargsret{\bfcode{OnIconify}}{\emph{unused\_event}}{}
-Window minimize event handler
+Window minimize event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2499,7 +2527,7 @@ Project selected event handler.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OnSession}\pysiglinewithargsret{\bfcode{OnSession}}{\emph{evt}}{}
-Session button pressed
+Session button pressed.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\emph{Event}) -- GUI Event.
@@ -2515,7 +2543,7 @@ Session button pressed
 Taskbar activate event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2528,7 +2556,7 @@ Taskbar activate event handler.
 Taskbar close event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2538,10 +2566,10 @@ Taskbar close event handler.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.OpenProjectDir}\pysiglinewithargsret{\bfcode{OpenProjectDir}}{\emph{evt}}{}
-Opens project directory in windows explorer
+Opens project directory in windows explorer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{event.}) -- The GUI event.
+\textbf{evt} (\emph{Event}) -- The GUI event.
 
 \end{description}\end{quote}
 
@@ -2558,7 +2586,7 @@ For future use.
 \end{notice}
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event
+\textbf{evt} (\emph{Event}) -- GUI Event
 
 \end{description}\end{quote}
 
@@ -2575,7 +2603,7 @@ For future use.
 \end{notice}
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event
+\textbf{evt} (\emph{Event}) -- GUI Event
 
 \end{description}\end{quote}
 
@@ -2611,7 +2639,7 @@ Start current project loop.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.SetCurrentSession}\pysiglinewithargsret{\bfcode{SetCurrentSession}}{\emph{session\_id}}{}
-Set current session
+Set current session.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{session\_id} (\emph{Integer}) -- a session id from database.
@@ -2643,7 +2671,7 @@ Observer for created files in scanned or taken with camera.
 Caroussel Shift function.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2653,10 +2681,10 @@ Caroussel Shift function.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.ShowPreferences}\pysiglinewithargsret{\bfcode{ShowPreferences}}{\emph{evt}}{}
-Preferences dialog event handler
+Preferences dialog event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event.}) -- GUI Event.
+\textbf{evt} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2666,7 +2694,7 @@ Preferences dialog event handler
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.StartCurrentProject}\pysiglinewithargsret{\bfcode{StartCurrentProject}}{}{}
-Start current project loop
+Start current project loop.
 
 \end{fulllineitems}
 
@@ -2686,10 +2714,10 @@ Sends a message to the node.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{node} (\emph{String.}) -- The node for which to send a message.
+\textbf{node} (\emph{String}) -- The node for which to send a message.
 
 \item {} 
-\textbf{message} (\emph{String.}) -- The message.
+\textbf{message} (\emph{String}) -- The message.
 
 \end{itemize}
 
@@ -2701,7 +2729,7 @@ Sends a message to the node.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.GUI.UpdateScreens}\pysiglinewithargsret{\bfcode{UpdateScreens}}{\emph{update}}{}
-Called when screens need to be updated and redrawn
+Called when screens need to be updated and redrawn.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{update} (\emph{Boolean}) -- Pubsub needs one param, therefore it is called update.
@@ -2721,7 +2749,7 @@ Thread for capturing input from mouse/keyboard.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{parent} ({\hyperref[api:wos.GUI]{\code{GUI}}}.) -- Parent instance.
+\textbf{parent} ({\hyperref[api:wos.GUI]{\code{GUI}}}) -- Parent instance.
 
 \item {} 
 \textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
@@ -2729,10 +2757,20 @@ Thread for capturing input from mouse/keyboard.
 \end{itemize}
 
 \end{description}\end{quote}
+\index{OnKeyboardEvent() (wos.INPUT\_CAPTURE method)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.INPUT_CAPTURE.OnKeyboardEvent}\pysiglinewithargsret{\bfcode{OnKeyboardEvent}}{\emph{event}}{}
+Called when keyboard events are received.
+
+\end{fulllineitems}
+
 \index{OnMouseEvent() (wos.INPUT\_CAPTURE method)}
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.INPUT_CAPTURE.OnMouseEvent}\pysiglinewithargsret{\bfcode{OnMouseEvent}}{\emph{event}}{}
+Called when mouse events are received.
+
 WM\_MOUSEFIRST = 0x200
 
 WM\_MOUSEMOVE = 0x200
@@ -2803,7 +2841,7 @@ change some settings.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.PreferencesDialog.loadPreferences}\pysiglinewithargsret{\bfcode{loadPreferences}}{}{}
-Load the current preferences and fills the text controls
+Load the current preferences and fills the text controls.
 
 \end{fulllineitems}
 
@@ -2814,7 +2852,7 @@ Load the current preferences and fills the text controls
 Closes the dialog without modifications.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI event.
+\textbf{event} (\emph{Event}) -- GUI event.
 
 \end{description}\end{quote}
 
@@ -2827,7 +2865,7 @@ Closes the dialog without modifications.
 Opens config file.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI event.
+\textbf{event} (\emph{Event}) -- GUI event.
 
 \end{description}\end{quote}
 
@@ -2840,7 +2878,7 @@ Opens config file.
 Save the preferences.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI Event.
+\textbf{event} (\emph{Event}) -- GUI Event.
 
 \end{description}\end{quote}
 
@@ -2915,7 +2953,7 @@ Shows a modal dialog for adding a new project.
 Fetches all projects from the database, based on the company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{company\_id} (\emph{Integer.}) -- A company id, the owner of the projects.
+\textbf{company\_id} (\emph{Integer}) -- A company id, the owner of the projects.
 
 \end{description}\end{quote}
 
@@ -2953,6 +2991,14 @@ Handles ``Cancel'' button presses.
 
 \end{fulllineitems}
 
+\index{ProjectSelectedDialog (class in wos)}
+
+\begin{fulllineitems}
+\phantomsection\label{api:wos.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+A dialog for project selection confirmation.
+
+\end{fulllineitems}
+
 \index{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in wos)}
 
 \begin{fulllineitems}
@@ -2961,13 +3007,13 @@ Thread for OS contex menu actions like file sending to other node.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{context} (\emph{ZeroMQ context.}) -- Context for creating sockets.
+\textbf{context} (\code{zmq.Context}) -- ZeroMQ Context for creating sockets.
 
 \item {} 
-\textbf{send\_file} (\emph{Function.}) -- Sends files.
+\textbf{send\_file} (\emph{Function}) -- Sends files.
 
 \item {} 
-\textbf{handle\_file} (\emph{Function.}) -- Handles files
+\textbf{handle\_file} (\emph{Function}) -- Handles files.
 
 \end{itemize}
 
@@ -2996,8 +3042,11 @@ Stops the thread
 \begin{fulllineitems}
 \phantomsection\label{api:wos.SetLoggerLevel}\pysiglinewithargsret{\code{wos.}\bfcode{SetLoggerLevel}}{\emph{level}}{}
 Used to set wos\_logger level.
-:param level: The level desired.
-:type level: Integer
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{level} (\emph{Integer}) -- The level desired.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -3015,7 +3064,7 @@ Taskbar Icon class.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.SysTray.CreateMenu}\pysiglinewithargsret{\bfcode{CreateMenu}}{}{}
-Create systray menu
+Create systray menu.
 
 \end{fulllineitems}
 
@@ -3023,10 +3072,10 @@ Create systray menu
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.SysTray.ShowMenu}\pysiglinewithargsret{\bfcode{ShowMenu}}{\emph{event}}{}
-Show popup menu
+Show popup menu.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{event} (\emph{Event.}) -- GUI event.
+\textbf{event} (\emph{Event}) -- GUI event.
 
 \end{description}\end{quote}
 
@@ -3063,13 +3112,13 @@ Worker thread for non-UI jobs.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{context} (\emph{ZeroMQ context.}) -- Context for creating sockets.
+\textbf{context} (\code{zmq.Context}) -- ZeroMQ Context for creating sockets.
 
 \item {} 
-\textbf{send\_file} (\emph{Function.}) -- Sends files.
+\textbf{send\_file} (\emph{Function}) -- Sends files.
 
 \item {} 
-\textbf{handle\_file} (\emph{Function.}) -- Handles files
+\textbf{handle\_file} (\emph{Function}) -- Handles files
 
 \end{itemize}
 
@@ -3120,7 +3169,7 @@ Removes all related registry entries.
 
 \begin{fulllineitems}
 \phantomsection\label{api:wos.WORKER_THREAD.parseConfig}\pysiglinewithargsret{\bfcode{parseConfig}}{\emph{config}}{}
-Handles config file settings
+Handles config file settings.
 
 \end{fulllineitems}
 

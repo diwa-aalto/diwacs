@@ -9,26 +9,26 @@
 \contentsline {section}{\numberline {1.7}SWNP module}{14}{section.1.7}
 \contentsline {section}{\numberline {1.8}Utils module}{17}{section.1.8}
 \contentsline {section}{\numberline {1.9}Wos module}{18}{section.1.9}
-\contentsline {chapter}{\numberline {2}Bugs}{25}{chapter.2}
-\contentsline {chapter}{\numberline {3}Features}{27}{chapter.3}
-\contentsline {chapter}{\numberline {4}License}{29}{chapter.4}
-\contentsline {section}{\numberline {4.1}1. Definitions}{29}{section.4.1}
-\contentsline {section}{\numberline {4.2}2. Scope of the rights granted by the Licence}{30}{section.4.2}
-\contentsline {section}{\numberline {4.3}3. Communication of the Source Code}{30}{section.4.3}
-\contentsline {section}{\numberline {4.4}4. Limitations on copyright}{30}{section.4.4}
-\contentsline {section}{\numberline {4.5}5. Obligations of the Licensee}{30}{section.4.5}
-\contentsline {section}{\numberline {4.6}6. Chain of Authorship}{31}{section.4.6}
-\contentsline {section}{\numberline {4.7}7. Disclaimer of Warranty}{31}{section.4.7}
-\contentsline {section}{\numberline {4.8}8. Disclaimer of Liability}{31}{section.4.8}
-\contentsline {section}{\numberline {4.9}9. Additional agreements}{32}{section.4.9}
-\contentsline {section}{\numberline {4.10}10. Acceptance of the Licence}{32}{section.4.10}
-\contentsline {section}{\numberline {4.11}11. Information to the public}{32}{section.4.11}
-\contentsline {section}{\numberline {4.12}12. Termination of the Licence}{32}{section.4.12}
-\contentsline {section}{\numberline {4.13}13. Miscellaneous}{32}{section.4.13}
-\contentsline {section}{\numberline {4.14}14. Jurisdiction}{33}{section.4.14}
-\contentsline {section}{\numberline {4.15}15. Applicable Law}{33}{section.4.15}
-\contentsline {section}{\numberline {4.16}Appendix}{33}{section.4.16}
-\contentsline {chapter}{\numberline {5}User Interface}{35}{chapter.5}
-\contentsline {chapter}{\numberline {6}Indices and tables}{37}{chapter.6}
-\contentsline {chapter}{Python Module Index}{39}{section*.191}
-\contentsline {chapter}{Index}{41}{section*.192}
+\contentsline {chapter}{\numberline {2}Bugs}{27}{chapter.2}
+\contentsline {chapter}{\numberline {3}Features}{29}{chapter.3}
+\contentsline {chapter}{\numberline {4}License}{31}{chapter.4}
+\contentsline {section}{\numberline {4.1}1. Definitions}{31}{section.4.1}
+\contentsline {section}{\numberline {4.2}2. Scope of the rights granted by the Licence}{32}{section.4.2}
+\contentsline {section}{\numberline {4.3}3. Communication of the Source Code}{32}{section.4.3}
+\contentsline {section}{\numberline {4.4}4. Limitations on copyright}{32}{section.4.4}
+\contentsline {section}{\numberline {4.5}5. Obligations of the Licensee}{32}{section.4.5}
+\contentsline {section}{\numberline {4.6}6. Chain of Authorship}{33}{section.4.6}
+\contentsline {section}{\numberline {4.7}7. Disclaimer of Warranty}{33}{section.4.7}
+\contentsline {section}{\numberline {4.8}8. Disclaimer of Liability}{33}{section.4.8}
+\contentsline {section}{\numberline {4.9}9. Additional agreements}{34}{section.4.9}
+\contentsline {section}{\numberline {4.10}10. Acceptance of the Licence}{34}{section.4.10}
+\contentsline {section}{\numberline {4.11}11. Information to the public}{34}{section.4.11}
+\contentsline {section}{\numberline {4.12}12. Termination of the Licence}{34}{section.4.12}
+\contentsline {section}{\numberline {4.13}13. Miscellaneous}{34}{section.4.13}
+\contentsline {section}{\numberline {4.14}14. Jurisdiction}{35}{section.4.14}
+\contentsline {section}{\numberline {4.15}15. Applicable Law}{35}{section.4.15}
+\contentsline {section}{\numberline {4.16}Appendix}{35}{section.4.16}
+\contentsline {chapter}{\numberline {5}User Interface}{37}{chapter.5}
+\contentsline {chapter}{\numberline {6}Indices and tables}{39}{chapter.6}
+\contentsline {chapter}{Python Module Index}{41}{section*.196}
+\contentsline {chapter}{Index}{43}{section*.197}

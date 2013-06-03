@@ -10,9 +10,9 @@
   \item AddProject() (in module controller), \hyperpage{4}
   \item AddProjectDialog (class in wos), \hyperpage{18}
   \item AddProjectReg() (wos.WORKER\_THREAD method), \hyperpage{24}
-  \item AddRegEntry() (wos.WORKER\_THREAD method), \hyperpage{24}
+  \item AddRegEntry() (wos.WORKER\_THREAD method), \hyperpage{25}
   \item addUser() (models.Session method), \hyperpage{13}
-  \item AlignCenterTop() (wos.GUI method), \hyperpage{19}
+  \item AlignCenterTop() (wos.GUI method), \hyperpage{20}
   \item AudioRecorder (class in wos), \hyperpage{18}
 
   \indexspace
@@ -29,20 +29,23 @@
   \item Company (class in models), \hyperpage{10}
   \item Computer (class in models), \hyperpage{11}
   \item CONN\_ERR\_TH (class in wos), \hyperpage{18}
+  \item ConnectionErrorDialog (class in wos), \hyperpage{19}
   \item ConnectToDatabase() (in module controller), \hyperpage{4}
   \item controller (module), \hyperpage{4}
   \item CopyFileToProject() (in module filesystem), \hyperpage{7}
   \item CopyToTemp() (in module filesystem), \hyperpage{7}
   \item CreateAll() (in module controller), \hyperpage{4}
-  \item CreateConfig() (wos.GUI method), \hyperpage{19}
+  \item CreateConfig() (wos.GUI method), \hyperpage{20}
   \item CreateFileaction() (in module controller), \hyperpage{4}
   \item CreateMenu() (wos.SysTray method), \hyperpage{24}
+  \item CreateProjectDialog (class in wos), \hyperpage{19}
   \item CreateProjectDir() (in module filesystem), \hyperpage{7}
   \item CURRENT\_PROJECT (class in wos), \hyperpage{19}
   \item CURRENT\_SESSION (class in wos), \hyperpage{19}
 
   \indexspace
 
+  \item DeleteProjectDialog (class in wos), \hyperpage{19}
   \item DeleteRecord() (in module controller), \hyperpage{5}
   \item DelEvent() (wos.ProjectSelectDialog method), \hyperpage{23}
   \item do\_ping() (swnp.SWNP method), \hyperpage{15}
@@ -119,7 +122,7 @@
 
   \item LoadConfig() (wos.GUI method), \hyperpage{20}
   \item loadPreferences() (wos.PreferencesDialog method), 
-		\hyperpage{22}
+		\hyperpage{23}
 
   \indexspace
 
@@ -135,7 +138,7 @@
   \item models (module), \hyperpage{10}
   \item Move() (in module macro), \hyperpage{8}
   \item MoveTo() (in module macro), \hyperpage{9}
-  \item MySplashScreen (class in wos), \hyperpage{22}
+  \item MySplashScreen (class in wos), \hyperpage{23}
 
   \indexspace
 
@@ -153,17 +156,18 @@
   \item OnAboutBox() (wos.GUI method), \hyperpage{20}
   \item OnAdd() (wos.AddProjectDialog method), \hyperpage{18}
   \item onCancel() (wos.PreferencesDialog method), \hyperpage{23}
-  \item onCancel() (wos.ProjectSelectDialog method), \hyperpage{23}
+  \item onCancel() (wos.ProjectSelectDialog method), \hyperpage{24}
   \item OnClose() (wos.AddProjectDialog method), \hyperpage{18}
   \item OnCreateTables() (wos.GUI method), \hyperpage{20}
   \item OnData() (wos.DropTarget method), \hyperpage{19}
   \item OnEvtBtn() (wos.GUI method), \hyperpage{20}
   \item OnExit() (wos.GUI method), \hyperpage{20}
   \item OnIconify() (wos.GUI method), \hyperpage{20}
+  \item OnKeyboardEvent() (wos.INPUT\_CAPTURE method), \hyperpage{22}
   \item OnMouseEvent() (wos.INPUT\_CAPTURE method), \hyperpage{22}
   \item OnProjectSelected() (wos.GUI method), \hyperpage{20}
-  \item OnSession() (wos.GUI method), \hyperpage{20}
-  \item OnTaskBarActivate() (wos.GUI method), \hyperpage{20}
+  \item OnSession() (wos.GUI method), \hyperpage{21}
+  \item OnTaskBarActivate() (wos.GUI method), \hyperpage{21}
   \item OnTaskBarClose() (wos.GUI method), \hyperpage{21}
   \item openConfig() (wos.PreferencesDialog method), \hyperpage{23}
   \item OpenFile() (in module filesystem), \hyperpage{7}
@@ -172,28 +176,29 @@
   \indexspace
 
   \item PaintSelect() (wos.GUI method), \hyperpage{21}
-  \item parseConfig() (wos.WORKER\_THREAD method), \hyperpage{24}
+  \item parseConfig() (wos.WORKER\_THREAD method), \hyperpage{25}
   \item ping\_handler() (swnp.SWNP method), \hyperpage{16}
   \item ping\_routine() (swnp.SWNP method), \hyperpage{16}
   \item POINT (class in macro), \hyperpage{9}
-  \item PreferencesDialog (class in wos), \hyperpage{22}
+  \item PreferencesDialog (class in wos), \hyperpage{23}
   \item Project (class in models), \hyperpage{12}
   \item PROJECT\_FILE\_EVENT\_HANDLER (class in controller), 
 		\hyperpage{6}
   \item ProjectAuthenticationDialog (class in wos), \hyperpage{23}
   \item ProjectSelectDialog (class in wos), \hyperpage{23}
+  \item ProjectSelectedDialog (class in wos), \hyperpage{24}
 
   \indexspace
 
   \item refresh() (swnp.Node method), \hyperpage{15}
   \item Release() (in module macro), \hyperpage{9}
   \item RemoveAllRegEntries() (wos.WORKER\_THREAD method), 
-		\hyperpage{24}
+		\hyperpage{25}
   \item RightClick() (in module macro), \hyperpage{9}
   \item RightHold() (in module macro), \hyperpage{9}
   \item RightRelease() (in module macro), \hyperpage{9}
   \item run() (wos.AudioRecorder method), \hyperpage{18}
-  \item run() (wos.CONN\_ERR\_TH method), \hyperpage{18}
+  \item run() (wos.CONN\_ERR\_TH method), \hyperpage{19}
   \item run() (wos.CURRENT\_PROJECT method), \hyperpage{19}
   \item run() (wos.CURRENT\_SESSION method), \hyperpage{19}
   \item run() (wos.INPUT\_CAPTURE method), \hyperpage{22}
@@ -213,7 +218,7 @@
   \item SelEvent() (wos.ProjectSelectDialog method), \hyperpage{23}
   \item send() (swnp.SWNP method), \hyperpage{16}
   \item SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in wos), 
-		\hyperpage{23}
+		\hyperpage{24}
   \item send\_file\_to (module), \hyperpage{3}
   \item SendInput() (in module macro), \hyperpage{9}
   \item Session (class in models), \hyperpage{13}
@@ -225,18 +230,18 @@
   \item SetScanObserver() (wos.GUI method), \hyperpage{21}
   \item Shift() (wos.GUI method), \hyperpage{21}
   \item ShowMenu() (wos.SysTray method), \hyperpage{24}
-  \item ShowPreferences() (wos.GUI method), \hyperpage{21}
+  \item ShowPreferences() (wos.GUI method), \hyperpage{22}
   \item shutdown() (swnp.SWNP method), \hyperpage{16}
   \item Slide() (in module macro), \hyperpage{9}
   \item SlideTo() (in module macro), \hyperpage{9}
   \item start() (models.Session method), \hyperpage{14}
-  \item StartCurrentProject() (wos.GUI method), \hyperpage{21}
-  \item StartCurrentSession() (wos.GUI method), \hyperpage{21}
+  \item StartCurrentProject() (wos.GUI method), \hyperpage{22}
+  \item StartCurrentSession() (wos.GUI method), \hyperpage{22}
   \item StartNewSession() (in module controller), \hyperpage{6}
   \item StartSubRoutine() (swnp.SWNP method), \hyperpage{15}
   \item stop() (wos.CURRENT\_PROJECT method), \hyperpage{19}
   \item stop() (wos.CURRENT\_SESSION method), \hyperpage{19}
-  \item stop() (wos.INPUT\_CAPTURE method), \hyperpage{22}
+  \item stop() (wos.INPUT\_CAPTURE method), \hyperpage{23}
   \item stop() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method), 
 		\hyperpage{24}
   \item sub\_routine() (swnp.SWNP method), \hyperpage{16}
