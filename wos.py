@@ -952,7 +952,8 @@ for Project %s" %self.project.name))
     def OnOk(self, unused_event):
         self.EndModal(0 if utils.CheckProjectPassword(self.project.id,
                                             self.password.GetValue()) else 1)
-        
+
+
 class ProjectSelectedDialog(wx.Dialog):
     def __init__(self, parent, title, project_id):
         super(ProjectSelectedDialog, self).__init__(parent=parent,
@@ -979,7 +980,7 @@ class ProjectSelectedDialog(wx.Dialog):
             self.EndModal(0)
 
     def OnOk(self, unused_event):
-        self.EndModal(0 if self.cb.GetValue() else 1)
+        self.EndModal(2 if self.cb.GetValue() else 1)
 
 
 class CreateProjectDialog(wx.Dialog):
@@ -994,7 +995,7 @@ class CreateProjectDialog(wx.Dialog):
         vbox.Add(wx.StaticText(self, -1, label="Folder name (optional)"), 0)
         self.dir = wx.TextCtrl(self, -1)
         vbox.Add(self.dir, 0)
-        
+
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         addBtn = wx.Button(self, -1, label="OK")
         addBtn.Bind(wx.EVT_BUTTON, self.OnAdd)
@@ -1213,7 +1214,8 @@ class ProjectSelectDialog(wx.Dialog):
 
     #----------------------------------------------------------------------
     def EditEvent(self, unused_event):
-        """Shows a modal dialog for adding a new project.
+        """
+        Shows a modal dialog for adding a new project.
 
         :param event: GUI Event.
         :type event: Event
@@ -1284,7 +1286,9 @@ class ProjectSelectDialog(wx.Dialog):
             dlg.Destroy()
 
     def SelEvent(self, unused_event):
-        """Handles the selection of a project.
+        """
+        Handles the selection of a project.
+
         Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
         Shows a dialog of the selected project.
 
@@ -1294,13 +1298,15 @@ class ProjectSelectDialog(wx.Dialog):
         """
         index = self.project_index[self.project_list.GetSelection()]
         if controller.GetProject(index).password:
-            auth = ProjectAuthenticationDialog(self.parent,'Project Authentication',
-                                                      index).ShowModal()                                       
-            if not auth==0:
-                dlg = wx.MessageDialog(self,"Project Authentication Failed",
-                                 style=wx.OK|wx.ICON_ERROR)
+            myModal = ProjectAuthenticationDialog(self.parent,
+                                                  'Project Authentication',
+                                                  index)
+            auth = myModal.ShowModal()
+            if not auth == 0:
+                dlg = wx.MessageDialog(self, "Project Authentication Failed",
+                                       style=wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
-                dlg.Destroy()                 
+                dlg.Destroy()
                 return
         wos_logger.debug('Project selected')
         if index != self.parent.current_project_id:
@@ -1312,6 +1318,10 @@ class ProjectSelectDialog(wx.Dialog):
             result = dlg.ShowModal()
             wos_logger.debug(result)
             if result == 1:
+                self.parent.OnSession(None)
+            elif result == 2:
+                self.parent.current_session_id = -1
+                # No session should be started here.
                 self.parent.OnSession(None)
         finally:
             dlg.Destroy()
@@ -1898,6 +1908,7 @@ class GUI(wx.Frame):
             self.OnExit('conn_err')
 
     def OnTLDR(self, event):
+        event = event
         swnp.setTLDR(False)
 
     def InitTest(self):
@@ -2054,9 +2065,11 @@ class GUI(wx.Frame):
         self.Refresh()
 
     def SetCurrentProject(self, project_id):
-        """Start current project loop
+        """
+        Start current project loop.
+
         :param project_id: The project id from database.
-        :type project_id: Integer.
+        :type project_id: Integer
 
         """
         global CURRENT_PROJECT_PATH
@@ -2194,17 +2207,20 @@ class GUI(wx.Frame):
             except Exception, e:
                 wos_logger.exception("OnSession exception: %s", str(e))
         elif self.current_project_id == 0:
-                dlg = wx.MessageDialog(self, 'No project selected.',
-                                       'Could not start session',
-                                       wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
+            dlg = wx.MessageDialog(self, 'No project selected.',
+                                   'Could not start session',
+                                   wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
         else:
             try:
                 if self.session_th:
                     self.session_th.stop()
                     self.session_th = None
                 self.evtbtn.Disable()
-                controller.EndSession(self.current_session_id)
+                showDialog = False
+                if self.current_session_id != -1:
+                    controller.EndSession(self.current_session_id)
+                    showDialog = True
                 self.current_session_id = 0
                 self.current_session = None
                 #self.SetCurrentProject(0)
@@ -2213,11 +2229,13 @@ class GUI(wx.Frame):
                 controller.AddActivity(self.current_project_id,
                                        diwavars.PGM_GROUP, None, self.activity)
                 self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
-                wos_logger.info('Session ended')
-                dlg = wx.MessageDialog(self, "Session ended!", 'Information',
-                                       wx.OK | wx.ICON_INFORMATION)
-                dlg.ShowModal()
                 self.sesbtn.SetBitmapLabel(self.GetIcon('session_off'))
+                if showDialog:
+                    wos_logger.info('Session ended')
+                    dlg = wx.MessageDialog(self, "Session ended!",
+                                           'Information', wx.OK |
+                                           wx.ICON_INFORMATION)
+                    dlg.ShowModal()
                 self.evtbtn.SetFocus()
             except Exception, e:
                 wos_logger.exception("OnSession exception: %s", str(e))
@@ -2234,7 +2252,10 @@ class GUI(wx.Frame):
         self.project_th.start()
 
     def StartCurrentSession(self):
-        """Start current project loop"""
+        """
+        Start current project loop.
+
+        """
         if self.session_th:
             self.session_th.stop()
             self.session_th = None
@@ -2531,6 +2552,7 @@ class GUI(wx.Frame):
         self.hidden = 0
         self.SetSizer(vbox)
         # pub.sendMessage("update_screens", update=True)
+        self.Refresh()
 
     def OnWABtn(self, unused_event):
         webbrowser.open("http://" + diwavars.STORAGE + "/")
@@ -2551,7 +2573,8 @@ class GUI(wx.Frame):
         self.status_text.SetLabel("")
 
     def OnEvtBtn(self, evt):
-        """ Event Button handler.
+        """
+        Event Button handler.
 
         :param evt: GUI Event.
         :type evt: Event.
@@ -2613,7 +2636,10 @@ class GUI(wx.Frame):
             wos_logger.exception("error setting scan observer:%s", str(e))
 
     def SetProjectObserver(self):
-        """ Observer for filechanges in project dir """
+        """
+        Observer for filechanges in project directory.
+
+        """
         try:
             cpid = self.current_project_id
             if cpid:
@@ -2637,13 +2663,17 @@ class GUI(wx.Frame):
             wos_logger.exception("error setting PROJECT observer:%s", str(e))
 
     def OnProjectSelected(self):
-        """ Project selected event handler """
+        """
+        Project selected event handler.
+
+        """
         controller.InitSyncProjectDir(self.current_project_id)
         self.activity = controller.AddActivity(self.current_project_id,
                                                diwavars.PGM_GROUP,
                                                self.current_session_id,
                                                self.activity)
         self.SwnpSend('SYS', 'current_activity;' + str(self.activity))
+        self.Refresh()
 
     def GetRandomResponsive(self):
         has_nodes = False
@@ -2765,7 +2795,8 @@ class GUI(wx.Frame):
             i.SetToolTip(None)
 
     def UpdateScreens(self, update):
-        """Called when screens need to be updated and redrawn
+        """
+        Called when screens need to be updated and redrawn
 
         :param update: Pubsub needs one param, therefore it is called update.
         :type update: Boolean
@@ -2777,14 +2808,16 @@ class GUI(wx.Frame):
         self.HideScreens()
         self.nodes = []
         for node in self.swnp.get_screen_list():
-            self.nodes.append((node.id, node.screens, node.name))
-            self.worker.AddRegEntry(node.name, node.id)
+            try:
+                self.nodes.append((node.id, node.screens, node.name))
+                self.worker.AddRegEntry(node.name, node.id)
+            except:
+                pass
         if len(self.nodes):
             if len(self.nodes) > 3:
                 self.left.SetBitmapLabel(self.GetIcon('left_arrow'))
                 self.right.SetBitmapLabel(self.GetIcon('right_arrow'))
-            i = 0
-            while i < diwavars.MAX_SCREENS and i < len(self.nodes):
+            for i in xrange(0,  min(diwavars.MAX_SCREENS, len(self.nodes))):
                 xi = (i + self.iterator) % len(self.nodes)
                 try:
                     img_path = filesystem.GetNodeImg(self.nodes[xi][0])
@@ -2800,7 +2833,7 @@ class GUI(wx.Frame):
                     i += 1
                 except:
                     msg = str(self.nodes[xi])
-                    wos_logger.exception("nodes update except: " + msg)
+                    wos_logger.exception("nodes update except: %s", msg)
         self.worker.CheckResponsive()
         self.Refresh()
 

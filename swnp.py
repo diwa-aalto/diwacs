@@ -1,8 +1,9 @@
-'''
+"""
 Created on 30.4.2012
 
 @author: neriksso
-'''
+
+"""
 # System imports.
 from datetime import datetime, timedelta
 import logging
@@ -50,17 +51,19 @@ def SetLoggerLevel(level):
 
 
 class Node():
-    """A class representation of a node in the network.
+    """
+    A class representation of a node in the network.
 
-    :param id: Node id
-    :type id: Integer.
+    :param id: Node id.
+    :type id: Integer
+
     :param screens: Amount of visible screens.
-    :type screens: Integer.
+    :type screens: Integer
+
     :param name: The name of the node.
-    :type name: String.
+    :type name: String
 
     """
-
     def __init__(self, id, screens, name=None, data=None):
         self.id = id
         self.screens = int(screens)
@@ -69,7 +72,10 @@ class Node():
         self.refresh()
 
     def refresh(self):
-        """Updates the timestamp."""
+        """
+        Updates the timestamp.
+
+        """
         self.timestamp = datetime.now()
 
     def __str__(self):
@@ -87,45 +93,53 @@ class Node():
 
 
 class Message():
-    """A class representation of a Message.
+    """
+    A class representation of a Message.
 
     Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
     Messages are encoded to json for transmission.
 
     :param TAG: TAG of the message.
-    :type TAG: String.
+    :type TAG: String
+
     :param PREFIX: PREFIX of the message.
-    :type PREFIX: String.
+    :type PREFIX: String
+
     :param PAYLOAD: PAYLOAD of the message.
-    :type PAYLOAD: String.
+    :type PAYLOAD: String
 
     """
-
     def __init__(self, TAG, PREFIX, PAYLOAD):
         self.TAG = TAG
         if PREFIX in PREFIX_CHOICES:
             self.PREFIX = PREFIX
         else:
-            raise TypeError('Invalid message type.')
+            raise TypeError('Invalid message type: %s' % PREFIX)
         self.PAYLOAD = PAYLOAD
 
     def to_dict(msg):
-        """Return a message in a dict.
+        """
+        Return a message in a dict.
 
         :param msg: The message.
         :type msg: :class:`swnp.Message`
-        :rtype: Dict.
+
+        :returns: Dictionary representation of the message.
+        :rtype: Dict
 
         """
         return {'TAG': msg.TAG, 'PREFIX': msg.PREFIX, 'PAYLOAD': msg.PAYLOAD}
     to_dict = staticmethod(to_dict)
 
     def from_json(json_dict):
-        """Return a message from json.
+        """
+        Return a message from json.
 
         :param json_dict: The json.
         :type json_dict: json.
-        :rtype: :class:`swnp.Message`.
+
+        :returns: Initializes a message from JSON object.
+        :rtype: :py:class:`swnp.Message`.
 
         """
         return Message(json_dict['TAG'].encode('utf-8'),
@@ -141,7 +155,14 @@ class Message():
 
 
 def testStorageConnection():
-    return os.path.exists('\\\\' + diwavars.STORAGE + '\\Projects')
+    """
+    Try to access \\Storage\Projects
+
+    :returns: Does the path exist.
+    :rtype: Boolean
+
+    """
+    return os.path.exists(r'\\' + diwavars.STORAGE + '\\Projects')
 
 
 class SWNP:
@@ -154,9 +175,10 @@ class SWNP:
     .. warning:: Only one instance per computer
 
     :param screens: The number of visible screens. Defaults to 0.
-    :type screens: Integer.
+    :type screens: Integer
+
     :param name: The name of the instance. Optional.
-    :type name: String.
+    :type name: String
 
     """
     NODE_LIST = set()
@@ -176,7 +198,7 @@ class SWNP:
         self.publisher = self.context.socket(zmq.PUB)
         self.publisher_loopback = self.context.socket(zmq.PUB)
         self.ip = utils.GetLocalIPAddress(diwavars.STORAGE)
-        logger.debug(self.ip)
+        logger.info('Own IP: %s' % self.ip)
         if id:
             self.id = id
         elif self.ip:
@@ -184,20 +206,21 @@ class SWNP:
         else:
             self.id = random.randint(1, 154)
         self.node = Node(self.id, int(screens), name)
-        #prevent overflow slow subscribers
+
+        # Prevent overflowing slow subscribers
         xvers = zmq.zmq_version_info()[0]
         logger.debug('ZMQ Major version: ' + str(xvers))
-        hwm = zmq.SNDHWM if xvers > 2 else zmq.HWM
+        hwm = zmq.SNDHWM if xvers > 2 else zmq.HWM  # @UndefinedVariable
         self.publisher.setsockopt(zmq.LINGER, 0)
         self.publisher.setsockopt(hwm, 5)
         self.publisher.setsockopt(zmq.RATE, 1000000)
         self.publisher_loopback.setsockopt(hwm, 50)
-        #bind publisher
+        # Bind publisher
         self.tladdr = "epgm://" + self.ip + ";" + PGM_IP
         self.ipraddr = "inproc://mcast_loopback"
         self.publisher.bind(self.tladdr)
         self.publisher_loopback.bind(self.ipraddr)
-        #Subscriber threads
+        # Subscriber threads
         targs = ([self.tladdr, self.ipraddr], self.context, )
         self.sub_thread = self.StartSubRoutine(None, self.sub_routine,
                                                "Sub thread",
@@ -208,8 +231,8 @@ class SWNP:
                                                    targs)
         logger.debug('Bound listeners on: %s (%s)', str(self.tladdr))
 
-        join_str = ("%s_SCREENS_%d_NAME_%s_DATA_%s" % self.node.id,
-                    self.node.screens, self.node.name, self.node.data)
+        join_str = ("%s_SCREENS_%d_NAME_%s_DATA_%s" % (self.node.id,
+                    self.node.screens, self.node.name, self.node.data))
         self.send("SYS", PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
         self.NODE_LIST.add(self.node)
