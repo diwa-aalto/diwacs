@@ -29,6 +29,25 @@ except ImportError:
     # no build path setup, no worries.
     pass
 
+"""
+    Currently we are breaking this note, consider removing wxversion select.
+
+    NOTE: If you are making a 'bundle' of your application with a tool
+    like py2exe then you should *not* use the wxversion module since it
+    looks at the filesystem for the directories on sys.path, it will fail
+    in a bundled environment.  Instead you should simply ensure that 
+     the
+    version of wxPython that you want is found by default on the sys.
+     path
+    when making the bundled version by setting PYTHONPATH.  Then 
+     that
+    version will be included in your bundle and your app will work as
+    expected.  Py2exe and the others usually have a way to tell at 
+     runtime
+    if they are running from a bundle or running raw, so you can check
+    that and only use wxversion if needed.
+"""
+
 from distutils.core import setup
 import py2exe
 from glob import glob
