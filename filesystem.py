@@ -345,17 +345,6 @@ def SearchFile(filename, search_path):
             for n in names:
                 dirs.remove(n)
     return None
-""" OLD CODE.
-    for path in paths:
-        if os.path.exists(os.path.join(path, filename)):
-            file_found = 1
-            break
-    if file_found:
-        return os.path.abspath(os.path.join(path, filename))
-    else:
-        return None
-
-"""
 
 
 def Snaphot(path):
