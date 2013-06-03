@@ -64,7 +64,9 @@ CONTROLLING = False
 
 
 def SetLoggerLevel(level):
-    """ Used to set wos_logger level.
+    """
+    Used to set wos_logger level.
+
     :param level: The level desired.
     :type level: Integer
 
@@ -73,7 +75,8 @@ def SetLoggerLevel(level):
 
 
 class AudioRecorder(threading.Thread):
-    """A thread for capturing audio continuously.
+    """
+    A thread for capturing audio continuously.
     It keeps a buffer that can be saved to a file.
     By convention AudioRecorder is usually written in mixedcase although we
     prefer uppercase for threading types.
@@ -171,8 +174,10 @@ class UpdateDialog(wx.Dialog):
 
     :param title: Title of the dialog.
     :type title: String
+
     :param url: URL of the update.
     :type url: String
+
     """
     def __init__(self, title, url, *args, **kwargs):
         super(UpdateDialog, self).__init__(parent=wx.GetApp().GetTopWindow(),
@@ -207,7 +212,9 @@ class UpdateDialog(wx.Dialog):
 
 
 class CHECK_UPDATE(threading.Thread):
-    """Thread for checking version updates.
+    """
+    Thread for checking version updates.
+
     """
     def __init__(self):
         threading.Thread.__init__(self, name="VersionChecker")
@@ -250,7 +257,8 @@ class CHECK_UPDATE(threading.Thread):
 
 
 class CONN_ERR_TH(threading.Thread):
-    """Thread for checking connection errors.
+    """
+    Thread for checking connection errors.
 
     :param parent: Parent object.
     :type parent: wx.Frame.
@@ -263,7 +271,10 @@ class CONN_ERR_TH(threading.Thread):
         self.parent = parent
 
     def run(self):
-        """Starts the thread."""
+        """
+        Starts the thread.
+
+        """
         while not self._stop.isSet():
             if not self.queue.empty():
                 try:
@@ -275,7 +286,8 @@ class CONN_ERR_TH(threading.Thread):
 
 
 class CloseError(Exception):
-    """ Class describing an error while closing application.
+    """
+    Class describing an error while closing application.
 
     """
     def __init__(self, *args, **kwds):
@@ -342,11 +354,14 @@ class WORKER_THREAD(threading.Thread):
     """ Worker thread for non-UI jobs.
 
     :param context: Context for creating sockets.
-    :type context: ZeroMQ context.
+    :type context: ZeroMQ context
+
     :param send_file: Sends files.
-    :type send_file: Function.
+    :type send_file: Function
+
     :param handle_file: Handles files
-    :type handle_file: Function.
+    :type handle_file: Function
+
     """
     def __init__(self, parent):
         threading.Thread.__init__(self, name="CMFH")
@@ -372,7 +387,8 @@ class WORKER_THREAD(threading.Thread):
                          str(self.parent.responsive))
 
     def AddProjectReg(self, reg_type):
-        """ Adds "Add to project" context menu item to registry. The item
+        """
+        Adds "Add to project" context menu item to registry. The item
         will be added to Software\Classes\<reg_type>, where <reg_type>
         can be e.g. '*' for all files or 'Folder' for folders.
 
@@ -380,8 +396,8 @@ class WORKER_THREAD(threading.Thread):
         :type reg_type: String
 
         """
-        keys = ['Software', 'Classes', reg_type, 'shell', 'DiWaCS: Add to project',
-                'command']
+        keys = ['Software', 'Classes', reg_type, 'shell',
+                'DiWaCS: Add to project', 'command']
         key = ''
         for k, islast in utils.IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -395,10 +411,12 @@ class WORKER_THREAD(threading.Thread):
             CloseKey(rkey)
 
     def AddRegEntry(self, name, id):
-        """ Adds a node to registry.
+        """
+        Adds a node to registry.
 
         :param name: Node name.
         :type name: String
+
         :param id: Node id.
         :type id: Integer
 
@@ -420,7 +438,10 @@ class WORKER_THREAD(threading.Thread):
                 CloseKey(rkey)
 
     def RemoveAllRegEntries(self):
-        """ Removes all related registry entries. """
+        """
+        Removes all related registry entries.
+
+        """
         try:
             main_key = OpenKey(HKEY_CURRENT_USER, r'Software\Classes\*\shell',
                                0, KEY_ALL_ACCESS)
@@ -449,10 +470,13 @@ class WORKER_THREAD(threading.Thread):
                     break
             CloseKey(main_key)
         except Exception, e:
-            wos_logger.exception('Exception in RemoveAllRegEntries:' + str(e))
+            wos_logger.exception('Exception in RemoveAllRegEntries: ' + str(e))
 
     def parseConfig(self, config):
-        """ Handles config file settings"""
+        """
+        Handles config file settings.
+
+        """
         for key, val in config.items():
             wos_logger.debug('(' + key + '=' + val + ')')
             if 'STORAGE' in key:
@@ -532,14 +556,18 @@ class WORKER_THREAD(threading.Thread):
 
 
 class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
-    """ Thread for OS contex menu actions like file sending to other node.
+    """
+    Thread for OS contex menu actions like file sending to other node.
 
-    :param context: Context for creating sockets.
-    :type context: ZeroMQ context.
+    :param context: ZeroMQ Context for creating sockets.
+    :type context: :py:class:`zmq.Context`
+
     :param send_file: Sends files.
-    :type send_file: Function.
-    :param handle_file: Handles files
-    :type handle_file: Function.
+    :type send_file: Function
+
+    :param handle_file: Handles files.
+    :type handle_file: Function
+
     """
 
     def __init__(self, parent, context, send_file, handle_file):
@@ -554,7 +582,10 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
         self.socket.bind("tcp://*:5555")
 
     def stop(self):
-        """Stops the thread"""
+        """
+        Stops the thread
+
+        """
         self.stop_socket = self.context.socket(zmq.REQ)
         self.stop_socket.setsockopt(zmq.LINGER, 0)
         self.stop_socket.connect("tcp://127.0.0.1:5555")
@@ -566,7 +597,10 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
         wos_logger.debug('CMFH closed')
 
     def run(self):
-        """Starts the thread"""
+        """
+        Starts the thread
+
+        """
         while not self._stop.isSet():
             try:
                 message = self.socket.recv()
@@ -633,10 +667,12 @@ class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
 
 
 class INPUT_CAPTURE(threading.Thread):
-    """Thread for capturing input from mouse/keyboard.
+    """
+    Thread for capturing input from mouse/keyboard.
 
     :param parent: Parent instance.
-    :type parent: :class:`GUI`.
+    :type parent: :class:`GUI`
+
     :param swnp: SWNP instance for sending data to the network.
     :type swnp: :class:`swnp.SWNP`
 
@@ -655,7 +691,10 @@ class INPUT_CAPTURE(threading.Thread):
         self.mouse_thread.start()
 
     def stop(self):
-        """Stops the thread."""
+        """
+        Stops the thread.
+
+        """
         self.hm.UnhookKeyboard()
 
     def unhook(self):
@@ -703,8 +742,9 @@ class INPUT_CAPTURE(threading.Thread):
         return True
 
     def OnMouseEvent(self, event):
-        # print 'MessageName:',event.Message.
         """
+        Called when mouse events are received.
+
         WM_MOUSEFIRST = 0x200
 
         WM_MOUSEMOVE = 0x200
@@ -730,25 +770,7 @@ class INPUT_CAPTURE(threading.Thread):
         WM_MOUSEWHEEL = 0x20A
 
         WM_MOUSEHWHEEL = 0x20E
-        """
-        # called when mouse events are received
-        """print 'MessageName:',event.MessageName
-        print 'Message:',event.Message
-        print 'Time:',event.Time
-        print 'Window:',event.Window
-        print 'WindowName:',event.WindowName
-        print 'Position:',event.Position
-        print 'Wheel:',event.Wheel
-        print 'Injected:',event.Injected
-        print '---'
-        """
 
-        """if event.Message == 0x200:
-        dx = event.Position[0] - self.mx
-        dy = event.Position[1] - self.my
-        #print 'move',dx,dy
-        self.mx = event.Position[0]
-        self.my = event.Position[1]
         """
         try:
             if CAPTURE:
@@ -759,25 +781,11 @@ class INPUT_CAPTURE(threading.Thread):
         return not CAPTURE
 
     def OnKeyboardEvent(self, event):
-        global CAPTURE
         """
-        print 'MessageName:',event.MessageName
-        print 'Message:',event.Message
-        print 'Time:',event.Time
-        print 'Window:',event.Window
-        print 'WindowName:',event.WindowName
-        print 'Ascii:', event.Ascii, chr(event.Ascii)
-        print 'Key:', event.Key
-        print 'KeyID:', event.KeyID
-        print 'ScanCode:', event.ScanCode
-        print 'Extended:', event.Extended
-        print 'Injected:', event.Injected
-        print 'Alt', event.Alt
-        print 'Transition', event.Transition
-        print '---'
-        print event
+        Called when keyboard events are received.
 
         """
+        global CAPTURE
         if event.Alt and (event.KeyID in [91, 92])  and CAPTURE:
             wos_logger.debug('ESC')
             CAPTURE = False
@@ -799,7 +807,10 @@ class INPUT_CAPTURE(threading.Thread):
         return True
 
     def run(self):
-        """Starts the thread."""
+        """
+        Starts the thread.
+
+        """
         # create a hook manager
         self.hm = pyHook.HookManager()
         # watch for all mouse events
@@ -811,13 +822,15 @@ class INPUT_CAPTURE(threading.Thread):
 
 
 class CURRENT_PROJECT(threading.Thread):
-    """Thread for transmitting current project selection.
+    """
+    Thread for transmitting current project selection.
     When user selects a project, an instance is started.
     When a new selection is made, by any Chimaira instance,
     the old instance is terminated.
 
     :param project_id: Project id from the database.
-    :type project_id: Integer.
+    :type project_id: Integer
+
     :param swnp: SWNP instance for sending data to the network.
     :type swnp: :class:`swnp.SWNP`
 
@@ -830,11 +843,17 @@ class CURRENT_PROJECT(threading.Thread):
         wos_logger.debug("Current Project created")
 
     def stop(self):
-        """Stops the thread."""
+        """
+        Stops the thread.
+
+        """
         self._stop.set()
 
     def run(self):
-        """Starts the thread."""
+        """
+        Starts the thread.
+
+        """
         while not self._stop.isSet():
             try:
                 ipgm = diwavars.PGM_GROUP
@@ -847,12 +866,14 @@ class CURRENT_PROJECT(threading.Thread):
 
 
 class CURRENT_SESSION(threading.Thread):
-    """Thread for transmitting current session id, when one is started by
-    the user.  When the session is ended, by any Chimaira instance, the
+    """
+    Thread for transmitting current session id, when one is started by
+    the user.  When the session is ended, by any DiWaCS instance, the
     instance is terminated.
 
     :param session_id: Session id from the database.
-    :type session_id: Integer.
+    :type session_id: Integer
+
     :param swnp: SWNP instance for sending data to the network.
     :type swnp: :py:class:`swnp.SWNP`
 
@@ -864,11 +885,17 @@ class CURRENT_SESSION(threading.Thread):
         self._stop = threading.Event()
 
     def stop(self):
-        """Stops the thread"""
+        """
+        Stops the thread
+
+        """
         self._stop.set()
 
     def run(self):
-        """Starts the thread."""
+        """
+        Starts the thread.
+
+        """
         while not self._stop.isSet():
             ipgm = diwavars.PGM_GROUP
             current_session = int(controller.GetActiveSession(ipgm))
@@ -879,6 +906,10 @@ class CURRENT_SESSION(threading.Thread):
 
 
 class DeleteProjectDialog(wx.Dialog):
+    """
+    A dialog for deleting project.
+
+    """
     def __init__(self, parent, title, project_id):
         super(DeleteProjectDialog, self).__init__(parent=parent,
             title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
@@ -922,8 +953,12 @@ class DeleteProjectDialog(wx.Dialog):
     def OnCancel(self, unused_event):
         self.EndModal(0)
 
+
 class ProjectAuthenticationDialog(wx.Dialog):
-    """ A dialog for project authentication."""
+    """
+    A dialog for project authentication.
+
+    """
     def __init__(self, parent, title, project_id):
         super(ProjectAuthenticationDialog, self).__init__(parent=parent,
             title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
@@ -931,16 +966,18 @@ class ProjectAuthenticationDialog(wx.Dialog):
         try:
             self.parent = parent
             self.project = controller.GetProject(project_id)
-            self.notice = wx.StaticText(self, label=("Please enter password \
-for Project %s" %self.project.name))
-            self.password = wx.TextCtrl(self, -1, '', style=
-                                        wx.TE_PASSWORD|wx.TE_PROCESS_ENTER)
+            labeltext = ('Please enter password for Project %s' %
+                         self.project.name)
+            self.notice = wx.StaticText(self, label=labeltext)
+            self.password = wx.TextCtrl(self, -1, '',
+                                        style=wx.TE_PASSWORD |
+                                        wx.TE_PROCESS_ENTER)
             self.ok = wx.Button(self, -1, "OK")
             self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
             self.password.Bind(wx.EVT_TEXT_ENTER, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
             self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.password, 1, wx.ALL|wx.EXPAND, 5)
+            self.sizer.Add(self.password, 1, wx.ALL | wx.EXPAND, 5)
             self.sizer.Add(self.ok, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
@@ -955,6 +992,10 @@ for Project %s" %self.project.name))
 
 
 class ProjectSelectedDialog(wx.Dialog):
+    """
+    A dialog for project selection confirmation.
+
+    """
     def __init__(self, parent, title, project_id):
         super(ProjectSelectedDialog, self).__init__(parent=parent,
             title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
@@ -984,6 +1025,10 @@ class ProjectSelectedDialog(wx.Dialog):
 
 
 class CreateProjectDialog(wx.Dialog):
+    """
+    A dialog for project creation.
+
+    """
     def __init__(self, parent):
         super(CreateProjectDialog, self).__init__(parent=parent,
             title="Create a project", style=wx.DEFAULT_DIALOG_STYLE,
@@ -1013,8 +1058,11 @@ class CreateProjectDialog(wx.Dialog):
             dlg.ShowModal()
             return
         if self.project_id:
-            controller.EditProject(self.project_id, {
-            'name':self.name.GetValue(),'dir':self.dir.GetValue()})
+            controller.EditProject(self.project_id,
+                {'name': self.name.GetValue(),
+                 'dir': self.dir.GetValue()
+                }
+            )
             self.Destroy()
         else:
             try:
@@ -1036,12 +1084,14 @@ class CreateProjectDialog(wx.Dialog):
 
 
 class AddProjectDialog(wx.Dialog):
-    """A dialog for adding a new project
+    """
+    A dialog for adding a new project
 
     :param parent: Parent frame.
     :type parent: :class:`wx.Frame`
+
     :param title: A title for the dialog.
-    :type title: String.
+    :type title: String
 
      """
     def __init__(self, parent, title, project_id=None):
@@ -1068,7 +1118,7 @@ class AddProjectDialog(wx.Dialog):
         vbox.Add(dir_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         vbox.Add(self.dir, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         password_label = wx.StaticText(self, label=password_label_text)
-        self.password = wx.TextCtrl(self, wx.ID_ANY,style=wx.TE_PASSWORD)
+        self.password = wx.TextCtrl(self, wx.ID_ANY, style=wx.TE_PASSWORD)
         vbox.Add(password_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         vbox.Add(self.password, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
@@ -1088,11 +1138,12 @@ class AddProjectDialog(wx.Dialog):
         vbox.Fit(self)
 
     def OnAdd(self, e):
-        """Handles the addition of a project to database, when
-        "Add" button is pressed.
+        """
+        Handles the addition of a project to database, when "Add" button
+        is pressed.
 
         :param e: GUI Event.
-        :type e: Event.
+        :type e: Event
 
         """
         e = e  # Get rid of unused parameter.
@@ -1138,9 +1189,11 @@ class AddProjectDialog(wx.Dialog):
         """
 
     def OnClose(self, e):
-        """Handles "Close" button presses
+        """
+        Handles "Close" button presses.
+
         :param e: GUI Event.
-        :type e: Event.
+        :type e: Event
 
         """
         e = e
@@ -1148,7 +1201,8 @@ class AddProjectDialog(wx.Dialog):
 
 
 class ProjectSelectDialog(wx.Dialog):
-    """ A dialog for selecting a project.
+    """
+    A dialog for selecting a project.
 
     :param parent: Parent frame.
     :type parent: :py:class:`wx.Frame`
@@ -1204,7 +1258,8 @@ class ProjectSelectDialog(wx.Dialog):
         self.delBtn.Enable()
 
     def onCancel(self, unused_event):
-        """Handles "Cancel" button presses.
+        """
+        Handles "Cancel" button presses.
 
         :param event: GUI Event.
         :type event: Event
@@ -1234,7 +1289,8 @@ class ProjectSelectDialog(wx.Dialog):
             wos_logger.exception("Edit event exception")
 
     def AddEvent(self, unused_event):
-        """Shows a modal dialog for adding a new project.
+        """
+        Shows a modal dialog for adding a new project.
 
         :param event: GUI Event.
         :type event: Event
@@ -1255,7 +1311,8 @@ class ProjectSelectDialog(wx.Dialog):
             wos_logger.exception("Add event exception")
 
     def DelEvent(self, unused_event):
-        """Handles the selection of a project.
+        """
+        Handles the selection of a project.
         Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
         Shows a dialog of the selected project.
 
@@ -1329,10 +1386,11 @@ class ProjectSelectDialog(wx.Dialog):
         self.EndModal(0)
 
     def GetProjects(self, company_id=1):
-        """Fetches all projects from the database, based on the company.
+        """
+        Fetches all projects from the database, based on the company.
 
         :param company_id: A company id, the owner of the projects.
-        :type company_id: Integer.
+        :type company_id: Integer
 
         """
         try:
@@ -1355,7 +1413,8 @@ class ProjectSelectDialog(wx.Dialog):
 
 
 class PreferencesDialog(wx.Dialog):
-    """ Creates and displays a preferences dialog that allows the user to
+    """
+    Creates and displays a preferences dialog that allows the user to
     change some settings.
 
     :param config: a Config object
@@ -1427,7 +1486,9 @@ class PreferencesDialog(wx.Dialog):
 
     #----------------------------------------------------------------------
     def loadPreferences(self):
-        """Load the current preferences and fills the text controls
+        """
+        Load the current preferences and fills the text controls.
+
         """
         screens = self.config['SCREENS']
         name = self.config['NAME']
