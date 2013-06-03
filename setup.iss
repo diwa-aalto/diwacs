@@ -17,7 +17,7 @@ AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=C:\Users\Kristian\Documents\workspace\diwacs\installer
+OutputDir=C:\Users\Kristian\workspace\diwacs\installer
 OutputBaseFilename=DiwaCS-setup-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
@@ -33,8 +33,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\Kristian\Documents\workspace\diwacs\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Kristian\Documents\workspace\diwacs\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Kristian\workspace\diwacs\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Kristian\workspace\diwacs\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "DeleteUpdateTask.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

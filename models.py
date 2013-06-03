@@ -81,6 +81,7 @@ class User(Base):
 
     :param name: Name of the user.
     :type name: :py:class:`String`
+
     :param company: The employer.
     :type company: :py:class:`models.Company`
 
@@ -145,6 +146,7 @@ class Activity(Base):
 
     :param project: Project activity belongs to.
     :type project: :py:class:`models.Project`
+
     :param session: Optional session activity belongs to.
     :type session: :py:class:`models.Session`
 
@@ -198,6 +200,7 @@ class Project(Base):
 
     :param name: Name of the project.
     :type name: :py:class:`String`
+
     :param company: The owner of the project.
     :type company: :py:class:`models.Company`
 
@@ -339,6 +342,7 @@ class Session(Base):
 
     :param project: The project for the session.
     :type project: :py:class:`models.Project`
+
     """
     __tablename__ = 'session'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
@@ -363,8 +367,9 @@ class Session(Base):
         self.last_checked = None
 
     def start(self):
-        """Start a session. Set the :py:attr:`last_checked` field to current
-        DateTime.
+        """
+        Start a session.
+        Set the :py:attr:`last_checked` field to current DateTime.
 
         """
         self.last_checked = datetime.datetime.now()
@@ -384,6 +389,7 @@ class Session(Base):
 
         :param user: User to be added into the session.
         :type user: :py:class:`models.User`
+
         """
         self.users.append(user)
 
@@ -391,6 +397,7 @@ class Session(Base):
         """ File checking routine for logging.
 
         :throws IOError: When log.txt is not available for write access.
+
         """
         recent_path = os.path.join(os.getenv('APPDATA'),
                                    'Microsoft\\Windows\\Recent')
@@ -497,7 +504,8 @@ class Action(Base):
 
 
 class File(Base):
-    """A class representation of a file.
+    """
+    A class representation of a file.
 
     Fields:
         * :py:attr:`id`\
@@ -528,7 +536,8 @@ class File(Base):
 
 
 class FileAction(Base):
-    """A class representation of a fileaction.
+    """
+    A class representation of a fileaction.
 
     Fields:
         * :py:attr:`id`\
@@ -576,14 +585,19 @@ class FileAction(Base):
 
     :param file: The file which is subjected to the action.
     :type file: :py:class:`models.File`
+
     :param action: The action which is applied to the file.
     :type action: :py:class:`models.Action`
+
     :param session: The session in which the FileAction took place on.
     :type session: :py:class:`models.Session`
+
     :param computer: The computer from which the user performed the action.
     :type computer: :py:class:`models.Computer`
+
     :param user: The user performing the action.
     :type user: :py:class:`models.User`
+
     """
     __tablename__ = 'fileaction'
     id = Column(Integer, primary_key=True, autoincrement=True, default=text(

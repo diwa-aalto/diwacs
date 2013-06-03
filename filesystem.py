@@ -37,9 +37,10 @@ def CopyFileToProject(filepath, project_id):
     """ Copy file to project dir and return new filepath in project dir.
 
     :param filepath: The file path.
-    :type filepath: String.
+    :type filepath: String
+
     :param project_id: Project id from database.
-    :type project_id: Integer.
+    :type project_id: Integer
 
     """
     ppath = controller.GetProjectPath(project_id)
@@ -59,7 +60,7 @@ def CopyToTemp(filepath):
     """Copy a file to temporary folder.
 
     :param filepath: The file path.
-    :type filepath: String.
+    :type filepath: String
 
     """
     try:
@@ -79,7 +80,7 @@ def CreateProjectDir(dir_name):
     """Creates a project directory, if one does not exist in the file system
 
     :param dir_name: Name of the directory
-    :type dir_name: String.
+    :type dir_name: String
 
     """
     project_dir = os.path.join(controller.PROJECT_PATH, str(dir_name))
@@ -107,7 +108,7 @@ def FileToBase64(filepath):
     """Transform a file to a binary object.
 
     :param filepath: The file path.
-    :type filepath: String.
+    :type filepath: String
 
     """
     try:
@@ -176,7 +177,8 @@ def GetFileExtension(path):
 
     :param path: The file path.
     :type path: String
-    :rtype: String.
+
+    :rtype: String
 
     """
     (unused_fileName, fileExtension) = os.path.splitext(path)
@@ -187,7 +189,7 @@ def GetNodeImg(node):
     """Searches for a node's image in STORAGE.
 
     :param node: The node id.
-    :type node: Integer.
+    :type node: Integer
 
     """
     node = str(node)
@@ -202,9 +204,10 @@ def IsSubtree(filename, parent):
     """Determines, if filename is inside the parent folder.
 
     :param filename: The file path.
-    :type filename: String.
+    :type filename: String
+
     :param parent: The parent file path.
-    :type parent: String.
+    :type parent: String
 
     """
     for (unused_root, unused_dirs, names) in os.walk(parent):
@@ -222,7 +225,7 @@ def OpenFile(filepath):
         """Opens a file path.
 
         :param filepath: The file path.
-        :type filepath: String.
+        :type filepath: String
 
         """
         logger.debug("%s Opening file %s", (os.name, filepath))
@@ -246,6 +249,7 @@ def SaveScreen(win, filepath):
 
     :param win: The windows version tuple of host computer.
     :type win: (Integer, Integer)
+
     :param filepath: The filepath for the saved image.
     :type filepath: String
 
@@ -304,9 +308,11 @@ def SearchFile(filename, search_path):
     """Search file in a given path.
 
     :param filename: The file name.
-    :type filename: String.
+    :type filename: String
+
     :param search_path: The search path.
-    :type search_path: String.
+    :type search_path: String
+
     :returns: The path to the file.
     :rtype: String
 
