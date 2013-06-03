@@ -13,7 +13,8 @@ import zmq
 
 
 def main():
-    """Main function of the sub program.
+    """
+    Main function of the sub program.
 
     Sub program is meant to be bound to windows explorer context menu.
     Context menu allows the user to quickly send files without interacting
@@ -23,10 +24,13 @@ def main():
 
     :argument node_id: ID of the node to send the file to.
     :type node_id: Integer
+    
     :argument filepath: Path of the file to be sent.
     :type filepath: String
+    
     :returns: windows success code (0 on success).
     :rtype: Integer
+
     """
     if len(sys.argv) == 3:
         try:
