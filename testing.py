@@ -1,8 +1,9 @@
-'''
+"""
 Created on 20.5.2013
 
-@author: Kristian
-'''
+:author: Kristian
+
+"""
 # System imports
 import os
 import unittest
@@ -23,7 +24,10 @@ class TestUtils(unittest.TestCase):
         unittest.TestCase.tearDown(self)
 
     def test_passwordhash(self):
-        """ Test the SHA1 password hash generation. """
+        """
+        Test the SHA1 password hash generation.
+
+        """
         example_password = "The quick brown fox jumps over the lazy dog"
         expected_hash = "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
         myhash = utils.HashPassword(example_password)

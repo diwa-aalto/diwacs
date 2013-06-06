@@ -1,0 +1,41 @@
+{% extends "!layout.html" %}
+
+{% block sidebartoc %}
+	<h3>Table of Contents</h3>
+	{{ toctree() }}
+{% endblock %}
+
+{% block sidebarrel %}
+
+	{# Previous topic #}
+	{%- if prev %}
+		{%- if parents %}
+			{%- if prev != parents[0] %}
+				{# Previous is different than parent, print it #}
+				<h4>{{ _('Previous topic') }}</h4>
+				<p class="topless">
+				<a href="{{ prev['link'] }}" 
+				   title="{{ _('previous chapter') }}">
+				{{ prev['title'] }}</a></p>
+			{%- endif %}
+		{%- else %}
+			{# No parents, print previous #}
+			<h4>{{ _('Previous topic') }}</h4>
+			<p class="topless">
+			<a href="{{ prev['link'] }}" 
+			   title="{{ _('previous chapter') }}">
+			{{ prev['title'] }}</a></p>
+		{%- endif %}
+	{%- endif %}
+	
+	{# Next topic #}
+	{%- if next %}
+		{# Next should be withing same module #}
+		<h4>{{ _('Next topic') }}</h4>
+		<p class="topless">
+		<a href="{{ next['link'] }}" 
+		   title="{{ _('next chapter') }}">
+		{{ next['title'] }}</a></p>
+	{%- endif %}
+
+{% endblock %}

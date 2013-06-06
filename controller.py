@@ -1,36 +1,34 @@
-'''
+"""
 Created on 28.5.2012
 
-@author: neriksso
-'''
+:author: neriksso
+
+"""
 #import MySQLdb
-import sys
-sys.stdout = open("data\\stdout.log", "wb")
-sys.stderr = open("data\\stderr.log", "wb")
-import logging
-import logging.config
-import time
+from logging import config, getLogger
+import os
 import shutil
-import socket
-import threading
+import sys
+from time import sleep
+sys.stdout = open(r'data\stdout.log', 'wb')
+sys.stderr = open(r'data\stderr.log', 'wb')
 
 # 3rd party imports
-from pubsub import pub
-from sqlalchemy import create_engine, func, sql, desc, or_
+import pythoncom
+from sqlalchemy import create_engine, exc, func, desc, sql
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import exc
-import watchdog
 from watchdog.events import FileSystemEventHandler
 
 # Own imports
 import diwavars
 import filesystem
-from models import *  # Base, Project
+from models import (Action, Activity, Base, Company, Computer, Event, File,
+                    FileAction, Project, Session)
 import utils
 
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('controller')
+config.fileConfig('logging.conf')
+logger = getLogger('controller')
 
 DATABASE = ('mysql+pymysql://username:password@192.168.1.10/DIWA' +
             '?charset=utf8&use_unicode=1')
@@ -91,14 +89,17 @@ def SetNodeScreens(screens):
 
 
 def CreateAll():
-    """Create tables to the database"""
+    """
+    Create tables to the database.
+
+    """
     try:
         db = ConnectToDatabase()
         db.execute('SET foreign_key_checks = 0')
         db.execute('DROP table IF EXISTS Action')
         db.execute('SET foreign_key_checks = 1')
         db.commit()
-        Base.metadata.create_all(ENGINE)
+        Base.metadata.create_all(ENGINE)  # @UndefinedVariable
         for unused_x, y in ACTIONS.items():
             db.add(Action(y))
         db.commit()
@@ -108,7 +109,9 @@ def CreateAll():
 
 
 def ConnectToDatabase(expire=False):
-    """ Connect to the database and return a Session object
+    """
+    Connect to the database and return a Session object.
+
     """
     S = sessionmaker(bind=ENGINE, expire_on_commit=expire)
     session = S()
@@ -116,6 +119,12 @@ def ConnectToDatabase(expire=False):
 
 
 def TestConnection():
+    """
+    Test the connection to database.
+
+    :rtype: Boolean
+
+    """
     try:
         db = ConnectToDatabase()
         db.query(Project).all()
@@ -126,15 +135,27 @@ def TestConnection():
 
 
 def GetProjectPassword(project_id):
-    """Returns the project password."""
-    return GetProject(project_id).password
+    """
+    Returns the project password.
+
+    :param project_id: ID of the project.
+    :type project_id: Integer
+
+    :rtype: String
+
+    """
+    myProject = GetProject(project_id)
+    return myProject.password if myProject else ''
+
 
 def GetProjectPath(project_id):
-    """Fetches the project path from database and return it.
+    """
+    Fetches the project path from database and return it.
 
     :param project_id: Project id for database.
-    :type project_id: Integer.
-    :rtype: String.
+    :type project_id: Integer
+
+    :rtype: String
 
     """
     try:
@@ -143,46 +164,92 @@ def GetProjectPath(project_id):
     except:
         path = False
     db.close()
-    return '' if not path else path
+    return path if path else ''
 
 
-def UnsetActivity(pgmgroup):
+def UnsetActivity(pgm_group):
+    """
+    Unsets activity for PGM Group.
+
+    :param pgm_group: The PGM Group number.
+    :type pgm_group: Integer
+
+    """
     db = ConnectToDatabase()
-    for c in db.query(Activity).filter(Activity.active == pgmgroup):
+    for c in db.query(Activity).filter(Activity.active == pgm_group):
         c.active = False
     db.commit()
     db.close()
 
 
 def GetLatestEvent():
-    db = ConnectToDatabase()
-    event = db.query(Event.id).order_by(Event.id.desc()).first()
-    db.close()
-    return event[0] if event else 0
+    """
+    Get the latest event.
+
+    :rtype: :py:class:`models.Event`
+
+    """
+    try:
+        db = ConnectToDatabase()
+        event = db.query(Event.id).order_by(Event.id.desc()).first()
+        db.close()
+        return event[0] if event else 0
+    except:
+        return 0
 
 
-def GetActiveActivity(pgmgroup):
+def GetActiveActivity(pgm_group):
+    """
+    Get the latest active activity.
+
+    :param pgm_group: The PGM Group number.
+    :type pgm_group: Integer
+
+    :rtype: :py:class:`models.Activity`
+
+    """
     db = ConnectToDatabase()
-    filtered = db.query(Activity).filter(Activity.active == pgmgroup)
+    filtered = db.query(Activity).filter(Activity.active == pgm_group)
     act = filtered.order_by(desc(Activity.id)).first()
     db.close()
     return act.id if act else None
 
 
-def GetActiveProject(pgmgroup):
-    activity = GetActiveActivity(pgmgroup)
+def GetActiveProject(pgm_group):
+    """
+    Get the active project.
+
+    :param pgm_group: The PGM Group number.
+    :type pgm_group: Integer
+
+    :rtype: :py:class:`models.Activity`
+
+    """
+    activity = GetActiveActivity(pgm_group)
     if activity == None:
         return 0
     else:
         db = ConnectToDatabase()
         act = db.query(Activity).filter(Activity.id == activity)
-        project = act.one().project
-        db.close()
-        return project.id
+        try:
+            project = act.one().project
+            db.close()
+            return project.id
+        except:
+            return '0'
 
 
-def GetActiveSession(pgmgroup):
-    activity = GetActiveActivity(pgmgroup)
+def GetActiveSession(pgm_group):
+    """
+    Get the active session.
+
+    :param pgm_group: The PGM Group number.
+    :type pgm_group: Integer
+
+    :rtype: :py:class:`models.Session`
+
+    """
+    activity = GetActiveActivity(pgm_group)
     if activity == None:
         return 0
     else:
@@ -193,7 +260,26 @@ def GetActiveSession(pgmgroup):
         return session.id
 
 
-def AddActivity(project_id, pgmgroup, session_id=None, act_id=None):
+def AddActivity(project_id, pgm_group, session_id=None, activity_id=None):
+    """
+    Add activity to database.
+
+    :param project_id: ID of the project Activity is associated with.
+    :type project_id: Integer
+
+    :param pgm_group: The PGM Group number.
+    :type pgm_group: Integer
+
+    :param session_id: ID of the session Activity is associated with.
+    :type session_id: Integer
+
+    :param activity_id: ID of the activity.
+    :type activity_id: Integer
+
+    :returns: Activity ID of the added activity.
+    :rtype: Integer
+
+    """
     try:
         db = ConnectToDatabase()
         project = db.query(Project).filter(Project.id == project_id).one()
@@ -201,13 +287,14 @@ def AddActivity(project_id, pgmgroup, session_id=None, act_id=None):
             session = db.query(Session).filter(Session.id == session_id).one()
         else:
             session = None
-        if not act_id:
-                act = Activity(project, session)
-        else:
-            act = db.query(Activity).filter(Activity.id == act_id).one()
+        act = None
+        if activity_id:
+            act = db.query(Activity).filter(Activity.id == activity_id).one()
             act.project = project
             act.session = session
-            act.active = pgmgroup
+            act.active = pgm_group
+        else:
+            act = Activity(project, session)
         db.add(act)
         db.commit()
         db.expunge(act)
@@ -350,20 +437,25 @@ def EditProject(idNum, row):
 
 
 def GetProject(project_id):
-    """Fetches projects by a company.
+    """
+    Fetches projects by a company.
 
     :param company_id: A company id from database.
     :type company_id: Integer.
 
     """
-    db = ConnectToDatabase()
-    project = db.query(Project).filter(Project.id == project_id).one()
-    db.close()
-    return project
+    try:
+        db = ConnectToDatabase()
+        project = db.query(Project).filter(Project.id == project_id).one()
+        db.close()
+        return project
+    except:
+        return None
 
 
 def GetProjectsByCompany(company_id):
-    """Fetches projects by a company.
+    """
+    Fetches projects by a company.
 
     :param company_id: A company id from database.
     :type company_id: Integer.
@@ -401,12 +493,19 @@ def StartNewSession(project_id, session_id=None, old_session_id=None):
 
     """
     db = ConnectToDatabase(True)
-    project = db.query(Project).filter(Project.id == project_id).one()
+    project = None
+    try:
+        project = db.query(Project).filter(Project.id == project_id).one()
+    except:
+        return None
     """recent_path = os.path.join(os.getenv('APPDATA'),
                                'Microsoft\\Windows\\Recent')"""
     session = None
     if session_id:
-        session = db.query(Session).filter(Session.id == session_id).one()
+        try:
+            session = db.query(Session).filter(Session.id == session_id).one()
+        except:
+            session = None
     else:
         session = Session(project)
         #initial add and commit
@@ -503,7 +602,7 @@ def AddComputer(name, ip, wos_id):
     return c
 
 
-def GetActiveResponsiveNodes(pgmgroup):
+def GetActiveResponsiveNodes(pgm_group):
     nodes = []
     try:
         db = ConnectToDatabase()
@@ -512,7 +611,7 @@ def GetActiveResponsiveNodes(pgmgroup):
                                                            Computer.time,
                                                            func.now()
                                         ) < 10,
-                                        Computer.responsive == pgmgroup
+                                        Computer.responsive == pgm_group
                         ).order_by(Computer.wos_id).all()
         db.close()
     except:
@@ -621,7 +720,8 @@ def GetRecentFiles(project_id):
 
 
 def InitSyncProjectDir(project_id):
-    """Initial sync of project dir and database.
+    """
+    Initial sync of project dir and database.
 
     :param project_id: Project id from database.
     :type project_id: Integer.
@@ -629,9 +729,8 @@ def InitSyncProjectDir(project_id):
     """
     try:
         db = ConnectToDatabase()
-        # TODO: Why is this a set inside a list?
-        project_files = list(set(db.query(File.path).filter(File.project_id ==
-                                                            project_id).all()))
+        myqr = db.query(File.path).filter(File.project_id == project_id).all()
+        project_files = list(set(myqr))
         project_path = GetProjectPath(project_id)
         for root, unused_dirs, files in os.walk(project_path):
             for f in files:
@@ -773,7 +872,8 @@ class SCAN_HANDLER(FileSystemEventHandler):
         logger.debug('SCAN_HANDLER initialized for project: %d' % project_id)
 
     def on_created(self, event):
-        """On_created event handler. Logs to database.
+        """
+        On_created event handler. Logs to database.
 
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
@@ -788,7 +888,7 @@ class SCAN_HANDLER(FileSystemEventHandler):
             new_path = os.path.join(project_path,
                                     os.path.basename(event.src_path))
             if 'Scan' in event.src_path:
-                time.sleep(60)
+                sleep(60)
             shutil.copy2(event.src_path, new_path)
             db = ConnectToDatabase()
             proj = db.query(Project).filter(Project.id ==

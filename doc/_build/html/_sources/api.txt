@@ -1,54 +1,31 @@
+============================
 Automated Code Documentation
-=================================
+============================
 
 .. |date| date::
 .. |time| date:: %H:%M
 
 Documentation generated on |date| at |time|.
 
-Add file module
------------------
-.. automodule:: add_file
-   :members:
-   
-Send file module
------------------
-.. automodule:: send_file_to
-   :members:
+.. toctree::
+	:maxdepth: 3
+	
+	add_file
+	send_file
+	controller
+	filesystem
+	macro
+	models
+	swnp
+	utils
+	wos
 
-Controller module
------------------ 
-.. automodule:: controller
-   :members:
-
-Filesystem module
------------------
-.. automodule:: filesystem
-   :members:
-
-Macro module
-------------
-.. automodule:: macro
-   :members:
-
-Models module
--------------
-.. automodule:: models
-   :members:
-    
-SWNP module
------------
-.. automodule:: swnp
-   :members:
-
-Utils module
------------------------
-.. automodule:: utils
-   :members:
-
-Wos module
-----------
-.. automodule:: wos
-   :members:
-
-   
+.. index::
+   module: add_file
+   module: send_file
+   module: controller
+   module: filesystem
+   module: macro
+   module: models
+   module: swnp
+   module: utils

@@ -1,13 +1,14 @@
-'''
+"""
 Created on 17.5.2013
 
-'''
+:author: neriksso
+
+"""
 # System imports.
 import base64
 import datetime
 from collections import deque
-import logging
-import logging.config
+from logging import config, getLogger
 import os
 import shutil
 import subprocess
@@ -25,8 +26,8 @@ from PIL import Image, ImageOps, ImageGrab
 import controller
 import diwavars
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('filesystem')
+config.fileConfig('logging.conf')
+logger = getLogger('filesystem')
 
 
 def SetLoggerLevel(level):
@@ -375,3 +376,14 @@ def SnaphotThread(path):
         output.close()
     except Exception, e:
         logger.exception("Snapshot exception: %s", str(e))
+
+
+def TestStorageConnection():
+    """
+    Try to access \\Storage\Projects
+
+    :returns: Does the path exist.
+    :rtype: Boolean
+
+    """
+    return os.path.exists(r'\\' + diwavars.STORAGE + '\\Projects')

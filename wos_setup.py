@@ -1,11 +1,19 @@
-'''
+"""
 Created on 8.5.2012
 
 @author: nick26
-'''
+
+tldalsdkasdlakd
+
+:synopsis: \
+    This file is used to compile a DiWaCS.exe file out of the python project
+    using py2exe and setuptools packages available at:
+    pypi.python.org/pypi/setuptools
+
+"""
 import sys
-import wxversion
-wxversion.select('2.9.4')
+#import wxversion
+#wxversion.select('2.9.4')
 # ModuleFinder can't handle runtime changes to __path__, but win32com uses them
 try:
     # py2exe 0.6.4 introduced a replacement modulefinder.
@@ -35,21 +43,21 @@ except ImportError:
     NOTE: If you are making a 'bundle' of your application with a tool
     like py2exe then you should *not* use the wxversion module since it
     looks at the filesystem for the directories on sys.path, it will fail
-    in a bundled environment.  Instead you should simply ensure that 
+    in a bundled environment.  Instead you should simply ensure that
      the
     version of wxPython that you want is found by default on the sys.
      path
-    when making the bundled version by setting PYTHONPATH.  Then 
+    when making the bundled version by setting PYTHONPATH.  Then
      that
     version will be included in your bundle and your app will work as
-    expected.  Py2exe and the others usually have a way to tell at 
+    expected.  Py2exe and the others usually have a way to tell at
      runtime
     if they are running from a bundle or running raw, so you can check
     that and only use wxversion if needed.
 """
 
 from distutils.core import setup
-import py2exe
+import py2exe  # @UnusedImport
 from glob import glob
 
 vspath = 'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\'\
@@ -73,13 +81,12 @@ setup(name="DiwaCS",
                     'bundle_files': 1,
                     'optimize': 2,
                     'compressed': True,
-                    'includes': ['sqlalchemy', 'sqlalchemy.dialects.mysql',
-                                 'pymysql', 'PIL', 'pathtools', 'migrate',
+                    'includes': ['pymysql', 'PIL', 'pathtools', 'migrate',
                                  'wmi', 'migrate.changeset.databases.mysql',
                                  'pyodbc', 'pg8000'],
                      "packages": ['pubsub', 'zmq', 'configobj', 'migrate',
                                    'lxml', 'pyaudio', 'wave', 'wxversion',
-                                   'cffi', 'pycparser'],
+                                   'cffi', 'pycparser', 'sqlalchemy'],
                      'dist_dir': 'wosdist',
                      "dll_excludes": ["libzmq.dll", "libpq.dll", "MPR.dll",
                                       "IPHLPAPI.dll", "OCI.dll"],
@@ -96,13 +103,13 @@ setup(name="DiwaCS",
                 {'script': 'manage.py'}
               ],
       data_files=[
-                  ("Microsoft.VC90.CRT", glob(vspath + r'\*.*')),
+                  # ("Microsoft.VC90.CRT", glob(vspath + r'\*.*')),
                   ("icons", glob(r'icons\*.*')),
-                  #("migraterepo", glob(r'migraterepo\*.*')),
+                  # ("migraterepo", glob(r'migraterepo\*.*')),
                   #("migraterepo\\versions", glob(r'migraterepo\\versions\*.*')
-                  #("ofv", glob(r'ofv\*.*')),
-                  #("rfv", glob(r'rfv\*.*')),
-                  ("icons//filetypes", glob(r'icons\filetypes\*.*')),
+                  # ("ofv", glob(r'ofv\*.*')),
+                  # ("rfv", glob(r'rfv\*.*')),
+                  ("icons/filetypes", glob(r'icons\filetypes\*.*')),
                   ("data", mydata_content),
                   (".", [r'C:\Python27\Lib\site-packages\zmq\libzmq.dll',
                          'logging.conf',

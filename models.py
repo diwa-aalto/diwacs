@@ -1,15 +1,12 @@
-'''
+"""
 Created on 23.5.2012
 
 
-@author: neriksso
-
-@requires: :py:mod:`sqlalchemy`
-
-@requires: :py:mod:`pywin32`
-
+:author: neriksso
+:warning: Requires :py:mod:`sqlalchemy` and :py:mod:`pywin32`
 :synopsis: Used to represent the different database structures on DiWa.
-'''
+
+"""
 import datetime
 import os
 import time
@@ -616,8 +613,9 @@ class FileAction(Base):
     session = relationship("Session", backref=backref('fileactions',
                                                       order_by=id))
 
-    def __init__(self, file, action, session=None, computer=None, user=None):
-        self.file = file
+    def __init__(self, filename, action, session=None, computer=None,
+                 user=None):
+        self.file = filename
         self.action = action
         self.user = user
         self.session = session

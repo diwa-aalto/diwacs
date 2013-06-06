@@ -19,13 +19,13 @@ Required python modules for DiWaCS:
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-   
-   api
-   bugs
-   features
-   license
-   ui
+	:maxdepth: 3
+	
+	api
+	bugs
+	features
+	license
+	ui
    
    
 Indices and tables

@@ -8,7 +8,7 @@
 \contentsline {section}{\numberline {1.6}Models module}{10}{section.1.6}
 \contentsline {section}{\numberline {1.7}SWNP module}{14}{section.1.7}
 \contentsline {section}{\numberline {1.8}Utils module}{17}{section.1.8}
-\contentsline {section}{\numberline {1.9}Wos module}{18}{section.1.9}
+\contentsline {section}{\numberline {1.9}WOS module}{18}{section.1.9}
 \contentsline {chapter}{\numberline {2}Bugs}{27}{chapter.2}
 \contentsline {chapter}{\numberline {3}Features}{29}{chapter.3}
 \contentsline {chapter}{\numberline {4}License}{31}{chapter.4}

@@ -1,8 +1,11 @@
-'''
-Created on 17.5.2013
+"""
+Recreated on 17.5.2013
 
-'''
+:author: neriksso
+
+"""
 # System imports.
+import base64
 import hashlib
 import logging
 import socket
@@ -22,23 +25,42 @@ logger = logging.getLogger('utils')
 
 
 def GetEncryptedDirName(name, hashed_password):
-    """Returns the encrypted name for project directory."""
-    m = hashlib.sha1()
+    """
+    Returns the encrypted name for project directory.
+
+    """
+    if not hashed_password or len(hashed_password) < 1:
+        return name
+    m = hashlib.sha256()
     m.update(name + hashed_password)
-    return m.hexdigest()
+    digest = m.digest()
+    myhash = base64.b32encode(digest)
+    return myhash.replace('=', '') if myhash else hashed_password
 
 
 def HashPassword(password):
-    """Hashes the provided password."""
+    """
+    Hashes the provided password.
+
+    """
     if not password:
         return ''
     m = hashlib.sha1()
     m.update(diwavars.PASSWORD_SALT + password)
-    return m.hexdigest()
+    for i in xrange(diwavars.PASSWORD_ITERATIONS):
+        password = m.hexdigest()
+        m = hashlib.sha1()
+        m.update(str(i) + diwavars.PASSWORD_SALT + str(i) + password + str(i))
+    result = m.hexdigest()
+    logger.debug('PASSWD: %s' % result)
+    return result
 
 
 def CheckProjectPassword(project_id, password):
-    """Compares the the provided password with the project password."""
+    """
+    Compares the the provided password with the project password.
+
+    """
     return controller.GetProjectPassword(project_id) == HashPassword(password)
 
 
@@ -51,8 +73,8 @@ def IterIsLast(iterable):
 
     :param iterable: The iterable element.
     :type iterable: iterable
-    """
 
+    """
     it = iter(iterable)
     prev = it.next()
     for item in it:

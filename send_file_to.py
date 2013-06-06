@@ -1,13 +1,11 @@
-'''
+"""
 Created on 5.6.2012
 
-@author: neriksso
-
-@requires: ZeroMQ \n
-
+:author: neriksso
+:requires: Requires ZeroMQ
 :synopsis: Used to send a file to another node.
 
-'''
+"""
 import sys
 import zmq
 

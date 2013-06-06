@@ -13,8 +13,8 @@
 
 
 \title{DiWaCS Documentation}
-\date{June 03, 2013}
-\release{0.9.2.4}
+\date{June 04, 2013}
+\release{0.9.2.5}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -150,25 +150,30 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-06-03 at 16:15.
+Documentation generated on 2013-06-04 at 10:59.
 
 
 \section{Add file module}
-\label{api:add-file-module}\label{api:module-add_file}\index{add\_file (module)}
+\label{add_file:module-add_file}\label{add_file:add-file-module}\label{add_file::doc}\index{add\_file (module)}
 Created on 5.6.2012
-
-@author: neriksso
-
-@requires: ZeroMQ
 \begin{quote}\begin{description}
+\item[{platform}] \leavevmode
+Windows
+
 \item[{synopsis}] \leavevmode
 Used to add a file in the current project.
+
+\item[{warning}] \leavevmode
+Requires ZeroMQ.
+
+\item[{author}] \leavevmode
+neriksso
 
 \end{description}\end{quote}
 \index{main() (in module add\_file)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:add_file.main}\pysiglinewithargsret{\code{add\_file.}\bfcode{main}}{}{}
+\phantomsection\label{add_file:add_file.main}\pysiglinewithargsret{\code{add\_file.}\bfcode{main}}{}{}
 Main function of the sub program.
 
 Sub program is meant to be bound to windows explorer context menu.
@@ -193,13 +198,15 @@ Integer
 
 
 \section{Send file module}
-\label{api:module-send_file_to}\label{api:send-file-module}\index{send\_file\_to (module)}
+\label{send_file:module-send_file_to}\label{send_file::doc}\label{send_file:send-file-module}\index{send\_file\_to (module)}
 Created on 5.6.2012
-
-@author: neriksso
-
-@requires: ZeroMQ
 \begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{requires}] \leavevmode
+Requires ZeroMQ
+
 \item[{synopsis}] \leavevmode
 Used to send a file to another node.
 
@@ -207,7 +214,7 @@ Used to send a file to another node.
 \index{main() (in module send\_file\_to)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:send_file_to.main}\pysiglinewithargsret{\code{send\_file\_to.}\bfcode{main}}{}{}
+\phantomsection\label{send_file:send_file_to.main}\pysiglinewithargsret{\code{send\_file\_to.}\bfcode{main}}{}{}
 Main function of the sub program.
 
 Sub program is meant to be bound to windows explorer context menu.
@@ -238,19 +245,22 @@ Integer
 
 
 \section{Controller module}
-\label{api:module-controller}\label{api:controller-module}\index{controller (module)}
+\label{controller:module-controller}\label{controller:controller-module}\label{controller::doc}\index{controller (module)}
 Created on 28.5.2012
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
 
-@author: neriksso
+\end{description}\end{quote}
 \index{AddComputerToSession() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.AddComputerToSession}\pysiglinewithargsret{\code{controller.}\bfcode{AddComputerToSession}}{\emph{session}, \emph{name}, \emph{ip}, \emph{wos\_id}}{}
+\phantomsection\label{controller:controller.AddComputerToSession}\pysiglinewithargsret{\code{controller.}\bfcode{AddComputerToSession}}{\emph{session}, \emph{name}, \emph{ip}, \emph{wos\_id}}{}
 Adds a computer to a session.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- A current session.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- A current session.
 
 \item {} 
 \textbf{name} (\emph{String.}) -- A name of the computer.
@@ -270,12 +280,12 @@ Adds a computer to a session.
 \index{AddEvent() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.AddEvent}\pysiglinewithargsret{\code{controller.}\bfcode{AddEvent}}{\emph{session\_id}, \emph{title}, \emph{desc}}{}
+\phantomsection\label{controller:controller.AddEvent}\pysiglinewithargsret{\code{controller.}\bfcode{AddEvent}}{\emph{session\_id}, \emph{title}, \emph{desc}}{}
 Adds an event to the database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- The current session.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- The current session.
 
 \item {} 
 \textbf{desc} (\emph{String.}) -- Description of the event.
@@ -289,7 +299,7 @@ Adds an event to the database.
 \index{AddFileToProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.AddFileToProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
+\phantomsection\label{controller:controller.AddFileToProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
 Add a file to project. Copies it to the folder and adds a record to
 database.
 \begin{quote}\begin{description}
@@ -315,14 +325,14 @@ String
 \index{AddProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.AddProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddProject}}{\emph{data}}{}
+\phantomsection\label{controller:controller.AddProject}\pysiglinewithargsret{\code{controller.}\bfcode{AddProject}}{\emph{data}}{}
 Adds a project to database and returns a  project instance
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{data} (\emph{A dictionary}) -- Project information
 
 \item[{Return type}] \leavevmode
-an instance of {\hyperref[api:models.Project]{\code{models.Project}}}
+an instance of {\hyperref[models:models.Project]{\code{models.Project}}}
 
 \end{description}\end{quote}
 
@@ -331,7 +341,7 @@ an instance of {\hyperref[api:models.Project]{\code{models.Project}}}
 \index{ConnectToDatabase() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.ConnectToDatabase}\pysiglinewithargsret{\code{controller.}\bfcode{ConnectToDatabase}}{\emph{expire=False}}{}
+\phantomsection\label{controller:controller.ConnectToDatabase}\pysiglinewithargsret{\code{controller.}\bfcode{ConnectToDatabase}}{\emph{expire=False}}{}
 Connect to the database and return a Session object
 
 \end{fulllineitems}
@@ -339,7 +349,7 @@ Connect to the database and return a Session object
 \index{CreateAll() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.CreateAll}\pysiglinewithargsret{\code{controller.}\bfcode{CreateAll}}{}{}
+\phantomsection\label{controller:controller.CreateAll}\pysiglinewithargsret{\code{controller.}\bfcode{CreateAll}}{}{}
 Create tables to the database
 
 \end{fulllineitems}
@@ -347,7 +357,7 @@ Create tables to the database
 \index{CreateFileaction() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.CreateFileaction}\pysiglinewithargsret{\code{controller.}\bfcode{CreateFileaction}}{\emph{path}, \emph{action}, \emph{session\_id}, \emph{project\_id}}{}
+\phantomsection\label{controller:controller.CreateFileaction}\pysiglinewithargsret{\code{controller.}\bfcode{CreateFileaction}}{\emph{path}, \emph{action}, \emph{session\_id}, \emph{project\_id}}{}
 Logs a file action to the database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -372,7 +382,7 @@ Logs a file action to the database.
 \index{DeleteRecord() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.DeleteRecord}\pysiglinewithargsret{\code{controller.}\bfcode{DeleteRecord}}{\emph{Model}, \emph{idNum}}{}
+\phantomsection\label{controller:controller.DeleteRecord}\pysiglinewithargsret{\code{controller.}\bfcode{DeleteRecord}}{\emph{Model}, \emph{idNum}}{}
 Delete a record from database
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -391,7 +401,7 @@ Delete a record from database
 \index{EditProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.EditProject}\pysiglinewithargsret{\code{controller.}\bfcode{EditProject}}{\emph{idNum}, \emph{row}}{}
+\phantomsection\label{controller:controller.EditProject}\pysiglinewithargsret{\code{controller.}\bfcode{EditProject}}{\emph{idNum}, \emph{row}}{}
 Update a project info
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -410,11 +420,11 @@ Update a project info
 \index{EndSession() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.EndSession}\pysiglinewithargsret{\code{controller.}\bfcode{EndSession}}{\emph{session\_id}}{}
+\phantomsection\label{controller:controller.EndSession}\pysiglinewithargsret{\code{controller.}\bfcode{EndSession}}{\emph{session\_id}}{}
 Ends a session, sets its endtime to database. Ends file scanner.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- Current session.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- Current session.
 
 \end{description}\end{quote}
 
@@ -423,12 +433,12 @@ Ends a session, sets its endtime to database. Ends file scanner.
 \index{GetOrCreate() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetOrCreate}\pysiglinewithargsret{\code{controller.}\bfcode{GetOrCreate}}{\emph{session}, \emph{model}, \emph{**kwargs}}{}
+\phantomsection\label{controller:controller.GetOrCreate}\pysiglinewithargsret{\code{controller.}\bfcode{GetOrCreate}}{\emph{session}, \emph{model}, \emph{**kwargs}}{}
 Fetches or creates a instance.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- a related session.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- a related session.
 
 \item {} 
 \textbf{model} (\code{sqlalchemy.ext.declarative.declarative\_base()}) -- The model of which an instance is wanted.
@@ -442,7 +452,7 @@ Fetches or creates a instance.
 \index{GetProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetProject}\pysiglinewithargsret{\code{controller.}\bfcode{GetProject}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.GetProject}\pysiglinewithargsret{\code{controller.}\bfcode{GetProject}}{\emph{project\_id}}{}
 Fetches projects by a company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -455,7 +465,7 @@ Fetches projects by a company.
 \index{GetProjectPassword() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetProjectPassword}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectPassword}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.GetProjectPassword}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectPassword}}{\emph{project\_id}}{}
 Returns the project password.
 
 \end{fulllineitems}
@@ -463,7 +473,7 @@ Returns the project password.
 \index{GetProjectPath() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetProjectPath}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectPath}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.GetProjectPath}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectPath}}{\emph{project\_id}}{}
 Fetches the project path from database and return it.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -479,7 +489,7 @@ String.
 \index{GetProjectsByCompany() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetProjectsByCompany}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectsByCompany}}{\emph{company\_id}}{}
+\phantomsection\label{controller:controller.GetProjectsByCompany}\pysiglinewithargsret{\code{controller.}\bfcode{GetProjectsByCompany}}{\emph{company\_id}}{}
 Fetches projects by a company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -492,7 +502,7 @@ Fetches projects by a company.
 \index{GetRecentFiles() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetRecentFiles}\pysiglinewithargsret{\code{controller.}\bfcode{GetRecentFiles}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.GetRecentFiles}\pysiglinewithargsret{\code{controller.}\bfcode{GetRecentFiles}}{\emph{project\_id}}{}
 Fetches files accessed recently in the project sessions from the
 database.
 
@@ -519,7 +529,7 @@ a list of files
 \index{GetSessionsByProject() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.GetSessionsByProject}\pysiglinewithargsret{\code{controller.}\bfcode{GetSessionsByProject}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.GetSessionsByProject}\pysiglinewithargsret{\code{controller.}\bfcode{GetSessionsByProject}}{\emph{project\_id}}{}
 Fetches sessions for a project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -532,7 +542,7 @@ Fetches sessions for a project.
 \index{InitSyncProjectDir() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.InitSyncProjectDir}\pysiglinewithargsret{\code{controller.}\bfcode{InitSyncProjectDir}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.InitSyncProjectDir}\pysiglinewithargsret{\code{controller.}\bfcode{InitSyncProjectDir}}{\emph{project\_id}}{}
 Initial sync of project dir and database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -545,7 +555,7 @@ Initial sync of project dir and database.
 \index{IsProjectFile() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.IsProjectFile}\pysiglinewithargsret{\code{controller.}\bfcode{IsProjectFile}}{\emph{filename}, \emph{project\_id}}{}
+\phantomsection\label{controller:controller.IsProjectFile}\pysiglinewithargsret{\code{controller.}\bfcode{IsProjectFile}}{\emph{filename}, \emph{project\_id}}{}
 Checks, if a file belongs to a project. Checks both project folder
 and database.
 \begin{quote}\begin{description}
@@ -568,7 +578,7 @@ Boolean
 \index{PROJECT\_FILE\_EVENT\_HANDLER (class in controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.PROJECT_FILE_EVENT_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.}\bfcode{PROJECT\_FILE\_EVENT\_HANDLER}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.PROJECT_FILE_EVENT_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.}\bfcode{PROJECT\_FILE\_EVENT\_HANDLER}}{\emph{project\_id}}{}
 Handler for FileSystem events on project folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -578,7 +588,7 @@ Handler for FileSystem events on project folder.
 \index{on\_created() (controller.PROJECT\_FILE\_EVENT\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.PROJECT_FILE_EVENT_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
+\phantomsection\label{controller:controller.PROJECT_FILE_EVENT_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
 On\_created event handler. Logs to database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -591,7 +601,7 @@ On\_created event handler. Logs to database.
 \index{on\_deleted() (controller.PROJECT\_FILE\_EVENT\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.PROJECT_FILE_EVENT_HANDLER.on_deleted}\pysiglinewithargsret{\bfcode{on\_deleted}}{\emph{event}}{}
+\phantomsection\label{controller:controller.PROJECT_FILE_EVENT_HANDLER.on_deleted}\pysiglinewithargsret{\bfcode{on\_deleted}}{\emph{event}}{}
 On\_deleted event handler. Logs to database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -604,7 +614,7 @@ On\_deleted event handler. Logs to database.
 \index{on\_modified() (controller.PROJECT\_FILE\_EVENT\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.PROJECT_FILE_EVENT_HANDLER.on_modified}\pysiglinewithargsret{\bfcode{on\_modified}}{\emph{event}}{}
+\phantomsection\label{controller:controller.PROJECT_FILE_EVENT_HANDLER.on_modified}\pysiglinewithargsret{\bfcode{on\_modified}}{\emph{event}}{}
 On\_modified event handler. Logs to database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -620,7 +630,7 @@ On\_modified event handler. Logs to database.
 \index{SCAN\_HANDLER (class in controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.SCAN_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.}\bfcode{SCAN\_HANDLER}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.SCAN_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.}\bfcode{SCAN\_HANDLER}}{\emph{project\_id}}{}
 Handler for FileSystem events on SCANNING folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -630,7 +640,7 @@ Handler for FileSystem events on SCANNING folder.
 \index{on\_created() (controller.SCAN\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.SCAN_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
+\phantomsection\label{controller:controller.SCAN_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
 On\_created event handler. Logs to database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -646,7 +656,7 @@ On\_created event handler. Logs to database.
 \index{StartNewSession() (in module controller)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:controller.StartNewSession}\pysiglinewithargsret{\code{controller.}\bfcode{StartNewSession}}{\emph{project\_id}, \emph{session\_id=None}, \emph{old\_session\_id=None}}{}
+\phantomsection\label{controller:controller.StartNewSession}\pysiglinewithargsret{\code{controller.}\bfcode{StartNewSession}}{\emph{project\_id}, \emph{session\_id=None}, \emph{old\_session\_id=None}}{}
 Creates a session to the database and return a session object.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -668,12 +678,17 @@ Creates a session to the database and return a session object.
 
 
 \section{Filesystem module}
-\label{api:module-filesystem}\label{api:filesystem-module}\index{filesystem (module)}
+\label{filesystem:module-filesystem}\label{filesystem::doc}\label{filesystem:filesystem-module}\index{filesystem (module)}
 Created on 17.5.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\end{description}\end{quote}
 \index{CopyFileToProject() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.CopyFileToProject}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
+\phantomsection\label{filesystem:filesystem.CopyFileToProject}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyFileToProject}}{\emph{filepath}, \emph{project\_id}}{}
 Copy file to project dir and return new filepath in project dir.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -692,7 +707,7 @@ Copy file to project dir and return new filepath in project dir.
 \index{CopyToTemp() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.CopyToTemp}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
+\phantomsection\label{filesystem:filesystem.CopyToTemp}\pysiglinewithargsret{\code{filesystem.}\bfcode{CopyToTemp}}{\emph{filepath}}{}
 Copy a file to temporary folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -705,7 +720,7 @@ Copy a file to temporary folder.
 \index{CreateProjectDir() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.CreateProjectDir}\pysiglinewithargsret{\code{filesystem.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
+\phantomsection\label{filesystem:filesystem.CreateProjectDir}\pysiglinewithargsret{\code{filesystem.}\bfcode{CreateProjectDir}}{\emph{dir\_name}}{}
 Creates a project directory, if one does not exist in the file system
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -718,7 +733,7 @@ Creates a project directory, if one does not exist in the file system
 \index{FileToBase64() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.FileToBase64}\pysiglinewithargsret{\code{filesystem.}\bfcode{FileToBase64}}{\emph{filepath}}{}
+\phantomsection\label{filesystem:filesystem.FileToBase64}\pysiglinewithargsret{\code{filesystem.}\bfcode{FileToBase64}}{\emph{filepath}}{}
 Transform a file to a binary object.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -731,7 +746,7 @@ Transform a file to a binary object.
 \index{GetFileExtension() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.GetFileExtension}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetFileExtension}}{\emph{path}}{}
+\phantomsection\label{filesystem:filesystem.GetFileExtension}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetFileExtension}}{\emph{path}}{}
 Returns the file extension of a file
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -747,7 +762,7 @@ String
 \index{GetNodeImg() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.GetNodeImg}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetNodeImg}}{\emph{node}}{}
+\phantomsection\label{filesystem:filesystem.GetNodeImg}\pysiglinewithargsret{\code{filesystem.}\bfcode{GetNodeImg}}{\emph{node}}{}
 Searches for a node's image in STORAGE.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -760,7 +775,7 @@ Searches for a node's image in STORAGE.
 \index{IsSubtree() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.IsSubtree}\pysiglinewithargsret{\code{filesystem.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
+\phantomsection\label{filesystem:filesystem.IsSubtree}\pysiglinewithargsret{\code{filesystem.}\bfcode{IsSubtree}}{\emph{filename}, \emph{parent}}{}
 Determines, if filename is inside the parent folder.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -779,7 +794,7 @@ Determines, if filename is inside the parent folder.
 \index{OpenFile() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.OpenFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{OpenFile}}{\emph{filepath}}{}
+\phantomsection\label{filesystem:filesystem.OpenFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{OpenFile}}{\emph{filepath}}{}
 Opens a file path.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -792,7 +807,7 @@ Opens a file path.
 \index{SaveScreen() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.SaveScreen}\pysiglinewithargsret{\code{filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
+\phantomsection\label{filesystem:filesystem.SaveScreen}\pysiglinewithargsret{\code{filesystem.}\bfcode{SaveScreen}}{\emph{win}, \emph{filepath}}{}
 Saves the background image of the desktop.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -811,7 +826,7 @@ Saves the background image of the desktop.
 \index{SearchFile() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:filesystem.SearchFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
+\phantomsection\label{filesystem:filesystem.SearchFile}\pysiglinewithargsret{\code{filesystem.}\bfcode{SearchFile}}{\emph{filename}, \emph{search\_path}}{}
 Search file in a given path.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -836,12 +851,12 @@ String
 
 
 \section{Macro module}
-\label{api:macro-module}\label{api:module-macro}\index{macro (module)}
+\label{macro:macro-module}\label{macro:module-macro}\label{macro::doc}\index{macro (module)}
 macro.py defines a few user input functions.
 \index{Click() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Click}\pysiglinewithargsret{\code{macro.}\bfcode{Click}}{}{}
+\phantomsection\label{macro:macro.Click}\pysiglinewithargsret{\code{macro.}\bfcode{Click}}{}{}
 Send a mouse click: LeftButton down, LeftButton up.
 
 \end{fulllineitems}
@@ -849,14 +864,14 @@ Send a mouse click: LeftButton down, LeftButton up.
 \index{GetPos() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.GetPos}\pysiglinewithargsret{\code{macro.}\bfcode{GetPos}}{}{}
+\phantomsection\label{macro:macro.GetPos}\pysiglinewithargsret{\code{macro.}\bfcode{GetPos}}{}{}
 Return the current position of the mouse.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 The position of the mouse.
 
 \item[{Return type}] \leavevmode
-{\hyperref[api:macro.POINT]{\code{POINT}}}
+{\hyperref[macro:macro.POINT]{\code{POINT}}}
 
 \end{description}\end{quote}
 
@@ -865,7 +880,7 @@ The position of the mouse.
 \index{GetSendkeys() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.GetSendkeys}\pysiglinewithargsret{\code{macro.}\bfcode{GetSendkeys}}{\emph{code}}{}
+\phantomsection\label{macro:macro.GetSendkeys}\pysiglinewithargsret{\code{macro.}\bfcode{GetSendkeys}}{\emph{code}}{}
 Returns a character for a key code.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -878,7 +893,7 @@ Returns a character for a key code.
 \index{Hold() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Hold}\pysiglinewithargsret{\code{macro.}\bfcode{Hold}}{}{}
+\phantomsection\label{macro:macro.Hold}\pysiglinewithargsret{\code{macro.}\bfcode{Hold}}{}{}
 Send a mouse hold: LeftButton down.
 
 \end{fulllineitems}
@@ -886,7 +901,7 @@ Send a mouse hold: LeftButton down.
 \index{Key() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Key}\pysiglinewithargsret{\code{macro.}\bfcode{Key}}{\emph{event}, \emph{kcode}}{}
+\phantomsection\label{macro:macro.Key}\pysiglinewithargsret{\code{macro.}\bfcode{Key}}{\emph{event}, \emph{kcode}}{}
 Used to send a single virtual keycode to the system.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -905,7 +920,7 @@ Used to send a single virtual keycode to the system.
 \index{MiddleClick() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.MiddleClick}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleClick}}{}{}
+\phantomsection\label{macro:macro.MiddleClick}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleClick}}{}{}
 Send a mouse middle click: MiddleButton down, MiddleButton up.
 
 \end{fulllineitems}
@@ -913,7 +928,7 @@ Send a mouse middle click: MiddleButton down, MiddleButton up.
 \index{MiddleHold() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.MiddleHold}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleHold}}{}{}
+\phantomsection\label{macro:macro.MiddleHold}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleHold}}{}{}
 Send a mouse middle click: MiddleButton down.
 
 \end{fulllineitems}
@@ -921,7 +936,7 @@ Send a mouse middle click: MiddleButton down.
 \index{MiddleRelease() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.MiddleRelease}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleRelease}}{}{}
+\phantomsection\label{macro:macro.MiddleRelease}\pysiglinewithargsret{\code{macro.}\bfcode{MiddleRelease}}{}{}
 Send a mouse middle click: MiddleButton up.
 
 \end{fulllineitems}
@@ -929,7 +944,7 @@ Send a mouse middle click: MiddleButton up.
 \index{Move() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Move}\pysiglinewithargsret{\code{macro.}\bfcode{Move}}{\emph{x}, \emph{y}}{}
+\phantomsection\label{macro:macro.Move}\pysiglinewithargsret{\code{macro.}\bfcode{Move}}{\emph{x}, \emph{y}}{}
 Move the cursor for x amount in horizontal direction and y amount in
 vertical direction.
 \begin{quote}\begin{description}
@@ -949,7 +964,7 @@ vertical direction.
 \index{MoveTo() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.MoveTo}\pysiglinewithargsret{\code{macro.}\bfcode{MoveTo}}{\emph{x}, \emph{y}}{}
+\phantomsection\label{macro:macro.MoveTo}\pysiglinewithargsret{\code{macro.}\bfcode{MoveTo}}{\emph{x}, \emph{y}}{}
 Move the mouse cursor to point (x, y) on screen.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -968,7 +983,7 @@ Move the mouse cursor to point (x, y) on screen.
 \index{POINT (class in macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.POINT}\pysigline{\strong{class }\code{macro.}\bfcode{POINT}}
+\phantomsection\label{macro:macro.POINT}\pysigline{\strong{class }\code{macro.}\bfcode{POINT}}
 Stores the x and y components of coordinates.
 \begin{quote}\begin{description}
 \item[{Attribute x}] \leavevmode
@@ -984,7 +999,7 @@ c\_ulong
 \index{Release() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Release}\pysiglinewithargsret{\code{macro.}\bfcode{Release}}{}{}
+\phantomsection\label{macro:macro.Release}\pysiglinewithargsret{\code{macro.}\bfcode{Release}}{}{}
 Send a mouse release: LeftButton up.
 
 \end{fulllineitems}
@@ -992,7 +1007,7 @@ Send a mouse release: LeftButton up.
 \index{RightClick() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.RightClick}\pysiglinewithargsret{\code{macro.}\bfcode{RightClick}}{}{}
+\phantomsection\label{macro:macro.RightClick}\pysiglinewithargsret{\code{macro.}\bfcode{RightClick}}{}{}
 Send a mouse right click: RightButton down, RightButton up.
 
 \end{fulllineitems}
@@ -1000,7 +1015,7 @@ Send a mouse right click: RightButton down, RightButton up.
 \index{RightHold() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.RightHold}\pysiglinewithargsret{\code{macro.}\bfcode{RightHold}}{}{}
+\phantomsection\label{macro:macro.RightHold}\pysiglinewithargsret{\code{macro.}\bfcode{RightHold}}{}{}
 Send a mouse right hold: RightButton down.
 
 \end{fulllineitems}
@@ -1008,7 +1023,7 @@ Send a mouse right hold: RightButton down.
 \index{RightRelease() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.RightRelease}\pysiglinewithargsret{\code{macro.}\bfcode{RightRelease}}{}{}
+\phantomsection\label{macro:macro.RightRelease}\pysiglinewithargsret{\code{macro.}\bfcode{RightRelease}}{}{}
 Send a mouse right release: RightButton up.
 
 \end{fulllineitems}
@@ -1016,7 +1031,7 @@ Send a mouse right release: RightButton up.
 \index{SendInput() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.SendInput}\pysiglinewithargsret{\code{macro.}\bfcode{SendInput}}{\emph{intype}, \emph{data}, \emph{flags}, \emph{scan=0}, \emph{mouse\_data=0}}{}
+\phantomsection\label{macro:macro.SendInput}\pysiglinewithargsret{\code{macro.}\bfcode{SendInput}}{\emph{intype}, \emph{data}, \emph{flags}, \emph{scan=0}, \emph{mouse\_data=0}}{}
 SendInput sends virtual user input.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1044,7 +1059,7 @@ SendInput sends virtual user input.
 \index{Slide() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.Slide}\pysiglinewithargsret{\code{macro.}\bfcode{Slide}}{\emph{x}, \emph{y}}{}
+\phantomsection\label{macro:macro.Slide}\pysiglinewithargsret{\code{macro.}\bfcode{Slide}}{\emph{x}, \emph{y}}{}
 Slide the mouse for x amount in horizontal direction and y amount in
 vertical direction.
 \begin{quote}\begin{description}
@@ -1064,7 +1079,7 @@ vertical direction.
 \index{SlideTo() (in module macro)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:macro.SlideTo}\pysiglinewithargsret{\code{macro.}\bfcode{SlideTo}}{\emph{x}, \emph{y}, \emph{speed=0}}{}
+\phantomsection\label{macro:macro.SlideTo}\pysiglinewithargsret{\code{macro.}\bfcode{SlideTo}}{\emph{x}, \emph{y}, \emph{speed=0}}{}
 Slides the mouse to point (x, y)
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1086,15 +1101,15 @@ Slides the mouse to point (x, y)
 
 
 \section{Models module}
-\label{api:module-models}\label{api:models-module}\index{models (module)}
+\label{models:module-models}\label{models::doc}\label{models:models-module}\index{models (module)}
 Created on 23.5.2012
-
-@author: neriksso
-
-@requires: \code{sqlalchemy}
-
-@requires: \code{pywin32}
 \begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{warning}] \leavevmode
+Requires \code{sqlalchemy} and \code{pywin32}
+
 \item[{synopsis}] \leavevmode
 Used to represent the different database structures on DiWa.
 
@@ -1102,7 +1117,7 @@ Used to represent the different database structures on DiWa.
 \index{Action (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Action}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Action}}{\emph{name}}{}
+\phantomsection\label{models:models.Action}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Action}}{\emph{name}}{}
 A class representation of a action. A file action uses this to describe
 the action.
 \begin{description}
@@ -1127,7 +1142,7 @@ the action.
 \index{Activity (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Activity}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Activity}}{\emph{project}, \emph{session=None}}{}
+\phantomsection\label{models:models.Activity}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Activity}}{\emph{project}, \emph{session=None}}{}
 A class representation of an activity.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1155,10 +1170,10 @@ A class representation of an activity.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{project} ({\hyperref[api:models.Project]{\code{models.Project}}}) -- Project activity belongs to.
+\textbf{project} ({\hyperref[models:models.Project]{\code{models.Project}}}) -- Project activity belongs to.
 
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- Optional session activity belongs to.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- Optional session activity belongs to.
 
 \end{itemize}
 
@@ -1169,7 +1184,7 @@ A class representation of an activity.
 \index{Company (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Company}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Company}}{\emph{name}}{}
+\phantomsection\label{models:models.Company}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Company}}{\emph{name}}{}
 A class representation of a company.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1193,7 +1208,7 @@ A class representation of a company.
 \index{Computer (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Computer}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Computer}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.Computer}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Computer}}{\emph{**kwargs}}{}
 A class representation of a computer.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1236,7 +1251,7 @@ A class representation of a computer.
 \index{Event (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Event}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Event}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.Event}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Event}}{\emph{**kwargs}}{}
 A class representation of Event. A simple note with timestamp during a
 session.
 \begin{description}
@@ -1268,7 +1283,7 @@ session.
 \index{File (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.File}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{File}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.File}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{File}}{\emph{**kwargs}}{}
 A class representation of a file.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1293,7 +1308,7 @@ A class representation of a file.
 \index{FileAction (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.FileAction}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{FileAction}}{\emph{file}, \emph{action}, \emph{session=None}, \emph{computer=None}, \emph{user=None}}{}
+\phantomsection\label{models:models.FileAction}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{FileAction}}{\emph{file}, \emph{action}, \emph{session=None}, \emph{computer=None}, \emph{user=None}}{}
 A class representation of a fileaction.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1339,19 +1354,19 @@ A class representation of a fileaction.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{file} ({\hyperref[api:models.File]{\code{models.File}}}) -- The file which is subjected to the action.
+\textbf{file} ({\hyperref[models:models.File]{\code{models.File}}}) -- The file which is subjected to the action.
 
 \item {} 
-\textbf{action} ({\hyperref[api:models.Action]{\code{models.Action}}}) -- The action which is applied to the file.
+\textbf{action} ({\hyperref[models:models.Action]{\code{models.Action}}}) -- The action which is applied to the file.
 
 \item {} 
-\textbf{session} ({\hyperref[api:models.Session]{\code{models.Session}}}) -- The session in which the FileAction took place on.
+\textbf{session} ({\hyperref[models:models.Session]{\code{models.Session}}}) -- The session in which the FileAction took place on.
 
 \item {} 
-\textbf{computer} ({\hyperref[api:models.Computer]{\code{models.Computer}}}) -- The computer from which the user performed the action.
+\textbf{computer} ({\hyperref[models:models.Computer]{\code{models.Computer}}}) -- The computer from which the user performed the action.
 
 \item {} 
-\textbf{user} ({\hyperref[api:models.User]{\code{models.User}}}) -- The user performing the action.
+\textbf{user} ({\hyperref[models:models.User]{\code{models.User}}}) -- The user performing the action.
 
 \end{itemize}
 
@@ -1362,7 +1377,7 @@ A class representation of a fileaction.
 \index{Project (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Project}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Project}}{\emph{name}, \emph{company}, \emph{password}}{}
+\phantomsection\label{models:models.Project}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Project}}{\emph{name}, \emph{company}, \emph{password}}{}
 A class representation of a project.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1396,7 +1411,7 @@ A class representation of a project.
 \textbf{name} (\code{String}) -- Name of the project.
 
 \item {} 
-\textbf{company} ({\hyperref[api:models.Company]{\code{models.Company}}}) -- The owner of the project.
+\textbf{company} ({\hyperref[models:models.Company]{\code{models.Company}}}) -- The owner of the project.
 
 \end{itemize}
 
@@ -1407,7 +1422,7 @@ A class representation of a project.
 \index{Session (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Session}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Session}}{\emph{project}}{}
+\phantomsection\label{models:models.Session}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Session}}{\emph{project}}{}
 A class representation of a session.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1446,17 +1461,17 @@ A class representation of a session.
 \end{description}
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{project} ({\hyperref[api:models.Project]{\code{models.Project}}}) -- The project for the session.
+\textbf{project} ({\hyperref[models:models.Project]{\code{models.Project}}}) -- The project for the session.
 
 \end{description}\end{quote}
 \index{addUser() (models.Session method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Session.addUser}\pysiglinewithargsret{\bfcode{addUser}}{\emph{user}}{}
+\phantomsection\label{models:models.Session.addUser}\pysiglinewithargsret{\bfcode{addUser}}{\emph{user}}{}
 Add users to a session.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{user} ({\hyperref[api:models.User]{\code{models.User}}}) -- User to be added into the session.
+\textbf{user} ({\hyperref[models:models.User]{\code{models.User}}}) -- User to be added into the session.
 
 \end{description}\end{quote}
 
@@ -1465,7 +1480,7 @@ Add users to a session.
 \index{fileRoutine() (models.Session method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Session.fileRoutine}\pysiglinewithargsret{\bfcode{fileRoutine}}{}{}
+\phantomsection\label{models:models.Session.fileRoutine}\pysiglinewithargsret{\bfcode{fileRoutine}}{}{}
 File checking routine for logging.
 \begin{quote}\begin{description}
 \item[{Throws IOError}] \leavevmode
@@ -1478,12 +1493,12 @@ When log.txt is not available for write access.
 \index{get\_last\_checked() (models.Session method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Session.get_last_checked}\pysiglinewithargsret{\bfcode{get\_last\_checked}}{}{}
+\phantomsection\label{models:models.Session.get_last_checked}\pysiglinewithargsret{\bfcode{get\_last\_checked}}{}{}
 Fetch \code{last\_checked} field.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 \code{last\_checked} field (None before
-{\hyperref[api:models.Session.start]{\code{models.Session.start()}}} is called).
+{\hyperref[models:models.Session.start]{\code{models.Session.start()}}} is called).
 
 \item[{Return type}] \leavevmode
 \code{datetime.datetime} or \code{None}
@@ -1495,7 +1510,7 @@ Fetch \code{last\_checked} field.
 \index{start() (models.Session method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.Session.start}\pysiglinewithargsret{\bfcode{start}}{}{}
+\phantomsection\label{models:models.Session.start}\pysiglinewithargsret{\bfcode{start}}{}{}
 Start a session.
 Set the \code{last\_checked} field to current DateTime.
 
@@ -1507,7 +1522,7 @@ Set the \code{last\_checked} field to current DateTime.
 \index{User (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:models.User}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{User}}{\emph{name}, \emph{company}}{}
+\phantomsection\label{models:models.User}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{User}}{\emph{name}, \emph{company}}{}
 A class representation of a user.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
@@ -1541,7 +1556,7 @@ A class representation of a user.
 \textbf{name} (\code{String}) -- Name of the user.
 
 \item {} 
-\textbf{company} ({\hyperref[api:models.Company]{\code{models.Company}}}) -- The employer.
+\textbf{company} ({\hyperref[models:models.Company]{\code{models.Company}}}) -- The employer.
 
 \end{itemize}
 
@@ -1552,14 +1567,17 @@ A class representation of a user.
 
 
 \section{SWNP module}
-\label{api:swnp-module}\label{api:module-swnp}\index{swnp (module)}
+\label{swnp::doc}\label{swnp:swnp-module}\label{swnp:module-swnp}\index{swnp (module)}
 Created on 30.4.2012
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
 
-@author: neriksso
+\end{description}\end{quote}
 \index{Message (class in swnp)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.Message}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{Message}}{\emph{TAG}, \emph{PREFIX}, \emph{PAYLOAD}}{}
+\phantomsection\label{swnp:swnp.Message}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{Message}}{\emph{TAG}, \emph{PREFIX}, \emph{PAYLOAD}}{}
 A class representation of a Message.
 
 Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
@@ -1581,7 +1599,7 @@ Messages are encoded to json for transmission.
 \index{from\_json() (swnp.Message static method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.Message.from_json}\pysiglinewithargsret{\strong{static }\bfcode{from\_json}}{\emph{json\_dict}}{}
+\phantomsection\label{swnp:swnp.Message.from_json}\pysiglinewithargsret{\strong{static }\bfcode{from\_json}}{\emph{json\_dict}}{}
 Return a message from json.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1591,7 +1609,7 @@ Return a message from json.
 Initializes a message from JSON object.
 
 \item[{Return type}] \leavevmode
-{\hyperref[api:swnp.Message]{\code{swnp.Message}}}.
+{\hyperref[swnp:swnp.Message]{\code{swnp.Message}}}.
 
 \end{description}\end{quote}
 
@@ -1600,11 +1618,11 @@ Initializes a message from JSON object.
 \index{to\_dict() (swnp.Message static method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.Message.to_dict}\pysiglinewithargsret{\strong{static }\bfcode{to\_dict}}{\emph{msg}}{}
+\phantomsection\label{swnp:swnp.Message.to_dict}\pysiglinewithargsret{\strong{static }\bfcode{to\_dict}}{\emph{msg}}{}
 Return a message in a dict.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{msg} ({\hyperref[api:swnp.Message]{\code{swnp.Message}}}) -- The message.
+\textbf{msg} ({\hyperref[swnp:swnp.Message]{\code{swnp.Message}}}) -- The message.
 
 \item[{Returns}] \leavevmode
 Dictionary representation of the message.
@@ -1622,7 +1640,7 @@ Dict
 \index{Node (class in swnp)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.Node}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{Node}}{\emph{id}, \emph{screens}, \emph{name=None}, \emph{data=None}}{}
+\phantomsection\label{swnp:swnp.Node}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{Node}}{\emph{id}, \emph{screens}, \emph{name=None}, \emph{data=None}}{}
 A class representation of a node in the network.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1641,7 +1659,7 @@ A class representation of a node in the network.
 \index{refresh() (swnp.Node method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.Node.refresh}\pysiglinewithargsret{\bfcode{refresh}}{}{}
+\phantomsection\label{swnp:swnp.Node.refresh}\pysiglinewithargsret{\bfcode{refresh}}{}{}
 Updates the timestamp.
 
 \end{fulllineitems}
@@ -1652,7 +1670,7 @@ Updates the timestamp.
 \index{SWNP (class in swnp)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{SWNP}}{\emph{pgm\_group}, \emph{screens=0}, \emph{name=None}, \emph{id=None}, \emph{context=None}, \emph{error\_handler=None}}{}
+\phantomsection\label{swnp:swnp.SWNP}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{SWNP}}{\emph{pgm\_group}, \emph{screens=0}, \emph{name=None}, \emph{id=None}, \emph{context=None}, \emph{error\_handler=None}}{}
 The main class of swnp.
 
 This class has the required ZeroMQ bindings and is responsible for
@@ -1679,7 +1697,7 @@ Only one instance per computer
 \textbf{context} (\code{zmq.Context}) -- ZeroMQ context to use.
 
 \item {} 
-\textbf{error\_handler} ({\hyperref[api:wos.CONN_ERR_TH]{\code{wos.CONN\_ERR\_TH}}}) -- Error handler for the init constructor.
+\textbf{error\_handler} ({\hyperref[wos:wos.CONN_ERR_TH]{\code{wos.CONN\_ERR\_TH}}}) -- Error handler for the init constructor.
 
 \end{itemize}
 
@@ -1687,7 +1705,7 @@ Only one instance per computer
 \index{StartSubRoutine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.StartSubRoutine}\pysiglinewithargsret{\bfcode{StartSubRoutine}}{\emph{target}, \emph{routine}, \emph{name}, \emph{args}}{}
+\phantomsection\label{swnp:swnp.SWNP.StartSubRoutine}\pysiglinewithargsret{\bfcode{StartSubRoutine}}{\emph{target}, \emph{routine}, \emph{name}, \emph{args}}{}
 A wrapper for starting up subroutine threads.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1718,7 +1736,7 @@ The thread of subroutine.
 \index{close() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.close}\pysiglinewithargsret{\bfcode{close}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.close}\pysiglinewithargsret{\bfcode{close}}{}{}
 Closes all connections and exits.
 
 \end{fulllineitems}
@@ -1726,7 +1744,7 @@ Closes all connections and exits.
 \index{do\_ping() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.do_ping}\pysiglinewithargsret{\bfcode{do\_ping}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.do_ping}\pysiglinewithargsret{\bfcode{do\_ping}}{}{}
 Send a PING message to the network.
 
 \end{fulllineitems}
@@ -1734,14 +1752,14 @@ Send a PING message to the network.
 \index{find\_node() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.find_node}\pysiglinewithargsret{\bfcode{find\_node}}{\emph{node\_id}}{}
+\phantomsection\label{swnp:swnp.SWNP.find_node}\pysiglinewithargsret{\bfcode{find\_node}}{\emph{node\_id}}{}
 Search the node list for a specific node.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{node\_id} (\emph{Integer}) -- The id of the searched node.
 
 \item[{Return type}] \leavevmode
-{\hyperref[api:swnp.Node]{\code{swnp.Node}}}
+{\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
 
 \end{description}\end{quote}
 
@@ -1750,7 +1768,7 @@ Search the node list for a specific node.
 \index{get\_buffer() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.get_buffer}\pysiglinewithargsret{\bfcode{get\_buffer}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.get_buffer}\pysiglinewithargsret{\bfcode{get\_buffer}}{}{}
 Gets the buffered messages and returns them
 \begin{quote}\begin{description}
 \item[{Return type}] \leavevmode
@@ -1763,7 +1781,7 @@ json
 \index{get\_list() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.get_list}\pysiglinewithargsret{\bfcode{get\_list}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.get_list}\pysiglinewithargsret{\bfcode{get\_list}}{}{}
 Returns a list of all nodes
 \begin{quote}\begin{description}
 \item[{Return type}] \leavevmode
@@ -1776,7 +1794,7 @@ list
 \index{get\_screen\_list() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.get_screen_list}\pysiglinewithargsret{\bfcode{get\_screen\_list}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.get_screen_list}\pysiglinewithargsret{\bfcode{get\_screen\_list}}{}{}
 Returns a list of screens nodes.
 \begin{quote}\begin{description}
 \item[{Return type}] \leavevmode
@@ -1789,7 +1807,7 @@ list.
 \index{ping\_handler() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.ping_handler}\pysiglinewithargsret{\bfcode{ping\_handler}}{\emph{payload}}{}
+\phantomsection\label{swnp:swnp.SWNP.ping_handler}\pysiglinewithargsret{\bfcode{ping\_handler}}{\emph{payload}}{}
 A handler for PING messages. Sends update\_screens, if necessary.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1802,7 +1820,7 @@ A handler for PING messages. Sends update\_screens, if necessary.
 \index{ping\_routine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.ping_routine}\pysiglinewithargsret{\bfcode{ping\_routine}}{\emph{error\_handler}}{}
+\phantomsection\label{swnp:swnp.SWNP.ping_routine}\pysiglinewithargsret{\bfcode{ping\_routine}}{\emph{error\_handler}}{}
 A routine for sending PING messages at regular intervals.
 
 \end{fulllineitems}
@@ -1810,7 +1828,7 @@ A routine for sending PING messages at regular intervals.
 \index{send() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.send}\pysiglinewithargsret{\bfcode{send}}{\emph{tag}, \emph{prefix}, \emph{message}}{}
+\phantomsection\label{swnp:swnp.SWNP.send}\pysiglinewithargsret{\bfcode{send}}{\emph{tag}, \emph{prefix}, \emph{message}}{}
 Send a message to the network.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1832,7 +1850,7 @@ Send a message to the network.
 \index{set\_screens() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.set_screens}\pysiglinewithargsret{\bfcode{set\_screens}}{\emph{screens}}{}
+\phantomsection\label{swnp:swnp.SWNP.set_screens}\pysiglinewithargsret{\bfcode{set\_screens}}{\emph{screens}}{}
 Sets the number of screens for the instance.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1845,7 +1863,7 @@ Sets the number of screens for the instance.
 \index{shutdown() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.shutdown}\pysiglinewithargsret{\bfcode{shutdown}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.shutdown}\pysiglinewithargsret{\bfcode{shutdown}}{}{}
 Shuts down all connections, no exit.
 
 \end{fulllineitems}
@@ -1853,7 +1871,7 @@ Shuts down all connections, no exit.
 \index{sub\_routine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_urls}, \emph{unused\_context}}{}
+\phantomsection\label{swnp:swnp.SWNP.sub_routine}\pysiglinewithargsret{\bfcode{sub\_routine}}{\emph{sub\_urls}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1872,7 +1890,7 @@ Subscriber routine for the node ID.
 \index{sub\_routine\_sys() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_urls}, \emph{unused\_context}}{}
+\phantomsection\label{swnp:swnp.SWNP.sub_routine_sys}\pysiglinewithargsret{\bfcode{sub\_routine\_sys}}{\emph{sub\_urls}, \emph{unused\_context}}{}
 Subscriber routine for the node ID.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -1891,11 +1909,11 @@ Subscriber routine for the node ID.
 \index{sys\_handler() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.sys_handler}\pysiglinewithargsret{\bfcode{sys\_handler}}{\emph{msg}}{}
+\phantomsection\label{swnp:swnp.SWNP.sys_handler}\pysiglinewithargsret{\bfcode{sys\_handler}}{\emph{msg}}{}
 Handler for ``SYS'' messages.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{msg} ({\hyperref[api:swnp.Message]{\code{swnp.Message}}}) -- The received message.
+\textbf{msg} ({\hyperref[swnp:swnp.Message]{\code{swnp.Message}}}) -- The received message.
 
 \end{description}\end{quote}
 
@@ -1904,7 +1922,7 @@ Handler for ``SYS'' messages.
 \index{timeout\_routine() (swnp.SWNP method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.SWNP.timeout_routine}\pysiglinewithargsret{\bfcode{timeout\_routine}}{}{}
+\phantomsection\label{swnp:swnp.SWNP.timeout_routine}\pysiglinewithargsret{\bfcode{timeout\_routine}}{}{}
 Routine for checking node list and removing nodes with timeout.
 
 \end{fulllineitems}
@@ -1915,7 +1933,7 @@ Routine for checking node list and removing nodes with timeout.
 \index{testStorageConnection() (in module swnp)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:swnp.testStorageConnection}\pysiglinewithargsret{\code{swnp.}\bfcode{testStorageConnection}}{}{}
+\phantomsection\label{swnp:swnp.testStorageConnection}\pysiglinewithargsret{\code{swnp.}\bfcode{testStorageConnection}}{}{}
 Try to access StorageProjects
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -1931,12 +1949,17 @@ Boolean
 
 
 \section{Utils module}
-\label{api:utils-module}\label{api:module-utils}\index{utils (module)}
-Created on 17.5.2013
+\label{utils:utils-module}\label{utils:module-utils}\label{utils::doc}\index{utils (module)}
+Recreated on 17.5.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\end{description}\end{quote}
 \index{CheckProjectPassword() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.CheckProjectPassword}\pysiglinewithargsret{\code{utils.}\bfcode{CheckProjectPassword}}{\emph{project\_id}, \emph{password}}{}
+\phantomsection\label{utils:utils.CheckProjectPassword}\pysiglinewithargsret{\code{utils.}\bfcode{CheckProjectPassword}}{\emph{project\_id}, \emph{password}}{}
 Compares the the provided password with the project password.
 
 \end{fulllineitems}
@@ -1944,7 +1967,7 @@ Compares the the provided password with the project password.
 \index{DottedIPToInt() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.DottedIPToInt}\pysiglinewithargsret{\code{utils.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
+\phantomsection\label{utils:utils.DottedIPToInt}\pysiglinewithargsret{\code{utils.}\bfcode{DottedIPToInt}}{\emph{dotted\_ip}}{}
 Transforms a dotted IP address to Integer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1963,7 +1986,7 @@ Integer
 \index{GetEncryptedDirName() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetEncryptedDirName}\pysiglinewithargsret{\code{utils.}\bfcode{GetEncryptedDirName}}{\emph{name}, \emph{hashed\_password}}{}
+\phantomsection\label{utils:utils.GetEncryptedDirName}\pysiglinewithargsret{\code{utils.}\bfcode{GetEncryptedDirName}}{\emph{name}, \emph{hashed\_password}}{}
 Returns the encrypted name for project directory.
 
 \end{fulllineitems}
@@ -1971,7 +1994,7 @@ Returns the encrypted name for project directory.
 \index{GetLANMachines() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetLANMachines}\pysiglinewithargsret{\code{utils.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
+\phantomsection\label{utils:utils.GetLANMachines}\pysiglinewithargsret{\code{utils.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{lan\_ip} (\emph{string}) -- Local Area Network IP.
 
@@ -1988,7 +2011,7 @@ string{[}{]}
 \index{GetLocalIPAddress() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetLocalIPAddress}\pysiglinewithargsret{\code{utils.}\bfcode{GetLocalIPAddress}}{\emph{target}}{}
+\phantomsection\label{utils:utils.GetLocalIPAddress}\pysiglinewithargsret{\code{utils.}\bfcode{GetLocalIPAddress}}{\emph{target}}{}
 Used to get local Internet Protocol address.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -2004,7 +2027,7 @@ string
 \index{GetMacForIp() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.GetMacForIp}\pysiglinewithargsret{\code{utils.}\bfcode{GetMacForIp}}{\emph{ip}}{}
+\phantomsection\label{utils:utils.GetMacForIp}\pysiglinewithargsret{\code{utils.}\bfcode{GetMacForIp}}{\emph{ip}}{}
 Returns the mac address for an local IP address.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2017,7 +2040,7 @@ Returns the mac address for an local IP address.
 \index{HashPassword() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.HashPassword}\pysiglinewithargsret{\code{utils.}\bfcode{HashPassword}}{\emph{password}}{}
+\phantomsection\label{utils:utils.HashPassword}\pysiglinewithargsret{\code{utils.}\bfcode{HashPassword}}{\emph{password}}{}
 Hashes the provided password.
 
 \end{fulllineitems}
@@ -2025,7 +2048,7 @@ Hashes the provided password.
 \index{IntToDottedIP() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.IntToDottedIP}\pysiglinewithargsret{\code{utils.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
+\phantomsection\label{utils:utils.IntToDottedIP}\pysiglinewithargsret{\code{utils.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
 Transforms an Integer IP address to dotted representation.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2044,7 +2067,7 @@ string
 \index{IterIsLast() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.IterIsLast}\pysiglinewithargsret{\code{utils.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
+\phantomsection\label{utils:utils.IterIsLast}\pysiglinewithargsret{\code{utils.}\bfcode{IterIsLast}}{\emph{iterable}}{{ $\rightarrow$ generates (item, islast) pairs}}
 Generates pairs where the first element is an item from the iterable
 source and the second element is a boolean flag indicating if it is the
 last item in the sequence.
@@ -2059,7 +2082,7 @@ last item in the sequence.
 \index{MapNetworkShare() (in module utils)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share=None}}{}
+\phantomsection\label{utils:utils.MapNetworkShare}\pysiglinewithargsret{\code{utils.}\bfcode{MapNetworkShare}}{\emph{letter}, \emph{share=None}}{}
 Maps the network share to a letter.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2077,15 +2100,18 @@ Maps the network share to a letter.
 
 
 
-\section{Wos module}
-\label{api:wos-module}\label{api:module-wos}\index{wos (module)}
+\section{WOS module}
+\label{wos:wos-module}\label{wos:module-wos}\label{wos::doc}\index{wos (module)}
 Created on 8.5.2012
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
 
-@author: neriksso
+\end{description}\end{quote}
 \index{AddProjectDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AddProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{AddProjectDialog}}{\emph{parent}, \emph{title}, \emph{project\_id=None}}{}
+\phantomsection\label{wos:wos.AddProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{AddProjectDialog}}{\emph{parent}, \emph{title}, \emph{project\_id=None}}{}
 A dialog for adding a new project
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2101,7 +2127,7 @@ A dialog for adding a new project
 \index{OnAdd() (wos.AddProjectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AddProjectDialog.OnAdd}\pysiglinewithargsret{\bfcode{OnAdd}}{\emph{e}}{}
+\phantomsection\label{wos:wos.AddProjectDialog.OnAdd}\pysiglinewithargsret{\bfcode{OnAdd}}{\emph{e}}{}
 Handles the addition of a project to database, when ``Add'' button
 is pressed.
 \begin{quote}\begin{description}
@@ -2115,7 +2141,7 @@ is pressed.
 \index{OnClose() (wos.AddProjectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AddProjectDialog.OnClose}\pysiglinewithargsret{\bfcode{OnClose}}{\emph{e}}{}
+\phantomsection\label{wos:wos.AddProjectDialog.OnClose}\pysiglinewithargsret{\bfcode{OnClose}}{\emph{e}}{}
 Handles ``Close'' button presses.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2131,7 +2157,7 @@ Handles ``Close'' button presses.
 \index{AudioRecorder (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AudioRecorder}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{AudioRecorder}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.AudioRecorder}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{AudioRecorder}}{\emph{parent}}{}
 A thread for capturing audio continuously.
 It keeps a buffer that can be saved to a file.
 By convention AudioRecorder is usually written in mixedcase although we
@@ -2144,7 +2170,7 @@ prefer uppercase for threading types.
 \index{run() (wos.AudioRecorder method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AudioRecorder.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.AudioRecorder.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Continuously record from the microphone to the buffer.
 If the buffer is full, the first frame will be removed and
 the new block appended.
@@ -2154,7 +2180,7 @@ the new block appended.
 \index{save() (wos.AudioRecorder method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.AudioRecorder.save}\pysiglinewithargsret{\bfcode{save}}{\emph{ide}, \emph{path}}{}
+\phantomsection\label{wos:wos.AudioRecorder.save}\pysiglinewithargsret{\bfcode{save}}{\emph{ide}, \emph{path}}{}
 Save the buffer to a file.
 
 \end{fulllineitems}
@@ -2165,7 +2191,7 @@ Save the buffer to a file.
 \index{BlackOverlay (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.BlackOverlay}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{BlackOverlay}}{\emph{pos}, \emph{size}, \emph{parent}}{}
+\phantomsection\label{wos:wos.BlackOverlay}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{BlackOverlay}}{\emph{pos}, \emph{size}, \emph{parent}}{}
 Create a frame, size is full display size, wx.DisplaySize()
 gives width, height tuple of display screen.
 
@@ -2174,7 +2200,7 @@ gives width, height tuple of display screen.
 \index{CHECK\_UPDATE (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CHECK_UPDATE}\pysigline{\strong{class }\code{wos.}\bfcode{CHECK\_UPDATE}}
+\phantomsection\label{wos:wos.CHECK_UPDATE}\pysigline{\strong{class }\code{wos.}\bfcode{CHECK\_UPDATE}}
 Thread for checking version updates.
 
 \end{fulllineitems}
@@ -2182,7 +2208,7 @@ Thread for checking version updates.
 \index{CONN\_ERR\_TH (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CONN_ERR_TH}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CONN\_ERR\_TH}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.CONN_ERR_TH}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CONN\_ERR\_TH}}{\emph{parent}}{}
 Thread for checking connection errors.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2192,7 +2218,7 @@ Thread for checking connection errors.
 \index{run() (wos.CONN\_ERR\_TH method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CONN_ERR_TH.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.CONN_ERR_TH.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Starts the thread.
 
 \end{fulllineitems}
@@ -2203,7 +2229,7 @@ Starts the thread.
 \index{CURRENT\_PROJECT (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_PROJECT}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_PROJECT}}{\emph{project\_id}, \emph{swnp}}{}
+\phantomsection\label{wos:wos.CURRENT_PROJECT}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_PROJECT}}{\emph{project\_id}, \emph{swnp}}{}
 Thread for transmitting current project selection.
 When user selects a project, an instance is started.
 When a new selection is made, by any Chimaira instance,
@@ -2214,7 +2240,7 @@ the old instance is terminated.
 \textbf{project\_id} (\emph{Integer}) -- Project id from the database.
 
 \item {} 
-\textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
+\textbf{swnp} ({\hyperref[swnp:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
 
 \end{itemize}
 
@@ -2222,7 +2248,7 @@ the old instance is terminated.
 \index{run() (wos.CURRENT\_PROJECT method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_PROJECT.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.CURRENT_PROJECT.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Starts the thread.
 
 \end{fulllineitems}
@@ -2230,7 +2256,7 @@ Starts the thread.
 \index{stop() (wos.CURRENT\_PROJECT method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_PROJECT.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
+\phantomsection\label{wos:wos.CURRENT_PROJECT.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
 Stops the thread.
 
 \end{fulllineitems}
@@ -2241,7 +2267,7 @@ Stops the thread.
 \index{CURRENT\_SESSION (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_SESSION}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_SESSION}}{\emph{parent}, \emph{swnp}}{}
+\phantomsection\label{wos:wos.CURRENT_SESSION}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CURRENT\_SESSION}}{\emph{parent}, \emph{swnp}}{}
 Thread for transmitting current session id, when one is started by
 the user.  When the session is ended, by any DiWaCS instance, the
 instance is terminated.
@@ -2251,7 +2277,7 @@ instance is terminated.
 \textbf{session\_id} (\emph{Integer}) -- Session id from the database.
 
 \item {} 
-\textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
+\textbf{swnp} ({\hyperref[swnp:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
 
 \end{itemize}
 
@@ -2259,7 +2285,7 @@ instance is terminated.
 \index{run() (wos.CURRENT\_SESSION method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_SESSION.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.CURRENT_SESSION.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Starts the thread.
 
 \end{fulllineitems}
@@ -2267,7 +2293,7 @@ Starts the thread.
 \index{stop() (wos.CURRENT\_SESSION method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CURRENT_SESSION.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
+\phantomsection\label{wos:wos.CURRENT_SESSION.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
 Stops the thread
 
 \end{fulllineitems}
@@ -2278,7 +2304,7 @@ Stops the thread
 \index{CloseError}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CloseError}\pysiglinewithargsret{\strong{exception }\code{wos.}\bfcode{CloseError}}{\emph{*args}, \emph{**kwds}}{}
+\phantomsection\label{wos:wos.CloseError}\pysiglinewithargsret{\strong{exception }\code{wos.}\bfcode{CloseError}}{\emph{*args}, \emph{**kwds}}{}
 Class describing an error while closing application.
 
 \end{fulllineitems}
@@ -2286,7 +2312,7 @@ Class describing an error while closing application.
 \index{ConnectionErrorDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ConnectionErrorDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ConnectionErrorDialog}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.ConnectionErrorDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ConnectionErrorDialog}}{\emph{parent}}{}
 Create a connection error dialog that informs the user about reconnection
 attempts made by the software.
 
@@ -2295,7 +2321,7 @@ attempts made by the software.
 \index{CreateProjectDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.CreateProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CreateProjectDialog}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.CreateProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{CreateProjectDialog}}{\emph{parent}}{}
 A dialog for project creation.
 
 \end{fulllineitems}
@@ -2303,7 +2329,7 @@ A dialog for project creation.
 \index{DeleteProjectDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.DeleteProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DeleteProjectDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+\phantomsection\label{wos:wos.DeleteProjectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DeleteProjectDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
 A dialog for deleting project.
 
 \end{fulllineitems}
@@ -2311,12 +2337,12 @@ A dialog for deleting project.
 \index{DropTarget (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.DropTarget}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DropTarget}}{\emph{window}, \emph{parent}, \emph{i}}{}
+\phantomsection\label{wos:wos.DropTarget}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{DropTarget}}{\emph{window}, \emph{parent}, \emph{i}}{}
 Implements drop target functionality to receive files, bitmaps and text.
 \index{OnData() (wos.DropTarget method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.DropTarget.OnData}\pysiglinewithargsret{\bfcode{OnData}}{\emph{x}, \emph{y}, \emph{d}}{}
+\phantomsection\label{wos:wos.DropTarget.OnData}\pysiglinewithargsret{\bfcode{OnData}}{\emph{x}, \emph{y}, \emph{d}}{}
 Handles drag/dropping files/text or a bitmap.
 
 \end{fulllineitems}
@@ -2327,13 +2353,13 @@ Handles drag/dropping files/text or a bitmap.
 \index{EventList (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.EventList}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{EventList}}{\emph{parent}, \emph{*args}, \emph{**kwargs}}{}
+\phantomsection\label{wos:wos.EventList}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{EventList}}{\emph{parent}, \emph{*args}, \emph{**kwargs}}{}
 A Frame which displays the possible event titles and handles the event
 creation.
 \index{GetIcon() (wos.EventList method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.EventList.GetIcon}\pysiglinewithargsret{\bfcode{GetIcon}}{\emph{icon}}{}
+\phantomsection\label{wos:wos.EventList.GetIcon}\pysiglinewithargsret{\bfcode{GetIcon}}{\emph{icon}}{}
 Fetches gui icons.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2352,7 +2378,7 @@ Fetches gui icons.
 \index{GUI (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{GUI}}{\emph{parent}, \emph{title}}{}
+\phantomsection\label{wos:wos.GUI}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{GUI}}{\emph{parent}, \emph{title}}{}
 WOS Application Frame.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2368,7 +2394,7 @@ WOS Application Frame.
 \index{AlignCenterTop() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.AlignCenterTop}\pysiglinewithargsret{\bfcode{AlignCenterTop}}{}{}
+\phantomsection\label{wos:wos.GUI.AlignCenterTop}\pysiglinewithargsret{\bfcode{AlignCenterTop}}{}{}
 Aligns frame to Horizontal center and vertical top.
 
 \end{fulllineitems}
@@ -2376,7 +2402,7 @@ Aligns frame to Horizontal center and vertical top.
 \index{CreateConfig() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.CreateConfig}\pysiglinewithargsret{\bfcode{CreateConfig}}{}{}
+\phantomsection\label{wos:wos.GUI.CreateConfig}\pysiglinewithargsret{\bfcode{CreateConfig}}{}{}
 Creates a config file.
 
 \end{fulllineitems}
@@ -2384,7 +2410,7 @@ Creates a config file.
 \index{GetIcon() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.GetIcon}\pysiglinewithargsret{\bfcode{GetIcon}}{\emph{icon}}{}
+\phantomsection\label{wos:wos.GUI.GetIcon}\pysiglinewithargsret{\bfcode{GetIcon}}{\emph{icon}}{}
 Fetches gui icons.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2400,7 +2426,7 @@ Fetches gui icons.
 \index{HandleFileSend() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.HandleFileSend}\pysiglinewithargsret{\bfcode{HandleFileSend}}{\emph{filename}}{}
+\phantomsection\label{wos:wos.GUI.HandleFileSend}\pysiglinewithargsret{\bfcode{HandleFileSend}}{\emph{filename}}{}
 Sends a file link to another node.
 
 \end{fulllineitems}
@@ -2408,7 +2434,7 @@ Sends a file link to another node.
 \index{HideScreens() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.HideScreens}\pysiglinewithargsret{\bfcode{HideScreens}}{}{}
+\phantomsection\label{wos:wos.GUI.HideScreens}\pysiglinewithargsret{\bfcode{HideScreens}}{}{}
 Hides all screens.
 
 \end{fulllineitems}
@@ -2416,7 +2442,7 @@ Hides all screens.
 \index{InitScreens() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.InitScreens}\pysiglinewithargsret{\bfcode{InitScreens}}{}{}
+\phantomsection\label{wos:wos.GUI.InitScreens}\pysiglinewithargsret{\bfcode{InitScreens}}{}{}
 Inits Screens.
 
 \end{fulllineitems}
@@ -2424,7 +2450,7 @@ Inits Screens.
 \index{InitUI() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.InitUI}\pysiglinewithargsret{\bfcode{InitUI}}{}{}
+\phantomsection\label{wos:wos.GUI.InitUI}\pysiglinewithargsret{\bfcode{InitUI}}{}{}
 UI initing.
 
 \end{fulllineitems}
@@ -2432,7 +2458,7 @@ UI initing.
 \index{LoadConfig() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.LoadConfig}\pysiglinewithargsret{\bfcode{LoadConfig}}{}{}
+\phantomsection\label{wos:wos.GUI.LoadConfig}\pysiglinewithargsret{\bfcode{LoadConfig}}{}{}
 Loads a config file or creates one.
 
 \end{fulllineitems}
@@ -2440,11 +2466,11 @@ Loads a config file or creates one.
 \index{MessageHandler() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.MessageHandler}\pysiglinewithargsret{\bfcode{MessageHandler}}{\emph{message}}{}
+\phantomsection\label{wos:wos.GUI.MessageHandler}\pysiglinewithargsret{\bfcode{MessageHandler}}{\emph{message}}{}
 Message handler for received messages.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{message} (an instance of {\hyperref[api:swnp.Message]{\code{swnp.Message}}}) -- Received message.
+\textbf{message} (an instance of {\hyperref[swnp:swnp.Message]{\code{swnp.Message}}}) -- Received message.
 
 \end{description}\end{quote}
 
@@ -2453,7 +2479,7 @@ Message handler for received messages.
 \index{OnAboutBox() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnAboutBox}\pysiglinewithargsret{\bfcode{OnAboutBox}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.GUI.OnAboutBox}\pysiglinewithargsret{\bfcode{OnAboutBox}}{\emph{unused\_event}}{}
 About dialog.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2466,7 +2492,7 @@ About dialog.
 \index{OnCreateTables() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnCreateTables}\pysiglinewithargsret{\bfcode{OnCreateTables}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.OnCreateTables}\pysiglinewithargsret{\bfcode{OnCreateTables}}{\emph{evt}}{}
 Create necessary db tables.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2479,7 +2505,7 @@ Create necessary db tables.
 \index{OnEvtBtn() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnEvtBtn}\pysiglinewithargsret{\bfcode{OnEvtBtn}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.OnEvtBtn}\pysiglinewithargsret{\bfcode{OnEvtBtn}}{\emph{evt}}{}
 Event Button handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2492,7 +2518,7 @@ Event Button handler.
 \index{OnExit() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnExit}\pysiglinewithargsret{\bfcode{OnExit}}{\emph{event}}{}
+\phantomsection\label{wos:wos.GUI.OnExit}\pysiglinewithargsret{\bfcode{OnExit}}{\emph{event}}{}
 Exits program.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2505,7 +2531,7 @@ Exits program.
 \index{OnIconify() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnIconify}\pysiglinewithargsret{\bfcode{OnIconify}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.GUI.OnIconify}\pysiglinewithargsret{\bfcode{OnIconify}}{\emph{unused\_event}}{}
 Window minimize event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2518,7 +2544,7 @@ Window minimize event handler.
 \index{OnProjectSelected() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnProjectSelected}\pysiglinewithargsret{\bfcode{OnProjectSelected}}{}{}
+\phantomsection\label{wos:wos.GUI.OnProjectSelected}\pysiglinewithargsret{\bfcode{OnProjectSelected}}{}{}
 Project selected event handler.
 
 \end{fulllineitems}
@@ -2526,7 +2552,7 @@ Project selected event handler.
 \index{OnSession() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnSession}\pysiglinewithargsret{\bfcode{OnSession}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.OnSession}\pysiglinewithargsret{\bfcode{OnSession}}{\emph{evt}}{}
 Session button pressed.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2539,7 +2565,7 @@ Session button pressed.
 \index{OnTaskBarActivate() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnTaskBarActivate}\pysiglinewithargsret{\bfcode{OnTaskBarActivate}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.OnTaskBarActivate}\pysiglinewithargsret{\bfcode{OnTaskBarActivate}}{\emph{evt}}{}
 Taskbar activate event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2552,7 +2578,7 @@ Taskbar activate event handler.
 \index{OnTaskBarClose() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OnTaskBarClose}\pysiglinewithargsret{\bfcode{OnTaskBarClose}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.GUI.OnTaskBarClose}\pysiglinewithargsret{\bfcode{OnTaskBarClose}}{\emph{unused\_event}}{}
 Taskbar close event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2565,7 +2591,7 @@ Taskbar close event handler.
 \index{OpenProjectDir() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.OpenProjectDir}\pysiglinewithargsret{\bfcode{OpenProjectDir}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.OpenProjectDir}\pysiglinewithargsret{\bfcode{OpenProjectDir}}{\emph{evt}}{}
 Opens project directory in windows explorer.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2578,7 +2604,7 @@ Opens project directory in windows explorer.
 \index{PaintSelect() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.PaintSelect}\pysiglinewithargsret{\bfcode{PaintSelect}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.PaintSelect}\pysiglinewithargsret{\bfcode{PaintSelect}}{\emph{evt}}{}
 Paints the selection of a node.
 
 \begin{notice}{note}{Note:}
@@ -2595,7 +2621,7 @@ For future use.
 \index{SelectNode() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SelectNode}\pysiglinewithargsret{\bfcode{SelectNode}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.SelectNode}\pysiglinewithargsret{\bfcode{SelectNode}}{\emph{evt}}{}
 Handles the selection of a node, start remote control.
 
 \begin{notice}{note}{Note:}
@@ -2612,7 +2638,7 @@ For future use.
 \index{SelectProjectDialog() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SelectProjectDialog}\pysiglinewithargsret{\bfcode{SelectProjectDialog}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.SelectProjectDialog}\pysiglinewithargsret{\bfcode{SelectProjectDialog}}{\emph{evt}}{}
 Select project event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2625,7 +2651,7 @@ Select project event handler.
 \index{SetCurrentProject() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SetCurrentProject}\pysiglinewithargsret{\bfcode{SetCurrentProject}}{\emph{project\_id}}{}
+\phantomsection\label{wos:wos.GUI.SetCurrentProject}\pysiglinewithargsret{\bfcode{SetCurrentProject}}{\emph{project\_id}}{}
 Start current project loop.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2638,7 +2664,7 @@ Start current project loop.
 \index{SetCurrentSession() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SetCurrentSession}\pysiglinewithargsret{\bfcode{SetCurrentSession}}{\emph{session\_id}}{}
+\phantomsection\label{wos:wos.GUI.SetCurrentSession}\pysiglinewithargsret{\bfcode{SetCurrentSession}}{\emph{session\_id}}{}
 Set current session.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2651,7 +2677,7 @@ Set current session.
 \index{SetProjectObserver() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SetProjectObserver}\pysiglinewithargsret{\bfcode{SetProjectObserver}}{}{}
+\phantomsection\label{wos:wos.GUI.SetProjectObserver}\pysiglinewithargsret{\bfcode{SetProjectObserver}}{}{}
 Observer for filechanges in project directory.
 
 \end{fulllineitems}
@@ -2659,7 +2685,7 @@ Observer for filechanges in project directory.
 \index{SetScanObserver() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SetScanObserver}\pysiglinewithargsret{\bfcode{SetScanObserver}}{}{}
+\phantomsection\label{wos:wos.GUI.SetScanObserver}\pysiglinewithargsret{\bfcode{SetScanObserver}}{}{}
 Observer for created files in scanned or taken with camera.
 
 \end{fulllineitems}
@@ -2667,7 +2693,7 @@ Observer for created files in scanned or taken with camera.
 \index{Shift() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.Shift}\pysiglinewithargsret{\bfcode{Shift}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.Shift}\pysiglinewithargsret{\bfcode{Shift}}{\emph{evt}}{}
 Caroussel Shift function.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2680,7 +2706,7 @@ Caroussel Shift function.
 \index{ShowPreferences() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.ShowPreferences}\pysiglinewithargsret{\bfcode{ShowPreferences}}{\emph{evt}}{}
+\phantomsection\label{wos:wos.GUI.ShowPreferences}\pysiglinewithargsret{\bfcode{ShowPreferences}}{\emph{evt}}{}
 Preferences dialog event handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2693,7 +2719,7 @@ Preferences dialog event handler.
 \index{StartCurrentProject() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.StartCurrentProject}\pysiglinewithargsret{\bfcode{StartCurrentProject}}{}{}
+\phantomsection\label{wos:wos.GUI.StartCurrentProject}\pysiglinewithargsret{\bfcode{StartCurrentProject}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
@@ -2701,7 +2727,7 @@ Start current project loop.
 \index{StartCurrentSession() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.StartCurrentSession}\pysiglinewithargsret{\bfcode{StartCurrentSession}}{}{}
+\phantomsection\label{wos:wos.GUI.StartCurrentSession}\pysiglinewithargsret{\bfcode{StartCurrentSession}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
@@ -2709,7 +2735,7 @@ Start current project loop.
 \index{SwnpSend() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.SwnpSend}\pysiglinewithargsret{\bfcode{SwnpSend}}{\emph{node}, \emph{message}}{}
+\phantomsection\label{wos:wos.GUI.SwnpSend}\pysiglinewithargsret{\bfcode{SwnpSend}}{\emph{node}, \emph{message}}{}
 Sends a message to the node.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2728,7 +2754,7 @@ Sends a message to the node.
 \index{UpdateScreens() (wos.GUI method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.GUI.UpdateScreens}\pysiglinewithargsret{\bfcode{UpdateScreens}}{\emph{update}}{}
+\phantomsection\label{wos:wos.GUI.UpdateScreens}\pysiglinewithargsret{\bfcode{UpdateScreens}}{\emph{update}}{}
 Called when screens need to be updated and redrawn.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2744,15 +2770,15 @@ Called when screens need to be updated and redrawn.
 \index{INPUT\_CAPTURE (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.INPUT_CAPTURE}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{INPUT\_CAPTURE}}{\emph{parent}, \emph{swnp}}{}
+\phantomsection\label{wos:wos.INPUT_CAPTURE}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{INPUT\_CAPTURE}}{\emph{parent}, \emph{swnp}}{}
 Thread for capturing input from mouse/keyboard.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{parent} ({\hyperref[api:wos.GUI]{\code{GUI}}}) -- Parent instance.
+\textbf{parent} ({\hyperref[wos:wos.GUI]{\code{GUI}}}) -- Parent instance.
 
 \item {} 
-\textbf{swnp} ({\hyperref[api:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
+\textbf{swnp} ({\hyperref[swnp:swnp.SWNP]{\code{swnp.SWNP}}}) -- SWNP instance for sending data to the network.
 
 \end{itemize}
 
@@ -2760,7 +2786,7 @@ Thread for capturing input from mouse/keyboard.
 \index{OnKeyboardEvent() (wos.INPUT\_CAPTURE method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.INPUT_CAPTURE.OnKeyboardEvent}\pysiglinewithargsret{\bfcode{OnKeyboardEvent}}{\emph{event}}{}
+\phantomsection\label{wos:wos.INPUT_CAPTURE.OnKeyboardEvent}\pysiglinewithargsret{\bfcode{OnKeyboardEvent}}{\emph{event}}{}
 Called when keyboard events are received.
 
 \end{fulllineitems}
@@ -2768,7 +2794,7 @@ Called when keyboard events are received.
 \index{OnMouseEvent() (wos.INPUT\_CAPTURE method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.INPUT_CAPTURE.OnMouseEvent}\pysiglinewithargsret{\bfcode{OnMouseEvent}}{\emph{event}}{}
+\phantomsection\label{wos:wos.INPUT_CAPTURE.OnMouseEvent}\pysiglinewithargsret{\bfcode{OnMouseEvent}}{\emph{event}}{}
 Called when mouse events are received.
 
 WM\_MOUSEFIRST = 0x200
@@ -2802,7 +2828,7 @@ WM\_MOUSEHWHEEL = 0x20E
 \index{run() (wos.INPUT\_CAPTURE method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.INPUT_CAPTURE.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.INPUT_CAPTURE.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Starts the thread.
 
 \end{fulllineitems}
@@ -2810,7 +2836,7 @@ Starts the thread.
 \index{stop() (wos.INPUT\_CAPTURE method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.INPUT_CAPTURE.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
+\phantomsection\label{wos:wos.INPUT_CAPTURE.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
 Stops the thread.
 
 \end{fulllineitems}
@@ -2821,7 +2847,7 @@ Stops the thread.
 \index{MySplashScreen (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.MySplashScreen}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{MySplashScreen}}{\emph{parent=None}}{}
+\phantomsection\label{wos:wos.MySplashScreen}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{MySplashScreen}}{\emph{parent=None}}{}
 Create a splash screen widget.
 
 \end{fulllineitems}
@@ -2829,7 +2855,7 @@ Create a splash screen widget.
 \index{PreferencesDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{PreferencesDialog}}{\emph{config}, \emph{evtlist}}{}
+\phantomsection\label{wos:wos.PreferencesDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{PreferencesDialog}}{\emph{config}, \emph{evtlist}}{}
 Creates and displays a preferences dialog that allows the user to
 change some settings.
 \begin{quote}\begin{description}
@@ -2840,7 +2866,7 @@ change some settings.
 \index{loadPreferences() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.loadPreferences}\pysiglinewithargsret{\bfcode{loadPreferences}}{}{}
+\phantomsection\label{wos:wos.PreferencesDialog.loadPreferences}\pysiglinewithargsret{\bfcode{loadPreferences}}{}{}
 Load the current preferences and fills the text controls.
 
 \end{fulllineitems}
@@ -2848,7 +2874,7 @@ Load the current preferences and fills the text controls.
 \index{onCancel() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.PreferencesDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
 Closes the dialog without modifications.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2861,7 +2887,7 @@ Closes the dialog without modifications.
 \index{openConfig() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.openConfig}\pysiglinewithargsret{\bfcode{openConfig}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.PreferencesDialog.openConfig}\pysiglinewithargsret{\bfcode{openConfig}}{\emph{unused\_event}}{}
 Opens config file.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2874,7 +2900,7 @@ Opens config file.
 \index{savePreferences() (wos.PreferencesDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.PreferencesDialog.savePreferences}\pysiglinewithargsret{\bfcode{savePreferences}}{\emph{event}}{}
+\phantomsection\label{wos:wos.PreferencesDialog.savePreferences}\pysiglinewithargsret{\bfcode{savePreferences}}{\emph{event}}{}
 Save the preferences.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2890,7 +2916,7 @@ Save the preferences.
 \index{ProjectAuthenticationDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectAuthenticationDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectAuthenticationDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+\phantomsection\label{wos:wos.ProjectAuthenticationDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectAuthenticationDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
 A dialog for project authentication.
 
 \end{fulllineitems}
@@ -2898,7 +2924,7 @@ A dialog for project authentication.
 \index{ProjectSelectDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectSelectDialog}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectSelectDialog}}{\emph{parent}}{}
 A dialog for selecting a project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2908,7 +2934,7 @@ A dialog for selecting a project.
 \index{AddEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.AddEvent}\pysiglinewithargsret{\bfcode{AddEvent}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.AddEvent}\pysiglinewithargsret{\bfcode{AddEvent}}{\emph{unused\_event}}{}
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2921,9 +2947,9 @@ Shows a modal dialog for adding a new project.
 \index{DelEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.DelEvent}\pysiglinewithargsret{\bfcode{DelEvent}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.DelEvent}\pysiglinewithargsret{\bfcode{DelEvent}}{\emph{unused\_event}}{}
 Handles the selection of a project.
-Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
+Starts a {\hyperref[wos:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
 Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2936,7 +2962,7 @@ Shows a dialog of the selected project.
 \index{EditEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.EditEvent}\pysiglinewithargsret{\bfcode{EditEvent}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.EditEvent}\pysiglinewithargsret{\bfcode{EditEvent}}{\emph{unused\_event}}{}
 Shows a modal dialog for adding a new project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2949,7 +2975,7 @@ Shows a modal dialog for adding a new project.
 \index{GetProjects() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.GetProjects}\pysiglinewithargsret{\bfcode{GetProjects}}{\emph{company\_id=1}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.GetProjects}\pysiglinewithargsret{\bfcode{GetProjects}}{\emph{company\_id=1}}{}
 Fetches all projects from the database, based on the company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2962,10 +2988,10 @@ Fetches all projects from the database, based on the company.
 \index{SelEvent() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.SelEvent}\pysiglinewithargsret{\bfcode{SelEvent}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.SelEvent}\pysiglinewithargsret{\bfcode{SelEvent}}{\emph{unused\_event}}{}
 Handles the selection of a project.
 
-Starts a {\hyperref[api:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
+Starts a {\hyperref[wos:wos.CURRENT_PROJECT]{\code{wos.CURRENT\_PROJECT}}}, if necessary.
 Shows a dialog of the selected project.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2978,7 +3004,7 @@ Shows a dialog of the selected project.
 \index{onCancel() (wos.ProjectSelectDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
+\phantomsection\label{wos:wos.ProjectSelectDialog.onCancel}\pysiglinewithargsret{\bfcode{onCancel}}{\emph{unused\_event}}{}
 Handles ``Cancel'' button presses.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -2994,7 +3020,7 @@ Handles ``Cancel'' button presses.
 \index{ProjectSelectedDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+\phantomsection\label{wos:wos.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
 A dialog for project selection confirmation.
 
 \end{fulllineitems}
@@ -3002,7 +3028,7 @@ A dialog for project selection confirmation.
 \index{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SEND_FILE_CONTEX_MENU_HANDLER}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{SEND\_FILE\_CONTEX\_MENU\_HANDLER}}{\emph{parent}, \emph{context}, \emph{send\_file}, \emph{handle\_file}}{}
+\phantomsection\label{wos:wos.SEND_FILE_CONTEX_MENU_HANDLER}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{SEND\_FILE\_CONTEX\_MENU\_HANDLER}}{\emph{parent}, \emph{context}, \emph{send\_file}, \emph{handle\_file}}{}
 Thread for OS contex menu actions like file sending to other node.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -3021,7 +3047,7 @@ Thread for OS contex menu actions like file sending to other node.
 \index{run() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SEND_FILE_CONTEX_MENU_HANDLER.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+\phantomsection\label{wos:wos.SEND_FILE_CONTEX_MENU_HANDLER.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Starts the thread
 
 \end{fulllineitems}
@@ -3029,7 +3055,7 @@ Starts the thread
 \index{stop() (wos.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SEND_FILE_CONTEX_MENU_HANDLER.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
+\phantomsection\label{wos:wos.SEND_FILE_CONTEX_MENU_HANDLER.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
 Stops the thread
 
 \end{fulllineitems}
@@ -3040,7 +3066,7 @@ Stops the thread
 \index{SetLoggerLevel() (in module wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SetLoggerLevel}\pysiglinewithargsret{\code{wos.}\bfcode{SetLoggerLevel}}{\emph{level}}{}
+\phantomsection\label{wos:wos.SetLoggerLevel}\pysiglinewithargsret{\code{wos.}\bfcode{SetLoggerLevel}}{\emph{level}}{}
 Used to set wos\_logger level.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -3053,7 +3079,7 @@ Used to set wos\_logger level.
 \index{SysTray (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SysTray}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{SysTray}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.SysTray}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{SysTray}}{\emph{parent}}{}
 Taskbar Icon class.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -3063,7 +3089,7 @@ Taskbar Icon class.
 \index{CreateMenu() (wos.SysTray method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SysTray.CreateMenu}\pysiglinewithargsret{\bfcode{CreateMenu}}{}{}
+\phantomsection\label{wos:wos.SysTray.CreateMenu}\pysiglinewithargsret{\bfcode{CreateMenu}}{}{}
 Create systray menu.
 
 \end{fulllineitems}
@@ -3071,7 +3097,7 @@ Create systray menu.
 \index{ShowMenu() (wos.SysTray method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.SysTray.ShowMenu}\pysiglinewithargsret{\bfcode{ShowMenu}}{\emph{event}}{}
+\phantomsection\label{wos:wos.SysTray.ShowMenu}\pysiglinewithargsret{\bfcode{ShowMenu}}{\emph{event}}{}
 Show popup menu.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -3087,7 +3113,7 @@ Show popup menu.
 \index{UpdateDialog (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.UpdateDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{UpdateDialog}}{\emph{title}, \emph{url}, \emph{*args}, \emph{**kwargs}}{}
+\phantomsection\label{wos:wos.UpdateDialog}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{UpdateDialog}}{\emph{title}, \emph{url}, \emph{*args}, \emph{**kwargs}}{}
 A Dialog which notifies about a software update.
 Contains the URL which the user can click on.
 \begin{quote}\begin{description}
@@ -3107,7 +3133,7 @@ Contains the URL which the user can click on.
 \index{WORKER\_THREAD (class in wos)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{WORKER\_THREAD}}{\emph{parent}}{}
+\phantomsection\label{wos:wos.WORKER_THREAD}\pysiglinewithargsret{\strong{class }\code{wos.}\bfcode{WORKER\_THREAD}}{\emph{parent}}{}
 Worker thread for non-UI jobs.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -3126,7 +3152,7 @@ Worker thread for non-UI jobs.
 \index{AddProjectReg() (wos.WORKER\_THREAD method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD.AddProjectReg}\pysiglinewithargsret{\bfcode{AddProjectReg}}{\emph{reg\_type}}{}
+\phantomsection\label{wos:wos.WORKER_THREAD.AddProjectReg}\pysiglinewithargsret{\bfcode{AddProjectReg}}{\emph{reg\_type}}{}
 Adds ``Add to project'' context menu item to registry. The item
 will be added to SoftwareClasses\textless{}reg\_type\textgreater{}, where \textless{}reg\_type\textgreater{}
 can be e.g. `*' for all files or `Folder' for folders.
@@ -3141,7 +3167,7 @@ can be e.g. `*' for all files or `Folder' for folders.
 \index{AddRegEntry() (wos.WORKER\_THREAD method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD.AddRegEntry}\pysiglinewithargsret{\bfcode{AddRegEntry}}{\emph{name}, \emph{id}}{}
+\phantomsection\label{wos:wos.WORKER_THREAD.AddRegEntry}\pysiglinewithargsret{\bfcode{AddRegEntry}}{\emph{name}, \emph{id}}{}
 Adds a node to registry.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -3160,7 +3186,7 @@ Adds a node to registry.
 \index{RemoveAllRegEntries() (wos.WORKER\_THREAD method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD.RemoveAllRegEntries}\pysiglinewithargsret{\bfcode{RemoveAllRegEntries}}{}{}
+\phantomsection\label{wos:wos.WORKER_THREAD.RemoveAllRegEntries}\pysiglinewithargsret{\bfcode{RemoveAllRegEntries}}{}{}
 Removes all related registry entries.
 
 \end{fulllineitems}
@@ -3168,7 +3194,7 @@ Removes all related registry entries.
 \index{parseConfig() (wos.WORKER\_THREAD method)}
 
 \begin{fulllineitems}
-\phantomsection\label{api:wos.WORKER_THREAD.parseConfig}\pysiglinewithargsret{\bfcode{parseConfig}}{\emph{config}}{}
+\phantomsection\label{wos:wos.WORKER_THREAD.parseConfig}\pysiglinewithargsret{\bfcode{parseConfig}}{\emph{config}}{}
 Handles config file settings.
 
 \end{fulllineitems}
@@ -3177,9 +3203,10 @@ Handles config file settings.
 \end{fulllineitems}
 
 
+\index{module!add\_file}\index{add\_file!module}\index{module!send\_file}\index{send\_file!module}\index{module!controller}\index{controller!module}\index{module!filesystem}\index{filesystem!module}\index{module!macro}\index{macro!module}\index{module!models}\index{models!module}\index{module!swnp}\index{swnp!module}\index{module!utils}\index{utils!module}
 
 \chapter{Bugs}
-\label{bugs::doc}\label{bugs:bugs}
+\label{bugs::doc}\label{bugs:index-0}\label{bugs:bugs}
 \begin{tabulary}{\linewidth}{|L|L|L|}
 \hline
 \textbf{
@@ -3669,27 +3696,27 @@ Exit the application
 \begin{theindex}
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 \bigletter{a}
-\item {\texttt{add\_file}}, \pageref{api:module-add_file}
+\item {\texttt{add\_file}}, \pageref{add_file:module-add_file}
 \indexspace
 \bigletter{c}
-\item {\texttt{controller}}, \pageref{api:module-controller}
+\item {\texttt{controller}}, \pageref{controller:module-controller}
 \indexspace
 \bigletter{f}
-\item {\texttt{filesystem}}, \pageref{api:module-filesystem}
+\item {\texttt{filesystem}}, \pageref{filesystem:module-filesystem}
 \indexspace
 \bigletter{m}
-\item {\texttt{macro}}, \pageref{api:module-macro}
-\item {\texttt{models}}, \pageref{api:module-models}
+\item {\texttt{macro}}, \pageref{macro:module-macro}
+\item {\texttt{models}}, \pageref{models:module-models}
 \indexspace
 \bigletter{s}
-\item {\texttt{send\_file\_to}}, \pageref{api:module-send_file_to}
-\item {\texttt{swnp}}, \pageref{api:module-swnp}
+\item {\texttt{send\_file\_to}}, \pageref{send_file:module-send_file_to}
+\item {\texttt{swnp}}, \pageref{swnp:module-swnp}
 \indexspace
 \bigletter{u}
-\item {\texttt{utils}}, \pageref{api:module-utils}
+\item {\texttt{utils}}, \pageref{utils:module-utils}
 \indexspace
 \bigletter{w}
-\item {\texttt{wos}}, \pageref{api:module-wos}
+\item {\texttt{wos}}, \pageref{wos:module-wos}
 \end{theindex}
 
 \renewcommand{\indexname}{Index}

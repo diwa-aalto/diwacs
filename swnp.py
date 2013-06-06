@@ -1,14 +1,13 @@
 """
 Created on 30.4.2012
 
-@author: neriksso
+:author: neriksso
 
 """
 # System imports.
 from datetime import datetime, timedelta
 import logging
 import sys
-import os
 import threading
 from time import sleep
 import json
@@ -23,7 +22,7 @@ from pubsub import pub
 import controller
 import diwavars
 import utils
-from wos import CloseError
+from dialogs import CloseError
 
 
 logging.config.fileConfig('logging.conf')
@@ -54,8 +53,8 @@ class Node():
     """
     A class representation of a node in the network.
 
-    :param id: Node id.
-    :type id: Integer
+    :param node_id: Node id.
+    :type node_id: Integer
 
     :param screens: Amount of visible screens.
     :type screens: Integer
@@ -64,8 +63,8 @@ class Node():
     :type name: String
 
     """
-    def __init__(self, id, screens, name=None, data=None):
-        self.id = id
+    def __init__(self, node_id, screens, name=None, data=None):
+        self.id = node_id
         self.screens = int(screens)
         self.name = name or ""
         self.data = data or ""
@@ -154,17 +153,6 @@ class Message():
         return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
 
 
-def testStorageConnection():
-    """
-    Try to access \\Storage\Projects
-
-    :returns: Does the path exist.
-    :rtype: Boolean
-
-    """
-    return os.path.exists(r'\\' + diwavars.STORAGE + '\\Projects')
-
-
 class SWNP:
     """
     The main class of swnp.
@@ -183,8 +171,8 @@ class SWNP:
     :param name: The name of the instance.
     :type name: String
 
-    :param id: ID of the instance.
-    :type id: Integer
+    :param node_id: ID of the current instance.
+    :type node_id: Integer
 
     :param context: ZeroMQ context to use.
     :type context: :py:class:`zmq.Context`
@@ -197,7 +185,7 @@ class SWNP:
     MSG_BUFFER = []
     SYS_BUFFER = []
 
-    def __init__(self, pgm_group, screens=0, name=None, id=None,
+    def __init__(self, pgm_group, screens=0, name=None, node_id=None,
                  context=None, error_handler=None):
         global PGM_IP
         # Check pgm_group
@@ -211,8 +199,8 @@ class SWNP:
         self.publisher_loopback = self.context.socket(zmq.PUB)
         self.ip = utils.GetLocalIPAddress(diwavars.STORAGE)
         logger.info('Own IP: %s' % self.ip)
-        if id:
-            self.id = id
+        if node_id:
+            self.id = node_id
         elif self.ip:
             self.id = self.ip.split('.')[3]
         else:
@@ -352,7 +340,7 @@ class SWNP:
             except (exc.OperationalError, exc.DBAPIError):
                     if not error:
                         error = True
-                        error_handler.queue.put(CloseError)
+                        error_handler.queue.append(CloseError)
             except Exception, e:
                 logger.exception('Ping_routine exception: %s', str(e))
         logger.debug("Ping routine closed")
@@ -384,11 +372,10 @@ class SWNP:
                     [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
                     msg_obj = json.loads(contents,
                                          object_hook=Message.from_json)
-                    """
-                    logger.debug('Received: %s;%s' %
-                    (msg_obj.PREFIX,msg_obj.PAYLOAD))
 
-                    """
+                    logger.debug('Received: %s;%s' %
+                                 (msg_obj.PREFIX, msg_obj.PAYLOAD))
+
                     if (msg_obj.PAYLOAD == self.id and
                             msg_obj.PREFIX == 'LEAVE'):
                         logger.debug('LEAVE msg catched')
@@ -397,6 +384,9 @@ class SWNP:
                     if msg_obj.PREFIX == 'SYNC':
                         self.sync_handler(msg_obj)
                     if msg_obj.PREFIX == 'MSG':
+                        logger.debug('RCV: %s;%s' %
+                                     (msg_obj.PREFIX,
+                                      msg_obj.PAYLOAD))
                         pub.sendMessage('message_received',
                                         message=msg_obj.PAYLOAD)
                 except zmq.Again, e:
@@ -404,7 +394,8 @@ class SWNP:
                     # are available at the moment.
                     pass
                 except ValueError:
-                    logger.debug('ValueError')
+                    logger.debug('ValueError: %s - %s' %
+                                 (str(contents), str(e)))
                     pass
                 except SystemExit:
                     TLDR = False
@@ -473,6 +464,8 @@ class SWNP:
                             msg_obj.PAYLOAD == self.id):
                         TLDR = False
                         break
+                    logger.debug('RCVSYS: %s;%s' % (msg_obj.PREFIX,
+                                                    msg_obj.PAYLOAD))
                     self.sys_handler(msg_obj)
                 except ValueError:
                     pass
@@ -576,9 +569,9 @@ class SWNP:
             return
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
-            """
+
             logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
-            """
+
             try:
                 myMess = [msg.TAG, json.dumps(msg, default=Message.to_dict)]
                 if msg.PREFIX != 'PING':
@@ -654,6 +647,7 @@ class SWNP:
                 self.NODE_LIST.discard(node)
             pub.sendMessage("update_screens", update=True)
         if msg.PREFIX == 'MSG':
+            logger.debug('RCVSHNDLER: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
             pub.sendMessage("message_received", message=msg.PAYLOAD)
         if msg.PREFIX == 'PING':
             self.ping_handler(msg.PAYLOAD)

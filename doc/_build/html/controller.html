@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Controller module &mdash; DiWaCS 0.9.2.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.9.2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.2.5 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="Filesystem module" href="filesystem.html" />
+    <link rel="prev" title="Send file module" href="send_file.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="send_file.html" title="Send file module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-controller">
+<span id="controller-module"></span><h1>Controller module<a class="headerlink" href="#module-controller" title="Permalink to this headline">¶</a></h1>
+<p>Created on 28.5.2012</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="controller.AddComputerToSession">
+<tt class="descclassname">controller.</tt><tt class="descname">AddComputerToSession</tt><big>(</big><em>session</em>, <em>name</em>, <em>ip</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#controller.AddComputerToSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a computer to a session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; A current session.</li>
+<li><strong>name</strong> (<em>String.</em>) &#8211; A name of the computer.</li>
+<li><strong>ip</strong> (<em>Integer.</em>) &#8211; Computers IP address.</li>
+<li><strong>wos_id</strong> (<em>Integer.</em>) &#8211; Wos id of the computer.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.AddEvent">
+<tt class="descclassname">controller.</tt><tt class="descname">AddEvent</tt><big>(</big><em>session_id</em>, <em>title</em>, <em>desc</em><big>)</big><a class="headerlink" href="#controller.AddEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an event to the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; The current session.</li>
+<li><strong>desc</strong> (<em>String.</em>) &#8211; Description of the event.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.AddFileToProject">
+<tt class="descclassname">controller.</tt><tt class="descname">AddFileToProject</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.AddFileToProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a file to project. Copies it to the folder and adds a record to
+database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<em>String</em>) &#8211; A filepath.</li>
+<li><strong>project_id</strong> &#8211; Project id from database.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New filepath.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.AddProject">
+<tt class="descclassname">controller.</tt><tt class="descname">AddProject</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#controller.AddProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a project to database and returns a  project instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>A dictionary</em>) &#8211; Project information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">an instance of <a class="reference internal" href="models.html#models.Project" title="models.Project"><tt class="xref py py-class docutils literal"><span class="pre">models.Project</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.ConnectToDatabase">
+<tt class="descclassname">controller.</tt><tt class="descname">ConnectToDatabase</tt><big>(</big><em>expire=False</em><big>)</big><a class="headerlink" href="#controller.ConnectToDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the database and return a Session object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.CreateAll">
+<tt class="descclassname">controller.</tt><tt class="descname">CreateAll</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.CreateAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tables to the database</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.CreateFileaction">
+<tt class="descclassname">controller.</tt><tt class="descname">CreateFileaction</tt><big>(</big><em>path</em>, <em>action</em>, <em>session_id</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.CreateFileaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs a file action to the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<em>String.</em>) &#8211; Filepath.</li>
+<li><strong>action</strong> (<em>Integer.</em>) &#8211; File action id.</li>
+<li><strong>session_id</strong> (<em>Integer.</em>) &#8211; Current session id.</li>
+<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.DeleteRecord">
+<tt class="descclassname">controller.</tt><tt class="descname">DeleteRecord</tt><big>(</big><em>Model</em>, <em>idNum</em><big>)</big><a class="headerlink" href="#controller.DeleteRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a record from database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>.) &#8211; The model for which to delete a record.</li>
+<li><strong>idNum</strong> (<em>Integer.</em>) &#8211; Recond id.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.EditProject">
+<tt class="descclassname">controller.</tt><tt class="descname">EditProject</tt><big>(</big><em>idNum</em>, <em>row</em><big>)</big><a class="headerlink" href="#controller.EditProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a project info</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idNum</strong> (<em>Integer.</em>) &#8211; Database id number of the project.</li>
+<li><strong>row</strong> (<em>A dictionary</em>) &#8211; The new project information.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.EndSession">
+<tt class="descclassname">controller.</tt><tt class="descname">EndSession</tt><big>(</big><em>session_id</em><big>)</big><a class="headerlink" href="#controller.EndSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ends a session, sets its endtime to database. Ends file scanner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; Current session.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetOrCreate">
+<tt class="descclassname">controller.</tt><tt class="descname">GetOrCreate</tt><big>(</big><em>session</em>, <em>model</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#controller.GetOrCreate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches or creates a instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; a related session.</li>
+<li><strong>model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>) &#8211; The model of which an instance is wanted.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetProject">
+<tt class="descclassname">controller.</tt><tt class="descname">GetProject</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches projects by a company.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetProjectPassword">
+<tt class="descclassname">controller.</tt><tt class="descname">GetProjectPassword</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectPassword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the project password.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetProjectPath">
+<tt class="descclassname">controller.</tt><tt class="descname">GetProjectPath</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the project path from database and return it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id for database.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetProjectsByCompany">
+<tt class="descclassname">controller.</tt><tt class="descname">GetProjectsByCompany</tt><big>(</big><em>company_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectsByCompany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches projects by a company.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetRecentFiles">
+<tt class="descclassname">controller.</tt><tt class="descname">GetRecentFiles</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetRecentFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches files accessed recently in the project sessions from the
+database.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Add a limit parameter, currently fetches all files.</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Duplicate check.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; The project id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a list of files</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.GetSessionsByProject">
+<tt class="descclassname">controller.</tt><tt class="descname">GetSessionsByProject</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetSessionsByProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches sessions for a project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.InitSyncProjectDir">
+<tt class="descclassname">controller.</tt><tt class="descname">InitSyncProjectDir</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.InitSyncProjectDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial sync of project dir and database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.IsProjectFile">
+<tt class="descclassname">controller.</tt><tt class="descname">IsProjectFile</tt><big>(</big><em>filename</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.IsProjectFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks, if a file belongs to a project. Checks both project folder
+and database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>String.</em>) &#8211; a filepath.</li>
+<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="controller.PROJECT_FILE_EVENT_HANDLER">
+<em class="property">class </em><tt class="descclassname">controller.</tt><tt class="descname">PROJECT_FILE_EVENT_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for FileSystem events on project folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_created">
+<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_created event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_deleted">
+<tt class="descname">on_deleted</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_deleted event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_modified">
+<tt class="descname">on_modified</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_modified event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="controller.SCAN_HANDLER">
+<em class="property">class </em><tt class="descclassname">controller.</tt><tt class="descname">SCAN_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.SCAN_HANDLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for FileSystem events on SCANNING folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="controller.SCAN_HANDLER.on_created">
+<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.SCAN_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_created event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.StartNewSession">
+<tt class="descclassname">controller.</tt><tt class="descname">StartNewSession</tt><big>(</big><em>project_id</em>, <em>session_id=None</em>, <em>old_session_id=None</em><big>)</big><a class="headerlink" href="#controller.StartNewSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a session to the database and return a session object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
+<li><strong>session_id</strong> (<em>Integer.</em>) &#8211; an existing session id from database.</li>
+<li><strong>old_session_id</strong> (<em>Integer.</em>) &#8211; A session id of a session which will be continued.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wos.html">WOS module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="send_file.html" 
+				   title="previous chapter">
+				Send file module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="filesystem.html" 
+		   title="next chapter">
+		Filesystem module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="send_file.html" title="Send file module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

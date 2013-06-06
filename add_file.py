@@ -1,13 +1,16 @@
-'''
+"""
 Created on 5.6.2012
 
-@author: neriksso
+.. moduleauthor:: neriksso
 
-@requires: ZeroMQ \n
-
+:platform: Windows
 :synopsis: Used to add a file in the current project.
+:warning: Requires ZeroMQ.
+:author: neriksso
 
-'''
+
+
+"""
 import sys
 import zmq
 

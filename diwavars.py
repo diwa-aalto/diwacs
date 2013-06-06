@@ -1,5 +1,6 @@
 """
 DiWaCS Variables
+
 """
 import pyaudio
 import os
@@ -16,7 +17,7 @@ BLANK_CURSOR = None
 APPLICATION_NAME = "DiWaCS"
 
 # current application version
-VERSION = "0.9.2.4"
+VERSION = '0.9.2.5'
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -48,16 +49,19 @@ CONFIG = None
 # Does the application run shell commands if received any
 RUN_CMD = False
 
+
 # The location of the main server
 STORAGE = ''
-
-# The salt for the password
-PASSWORD_SALT = "d1b729d398411d256ed1a092f88f4da4fbdaade6"
 
 
 def UpdateStorage(storage):
     global STORAGE
     STORAGE = storage
+
+
+# The salt for the password
+PASSWORD_SALT = "d1b729d398411d256ed1a092f88f4da4fbdaade6"
+PASSWORD_ITERATIONS = 101
 
 
 # Current project information

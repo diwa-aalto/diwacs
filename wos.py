@@ -1,45 +1,29 @@
 """
 Created on 8.5.2012
 
-@author: neriksso
+:author: neriksso
 
 """
-#: TODO: Clean the imports...
-from collections import deque
-from datetime import datetime
-import logging
+from logging import config, getLogger
 import os
-import Queue
 from random import Random
-#import re
 import shutil
 from subprocess import Popen
 import sys
 import threading
 from time import sleep
-import urllib2
-import wave
 import webbrowser
-from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
-                     CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
-#from xmlrpclib import ExpatParser
-sys.stdout = open("data\stdout.log", "wb")
-sys.stderr = open("data\stderr.log", "wb")
+sys.stdout = open(r'data\stdout.log', 'wb')
+sys.stderr = open(r'data\stderr.log', 'wb')
 
 
 # 3rd party imports.
 import configobj
-from lxml import etree
 from pubsub import pub
-import pyaudio
-import pyHook
-import pythoncom
-from sqlalchemy import exc
 from urlparse import urlparse
 from watchdog.observers import Observer
 import wx
 import wx.lib.buttons as buttons
-import zmq
 
 try:
     from agw import ultimatelistctrl as ULC
@@ -49,18 +33,24 @@ except ImportError:
 
 # Own imports.
 import controller
+from dialogs import (CloseError, ConnectionErrorDialog, PreferencesDialog,
+                     ProjectSelectDialog)
 import diwavars
 import filesystem
 import macro
 from models import Company, Project
 import swnp
+from threads import (AudioRecorder, CONN_ERR_TH, WORKER_THREAD,
+                     SEND_FILE_CONTEX_MENU_HANDLER, INPUT_CAPTURE,
+                     CURRENT_SESSION, CURRENT_PROJECT, SetCapture)
 import utils
 
 
-logging.config.fileConfig('logging.conf')
-wos_logger = logging.getLogger('wos')
+config.fileConfig('logging.conf')
+wos_logger = getLogger('wos')
 CONTROLLED = False
 CONTROLLING = False
+VERSION_CHECKER = None
 
 
 def SetLoggerLevel(level):
@@ -72,229 +62,6 @@ def SetLoggerLevel(level):
 
     """
     wos_logger.setLevel(level)
-
-
-class AudioRecorder(threading.Thread):
-    """
-    A thread for capturing audio continuously.
-    It keeps a buffer that can be saved to a file.
-    By convention AudioRecorder is usually written in mixedcase although we
-    prefer uppercase for threading types.
-
-    :param parent: Parent of the thread.
-    :type parent: :py:class:`threading.Thread`
-
-    """
-    def __init__(self, parent):
-        threading.Thread.__init__(self, name="AudioRecorder")
-        self.parent = parent
-        self.pa = pyaudio.PyAudio()
-        self.stream = self.open_mic_stream()
-        self.buffer = deque(maxlen=diwavars.MAX_LENGTH)
-        self.listening = True
-
-    def stop(self):
-        self.listening = False
-        self.stream.close()
-
-    def find_input_device(self):
-        device_index = None
-        for i in range(self.pa.get_device_count()):
-            # China hack...
-            """logger.debug("Selecting audio device %s / %s " %
-            (str(i),str(self.pa.get_device_count())))
-            device_index = i
-            return device_index
-            """
-            devinfo = self.pa.get_device_info_by_index(i)
-            for keyword in ["mic", "input"]:
-                if keyword in devinfo["name"].lower():
-                    device_index = i
-                    return device_index
-
-        if device_index == None:
-            pass
-
-        return device_index
-
-    def open_mic_stream(self):
-        device_index = None
-        # uncomment the next line to search for a device.
-        # device_index = self.find_input_device()
-        stream = self.pa.open(
-                        format=diwavars.FORMAT,
-                        channels=diwavars.CHANNELS,
-                        rate=diwavars.RATE,
-                        input=True,
-                        input_device_index=device_index,
-                        frames_per_buffer=diwavars.INPUT_FRAMES_PER_BLOCK
-                        )
-        return stream
-
-    def run(self):
-        """Continuously record from the microphone to the buffer.
-        If the buffer is full, the first frame will be removed and
-        the new block appended.
-
-        """
-        while self.listening:
-            try:
-                data = self.stream.read(diwavars.INPUT_FRAMES_PER_BLOCK)
-                if len(self.buffer) == self.buffer.maxlen:
-                    d = self.buffer.popleft()
-                    del d
-                self.buffer.append(data)
-            except IOError, e:
-                wos_logger.exception("Error recording: %s" % (e))
-
-    def save(self, ide, path):
-        """Save the buffer to a file."""
-        try:
-            filename = (str(ide) + "_" +
-                        datetime.now().strftime("%d%m%Y%H%M") + ".wav")
-            filepath = os.path.join(path, 'Audio')
-            if not os.path.exists(filepath):
-                os.makedirs(filepath)
-            filepath = os.path.join(filepath, filename)
-            wf = wave.open(filepath, 'wb')
-            wf.setnchannels(diwavars.CHANNELS)
-            wf.setsampwidth(self.pa.get_sample_size(diwavars.FORMAT))
-            wf.setframerate(diwavars.RATE)
-            wf.writeframes(b''.join(self.buffer))
-            wf.close()
-            wx.CallAfter(self.parent.ClearStatusText)
-        except:
-            wos_logger.exception("audio save exception")
-            wx.CallAfter(self.parent.ClearStatusText)
-
-
-class UpdateDialog(wx.Dialog):
-    """ A Dialog which notifies about a software update.
-    Contains the URL which the user can click on.
-
-    :param title: Title of the dialog.
-    :type title: String
-
-    :param url: URL of the update.
-    :type url: String
-
-    """
-    def __init__(self, title, url, *args, **kwargs):
-        super(UpdateDialog, self).__init__(parent=wx.GetApp().GetTopWindow(),
-                                           title="Version %s is available" %
-                                           title,
-                                           style=wx.DEFAULT_DIALOG_STYLE |
-                                           wx.STAY_ON_TOP,
-                                           *args, **kwargs)
-        self.notice = wx.StaticText(self, label="An application update is "\
-                                    "available for %s at " %
-                                    diwavars.APPLICATION_NAME)
-        self.link = wx.HyperlinkCtrl(self, label="here.", url=url)
-        self.link.Bind(wx.EVT_HYPERLINK, self.UrlHandler)
-        self.ok = wx.Button(self, -1, "OK")
-        self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
-        self.vsizer = wx.BoxSizer(wx.VERTICAL)
-        self.hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.hsizer.Add(self.notice)
-        self.hsizer.Add(self.link)
-        self.vsizer.Add(self.hsizer)
-        self.vsizer.Add(self.ok)
-        self.SetSizer(self.vsizer)
-        self.CenterOnScreen()
-        self.vsizer.Fit(self)
-        self.SetFocus()
-
-    def OnOk(self, unused_event):
-        self.EndModal(0)
-
-    def UrlHandler(self, unused_event):
-        webbrowser.open(self.link.GetURL())
-
-
-class CHECK_UPDATE(threading.Thread):
-    """
-    Thread for checking version updates.
-
-    """
-    def __init__(self):
-        threading.Thread.__init__(self, name="VersionChecker")
-
-    def getPad(self):
-        return urllib2.urlopen(diwavars.PAD_URL)
-
-    def showDialog(self, url):
-        try:
-            dlg = UpdateDialog(self.latest_version, url).Show()
-            dlg.Destroy()
-        except:
-            wos_logger.exception("Update Dialog Exception")
-
-    def run(self):
-        try:
-            padfile = self.getPad()
-            tree = etree.parse(padfile)
-        except urllib2.URLError:
-            wos_logger.exception("update checker exception retrieving padfile")
-            return False
-        except etree.XMLSyntaxError:
-            wos_logger.exception("Update checker exception parsing padfile")
-            return False
-        except etree.ParseError:
-            wos_logger.exception("Update checker exception parsing padfile")
-            return False
-        except Exception, e:
-            wos_logger.exception("Update checker exception, generic: %s",
-                                 str(e))
-            return False
-        latest_version = tree.findtext('Program_Info/Program_Version')
-        url_primary = tree.findtext('Proram_Info/Web_Info/Application_URLs/'\
-                                    'Primary_Download_URL')
-        url_secondary = tree.findtext('Proram_Info/Web_Info/Application_URLs/'\
-                                      'Secondary_Download_URL')
-        url = url_primary if url_primary else url_secondary
-        if latest_version > diwavars.VERSION:
-            wx.CallAfter(self.showDialog, url)
-
-
-class CONN_ERR_TH(threading.Thread):
-    """
-    Thread for checking connection errors.
-
-    :param parent: Parent object.
-    :type parent: wx.Frame.
-
-    """
-    def __init__(self, parent):
-        threading.Thread.__init__(self, name="Connection Error Checker")
-        self._stop = threading.Event()
-        self.queue = Queue.Queue()
-        self.parent = parent
-
-    def run(self):
-        """
-        Starts the thread.
-
-        """
-        while not self._stop.isSet():
-            if not self.queue.empty():
-                try:
-                    self.queue.get()
-                    wx.CallAfter(pub.sendMessage, "ConnectionErrorHandler",
-                                 error=True)
-                except Exception:
-                    wos_logger.exception('connection error checker exception')
-
-
-class CloseError(Exception):
-    """
-    Class describing an error while closing application.
-
-    """
-    def __init__(self, *args, **kwds):
-        Exception.__init__(self, *args, **kwds)
-
-    def __str__(self):
-        return 'CloseError'
 
 
 class BlackOverlay(wx.Frame):
@@ -348,1198 +115,6 @@ class BlackOverlay(wx.Frame):
     def DisableFocus(self, evt):
         evt.Skip()
         self.parent.panel.SetFocus()
-
-
-class WORKER_THREAD(threading.Thread):
-    """
-    Worker thread for non-UI jobs.
-
-    :param context: ZeroMQ Context for creating sockets.
-    :type context: :py:class:`zmq.Context`
-
-    :param send_file: Sends files.
-    :type send_file: Function
-
-    :param handle_file: Handles files
-    :type handle_file: Function
-
-    """
-    def __init__(self, parent):
-        threading.Thread.__init__(self, name="CMFH")
-        self.parent = parent
-        self._stop = threading.Event()
-
-    def stop(self):
-        self._stop.set()
-
-    def CheckResponsive(self):
-        if not self.parent.responsive and not self.parent.is_responsive:
-            nodes = controller.GetActiveResponsiveNodes(diwavars.PGM_GROUP)
-            wos_logger.debug("Responsive checking active: %s" % str(nodes))
-            if not nodes:
-                if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
-                    self.parent.SetResponsive()
-                    wos_logger.debug("Setting self as responsive")
-            else:
-                self.parent.responsive = str(nodes[0][0])
-                if self.parent.responsive == self.parent.swnp.node.id:
-                    self.parent.SetResponsive()
-        wos_logger.debug("Responsive checked. Current responsive is %s" %
-                         str(self.parent.responsive))
-
-    def AddProjectReg(self, reg_type):
-        """
-        Adds "Add to project" context menu item to registry. The item
-        will be added to Software\Classes\<reg_type>, where <reg_type>
-        can be e.g. '*' for all files or 'Folder' for folders.
-
-        :param reg_type: Registry type.
-        :type reg_type: String
-
-        """
-        keys = ['Software', 'Classes', reg_type, 'shell',
-                'DiWaCS: Add to project', 'command']
-        key = ''
-        for k, islast in utils.IterIsLast(keys):
-            key += k if key == '' else '\\' + k
-            try:
-                rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
-            except:
-                rkey = CreateKey(HKEY_CURRENT_USER, key)
-                if islast:
-                    mypath = os.path.join(os.getcwd(), 'add_file.exe ')
-                    SetValueEx(rkey, "", 0, REG_SZ, mypath + ' \"%1\"')
-            CloseKey(rkey)
-
-    def AddRegEntry(self, name, id):
-        """
-        Adds a node to registry.
-
-        :param name: Node name.
-        :type name: String
-
-        :param id: Node id.
-        :type id: Integer
-
-        """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' +
-                str(name), 'command']
-        key = ''
-        for k, islast in utils.IterIsLast(keys):
-            key += k if key == '' else '\\' + k
-            try:
-                rkey = OpenKey(HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS)
-            except:
-                rkey = CreateKey(HKEY_CURRENT_USER, key)
-                if islast:
-                    regpath = os.path.join(os.getcwd(), 'send_file_to.exe ' +
-                                           str(id) + ' \"%1\"')
-                    SetValueEx(rkey, "", 0, REG_SZ, regpath)
-            if rkey:
-                CloseKey(rkey)
-
-    def RemoveAllRegEntries(self):
-        """
-        Removes all related registry entries.
-
-        """
-        try:
-            main_key = OpenKey(HKEY_CURRENT_USER, r'Software\Classes\*\shell',
-                               0, KEY_ALL_ACCESS)
-            count = 0
-            while 1:
-                try:
-                    key_name = EnumKey(main_key, count)
-                    if key_name.find('DiWaCS') > -1:
-                        key = OpenKey(main_key, key_name, 0, KEY_ALL_ACCESS)
-                        subkey_count = 0
-                        while 1:
-                            try:
-                                subkey_name = EnumKey(key, subkey_count)
-                                DeleteKey(key, subkey_name)
-                                subkey_count += 1
-                            except WindowsError:
-                                break
-                        CloseKey(key)
-                        try:
-                            DeleteKey(main_key, key_name)
-                        except:
-                            count += 1
-                    else:
-                        count += 1
-                except WindowsError:
-                    break
-            CloseKey(main_key)
-        except Exception, e:
-            wos_logger.exception('Exception in RemoveAllRegEntries: ' + str(e))
-
-    def parseConfig(self, config):
-        """
-        Handles config file settings.
-
-        """
-        for key, val in config.items():
-            wos_logger.debug('(' + key + '=' + val + ')')
-            if 'STORAGE' in key:
-                diwavars.UpdateStorage(val)
-                controller.UpdateStorage()
-            elif 'DB_ADDRESS' in key:
-                diwavars.UpdateDatabase(ADDRESS=val)
-                controller.UpdateStorage()
-            elif 'DB_NAME' in key:
-                diwavars.UpdateDatabase(NAME=val)
-                controller.UpdateStorage()
-            elif 'DB_TYPE' in key:
-                diwavars.UpdateDatabase(TYPE=val)
-                controller.UpdateStorage()
-            elif 'DB_USER' in key:
-                diwavars.UpdateDatabase(USER=val)
-                controller.UpdateStorage()
-            elif 'DB_PASS' in key:
-                diwavars.UpdateDatabase(PASS=val)
-                controller.UpdateStorage()
-            elif 'NAME' in key or 'SCREENS' in key:
-                if key == 'NAME':
-                    controller.SetNodeName(val)
-                else:
-                    controller.SetNodeScreens(int(val))
-            elif 'PGM_GROUP' in key:
-                diwavars.UpdatePGMGroup(int(val))
-            elif 'AUDIO' in key:
-                wos_logger.debug("AUDIO in config: %s" % str(val))
-                val = eval(val)
-                if val:
-                    diwavars.UpdateAudio(val)
-                    wos_logger.debug("Starting audio recorder")
-                    self.parent.StartAudioRecorder()
-            elif 'LOGGER_LEVEL' in key:
-                SetLoggerLevel(str(val).upper())
-                controller.SetLoggerLevel(str(val).upper())
-                filesystem.SetLoggerLevel(str(val).upper())
-                swnp.SetLoggerLevel(str(val).upper())
-                utils.SetLoggerLevel(str(val).upper())
-            elif "CAMERA_" in key:
-                if "URL" in key:
-                    diwavars.UpdateCameraVars(str(val), None, None)
-                if "USER" in key:
-                    diwavars.UpdateCameraVars(None, str(val), None)
-                if "PASS" in key:
-                    diwavars.UpdateCameraVars(None, None, str(val))
-            elif "PAD_URL" in key:
-                diwavars.UpdatePadfile(str(val))
-            elif "RESPONSIVE" in key:
-                wos_logger.debug("Setting RESPONSIVE")
-                diwavars.UpdateResponsive(eval(val))
-                wos_logger.debug("%d" % diwavars.RESPONSIVE)
-            else:
-                globals()[key] = eval(val)
-
-    def CreateEvent(self, title):
-        try:
-            ide = controller.AddEvent(self.parent.current_session_id, title,
-                                      '')
-            path = controller.GetProjectPath(self.parent.current_project_id)
-            filesystem.Snaphot(path)
-            self.parent.SwnpSend('SYS', 'screenshot;0')
-            if diwavars.AUDIO:
-                wos_logger.debug("Buffering audio for %d seconds" %
-                                 diwavars.WINDOW_TAIL)
-                self.parent.status_text.SetLabel("Recording...")
-                wx.CallLater(diwavars.WINDOW_TAIL * 1000,
-                             self.parent.audio_recorder.save,
-                             ide, path)
-        except:
-            wos_logger.exception("Create Event exception")
-
-    def run(self):
-        while not self._stop.isSet():
-            pass
-
-
-class SEND_FILE_CONTEX_MENU_HANDLER(threading.Thread):
-    """
-    Thread for OS contex menu actions like file sending to other node.
-
-    :param context: ZeroMQ Context for creating sockets.
-    :type context: :py:class:`zmq.Context`
-
-    :param send_file: Sends files.
-    :type send_file: Function
-
-    :param handle_file: Handles files.
-    :type handle_file: Function
-
-    """
-
-    def __init__(self, parent, context, send_file, handle_file):
-        threading.Thread.__init__(self, name="CMFH")
-        self.parent = parent
-        self.send_file = send_file
-        self.handle_file = handle_file
-        self.context = context
-        self._stop = threading.Event()
-        self.socket = context.socket(zmq.REP)
-        self.socket.setsockopt(zmq.LINGER, 0)
-        self.socket.bind("tcp://*:5555")
-
-    def stop(self):
-        """
-        Stops the thread
-
-        """
-        self.stop_socket = self.context.socket(zmq.REQ)
-        self.stop_socket.setsockopt(zmq.LINGER, 0)
-        self.stop_socket.connect("tcp://127.0.0.1:5555")
-        self._stop.set()
-        self.stop_socket.send('exit;0;0')
-        self.stop_socket.recv()
-        self.stop_socket.close()
-        self.socket.close()
-        wos_logger.debug('CMFH closed')
-
-    def run(self):
-        """
-        Starts the thread
-
-        """
-        while not self._stop.isSet():
-            try:
-                message = self.socket.recv()
-                wos_logger.debug('CMFH got message: %s', message)
-                pid = self.parent.current_project_id
-                sid = self.parent.current_session_id
-                cmd, id_, path = message.split(';')
-                if cmd == 'send_to':
-                    filepath = str([self.handle_file(path)])
-                    self.send_file(str(id_), 'open;' + filepath)
-                    self.socket.send("OK")
-                elif cmd == 'add_to_project':
-                    if pid:
-                        controller.AddFileToProject(path, pid)
-                    self.socket.send("OK")
-                elif cmd == 'project':
-                    self.parent.SetCurrentProject(id_)
-                    self.socket.send("OK")
-                elif cmd == 'save_audio':
-                    if self.parent.is_responsive and diwavars.AUDIO:
-                        self.socket.send("OK")
-                        ide = controller.GetLatestEvent()
-                        threading.Timer(diwavars.WINDOW_TAIL * 1000,
-                                        self.parent.audio_recorder.save, ide,
-                                        controller.GetProjectPath(pid)).start()
-                        wx.CallAfter(self.parent.status_text.SetLabel,
-                                     "Recording...")
-                elif cmd == 'open':
-                    target = eval(path)
-                    for f in target:
-                        if sid:
-                            controller.CreateFileaction(f, 6, sid, pid)
-                        filesystem.OpenFile(f)
-                    self.socket.send("OK")
-                elif cmd == 'url':
-                    webbrowser.open(path)
-                    self.socket.send("OK")
-                elif cmd == 'screenshot':
-                    if self.parent.swnp.node.screens > 0:
-                        nid = self.parent.swnp.node.id
-                        path = controller.GetProjectPath(pid)
-                        filesystem.ScreenCapture(path, nid)
-                    self.socket.send("OK")
-                elif cmd == 'exit':
-                    self.socket.send("OK")
-                    break
-                elif cmd == 'command':
-                    self.socket.send("OK")
-                    if RUN_CMD and 'format' not in path:
-                        os.system(path)
-                else:
-                    self.socket.send("ERROR")
-                    wos_logger.debug('CMFH: Unknown command:%s', cmd)
-            except zmq.ZMQError, zerr:
-                # context terminated so quit silently
-                if zerr.strerror == 'Context was terminated':
-                    break
-                else:
-                    wos_logger.exception('CMFH exception')
-                    pass
-            except Exception, e:
-                wos_logger.exception('Exception in CMFH:%s', str(e))
-                self.socket.send("ERROR")
-
-
-class INPUT_CAPTURE(threading.Thread):
-    """
-    Thread for capturing input from mouse/keyboard.
-
-    :param parent: Parent instance.
-    :type parent: :class:`GUI`
-
-    :param swnp: SWNP instance for sending data to the network.
-    :type swnp: :class:`swnp.SWNP`
-
-    """
-    def __init__(self, parent, swnp):
-        threading.Thread.__init__(self, name="input capture")
-        self.parent = parent
-        self.swnp = swnp
-        self._stop = threading.Event()
-        self.mx = -1
-        self.my = -1
-        self.hm = None
-        self.mouse_queue = deque()
-        self.mouse_thread = threading.Thread(target=self.ParseMouseEvents)
-        self.mouse_thread.daemon = True
-        self.mouse_thread.start()
-
-    def stop(self):
-        """
-        Stops the thread.
-
-        """
-        self.hm.UnhookKeyboard()
-
-    def unhook(self):
-        self.hm.UnhookKeyboard()
-        self.hm.UnhookMouse()
-        self.mouse_queue.clear()
-        self.ResetMouseEvents()
-
-    def hook(self):
-        self.mouse_queue.clear()
-        self.ResetMouseEvents()
-        self.hm.HookKeyboard()
-        self.hm.HookMouse()
-
-    def ResetMouseEvents(self):
-        self.mx = False
-        self.my = False
-
-    def ParseMouseEvents(self):
-        while True:
-            if self.mouse_queue:
-                event = self.mouse_queue.popleft()
-                if event.Message == 0x200:
-                    if self.mx == False and self.my == False:
-                        self.mx = event.Position[0]
-                        self.my = event.Position[1]
-                    else:
-                        nx, ny = wx.GetMousePosition()
-                        if self.mx != nx or self.my != ny:
-                            self.mx = nx
-                            self.my = ny
-                        dx = event.Position[0] - self.mx
-                        dy = event.Position[1] - self.my
-                        for id_ in self.parent.selected_nodes:
-                            self.swnp(id_, 'mouse_move;%d,%d' %
-                                      (int(dx), int(dy)))
-                else:
-                    for id_ in self.parent.selected_nodes:
-                        self.swnp(id_, 'mouse_event;%d,%d' %
-                                  (int(event.Message), int(event.Wheel)))
-
-    def OnMouseButton(self, unused_event):
-        if CAPTURE:
-            return False
-        return True
-
-    def OnMouseEvent(self, event):
-        """
-        Called when mouse events are received.
-
-        WM_MOUSEFIRST = 0x200
-
-        WM_MOUSEMOVE = 0x200
-
-        WM_LBUTTONDOWN = 0x201
-
-        WM_LBUTTONUP = 0x202
-
-        WM_LBUTTONDBLCLK = 0x203
-
-        WM_RBUTTONDOWN = 0x204
-
-        WM_RBUTTONUP = 0x205
-
-        WM_RBUTTONDBLCLK = 0x206
-
-        WM_MBUTTONDOWN = 0x207
-
-        WM_MBUTTONUP = 0x208
-
-        WM_MBUTTONDBLCLK = 0x209
-
-        WM_MOUSEWHEEL = 0x20A
-
-        WM_MOUSEHWHEEL = 0x20E
-
-        """
-        try:
-            if CAPTURE:
-                self.mouse_queue.append(event)
-        except:
-            wos_logger.exception('MouseEventCatch exception')
-        # return True to pass the event to other handlers
-        return not CAPTURE
-
-    def OnKeyboardEvent(self, event):
-        """
-        Called when keyboard events are received.
-
-        """
-        global CAPTURE
-        if event.Alt and (event.KeyID in [91, 92])  and CAPTURE:
-            wos_logger.debug('ESC')
-            CAPTURE = False
-            self.ResetMouseEvents()
-            for id_ in self.parent.selected_nodes:
-                self.swnp(id_, 'key;%d,%d,%d' % (257, 164, 56))
-                self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
-            del self.parent.selected_nodes[:]
-            self.parent.overlay.Hide()
-            self.unhook()
-            return False
-        if CAPTURE:
-            #send key + KeyID
-            for id_ in self.parent.selected_nodes:
-                self.swnp(id_, 'key;%d,%d,%d' % (event.Message, event.KeyID,
-                                                 event.ScanCode))
-            return False
-        # return True to pass the event to other handlers
-        return True
-
-    def run(self):
-        """
-        Starts the thread.
-
-        """
-        # create a hook manager
-        self.hm = pyHook.HookManager()
-        # watch for all mouse events
-        self.hm.KeyAll = self.OnKeyboardEvent
-        # watch for all mouse events
-        self.hm.MouseAll = self.OnMouseEvent
-        # wait forever
-        pythoncom.PumpMessages()
-
-
-class CURRENT_PROJECT(threading.Thread):
-    """
-    Thread for transmitting current project selection.
-    When user selects a project, an instance is started.
-    When a new selection is made, by any Chimaira instance,
-    the old instance is terminated.
-
-    :param project_id: Project id from the database.
-    :type project_id: Integer
-
-    :param swnp: SWNP instance for sending data to the network.
-    :type swnp: :class:`swnp.SWNP`
-
-    """
-    def __init__(self, project_id, swnp):
-        threading.Thread.__init__(self, name="current project")
-        self.project_id = int(project_id)
-        self.swnp = swnp
-        self._stop = threading.Event()
-        wos_logger.debug("Current Project created")
-
-    def stop(self):
-        """
-        Stops the thread.
-
-        """
-        self._stop.set()
-
-    def run(self):
-        """
-        Starts the thread.
-
-        """
-        while not self._stop.isSet():
-            try:
-                ipgm = diwavars.PGM_GROUP
-                current_project = int(controller.GetActiveProject(ipgm))
-                if current_project:
-                    self.swnp('SYS', 'current_project;' + str(current_project))
-            except:
-                wos_logger.exception("Exception in current project")
-            sleep(5)
-
-
-class CURRENT_SESSION(threading.Thread):
-    """
-    Thread for transmitting current session id, when one is started by
-    the user.  When the session is ended, by any DiWaCS instance, the
-    instance is terminated.
-
-    :param session_id: Session id from the database.
-    :type session_id: Integer
-
-    :param swnp: SWNP instance for sending data to the network.
-    :type swnp: :py:class:`swnp.SWNP`
-
-    """
-    def __init__(self, parent, swnp):
-        threading.Thread.__init__(self, name="current session")
-        self.parent = parent
-        self.swnp = swnp
-        self._stop = threading.Event()
-
-    def stop(self):
-        """
-        Stops the thread
-
-        """
-        self._stop.set()
-
-    def run(self):
-        """
-        Starts the thread.
-
-        """
-        while not self._stop.isSet():
-            ipgm = diwavars.PGM_GROUP
-            current_session = int(controller.GetActiveSession(ipgm))
-            """if current_session != self.parent.current_session_id:
-                self.parent.SetCurrentSession(current_session)"""
-            self.swnp('SYS', 'current_session;' + str(current_session))
-            sleep(5)
-
-
-class DeleteProjectDialog(wx.Dialog):
-    """
-    A dialog for deleting project.
-
-    """
-    def __init__(self, parent, title, project_id):
-        super(DeleteProjectDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-            size=(250, 200))
-        try:
-            self.project_name = controller.GetProject(project_id).name
-            self.notice = wx.StaticText(self, label=("You are about to delete'\
-                        ' project %s permanently. Are you really sure?" %
-                        self.project_name))
-
-            self.yes_delete = wx.CheckBox(self, -1, 'Yes, delete the project.')
-            self.files_delete = wx.CheckBox(self, -1, ('Also delete all saved'\
-                                                       'project files.'))
-            self.ok = wx.Button(self, -1, "OK")
-            self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
-            self.cancel = wx.Button(self, -1, "Cancel")
-            self.cancel.Bind(wx.EVT_BUTTON, self.OnCancel)
-            self.sizer = wx.BoxSizer(wx.VERTICAL)
-            self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.yes_delete, 0, wx.ALL, 5)
-            self.sizer.Add(self.files_delete, 0, wx.ALL, 5)
-            btnSizer = wx.BoxSizer(wx.HORIZONTAL)
-            btnSizer.Add(self.ok, 0)
-            btnSizer.Add(self.cancel, 0)
-            self.sizer.Add(btnSizer, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
-            self.SetSizer(self.sizer)
-            self.sizer.Fit(self)
-            self.SetFocus()
-        except:
-            wos_logger.exception("Dialog exception")
-            self.EndModal(0)
-
-    def OnOk(self, unused_event):
-        ret = 0
-        if self.yes_delete.GetValue():
-            ret += 1
-        if self.files_delete.GetValue():
-            ret += 10
-        self.EndModal(ret)
-
-    def OnCancel(self, unused_event):
-        self.EndModal(0)
-
-
-class ProjectAuthenticationDialog(wx.Dialog):
-    """
-    A dialog for project authentication.
-
-    """
-    def __init__(self, parent, title, project_id):
-        super(ProjectAuthenticationDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-            size=(250, 200))
-        try:
-            self.parent = parent
-            self.project = controller.GetProject(project_id)
-            labeltext = ('Please enter password for Project %s' %
-                         self.project.name)
-            self.notice = wx.StaticText(self, label=labeltext)
-            self.password = wx.TextCtrl(self, -1, '',
-                                        style=wx.TE_PASSWORD |
-                                        wx.TE_PROCESS_ENTER)
-            self.ok = wx.Button(self, -1, "OK")
-            self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
-            self.password.Bind(wx.EVT_TEXT_ENTER, self.OnOk)
-            self.sizer = wx.BoxSizer(wx.VERTICAL)
-            self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.password, 1, wx.ALL | wx.EXPAND, 5)
-            self.sizer.Add(self.ok, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
-            self.SetSizer(self.sizer)
-            self.sizer.Fit(self)
-            self.SetFocus()
-        except:
-            wos_logger.exception("Dialog exception")
-            self.EndModal(1)
-
-    def OnOk(self, unused_event):
-        self.EndModal(0 if utils.CheckProjectPassword(self.project.id,
-                                            self.password.GetValue()) else 1)
-
-
-class ProjectSelectedDialog(wx.Dialog):
-    """
-    A dialog for project selection confirmation.
-
-    """
-    def __init__(self, parent, title, project_id):
-        super(ProjectSelectedDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-            size=(250, 200))
-        try:
-            self.project_name = controller.GetProject(project_id).name
-            self.notice = wx.StaticText(self, label=("Project %s has been "\
-                                                     "selected. A new session"\
-                                                     " will now be started." %
-                                                     self.project_name))
-            self.cb = wx.CheckBox(self, -1, 'No, do not start a new session.')
-            self.ok = wx.Button(self, -1, "OK")
-            self.ok.Bind(wx.EVT_BUTTON, self.OnOk)
-            self.sizer = wx.BoxSizer(wx.VERTICAL)
-            self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.cb, 0, wx.ALL, 5)
-            self.sizer.Add(self.ok, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
-            self.SetSizer(self.sizer)
-            self.sizer.Fit(self)
-            self.SetFocus()
-        except:
-            wos_logger.exception("Dialog exception")
-            self.EndModal(0)
-
-    def OnOk(self, unused_event):
-        self.EndModal(2 if self.cb.GetValue() else 1)
-
-
-class CreateProjectDialog(wx.Dialog):
-    """
-    A dialog for project creation.
-
-    """
-    def __init__(self, parent):
-        super(CreateProjectDialog, self).__init__(parent=parent,
-            title="Create a project", style=wx.DEFAULT_DIALOG_STYLE,
-            size=(250, 200))
-        vbox = wx.BoxSizer(wx.VERTICAL)
-        vbox.Add(wx.StaticText(self, -1, label="Project Name"), 0)
-        self.name = wx.TextCtrl(self, -1, "")
-        vbox.Add(self.name, 0)
-        vbox.Add(wx.StaticText(self, -1, label="Folder name (optional)"), 0)
-        self.dir = wx.TextCtrl(self, -1)
-        vbox.Add(self.dir, 0)
-
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
-        addBtn = wx.Button(self, -1, label="OK")
-        addBtn.Bind(wx.EVT_BUTTON, self.OnAdd)
-        cancelBtn = wx.Button(self, -1, label="Cancel")
-        cancelBtn.Bind(wx.EVT_BUTTON, self.OnCancel)
-        hbox.Add(addBtn, 0)
-        hbox.Add(cancelBtn, 0, wx.LEFT, 5)
-        vbox.Add(hbox, 0, wx.ALIGN_RIGHT)
-        self.SetSizer(vbox)
-
-    def OnAdd(self, unused_event):
-        if self.name.GetValue() == '':  # or not self.passw.GetValue():
-            dlg = wx.MessageDialog(self, 'Please fill all necessary fields',
-                                   'Missing fields', wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            return
-        if self.project_id:
-            controller.EditProject(self.project_id,
-                {'name': self.name.GetValue(),
-                 'dir': self.dir.GetValue()
-                }
-            )
-            self.Destroy()
-        else:
-            try:
-                db = controller.ConnectToDatabase()
-                company = db.query(Company).filter(Company.id == 1).one()
-                company_name = company.name
-                data = {'project': {'name': self.name.GetValue(),
-                                    'dir': self.dir.GetValue(),
-                                    'password': self.password.GetValue()},
-                        'company': {'name': company_name}
-                        }
-                self.project = controller.AddProject(data)
-                self.Destroy()
-            except:
-                wos_logger.exception("create project exception")
-
-    def OnCancel(self, unused_event):
-        self.Destroy()
-
-
-class AddProjectDialog(wx.Dialog):
-    """
-    A dialog for adding a new project
-
-    :param parent: Parent frame.
-    :type parent: :class:`wx.Frame`
-
-    :param title: A title for the dialog.
-    :type title: String
-
-     """
-    def __init__(self, parent, title, project_id=None):
-        super(AddProjectDialog, self).__init__(parent=parent,
-            title=title, style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-            size=(250, 200))
-        self.add_label = 'Create'
-        dir_label_text = 'Project Folder Name (optional):'
-        password_label_text = 'Project Password (optional):'
-        self.project_id = 0
-        wos_logger.debug(project_id)
-        if project_id:
-            self.project_id = project_id
-            self.add_label = 'Save'
-            dir_label_text = 'Project Folder Path'
-        vbox = wx.BoxSizer(wx.VERTICAL)
-        self.parent = parent
-        name_label = wx.StaticText(self, label='Project Name')
-        self.name = wx.TextCtrl(self, wx.ID_ANY)
-        vbox.Add(name_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        vbox.Add(self.name, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        dir_label = wx.StaticText(self, label=dir_label_text)
-        self.dir = wx.TextCtrl(self, wx.ID_ANY)
-        vbox.Add(dir_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        vbox.Add(self.dir, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        password_label = wx.StaticText(self, label=password_label_text)
-        self.password = wx.TextCtrl(self, wx.ID_ANY, style=wx.TE_PASSWORD)
-        vbox.Add(password_label, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        vbox.Add(self.password, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        okButton = wx.Button(self, label=self.add_label)
-        closeButton = wx.Button(self, label='Cancel')
-        hbox2.Add(okButton)
-        hbox2.Add(closeButton, flag=wx.LEFT, border=5)
-        vbox.Add(hbox2, flag=wx.ALIGN_CENTER, border=0)
-        self.SetSizer(vbox)
-
-        if project_id:
-            project = controller.GetProject(self.project_id)
-            self.name.SetValue(project.name)
-            self.dir.SetValue(project.dir)
-        okButton.Bind(wx.EVT_BUTTON, self.OnAdd)
-        closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
-        vbox.Fit(self)
-
-    def OnAdd(self, e):
-        """
-        Handles the addition of a project to database, when "Add" button
-        is pressed.
-
-        :param e: GUI Event.
-        :type e: Event
-
-        """
-        e = e  # Get rid of unused parameter.
-        if self.name.GetValue() == '':  # or not self.passw.GetValue():
-            dlg = wx.MessageDialog(self, 'Please fill all necessary fields',
-                                   'Missing fields', wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            return
-        if self.project_id:
-            controller.EditProject(self.project_id,
-                                   {'name': self.name.GetValue(),
-                                    'dir': self.dir.GetValue()})
-            self.Destroy()
-            wos_logger.debug(self.project_id)
-            self.Endmodal(self.project_id)
-        else:
-            db = controller.ConnectToDatabase()
-            company = db.query(Company).filter(Company.id == 1).one()
-            company_name = company.name
-            data = {'project': {'name': self.name.GetValue(),
-                                'dir': self.dir.GetValue(),
-                                'password': self.password.GetValue()},
-                    'company': {'name': company_name}
-                    }
-            project = controller.AddProject(data)
-            wos_logger.debug(project)
-            self.EndModal(project.id)
-
-        """if project.id != self.parent.current_project_id:
-            self.parent.SetCurrentProject(project.id)
-            self.parent.StartCurrentProject()
-            self.parent.OnProjectSelected()
-            logger.debug('Current Project set')
-
-        dlg = wx.MessageDialog(self, 'Do you want to start a new session?',
-        'Session', wx.YES_NO|wx.ICON_QUESTION)
-        try:
-            result = dlg.ShowModal()
-            if  result == wx.ID_YES:
-                self.parent.OnSession(None)
-        finally:
-            dlg.Destroy()
-        """
-
-    def OnClose(self, e):
-        """
-        Handles "Close" button presses.
-
-        :param e: GUI Event.
-        :type e: Event
-
-        """
-        e = e
-        self.Destroy()
-
-
-class ProjectSelectDialog(wx.Dialog):
-    """
-    A dialog for selecting a project.
-
-    :param parent: Parent frame.
-    :type parent: :py:class:`wx.Frame`
-
-    """
-    def __init__(self, parent):
-        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Project Selection',
-                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-                           size=(400, 300))
-        self.parent = parent
-        self.projects = self.GetProjects()
-        self.project_list = wx.ListBox(self, wx.ID_ANY, choices=self.projects)
-        if self.parent.current_project_id:
-            project_id = int(self.parent.current_project_id)
-            list_index = self.project_index.index(project_id)
-            self.project_list.SetSelection(list_index)
-        self.project_list.Bind(wx.EVT_LISTBOX_DCLICK, self.SelEvent)
-        self.project_list.Bind(wx.EVT_LISTBOX, self.OnLb)
-
-        addBtn = wx.Button(self, wx.ID_ANY, "Create...")
-        addBtn.Bind(wx.EVT_BUTTON, self.AddEvent)
-        self.selBtn = wx.Button(self, wx.ID_ANY, "Select")
-        self.selBtn.Bind(wx.EVT_BUTTON, self.SelEvent)
-        self.selBtn.Disable()
-        self.delBtn = wx.Button(self, wx.ID_ANY, "Delete...")
-        self.delBtn.Bind(wx.EVT_BUTTON, self.DelEvent)
-        self.delBtn.Disable()
-        self.editBtn = wx.Button(self, wx.ID_ANY, "Modify...")
-
-        self.editBtn.Bind(wx.EVT_BUTTON, self.EditEvent)
-        self.editBtn.Disable()
-        cancelBtn = wx.Button(self, wx.ID_ANY, "Cancel")
-        cancelBtn.Bind(wx.EVT_BUTTON, self.onCancel)
-        mainSizerTwo = wx.BoxSizer(wx.HORIZONTAL)
-        mainSizer = wx.BoxSizer(wx.VERTICAL)
-        btnSizer = wx.BoxSizer(wx.VERTICAL)
-        selSizer = wx.BoxSizer(wx.HORIZONTAL)
-        mainSizerTwo.Add(self.project_list, 1, wx.EXPAND, 0)
-        btnSizer.Add(addBtn)
-        btnSizer.Add(self.editBtn)
-        btnSizer.Add(self.delBtn)
-        selSizer.Add(self.selBtn)
-        selSizer.Add(cancelBtn)
-        mainSizerTwo.Add(btnSizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
-        mainSizer.Add(mainSizerTwo, 1, wx.EXPAND)
-        mainSizer.Add(selSizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
-        self.SetSizer(mainSizer)
-        self.Layout()
-
-    def OnLb(self, unused_event):
-        self.selBtn.Enable()
-        self.editBtn.Enable()
-        self.delBtn.Enable()
-
-    def onCancel(self, unused_event):
-        """
-        Handles "Cancel" button presses.
-
-        :param event: GUI Event.
-        :type event: Event
-
-        """
-        self.EndModal(0)
-
-    #----------------------------------------------------------------------
-    def EditEvent(self, unused_event):
-        """
-        Shows a modal dialog for adding a new project.
-
-        :param event: GUI Event.
-        :type event: Event
-
-        """
-        try:
-            select_index = self.project_list.GetSelection()
-            project_id = self.project_index[select_index]
-            dlg = AddProjectDialog(self, 'Modify a Project', project_id)
-            dlg.ShowModal()
-            self.projects = self.GetProjects()
-            self.project_list.Set(self.projects)
-            if project_id:
-                self.project_list.SetSelection(select_index)
-        except:
-            wos_logger.exception("Edit event exception")
-
-    def AddEvent(self, unused_event):
-        """
-        Shows a modal dialog for adding a new project.
-
-        :param event: GUI Event.
-        :type event: Event
-
-        """
-        try:
-            dlg = AddProjectDialog(self, 'Create a Project')
-            project_id = dlg.ShowModal()
-            self.projects = self.GetProjects()
-            self.project_list.Set(self.projects)
-            wos_logger.debug(project_id)
-            if project_id:
-                self.project_list.SetSelection(int(
-                                self.project_index.index(project_id)))
-                self.OnLb(None)
-
-        except:
-            wos_logger.exception("Add event exception")
-
-    def DelEvent(self, unused_event):
-        """
-        Handles the selection of a project.
-        Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
-        Shows a dialog of the selected project.
-
-        :param evt: GUI Event.
-        :type evt: Event
-
-        """
-        index = self.project_index[self.project_list.GetSelection()]
-        unused_project_name = self.projects[self.project_list.GetSelection()]
-        if index == self.parent.current_project_id:
-            wx.MessageDialog(self,
-                             "You cannot delete currently active project.",
-                             "Error",
-                             wx.OK | wx.ICON_ERROR).Show()
-            return
-        dlg = DeleteProjectDialog(self, 'Delete Project', index)
-        try:
-            result = dlg.ShowModal()
-            wos_logger.debug(result)
-            if result % 10 == 1:
-                if result == 11:
-                    #delete files
-                    filesystem.DeleteDir(controller.GetProjectPath(index))
-                unused_success = controller.DeleteRecord(Project, index)
-                self.projects = self.GetProjects()
-                self.project_list.Set(self.projects)
-        finally:
-            dlg.Destroy()
-
-    def SelEvent(self, unused_event):
-        """
-        Handles the selection of a project.
-
-        Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
-        Shows a dialog of the selected project.
-
-        :param evt: GUI Event.
-        :type evt: Event
-
-        """
-        index = self.project_index[self.project_list.GetSelection()]
-        if controller.GetProject(index).password:
-            myModal = ProjectAuthenticationDialog(self.parent,
-                                                  'Project Authentication',
-                                                  index)
-            auth = myModal.ShowModal()
-            if not auth == 0:
-                dlg = wx.MessageDialog(self, "Project Authentication Failed",
-                                       style=wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
-        wos_logger.debug('Project selected')
-        if index != self.parent.current_project_id:
-            self.parent.SetCurrentProject(index)
-            self.parent.OnProjectSelected()
-
-        dlg = ProjectSelectedDialog(self, 'Project Selected', index)
-        try:
-            result = dlg.ShowModal()
-            wos_logger.debug(result)
-            if result == 1:
-                self.parent.OnSession(None)
-            elif result == 2:
-                self.parent.current_session_id = -1
-                # No session should be started here.
-                self.parent.OnSession(None)
-        finally:
-            dlg.Destroy()
-        wos_logger.debug('Asked to start session.')
-        self.EndModal(0)
-
-    def GetProjects(self, company_id=1):
-        """
-        Fetches all projects from the database, based on the company.
-
-        :param company_id: A company id, the owner of the projects.
-        :type company_id: Integer
-
-        """
-        try:
-            db = controller.ConnectToDatabase()
-            projects = []
-            self.project_index = []
-            index = 0
-            for p in db.query(Project).filter(Project.company_id ==
-                                              company_id
-                                    ).order_by(Project.name).all():
-                projects.append(p.name)
-                self.project_index.insert(index, p.id)
-                index += 1
-            db.close()
-            return projects
-        except (exc.OperationalError, exc.DBAPIError):
-            ConnectionErrorDialog(self.parent)
-        except Exception, unused_e:
-            wos_logger.exception("Project Select Dialog exception")
-
-
-class PreferencesDialog(wx.Dialog):
-    """
-    Creates and displays a preferences dialog that allows the user to
-    change some settings.
-
-    :param config: a Config object
-    :type parent: :class:`configobj.ConfigObj`
-
-    """
-
-    #----------------------------------------------------------------------
-    def __init__(self, config, evtlist):
-        wx.Dialog.__init__(self, None, wx.ID_ANY, 'Preferences',
-                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
-                           size=(550, 300))
-        self.config = config
-        self.evtlist = evtlist
-        # ---------------------------------------------------------------------
-        # Create widgets
-
-        screens_label = wx.StaticText(self, wx.ID_ANY, "Screen visibility:")
-        self.screens_hidden = wx.RadioButton(self, -1, 'Off (recommended)',
-                                             style=wx.RB_GROUP)
-        self.screens_hidden.SetToolTip(wx.ToolTip("This setting hides your "\
-                                                  "computer from others, but"\
-                                                  " you are still able to"\
-                                                  " send files   etc. to "\
-                                                  "other screens and "\
-                                                  "control them."))
-        self.screens_show = wx.RadioButton(self, -1, 'On (not recommended)')
-        self.screens_show.SetToolTip(wx.ToolTip("This setting makes your "\
-                                                "computer visible to others,"\
-                                                " so others can send files "\
-                                                "etc to it and control it."))
-        name_label = wx.StaticText(self, wx.ID_ANY, "Name:")
-        self.name_value = wx.TextCtrl(self, wx.ID_ANY, "")
-        openBtn = wx.Button(self, wx.ID_ANY, "Config File")
-        openBtn.Bind(wx.EVT_BUTTON, self.openConfig)
-        saveBtn = wx.Button(self, wx.ID_ANY, "OK")
-        saveBtn.Bind(wx.EVT_BUTTON, self.savePreferences)
-        cancelBtn = wx.Button(self, wx.ID_ANY, "Cancel")
-        cancelBtn.Bind(wx.EVT_BUTTON, self.onCancel)
-
-        #widgets = [name_label,self.name_value,saveBtn, cancelBtn]
-        #for widget in widgets:
-        #    widget.SetFont(font)
-        # ---------------------------------------------------------------------
-        # layout widgets
-        mainSizer = wx.BoxSizer(wx.VERTICAL)
-        btnSizer = wx.BoxSizer(wx.HORIZONTAL)
-        radioSizer = wx.BoxSizer(wx.HORIZONTAL)
-        prefSizer = wx.FlexGridSizer(cols=2, hgap=5, vgap=5)
-        prefSizer.AddGrowableCol(1)
-        radioSizer.Add(self.screens_hidden)
-        radioSizer.Add(self.screens_show)
-        prefSizer.Add(screens_label, 0, wx.ALIGN_LEFT |
-                      wx.ALIGN_CENTER_VERTICAL)
-        prefSizer.Add(radioSizer, 0, wx.EXPAND)
-        prefSizer.Add(name_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
-        prefSizer.Add(self.name_value, 0, wx.EXPAND)
-        mainSizer.Add(prefSizer, 0, wx.EXPAND | wx.ALL, 5)
-        mainSizer.Add(openBtn, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
-        btnSizer.Add(saveBtn, 0, wx.ALL, 5)
-        btnSizer.Add(cancelBtn, 0, wx.ALL, 5)
-        mainSizer.Add(btnSizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
-        self.SetSizer(mainSizer)
-        mainSizer.Fit(self)
-        # ---------------------------------------------------------------------
-        # load preferences
-        self.loadPreferences()
-        self.SetFocus()
-
-    #----------------------------------------------------------------------
-    def loadPreferences(self):
-        """
-        Load the current preferences and fills the text controls.
-
-        """
-        screens = self.config['SCREENS']
-        name = self.config['NAME']
-        wos_logger.debug("config:%s" % str(self.config))
-        if int(screens) == 0:
-            self.screens_hidden.SetValue(1)
-        else:
-            self.screens_show.SetValue(1)
-        self.name_value.SetValue(name)
-
-    #----------------------------------------------------------------------
-    def openConfig(self, unused_event):
-        """
-        Opens config file.
-
-        :param event: GUI event.
-        :type event: Event
-
-        """
-        filesystem.OpenFile(diwavars.CONFIG_PATH)
-
-    #----------------------------------------------------------------------
-    def onCancel(self, unused_event):
-        """Closes the dialog without modifications.
-
-        :param event: GUI event.
-        :type event: Event
-
-        """
-        self.EndModal(0)
-
-    #----------------------------------------------------------------------
-    def savePreferences(self, event):
-        """Save the preferences.
-
-        :param event: GUI Event.
-        :type event: Event
-
-        """
-        global CUSTOM_EVENT_1_LABEL, CUSTOM_EVENT_2_LABEL
-        event = event
-        self.config['SCREENS'] = 1 if self.screens_show.GetValue() else 0
-        controller.SetNodeScreens(self.config['SCREENS'])
-        self.config['NAME'] = self.name_value.GetValue()
-        controller.SetNodeName(self.config['NAME'])
-        self.config.write()
-        dlg = wx.MessageDialog(self, "Preferences Saved!", 'Information',
-                               wx.OK | wx.ICON_INFORMATION)
-        dlg.ShowModal()
-        self.EndModal(0)
 
 
 class DropTarget(wx.PyDropTarget):
@@ -1629,10 +204,6 @@ class SysTray(wx.TaskBarIcon):
         self.menu.AppendSeparator()
         self.menu.Append(wx.ID_EXIT, "Exit")
 
-    def on_exit(self, event):
-        event = event
-        wx.CallAfter(self.Destroy)
-
     def ShowMenu(self, event):
         """
         Show popup menu.
@@ -1657,36 +228,6 @@ class MySplashScreen(wx.SplashScreen):
         splashDuration = 1000  # milliseconds
         wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration,
                                  parent)
-
-
-class ConnectionErrorDialog(wx.ProgressDialog):
-    """
-    Create a connection error dialog that informs the user about reconnection
-    attempts made by the software.
-
-    """
-    def __init__(self, parent):
-        imax = 80
-        self.parent = parent
-        wx.ProgressDialog.__init__(self, "Connection Error",
-                                "Reconnecting.. DiWaCS will shutdown in 20"\
-                                " seconds, if no connection is made.",
-                                maximum=imax,
-                                parent=self.parent,
-                                style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
-                                )
-        keepGoing = True
-        count = 0
-        while keepGoing and count < imax:
-            count += 1
-            wx.MilliSleep(250)
-            keepGoing = (not (swnp.testStorageConnection() and
-                              controller.TestConnection()))
-            if count % 4 == 0:
-                self.Update(count, "Reconnecting.. DiWaCS will shutdown in %d"\
-                            " seconds, if no connection is made. " %
-                            ((imax - count) / 4))
-        self.result = keepGoing
 
 
 class EventList(wx.Frame):
@@ -1858,7 +399,7 @@ class GUI(wx.Frame):
                 self.ShowPreferences(None)
             else:
                 self.config = self.LoadConfig()
-            self.worker.parseConfig(self.config)
+            self.worker.ParseConfig(self.config)
             self.swnp = swnp.SWNP(int(diwavars.PGM_GROUP),
                                   int(self.config['SCREENS']),
                                   self.config['NAME'],
@@ -1866,7 +407,7 @@ class GUI(wx.Frame):
                                   error_handler=self.error_th)
         except Exception, e:
             wos_logger.exception("loading config exception %s", str(e))
-        #if self.swnp.node.id == '3':
+        # if self.swnp.node.id == '3':
         #    self.is_responsive = True
         # Perform initial testing before actual initing
         it = self.InitTest()
@@ -1991,8 +532,8 @@ class GUI(wx.Frame):
             self.OnExit('conn_err')
 
     # def OnTLDR(self, event):
-    #     event = event
-    #     swnp.setTLDR(False)
+    #    event = event
+    #    swnp.setTLDR(False)
 
     def InitTest(self):
         if diwavars.DEBUG:
@@ -2163,16 +704,17 @@ class GUI(wx.Frame):
         global CURRENT_PROJECT_PATH
         global CURRENT_PROJECT_ID
         project_id = int(project_id)
-        if project_id > 0 and self.current_project_id != project_id:
+        project = controller.GetProject(project_id)
+        if not project:
+                return
+        if project and self.current_project_id != project_id:
             self.dirbtn.Disable()
-            self.dirbtn.Enable(True)
             self.sesbtn.Disable()
+            self.dirbtn.Enable(True)
             self.sesbtn.Enable(True)
             self.current_project_id = project_id
             wos_logger.debug("Set project label")
-            project = controller.GetProject(project_id)
-            wos_logger.debug("Project name is %s and type %s" %
-                             (project.name, str(type(project.name))))
+            wos_logger.debug("Project name is %s" % project.name)
             self.pro_label.SetLabel('Project: ' + project.name)
             self.worker.RemoveAllRegEntries()
             self.worker.AddProjectReg('*')
@@ -2189,6 +731,7 @@ class GUI(wx.Frame):
             self.current_project_id = 0
             self.dirbtn.Disable()
             self.sesbtn.Disable()
+            self.SetCurrentSession(0)
             if self.scan_observer:
                         self.scan_observer.unschedule_all()
                         self.scan_observer.stop()
@@ -2842,7 +1385,7 @@ class GUI(wx.Frame):
         :type evt: Event
 
         """
-        global MOUSE_X, MOUSE_Y, CAPTURE
+        global MOUSE_X, MOUSE_Y
         index = self.iterator + evt.GetId()
         id_ = self.nodes[(index) % len(self.nodes)][0]
         if evt.GetId() >= len(self.nodes) or id_ == self.swnp.id:
@@ -2853,12 +1396,12 @@ class GUI(wx.Frame):
         if id_ in self.selected_nodes:
             # End Remote
             self.selected_nodes.remove(id_)
-            CAPTURE = False
+            SetCapture(False)
             self.capture_thread.unhook()
             self.overlay.Hide()
         else:
             # Start remote
-            CAPTURE = True
+            SetCapture(True)
             self.capture_thread.ResetMouseEvents()
             self.capture_thread.hook()
             self.SwnpSend(id_, 'remote_start;%s' % self.swnp.id)
@@ -2933,7 +1476,7 @@ class GUI(wx.Frame):
         for node in self.swnp.get_screen_list():
             try:
                 self.nodes.append((node.id, node.screens, node.name))
-                self.worker.AddRegEntry(node.name, node.id)
+                self.worker.AddRegEntry(name=node.name, node_id=node.id)
             except:
                 pass
         if len(self.nodes):
@@ -2975,7 +1518,7 @@ class GUI(wx.Frame):
                 self.Hide()
                 self.trayicon.RemoveIcon()
                 self.trayicon.Destroy()
-                del sel.trayicon
+                del self.trayicon
                 self.closebtn.SetToolTip(None)
                 if not event == 'conn_err' and self.is_responsive:
                     wos_logger.debug("On exit self is responsive")
@@ -3046,10 +1589,12 @@ class GUI(wx.Frame):
         if self.IsIconized():
             self.Show()
             self.Raise()
+            self.SetFocus()
             self.Iconize(False)
+            self.Refresh()
         else:
-            self.Iconize(True)
             self.Hide()
+            self.Iconize(True)
 
     def OnTaskBarActivate(self, evt):
         """
@@ -3059,14 +1604,26 @@ class GUI(wx.Frame):
         :type evt: Event
 
         """
-        evt.Skip()
+        evt = evt
         if self.IsIconized():
+            # The user wants to unminimize the application.
             self.Show()
             self.Raise()
+            self.SetFocus()
             self.Iconize(False)
+            self.Refresh()
+        # elif app.IsActive() or self.HasFocus():  # Does work...
         else:
-            self.Iconize(True)
+            # The user wants to minimize the application.
             self.Hide()
+            self.Iconize(True)
+        """
+        else:
+            # The user wants to bring the window to front.
+            self.Raise()
+            self.SetFocus()
+
+        """
 
     def OnTaskBarClose(self, unused_event):
         """
@@ -3088,25 +1645,31 @@ class GUI(wx.Frame):
         """
         global CONTROLLED, CONTROLLING
         try:
-            if diwavars.DEBUG:
-                    wos_logger.debug('ZMQ PUBSUB Message:' + message)
+            # if diwavars.DEBUG:
+            wos_logger.debug('ZMQ PUBSUB Message:' + message)
             cmd, target = message.split(';')
             if cmd == 'open':
-                """Open all files in list"""
+                """ Open all files in list """
                 target = eval(target)
+                wos_logger.debug('open;' + str(target))
                 for f in target:
-                    if self.current_session_id:
-                        controller.CreateFileaction(f, 6,
-                                                    self.current_session_id,
-                                                    self.current_project_id)
-                    filesystem.OpenFile(f)
+                    if os.path.exists(f):
+                        csid, cpid = (self.current_session_id,
+                                      self.current_project_id)
+                        if self.current_session_id:
+                            try:
+                                controller.CreateFileaction(f, 6, csid, cpid)
+                            except Exception, e:
+                                wos_logger.exception('CreateFileAction: %s' %
+                                                     str(e))
+                        filesystem.OpenFile(f)
             if cmd == 'new_responsive':
                 if self.is_responsive:
                     self.StopResponsive()
                     self.is_responsive = False
                     self.responsive = target
             if cmd == 'event':
-                if self.is_responsive or diwavars.DEBUG:
+                if self.is_responsive:
                     self.worker.CreateEvent(target)
             if cmd == 'key':
                 e, key, scan = target.split(',')
@@ -3122,10 +1685,9 @@ class GUI(wx.Frame):
                     #release alt
                     macro.SendInput('k', 18, 2, 56)
                 if CONTROLLING:
-                    global CAPTURE
                     self.SetCursor(DEFAULT_CURSOR)
                     del self.selected_nodes[:]
-                    CAPTURE = False
+                    SetCapture(False)
                     self.capture_thread.unhook()
                     self.overlay.Hide()
                 CONTROLLED = False
@@ -3156,7 +1718,7 @@ class GUI(wx.Frame):
                     flags = 0x01000
                     mouseData = int(wheel) * 120
                 macro.SendInput('m', [0, 0], flags, scan=0,
-                                 mouse_data=mouseData)
+                                mouse_data=mouseData)
             if cmd == 'url':
                 webbrowser.open(target)
             if cmd == 'set' and target == 'responsive':
@@ -3165,9 +1727,8 @@ class GUI(wx.Frame):
                     self.is_responsive = True
             if cmd == 'screenshot':
                 if self.swnp.node.screens > 0:
-                    filesystem.ScreenCapture(
-                        controller.GetProjectPath(self.current_project_id),
-                        self.swnp.node.id)
+                    pPath = controller.GetProjectPath(self.current_project_id)
+                    filesystem.ScreenCapture(pPath, self.swnp.node.id)
             if cmd == 'current_session':
                 target = int(target)
                 if self.current_session_id != target:
@@ -3194,7 +1755,6 @@ class GUI(wx.Frame):
 if __name__ == '__main__':
     wos_logger.info('\n\n\n')
     wos_logger.info('Application started')
-    #version_checker = CHECK_UPDATE().start()
     app = wx.App()
     w = GUI(parent=None, title=(diwavars.APPLICATION_NAME + ' ' +
                                 diwavars.VERSION))
