@@ -932,8 +932,9 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             logger.debug("Adding to project: %s" % str(proj))
             f = File(path=event.src_path, project=proj)
             logger.debug("File: %s" % str(f))
-            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
-                                                                   1).one())
+            fa = FileAction(filename=f,
+                            action=db.query(Action).filter(Action.id ==
+                                                           1).one())
             logger.debug("FileAction: %s" % str(f))
             db.merge(f)
             db.merge(fa)
@@ -954,8 +955,9 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             f = db.query(File).filter(File.path == event.src_path,
                                       File.project_id == self.project_id
                                       ).order_by(File.id.desc()).first()
-            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
-                                                                   2).one())
+            fa = FileAction(filename=f,
+                            action=db.query(Action).filter(Action.id ==
+                                                           2).one())
             f.project = None
             db.merge(f)
             db.merge(fa)
@@ -981,8 +983,9 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             if not f:
                 f = self.on_created(event)
                 logger.debub('on_created result: ' % str(f))
-            fa = FileAction(file=f, action=db.query(Action).filter(Action.id ==
-                                                                   3).one())
+            fa = FileAction(filename=f,
+                            action=db.query(Action).filter(Action.id ==
+                                                           3).one())
             logger.debug('on_modified - fileaction = %s', str(fa))
             db.merge(f)
             db.merge(fa)
