@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DiWaVars module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="Filesystem module" href="filesystem.html" />
+    <link rel="prev" title="DiWaCS module" href="diwacs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="diwacs.html" title="DiWaCS module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-diwavars">
+<span id="diwavars-module"></span><h1>DiWaVars module<a class="headerlink" href="#module-diwavars" title="Permalink to this headline">¶</a></h1>
+<p>DiWaCS Variables</p>
+<dl class="function">
+<dt id="diwavars.add_logger_initializer">
+<tt class="descclassname">diwavars.</tt><tt class="descname">add_logger_initializer</tt><big>(</big><em>logger_initializer</em><big>)</big><a class="headerlink" href="#diwavars.add_logger_initializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>For initializing the loggers from main.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logger_initializer</strong> (<em>function</em>) &#8211; The logger initializer to add to initialize chain.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.add_logger_level_setter">
+<tt class="descclassname">diwavars.</tt><tt class="descname">add_logger_level_setter</tt><big>(</big><em>logger_level_setter</em><big>)</big><a class="headerlink" href="#diwavars.add_logger_level_setter" title="Permalink to this definition">¶</a></dt>
+<dd><p>For setting application logger level globally.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logger_level_setter</strong> (<em>function</em>) &#8211; The logger level setter to add to level set chain.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.set_blank_cursor">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_blank_cursor</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.set_blank_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the blank cursor variable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.set_config">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_config</tt><big>(</big><em>config</em><big>)</big><a class="headerlink" href="#diwavars.set_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the CONFIG global...</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.set_default_cursor">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_default_cursor</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.set_default_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default cursor variable.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.set_run_cmd">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_run_cmd</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.set_run_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the RUN_CMD setting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>Boolean</em>) &#8211; Desired value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.set_running">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_running</tt><big>(</big><big>)</big><a class="headerlink" href="#diwavars.set_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the currently running flag as true.</p>
+<p>Causes other modules to redirect their stdout and stderr streams
+to files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_PGM_group">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_PGM_group</tt><big>(</big><em>new_group</em><big>)</big><a class="headerlink" href="#diwavars.update_PGM_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the PGM group for this node.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_audio">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_audio</tt><big>(</big><em>audio</em><big>)</big><a class="headerlink" href="#diwavars.update_audio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_camera_vars">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_camera_vars</tt><big>(</big><em>url</em>, <em>user</em>, <em>passwd</em><big>)</big><a class="headerlink" href="#diwavars.update_camera_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_database_vars">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_database_vars</tt><big>(</big><em>address=None</em>, <em>name=None</em>, <em>type_=None</em>, <em>user=None</em>, <em>password=None</em><big>)</big><a class="headerlink" href="#diwavars.update_database_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_keys">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_keys</tt><big>(</big><em>modifier=91</em>, <em>key=27</em><big>)</big><a class="headerlink" href="#diwavars.update_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the key combination to stop remote controlling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>modifier</strong> (<em>Integer</em>) &#8211; The key to hold.</li>
+<li><strong>key</strong> (<em>Integer</em>) &#8211; The key to press while holding modifier key.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_padfile">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_padfile</tt><big>(</big><em>padurl</em><big>)</big><a class="headerlink" href="#diwavars.update_padfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the padfile address.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_responsive">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_responsive</tt><big>(</big><em>resp</em><big>)</big><a class="headerlink" href="#diwavars.update_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_storage">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_storage</tt><big>(</big><em>storage</em><big>)</big><a class="headerlink" href="#diwavars.update_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the address of storage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storage</strong> (<em>String</em>) &#8211; The new address of storage.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_windows_version">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_windows_version</tt><big>(</big><big>)</big><a class="headerlink" href="#diwavars.update_windows_version" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Updates the current version information to variables:</dt>
+<dd><ul class="first last simple">
+<li>WINDOWS_MAJOR</li>
+<li>WINDOWS_MINOR</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">DiWaVars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="diwacs.html" 
+				   title="previous chapter">
+				DiWaCS module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="filesystem.html" 
+		   title="next chapter">
+		Filesystem module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="diwacs.html" title="DiWaCS module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

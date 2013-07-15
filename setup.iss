@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DiwaCS"
-#define MyAppVersion "0.9.2.5"
+#define MyAppVersion "0.9.2.6"
 #define MyAppPublisher "Aalto University"
 #define MyAppExeName "DiwaCS.exe"
 
@@ -33,8 +33,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\Kristian\workspace\diwacs\wosdist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Kristian\workspace\diwacs\wosdist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\Kristian\workspace\diwacs\dist\DiwaCS.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Kristian\workspace\diwacs\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ;Source: "DeleteUpdateTask.exe"; DestDir: "{tmp}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

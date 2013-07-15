@@ -1,0 +1,581 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DiWaCS module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="DiWaVars module" href="diwavars.html" />
+    <link rel="prev" title="Dialogs module" href="dialogs.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="diwavars.html" title="DiWaVars module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dialogs.html" title="Dialogs module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-diwacs">
+<span id="diwacs-module"></span><h1>DiWaCS module<a class="headerlink" href="#module-diwacs" title="Permalink to this headline">¶</a></h1>
+<p>Created on 8.5.2012</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="diwacs.EventList">
+<em class="property">class </em><tt class="descclassname">diwacs.</tt><tt class="descname">EventList</tt><big>(</big><em>parent</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#diwacs.EventList" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Frame which displays the possible event titles and handles the event
+creation.</p>
+<dl class="method">
+<dt id="diwacs.EventList.CheckVisibility">
+<tt class="descname">CheckVisibility</tt><big>(</big><em>selection</em><big>)</big><a class="headerlink" href="#diwacs.EventList.CheckVisibility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the visibility.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.HideNow">
+<tt class="descname">HideNow</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.EventList.HideNow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to hide the event list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.OnEnter">
+<tt class="descname">OnEnter</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.EventList.OnEnter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for pressing ENTER button.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; The EVT_ON_TEXT_EVENT event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.OnFocusLost">
+<tt class="descname">OnFocusLost</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.EventList.OnFocusLost" title="Permalink to this definition">¶</a></dt>
+<dd><p>On focus lost event handler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.OnSelection">
+<tt class="descname">OnSelection</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.EventList.OnSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>On selection event handler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.OnText">
+<tt class="descname">OnText</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.EventList.OnText" title="Permalink to this definition">¶</a></dt>
+<dd><p>On text event handler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.EventList.ShowNow">
+<tt class="descname">ShowNow</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.EventList.ShowNow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to show the event list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="diwacs.GraphicalUserInterface">
+<em class="property">class </em><tt class="descclassname">diwacs.</tt><tt class="descname">GraphicalUserInterface</tt><a class="headerlink" href="#diwacs.GraphicalUserInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>WOS Application Frame.</p>
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.DisableDirectoryButton">
+<tt class="descname">DisableDirectoryButton</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.DisableDirectoryButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to disable the project directory button when project has been
+unselected.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There should be no need for this as the software should
+always start a new project after the old one ends.
+But for the mid state to be legimate this is still
+usable.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.DisableSessionButton">
+<tt class="descname">DisableSessionButton</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.DisableSessionButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to disable the needed buttons after session has been stopped.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Does not actually disable to session button, only the session
+state of the button.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.EnableDirectoryButton">
+<tt class="descname">EnableDirectoryButton</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.EnableDirectoryButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to enable the project directory button when project has been
+selected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.EnableSessionButton">
+<tt class="descname">EnableSessionButton</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.EnableSessionButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to enable the needed buttons after session has been started.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.GetNodeByName">
+<tt class="descname">GetNodeByName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.GetNodeByName" title="Permalink to this definition">¶</a></dt>
+<dd><p>From current session nodes, select a node with this name
+or return None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; Name of the desired node.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The desired node if one exists.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.InitUICore">
+<tt class="descname">InitUICore</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.InitUICore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inits the Core UI (<tt class="xref py py-meth docutils literal"><span class="pre">guitemplates.GUItemplate.InitUI()</span></tt>) and
+binds the functionality.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnAboutBox">
+<tt class="descname">OnAboutBox</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnAboutBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>About dialog.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>e</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnEvtBtn">
+<tt class="descname">OnEvtBtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnEvtBtn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event Button handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnExit">
+<tt class="descname">OnExit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exits program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnIconify">
+<tt class="descname">OnIconify</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnIconify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Window minimize event handler.
+Should toggle the minimized state of the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnInfoBtn">
+<tt class="descname">OnInfoBtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnInfoBtn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the pressing of Web-information button.</p>
+<p>Directs the user to web-storage website/help.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnMBBtn">
+<tt class="descname">OnMBBtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnMBBtn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the pressing of meetings browser button.</p>
+<p>Directs the user to web-storage website/mb.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnPreferences">
+<tt class="descname">OnPreferences</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnPreferences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preferences dialog event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnProject">
+<tt class="descname">OnProject</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project selected event handler.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnSession">
+<tt class="descname">OnSession</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Session button pressed.</p>
+<p>The user either desires to start a new session or end
+an existing one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnTaskBarActivate">
+<tt class="descname">OnTaskBarActivate</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnTaskBarActivate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taskbar activate event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnTaskBarClose">
+<tt class="descname">OnTaskBarClose</tt><big>(</big><em>unused_event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnTaskBarClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taskbar close event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnWABtn">
+<tt class="descname">OnWABtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnWABtn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the pressing of Web-application button.</p>
+<p>Directs the user to web-storage website.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OpenProjectDir">
+<tt class="descname">OpenProjectDir</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OpenProjectDir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens project directory in windows explorer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; The GraphicalUserInterface event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.PaintSelect">
+<tt class="descname">PaintSelect</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.PaintSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paints the selection of a node.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For future use.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.SelectNode">
+<tt class="descname">SelectNode</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SelectNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a node, start remote control.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For future use.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.SelectProjectDialog">
+<tt class="descname">SelectProjectDialog</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SelectProjectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select project event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.SetProjectName">
+<tt class="descname">SetProjectName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SetProjectName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the project text.
+For example &#8220;No Project OnSelection&#8221;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Requires None explicitly when the purpose is to set default label
+because writing SetProjectName(None) is more informative than
+SetProjectName()</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; The name of the project to set as label.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.Shift">
+<tt class="descname">Shift</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.Shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Caroussel Shift function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.UpdateScreens">
+<tt class="descname">UpdateScreens</tt><big>(</big><em>update</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.UpdateScreens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when screens need to be updated and redrawn.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>update</strong> (<em>Boolean</em>) &#8211; Pubsub needs one param, therefore it is called update.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="diwacs.main">
+<tt class="descclassname">diwacs.</tt><tt class="descname">main</tt><big>(</big><em>profile</em><big>)</big><a class="headerlink" href="#diwacs.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Warning :</th><td class="field-body"><p class="first">The profiler has been pre-calibrated using the development machine
+so this should be changed for other development environments that
+wish to profile the execution of the diwacs system.</p>
+<p>THIS ONLY WORKS WHEN diwavars.DEBUG HAS BEEN ENABLED.</p>
+<p>Remember to disable it from release binaries.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first last"><strong>profile</strong> (<em>Boolean</em>) &#8211; should the call be profiled?</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwacs.set_logger_level">
+<tt class="descclassname">diwacs.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#diwacs.set_logger_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to set logger level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; The level desired.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="dialogs.html" 
+				   title="previous chapter">
+				Dialogs module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="diwavars.html" 
+		   title="next chapter">
+		DiWaVars module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="diwavars.html" title="DiWaVars module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dialogs.html" title="Dialogs module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

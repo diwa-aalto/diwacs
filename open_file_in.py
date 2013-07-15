@@ -11,13 +11,14 @@ import time
 
 
 def get_local_ip_address(target):
+    """ Docstring here. """
     ipaddr = ''
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect((target, 8000))
-        ipaddr = s.getsockname()[0]
-        s.close()
-    except:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.connect((target, 8000))
+        ipaddr = sock.getsockname()[0]
+        sock.close()
+    except (IOError, OSError):
         ipaddr = None
     return ipaddr
 
@@ -29,11 +30,13 @@ class Message:
     encoded to json for transmission.
 
     :param TAG: TAG of the message.
-    :type TAG: String.
+    :type TAG: String
+
     :param PREFIX: PREFIX of the message.
-    :type PREFIX: String.
+    :type PREFIX: String
+
     :param PAYLOAD: PAYLOAD of the message.
-    :type PAYLOAD: String.
+    :type PAYLOAD: String
 
     """
     def __init__(self, TAG, PREFIX, PAYLOAD):
@@ -76,23 +79,23 @@ class Message:
 
 
 def main():
-        if len(sys.argv) == 3:
-            target = sys.argv[1]
-            filepath = sys.argv[2]
-            context = zmq.Context()
-            socket = context.socket(zmq.PUB)
-            socket.setsockopt(zmq.RATE, 1000000)
-            ip = get_local_ip_address("www.google.fi")
-            #print ip
-            socket.bind("epgm://" + ip + ";239.128.128.2:5555")
-            command = 'open;' + str(filepath)
-            msg = Message(target, 'MSG', command)
-            #print msg
-            socket.send_multipart([msg.TAG,
-                                   json.dumps(msg, default=Message.to_dict)])
-            time.sleep(5)
-            socket.close()
-            context.term()
+    if len(sys.argv) == 3:
+        target = sys.argv[1]
+        filepath = sys.argv[2]
+        context = zmq.Context()
+        sock = context.socket(zmq.PUB)
+        sock.setsockopt(zmq.RATE, 1000000)
+        ip_address = get_local_ip_address('www.google.fi')
+        #print ip_address
+        sock.bind('epgm://' + ip_address + ';239.128.128.2:5555')
+        command = 'open;' + str(filepath)
+        msg = Message(target, 'MSG', command)
+        #print msg
+        sock.send_multipart([msg.TAG,
+                               json.dumps(msg, default=Message.to_dict)])
+        time.sleep(5)
+        sock.close()
+        context.term()
 
 if __name__ == '__main__':
     main()

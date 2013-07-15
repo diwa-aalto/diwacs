@@ -1,6 +1,12 @@
 This is C:\Program Files\MiKTeX\miktex\bin\x64\makeindex.EXE, version 2.15 [MiKTeX 2.9 64-bit] (kpathsea + Thai support).
+<<<<<<< HEAD
 Scanning input file DiWaCS.idx....done (218 entries accepted, 0 rejected).
 Sorting entries.....done (1781 comparisons).
 Generating output file DiWaCS.ind....done (298 lines written, 0 warnings).
+=======
+Scanning input file DiWaCS.idx....done (357 entries accepted, 0 rejected).
+Sorting entries......done (3406 comparisons).
+Generating output file DiWaCS.ind....done (528 lines written, 0 warnings).
+>>>>>>> develop
 Output written in DiWaCS.ind.
 Transcript written in DiWaCS.ilg.

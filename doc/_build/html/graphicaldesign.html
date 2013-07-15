@@ -1,0 +1,425 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphical Design module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="Macro module" href="macro.html" />
+    <link rel="prev" title="Filesystem module" href="filesystem.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="macro.html" title="Macro module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graphical-design-module">
+<h1>Graphical Design module<a class="headerlink" href="#graphical-design-module" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-graphicaldesign"></span><p>Created on 6.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">This file represents graphical designs of some GUI elements in DiWaCS.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="graphicaldesign.BlackOverlay">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">BlackOverlay</tt><big>(</big><em>pos</em>, <em>size</em>, <em>parent</em>, <em>text</em><big>)</big><a class="headerlink" href="#graphicaldesign.BlackOverlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents all black frame without a mouse.</p>
+<dl class="method">
+<dt id="graphicaldesign.BlackOverlay.OnFocusLost">
+<tt class="descname">OnFocusLost</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#graphicaldesign.BlackOverlay.OnFocusLost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for focus losing of the window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; The focus lost event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.DropTarget">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">DropTarget</tt><big>(</big><em>window</em>, <em>parent</em>, <em>i</em><big>)</big><a class="headerlink" href="#graphicaldesign.DropTarget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements drop target functionality to receive files, bitmaps and text.</p>
+<dl class="method">
+<dt id="graphicaldesign.DropTarget.OnData">
+<tt class="descname">OnData</tt><big>(</big><em>x</em>, <em>y</em>, <em>d</em><big>)</big><a class="headerlink" href="#graphicaldesign.DropTarget.OnData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles drag/dropping files/text or a bitmap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>Integer</em>) &#8211; The x coordinate of the drop-location.</li>
+<li><strong>y</strong> (<em>Integer</em>) &#8211; The y coordinate of the drop-location.</li>
+<li><strong>d</strong> &#8211; The data of drop.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.EventListTemplate">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">EventListTemplate</tt><big>(</big><em>parent</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#graphicaldesign.EventListTemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an event list menu.</p>
+<dl class="method">
+<dt id="graphicaldesign.EventListTemplate.GetProgramIcon">
+<tt class="descname">GetProgramIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#graphicaldesign.EventListTemplate.GetProgramIcon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches gui icons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>icon</strong> (<em>String</em>) &#8211; The icon file name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">wx.Image</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.GUItemplate">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">GUItemplate</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the main GUI window graphical template.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Window</span></tt>) &#8211; Parent frame.</li>
+<li><strong>id</strong> (<em>Integer</em>) &#8211; ID of the new Frame.</li>
+<li><strong>title</strong> (<em>String</em>) &#8211; Title for the frame, default = EmptyString.</li>
+<li><strong>pos</strong> (<em>wx.Point</em>) &#8211; Position of the new frame.</li>
+<li><strong>size</strong> (<em>wx.Size</em>) &#8211; Size of the new frame.</li>
+<li><strong>style</strong> (<em>long</em>) &#8211; Style flags for the new frame.</li>
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of  the new frame.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.AlignCenterTop">
+<tt class="descname">AlignCenterTop</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.AlignCenterTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aligns frame to Horizontal center and vertical top.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.ClearStatusText">
+<tt class="descname">ClearStatusText</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.ClearStatusText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the status text to EmptyScreen string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.ConnectionErrorHandler">
+<tt class="descname">ConnectionErrorHandler</tt><big>(</big><em>error</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.ConnectionErrorHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show connection error handler dialog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.GetProgramIcon">
+<tt class="descname">GetProgramIcon</tt><big>(</big><em>icon</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.GetProgramIcon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a GUI icon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>icon</strong> (<em>String</em>) &#8211; The icon file name.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">wx.Image</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.HideScreens">
+<tt class="descname">HideScreens</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.HideScreens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hides all screens.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.InitScreens">
+<tt class="descname">InitScreens</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.InitScreens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inits Screens.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.InitUI">
+<tt class="descname">InitUI</tt><big>(</big><em>node_id</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>UI initializing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_id</strong> (<em>Integer</em>) &#8211; The id of current swnp node (self).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.OnExit">
+<tt class="descname">OnExit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.OnExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exits program.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.GUItemplate.SelectNode">
+<tt class="descname">SelectNode</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.SelectNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a node, prototype.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GUI Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.ImageViewer">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">ImageViewer</tt><big>(</big><em>parent</em>, <em>image</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#graphicaldesign.ImageViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to show an image.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.MySplashScreen">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">MySplashScreen</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#graphicaldesign.MySplashScreen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a splash screen widget.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.NodeScreen">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">NodeScreen</tt><big>(</big><em>node</em>, <em>parent</em><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a bitmap with node id.</p>
+<dl class="method">
+<dt id="graphicaldesign.NodeScreen.EmptyScreen">
+<tt class="descname">EmptyScreen</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.EmptyScreen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this screen EmptyScreen.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.NodeScreen.ReloadAs">
+<tt class="descname">ReloadAs</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.ReloadAs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload the content of this bitmap.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="graphicaldesign.SysTray">
+<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">SysTray</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#graphicaldesign.SysTray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Taskbar Icon class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Frame</span></tt>) &#8211; Parent frame</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="graphicaldesign.SysTray.CreateMenu">
+<tt class="descname">CreateMenu</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.SysTray.CreateMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create systray menu.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.SysTray.ShowMenu">
+<tt class="descname">ShowMenu</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#graphicaldesign.SysTray.ShowMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show popup menu.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.SysTray.ShowNotification">
+<tt class="descname">ShowNotification</tt><big>(</big><em>title</em>, <em>message</em><big>)</big><a class="headerlink" href="#graphicaldesign.SysTray.ShowNotification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a thread to show the notification.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> (<em>String</em>) &#8211; Title to diplay in the balloon.</li>
+<li><strong>message</strong> (<em>String</em>) &#8211; Message to display in the balloong (max 255 chars).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Graphical Design module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="filesystem.html" 
+				   title="previous chapter">
+				Filesystem module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="macro.html" 
+		   title="next chapter">
+		Macro module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="macro.html" title="Macro module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="filesystem.html" title="Filesystem module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

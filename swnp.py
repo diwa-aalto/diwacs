@@ -4,49 +4,77 @@ Created on 30.4.2012
 :author: neriksso
 
 """
-# System imports.
-from datetime import datetime, timedelta
-import logging
+# Critical imports.
 import sys
+import diwavars
+
+
+if diwavars.CURRENTLY_RUNNING:
+    sys.stdout = open(r'data\swnp_stdout.log', 'w')
+    sys.stderr = open(r'data\swnp_stderr.log', 'w')
+
+
+# Standard imports.
+from datetime import datetime, timedelta
+from logging import config, getLogger
 import threading
 from time import sleep
-import json
+from json import dumps, loads
 import random
 
 # 3rd party imports.
 from sqlalchemy import exc
-import zmq
 from pubsub import pub
+import zmq
+#=========================================================================
+# from zmq import (Context, LINGER, NOBLOCK, PUB, RATE, SUB, SUBSCRIBE,
+#                  zmq_version_info)
+# zmq_major = zmq_version_info()[0]
+# if zmq_major > 2:
+#     from zmq import SNDHWM  # @UnresolvedImport
+# else:
+#     from zmq import HWM  # @UnresolvedImport
+#=========================================================================
+
 
 # My imports.
 import controller
-import diwavars
 import utils
 from dialogs import CloseError
+from zmq.error import Again, ContextTerminated, ZMQError
 
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('swnp')
+LOGGER = None
 
-PGM_IP = '239.128.128.1:5555'
+
+def __init_logger():
+    """
+    Used to initialize the logger, when running from diwacs.py
+
+    """
+    global LOGGER
+    config.fileConfig('logging.conf')
+    LOGGER = getLogger('swnp')
+
+
+def set_logger_level(level):
+    """
+    Sets the logger level for swnp logger.
+
+    :param level: Level of logging.
+    :type level: Integer
+
+    """
+    LOGGER.setLevel(level)
+
+
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(set_logger_level)
+
+
 PREFIX_CHOICES = ['JOIN', 'LEAVE', 'SYNC', 'MSG', 'PING', 'PONG']
 TIMEOUT = 10
-PING_RATE = 2
-sys.stdout = open(r'data\swnp_stdout.log', 'wb')
-sys.stderr = open(r'data\swnp_stderr.log', 'wb')
-
-TLDR = True
-
-
-def setTLDR(value):
-    global TLDR
-    TLDR = value
-    logger.debug('TLDR: %s' % str(value))
-
-
-def SetLoggerLevel(level):
-    global logger
-    logger.setLevel(level)
+PING_RATE = 3
 
 
 class Node():
@@ -66,9 +94,9 @@ class Node():
     def __init__(self, node_id, screens, name=None, data=None):
         self.id = node_id
         self.screens = int(screens)
-        self.name = name or ""
-        self.data = data or ""
-        self.refresh()
+        self.name = name or ''
+        self.data = data or ''
+        self.timestamp = datetime.now()
 
     def refresh(self):
         """
@@ -76,6 +104,10 @@ class Node():
 
         """
         self.timestamp = datetime.now()
+
+    def get_age(self):
+        """ Return the elapsed time since last refresh. """
+        return (datetime.now() - self.timestamp)
 
     def __str__(self):
         return "%s: %s with %s screens data %s" % (self.id, self.name,
@@ -95,26 +127,26 @@ class Message():
     """
     A class representation of a Message.
 
-    Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
+    Messages are divided into three parts: tag, prefix, payload.
     Messages are encoded to json for transmission.
 
-    :param TAG: TAG of the message.
-    :type TAG: String
+    :param tag: tag of the message.
+    :type tag: String
 
-    :param PREFIX: PREFIX of the message.
-    :type PREFIX: String
+    :param prefix: prefix of the message.
+    :type prefix: String
 
-    :param PAYLOAD: PAYLOAD of the message.
-    :type PAYLOAD: String
+    :param payload: payload of the message.
+    :type payload: String
 
     """
-    def __init__(self, TAG, PREFIX, PAYLOAD):
-        self.TAG = TAG
-        if PREFIX in PREFIX_CHOICES:
-            self.PREFIX = PREFIX
+    def __init__(self, tag, prefix, payload):
+        self.tag = tag
+        if prefix in PREFIX_CHOICES:
+            self.prefix = prefix
         else:
-            raise TypeError('Invalid message type: %s' % PREFIX)
-        self.PAYLOAD = PAYLOAD
+            raise TypeError('Invalid message type: %s' % prefix)
+        self.payload = payload
 
     def to_dict(msg):
         """
@@ -127,7 +159,7 @@ class Message():
         :rtype: Dict
 
         """
-        return {'TAG': msg.TAG, 'PREFIX': msg.PREFIX, 'PAYLOAD': msg.PAYLOAD}
+        return {'TAG': msg.tag, 'PREFIX': msg.prefix, 'PAYLOAD': msg.payload}
     to_dict = staticmethod(to_dict)
 
     def from_json(json_dict):
@@ -135,7 +167,7 @@ class Message():
         Return a message from json.
 
         :param json_dict: The json.
-        :type json_dict: json.
+        :type json_dict: json
 
         :returns: Initializes a message from JSON object.
         :rtype: :py:class:`swnp.Message`.
@@ -147,10 +179,10 @@ class Message():
     from_json = staticmethod(from_json)
 
     def __str__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        return '_'.join([self.tag, self.prefix, self.payload])
 
     def __repr__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        return '_'.join([self.tag, self.prefix, self.payload])
 
 
 class SWNP:
@@ -187,18 +219,22 @@ class SWNP:
 
     def __init__(self, pgm_group, screens=0, name=None, node_id=None,
                  context=None, error_handler=None):
-        global PGM_IP
         # Check pgm_group
-        if pgm_group != 1:
-            PGM_IP = "239.128.128.%d:5555" % pgm_group
-        logger.debug("PGM IP %s" % PGM_IP)
+        if not pgm_group:
+            pgm_group = 1
+        pgm_ip = '239.128.128.%d:5555' % pgm_group
+        LOGGER.debug('PGM IP %s', pgm_ip)
+
         #Create context
         self.context = context if context else zmq.Context()
+        self.context.setsockopt(zmq.LINGER, 0)  # Set default linger value.
+        self.terminating = False
+
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
         self.publisher_loopback = self.context.socket(zmq.PUB)
         self.ip = utils.GetLocalIPAddress(diwavars.STORAGE)
-        logger.info('Own IP: %s' % self.ip)
+        LOGGER.info('Own IP: %s', self.ip)
         if node_id:
             self.id = node_id
         elif self.ip:
@@ -208,32 +244,29 @@ class SWNP:
         self.node = Node(self.id, int(screens), name)
 
         # Prevent overflowing slow subscribers
-        xvers = zmq.zmq_version_info()[0]
-        logger.debug('ZMQ Major version: ' + str(xvers))
-        hwm = zmq.SNDHWM if xvers > 2 else zmq.HWM  # @UndefinedVariable
         self.publisher.setsockopt(zmq.LINGER, 0)
-        self.publisher.setsockopt(hwm, 5)
         self.publisher.setsockopt(zmq.RATE, 1000000)
-        self.publisher_loopback.setsockopt(hwm, 50)
+        self.publisher.set_hwm(5)
+        self.publisher_loopback.setsockopt(zmq.LINGER, 0)
+        self.publisher_loopback.set_hwm(50)
+
         # Bind publisher
-        self.tladdr = "epgm://" + self.ip + ";" + PGM_IP
-        self.ipraddr = "inproc://mcast_loopback"
+        self.tladdr = 'epgm://' + self.ip + ';' + pgm_ip
+        self.ipraddr = 'inproc://mcast_loopback'
         self.publisher.bind(self.tladdr)
         self.publisher_loopback.bind(self.ipraddr)
         # Subscriber threads
-        targs = ([self.tladdr, self.ipraddr], self.context, )
-        self.sub_thread = self.StartSubRoutine(None, self.sub_routine,
-                                               "Sub thread",
-                                               targs)
-        self.sub_thread_sys = self.StartSubRoutine(None,
-                                                   self.sub_routine_sys,
-                                                   "Sub sys thread",
-                                                   targs)
-        logger.debug('Bound listeners on: %s (%s)', str(self.tladdr))
+        targs = ([self.tladdr, self.ipraddr], )
+        self.sub_thread = SWNP.start_sub_routine(None, self.sub_routine,
+                                                 'Sub thread', targs)
+        self.sub_thread_sys = SWNP.start_sub_routine(None,
+                                                     self.sub_routine_sys,
+                                                     'Sub sys thread', targs)
+        LOGGER.debug('Bound listeners on: %s', str(self.tladdr))
 
-        join_str = ("%s_SCREENS_%d_NAME_%s_DATA_%s" % (self.node.id,
+        join_str = ('%s_SCREENS_%d_NAME_%s_DATA_%s' % (self.node.id,
                     self.node.screens, self.node.name, self.node.data))
-        self.send("SYS", PREFIX_CHOICES[0], join_str)
+        self.send('SYS', PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
         self.NODE_LIST.add(self.node)
         self.do_ping()
@@ -252,7 +285,8 @@ class SWNP:
         self.timeout_thread.daemon = True
         self.timeout_thread.start()
 
-    def StartSubRoutine(self, target, routine, name, args):
+    @staticmethod
+    def start_sub_routine(target, routine, name, args):
         """
         A wrapper for starting up subroutine threads.
 
@@ -271,13 +305,13 @@ class SWNP:
         :rtype: :py:class:`threading.Thread`
 
         """
-        if (isinstance(target, threading.Thread) and
-                target and target.isAlive()):
+        target_is_thread = isinstance(target, threading.Thread)
+        if (target_is_thread and target and target.isAlive()):
             return
         target = threading.Thread(target=routine, name=name, args=args)
         target.daemon = True
         target.start()
-        logger.debug("%s started" % name)
+        LOGGER.debug('%s started', name)
         return target
 
     def timeout_routine(self):
@@ -289,17 +323,16 @@ class SWNP:
         while not self.timeout_stop.isSet():
             try:
                 to_be_removed = []
-                ct = datetime.now()
                 for node in list(self.NODE_LIST):
-                    if (not node == self.node and
-                            (ct - node.timestamp > timeout)):
+                    if node != self.node and node.get_age() > timeout:
                         to_be_removed.append(node)
                 for node in to_be_removed:
+                    # TODO: Remove controlled if true.
                     self.NODE_LIST.discard(node)
                 if len(to_be_removed) > 0:
                     pub.sendMessage('update_screens', update=True)
-            except Exception, e:
-                logger.exception('Timeout Exception: %s', str(e))
+            except Exception, excp:
+                LOGGER.exception('Timeout Exception: %s', str(excp))
             sleep(TIMEOUT)
 
     def do_ping(self):
@@ -308,55 +341,53 @@ class SWNP:
 
         """
         try:
-            msg = "%s_SCREENS_%d_NAME_%s_DATA_%s" % (self.id,
-                  int(self.node.screens), self.node.name, self.node.data)
-            self.send("SYS", PREFIX_CHOICES[4], msg)
-        except Exception, e:
-            logger.exception('do_ping exception: %s', str(e))
+            msg_format = '%s_SCREENS_%d_NAME_%s_DATA_%s'
+            msg = msg_format % (self.id, int(self.node.screens),
+                                self.node.name, self.node.data)
+            self.send('SYS', PREFIX_CHOICES[4], msg)
+        except ZMQError, excp:
+            LOGGER.exception('do_ping exception: %s', str(excp))
 
     def ping_routine(self, error_handler):
         """
         A routine for sending PING messages at regular intervals.
 
         """
-        logger.debug("Ping routine initializing...")
+        LOGGER.debug('Ping routine initializing...')
+        comp = None
         try:
-            c = controller.AddComputer(self.node.name, self.ip, self.id)
+            comp = controller.add_computer(self.node.name, self.ip, self.id)
         except:
-            logger.exception("Ping routine exception")
-            c = None
+            LOGGER.exception("Ping routine exception")
         error = False
-        logger.debug("Ping routine started")
+        LOGGER.debug("Ping routine started")
         while not self.ping_stop.isSet():
             # Read envelope with address
             try:
                 self.do_ping()
                 self.node.refresh()
-                if c:
-                    c.screens = self.node.screens
-                    controller.RefreshComputer(c)
+                if comp:
+                    comp.screens = self.node.screens
+                    controller.refresh_computer(comp)
                 error = False
                 sleep(PING_RATE)
             except (exc.OperationalError, exc.DBAPIError):
-                    if not error:
-                        error = True
-                        error_handler.queue.append(CloseError)
-            except Exception, e:
-                logger.exception('Ping_routine exception: %s', str(e))
-        logger.debug("Ping routine closed")
+                if not error:
+                    error = True
+                    error_handler.queue.append(CloseError)
+            except Exception, excp:
+                LOGGER.exception('Ping_routine exception: %s', str(excp))
+        LOGGER.debug("Ping routine closed")
+        error_handler.stop()
 
-    def sub_routine(self, sub_urls, unused_context):
+    def sub_routine(self, sub_urls):
         """
         Subscriber routine for the node ID.
 
         :param sub_urls: Subscribing URLs.
         :type sub_urls: List of Strings
 
-        :param context: ZeroMQ context for message sending.
-        :type context: :class:`zmq.core.context.Context`
-
         """
-        global TLDR
         subscribers = []
         for i, sub_url in enumerate(sub_urls):
             subscribers.append(self.context.socket(zmq.SUB))
@@ -365,56 +396,57 @@ class SWNP:
             subscribers[i].setsockopt(zmq.LINGER, 0)
             subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
             subscribers[i].connect(sub_url)
-        logger.debug('Listener Active!')
-        while TLDR:
+        LOGGER.debug('Listener Active!')
+        while not self.terminating:
             for s in subscribers:
                 try:
-                    [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
-                    msg_obj = json.loads(contents,
-                                         object_hook=Message.from_json)
-
-                    logger.debug('Received: %s;%s' %
-                                 (msg_obj.PREFIX, msg_obj.PAYLOAD))
-
-                    if (msg_obj.PAYLOAD == self.id and
-                            msg_obj.PREFIX == 'LEAVE'):
-                        logger.debug('LEAVE msg catched')
-                        TLDR = False
+                    [address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    msg_obj = loads(contents,
+                                    object_hook=Message.from_json)
+                    prefix = msg_obj.prefix
+                    if msg_obj.payload == self.id and prefix == 'LEAVE':
+                        LOGGER.debug('LEAVE msg catched')
+                        self.terminating = True
                         break
-                    if msg_obj.PREFIX == 'SYNC':
-                        self.sync_handler(msg_obj)
-                    if msg_obj.PREFIX == 'MSG':
+                    elif prefix == 'SYNC':
+                        LOGGER.exception('DEPRECATED METHOD USED!!!')
+                        # self.sync_handler(msg_obj)
+                    elif prefix == 'MSG':
                         logger.debug('RCV: %s;%s' %
                                      (msg_obj.PREFIX,
                                       msg_obj.PAYLOAD))
                         pub.sendMessage('message_received',
-                                        message=msg_obj.PAYLOAD)
-                except zmq.Again, e:
+                                        message=msg_obj.payload)
+                except Again:
                     # Non-blocking mode was requested and no messages
                     # are available at the moment.
                     pass
-                except ValueError:
-                    logger.debug('ValueError: %s - %s' %
-                                 (str(contents), str(e)))
-                    pass
-                except SystemExit:
-                    TLDR = False
-                    logger.debug('SystemExit')
-                    break
-                except zmq.ContextTerminated, e:
-                    # context associated with the specified
-                    # socket was terminated.
-                    TLDR = False
-                    logger.debug('ContextTerminated: %s', str(e))
-                    break
-                except zmq.ZMQError, e:
-                    logger.exception('ZMQerror sub routine: %s', str(e))
-                    TLDR = False
+                except ValueError, excp:
+                    LOGGER.debug('ValueError: %s - %s', str(contents),
+                                 str(excp))
+                except (SystemExit, ContextTerminated, ZMQError):
+                    self.terminating = True
+                    LOGGER.debug('Exit sub routine')
                     break
                 except Exception, e:
-                    logger.exception('SWNP EXCEPTION: %s', str(e))
-        logger.debug('Closing sub')
-        (subscriber.close() for subscriber in subscribers)
+                    LOGGER.exception('SWNP EXCEPTION: %s', str(e))
+        LOGGER.debug('Closing sub')
+        while len(subscribers):
+            sub = subscribers.pop()
+            sub.close()
+            sub = None
+        LOGGER.debug('Sub closed')
+
+    def set_name(self, name):
+        """
+        Sets the name for the instance.
+
+        :param name: New name of the instance.
+        :type name: String
+
+        """
+        self.node.name = name
+        controller.refresh_computer_by_wos_id(self.node.id, new_name=name)
 
     def set_screens(self, screens):
         """
@@ -425,131 +457,129 @@ class SWNP:
 
         """
         self.node.screens = screens
+        controller.refresh_computer_by_wos_id(self.node.id,
+                                              new_screens=screens)
 
-    def sub_routine_sys(self, sub_urls, unused_context):
+    def set_responsive(self, responsive):
+        """
+        Sets the responsive flag for the instance.
+
+        :param responsive: New number of screens.
+        :type responsive: Integer
+
+        """
+        self.node.data = responsive
+        new_responsive = diwavars.PGM_GROUP if responsive else 0
+        controller.refresh_computer_by_wos_id(self.node.id,
+                                              new_responsive=new_responsive)
+
+    def sub_routine_sys(self, sub_urls):
         """
         Subscriber routine for the node ID.
 
         :param sub_urls: Subscribing URLs.
         :type sub_urls: List of Strings
 
-        :param context: ZeroMQ context for message sending.
-        :type context: :class:`zmq.core.context.Context`
-
         """
         # Socket to talk to dispatcher
-        global TLDR
         subscribers = []
-        for i, sub_url in enumerate(sub_urls):
-            subscribers.append(self.context.socket(zmq.SUB))
+        for sub_url in sub_urls:
+            sub = self.context.socket(zmq.SUB)
             if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
-                subscribers[i].setsockopt(zmq.RATE, 1000000)
-            subscribers[i].setsockopt(zmq.LINGER, 0)
-            subscribers[i].setsockopt(zmq.SUBSCRIBE, "SYS")
-            subscribers[i].connect(sub_url)
-        logger.debug('SYS-listener active')
-        while TLDR:
+                sub.setsockopt(zmq.RATE, 1000000)
+            sub.setsockopt(zmq.LINGER, 0)
+            sub.setsockopt(zmq.SUBSCRIBE, 'SYS')
+            sub.connect(sub_url)
+            subscribers.append(sub)
+        LOGGER.debug('SYS-listener active')
+        while not self.terminating:
             # Read envelope with address.
             for s in subscribers:
                 try:
-                    [unused_address, contents] = s.recv_multipart(zmq.NOBLOCK)
-                    msg_obj = json.loads(contents,
-                                         object_hook=Message.from_json)
-                    """
-                    logger.debug('SYS-Received: %s;%s' %
-                    (msg_obj.PREFIX, msg_obj.PAYLOAD))
-
-                    """
-                    if (msg_obj.PREFIX == 'LEAVE' and
-                            msg_obj.PAYLOAD == self.id):
-                        TLDR = False
-                        break
-                    logger.debug('RCVSYS: %s;%s' % (msg_obj.PREFIX,
-                                                    msg_obj.PAYLOAD))
+                    [address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    msg_hook = Message.from_json
+                    msg_obj = loads(contents, object_hook=msg_hook)
+                    receiver = 0
+                    try:
+                        receiver = int(msg_obj.payload)
+                    except ValueError:
+                        pass
+                    msg_for_self = (receiver == self.id)
                     self.sys_handler(msg_obj)
-                except ValueError:
-                    pass
-                except SystemExit:
-                    TLDR = False
-                    break
-                except zmq.Again, e:
+                    if msg_obj.prefix == 'LEAVE' and msg_for_self:
+                        self.terminating = True
+                        break
+                except Again:
                     # Non-blocking mode was requested and no messages
-                    # are available at the moment.
+                    # are available at the moment or there was a parse
+                    # error.
                     pass
-                except zmq.ContextTerminated, e:
+                except ValueError, excp:
+                    LOGGER.exception('ValueError: %s', str(excp))
+                except (SystemExit, ContextTerminated):
                     # context associated with the specified
-                    # socket was terminated.
-                    TLDR = False
+                    # socket was terminated or the app is closing.
+                    self.terminating = True
+                    LOGGER.exception('SYS-EXCPT: %s', str(excp))
                     break
-                except zmq.ZMQError, e:
-                    logger.exception("ZMQerror sub routine sys:%s", str(e))
-                    TLDR = False
+                except Exception, excp:
+                    LOGGER.info('SWNP MSG: %s', str(contents))
+                    LOGGER.exception('SWNP_SYS EXCEPTION: %s', str(excp))
+                    self.terminating = True
                     break
-                except Exception, e:
-                    logger.exception("SWNP_SYS EXCEPTION: %s", str(e))
-                    TLDR = False
-                    break
-        logger.debug('Closing sys sub')
-        (subscriber.close() for subscriber in subscribers)
+        LOGGER.debug('Closing sys sub')
+        while len(subscribers):
+            sub = subscribers.pop()
+            sub.close()
+            sub = None
+        LOGGER.debug('Sys sub closed')
 
     def shutdown(self):
         """
         Shuts down all connections, no exit.
 
         """
-        global TLDR
         i = 0
         limit = 5
-        while self.sub_thread_sys.isAlive() and i < limit:
-            self.send("SYS", PREFIX_CHOICES[1], self.id)
-            sleep(1)
-            i += 1
-        i = 0
         while self.sub_thread.isAlive() and i < limit:
             self.send(self.id, PREFIX_CHOICES[1], self.id)
-            sleep(1)
+            sleep(0.5)
             i += 1
+        LOGGER.debug('Closing publishers...')
         self.publisher.close()
         self.publisher_loopback.close()
-        TLDR = False
         if not self.context.closed:
-            self.context.term()
+            LOGGER.debug('Terminating context...')
+            # NOTE: context.terminate() was replaced with this
+            # because terminate used to hang even when all the sockets
+            # had linger=0 option set.
+            self.context = None
+        else:
+            LOGGER.debug('Context was already terminated...')
+        LOGGER.debug('SWNP shutdown complete...')
 
     def close(self):
         """
         Closes all connections and exits.
 
         """
-        global TLDR
+        LOGGER.debug('Beginning close of SWNP')
         self.ping_stop.set()
         self.timeout_stop.set()
-        i = 0
-        limit = 5
-        logger.debug('closing threads')
-        while self.sub_thread_sys.isAlive() and i < limit:
-            self.send("SYS", PREFIX_CHOICES[1], self.id)
-            sleep(1)
-            i += 1
-        i = 0
-        logger.debug('sub_thread sys closed' + str(
-                        self.sub_thread_sys.isAlive())
-                    )
-        while self.sub_thread.isAlive() and i < limit:
-            self.send(self.id, PREFIX_CHOICES[1], self.id)
-            sleep(1)
-            i += 1
-        logger.debug('sub_thread   closed' + str(self.sub_thread.isAlive()))
-        TLDR = False
+        LOGGER.debug('closing threads')
         try:
-            self.publisher.close()
-            self.publisher_loopback.close()
-            logger.debug('publisher closed')
-            if not self.context.closed:
-                self.context.term()
-            logger.debug('context terminated')
-        except:
-            logger.exception('swnp close exception')
-        logger.debug('swnp closed completely')
+            self.shutdown()
+        except Exception, excp:
+            LOGGER.exception('Close error: %s', str(excp))
+        alive_sub = str(not self.sub_thread.isAlive())
+        alive_sys = str(not self.sub_thread_sys.isAlive())
+        debug_format = (
+            'SWNP CLOSE:\n'
+            'sub_routine closed %s\n'
+            'sub_routine_system closed %s\n'
+            'swnp closed completely'
+        )
+        LOGGER.debug(debug_format, alive_sub, alive_sys)
 
     def send(self, tag, prefix, message):
         """
@@ -569,29 +599,27 @@ class SWNP:
             return
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
-
-            logger.debug('Sent: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
-
             try:
-                myMess = [msg.TAG, json.dumps(msg, default=Message.to_dict)]
-                if msg.PREFIX != 'PING':
+                myMess = [msg.tag, dumps(msg, default=Message.to_dict)]
+                if msg.prefix != 'PING':
                     self.publisher_loopback.send_multipart(myMess)
                 self.publisher.send_multipart(myMess)
-            except Exception, e:
-                logger.exception('SENT EXCEPTION: %s', str(e))
-        else:
-            logger.debug('debug skipping msg: %s,%s,%s' % (str(tag),
-                                                           str(prefix),
-                                                           str(message)))
+            except (ZMQError, ValueError), excp:
+                LOGGER.exception('SENT EXCEPTION: %s', str(excp))
 
     def get_buffer(self):
         """
         Gets the buffered messages and returns them
 
-        :rtype: json
+        :returns: JSON formated string.
+        :rtype: String
 
         """
-        buffer_json = json.dumps(self.MSG_BUFFER, default=Message.to_dict)
+        buffer_json = None
+        try:
+            buffer_json = dumps(self.MSG_BUFFER, default=Message.to_dict)
+        except ValueError:
+            pass
         self.MSG_BUFFER[:] = []
         return buffer_json
 
@@ -602,10 +630,7 @@ class SWNP:
         :rtype: list
 
         """
-        ls = []
-        for node in sorted(self.NODE_LIST, key=lambda x: int(x.id)):
-            ls.append(node.id)
-        return ls
+        return sorted(self.NODE_LIST, key=lambda node: int(node.id))
 
     def get_screen_list(self):
         """
@@ -614,11 +639,42 @@ class SWNP:
         :rtype: list.
 
         """
-        ls = []
-        for node in sorted(self.NODE_LIST, key=lambda x: int(x.id)):
-            if int(node.screens) > 0:
-                ls.append(node)
-        return ls
+        return [node for node in self.get_list() if node.screens > 0]
+
+    def _on_join(self, payload):
+        """ On join handlers. """
+        payload = payload.split('_')
+        joiner_id = payload[0]
+        joiner_screens = int(payload[2])
+        joiner_name = payload[4]
+        joiner_data = payload[6]
+        if joiner_id != self.id:
+            reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
+            self.send('SYS', PREFIX_CHOICES[4], reply)
+        new_node = Node(joiner_id, joiner_screens, joiner_name, joiner_data)
+        self.NODE_LIST.add(new_node)
+        self.last_joined = joiner_id
+        pub.sendMessage('update_screens', update=True)
+
+    def _on_leave(self, payload):
+        """ On leave handlers. """
+        node = self.find_node(payload)
+        if node:
+            self.NODE_LIST.discard(node)
+        pub.sendMessage('update_screens', update=True)
+
+    @staticmethod
+    def _on_msg(payload):
+        """ On message handlers. """
+        pub.sendMessage('message_received', message=payload)
+
+    def _on_ping(self, payload):
+        """ On ping handlers. """
+        self.ping_handler(payload)
+
+    def _on_default(self, payload):
+        """ On unrecognized command handlers. """
+        pass
 
     def sys_handler(self, msg):
         """
@@ -628,29 +684,17 @@ class SWNP:
         :type msg: :class:`swnp.Message`
 
         """
-        if msg.PREFIX == 'JOIN':
-            payload = msg.PAYLOAD.split('_')
-            if  payload[0] != self.id:
-                self.send("SYS", PREFIX_CHOICES[4], "%s_SCREENS_%d" %
-                                                    (self.id,
-                                                     int(self.node.screens)
-                                                     )
-                         )
-
-            self.NODE_LIST.add(Node(payload[0], int(payload[2]), payload[4],
-                                    payload[6]))
-            self.last_joined = payload[0]
-            pub.sendMessage("update_screens", update=True)
-        if msg.PREFIX == 'LEAVE':
-            node = self.find_node(msg.PAYLOAD)
-            if node:
-                self.NODE_LIST.discard(node)
-            pub.sendMessage("update_screens", update=True)
-        if msg.PREFIX == 'MSG':
-            logger.debug('RCVSHNDLER: %s;%s' % (msg.PREFIX, msg.PAYLOAD))
-            pub.sendMessage("message_received", message=msg.PAYLOAD)
-        if msg.PREFIX == 'PING':
-            self.ping_handler(msg.PAYLOAD)
+        handlers = {
+            'JOIN': self._on_join,
+            'LEAVE': self._on_leave,
+            'MSG': SWNP._on_msg,
+            'PING': self._on_ping
+        }
+        LOGGER.debug('HANDLE: %s', str(msg))
+        if msg.prefix in handlers:
+            handlers[msg.prefix](msg.payload)
+        else:
+            self._on_default(msg.payload)
 
     def ping_handler(self, payload):
         """
@@ -663,20 +707,28 @@ class SWNP:
         payload = payload.split('_')
         if len(payload) < 6:
             return
-        ping = self.find_node(payload[0])
-        new_scr = int(payload[2])
-        if ping:
-            if (ping.screens != new_scr or not ping.name == payload[4] or
-                    not ping.data == payload[6]):
-                ping.screens = new_scr
-                ping.name = payload[4]
-                ping.data = payload[6]
-                pub.sendMessage("update_screens", update=True)
-            ping.refresh()
+        node_id = int(payload[0])
+        new_screens = int(payload[2])
+        new_name = payload[4]
+        new_data = payload[6]
+        target_node = self.find_node(node_id)
+        if target_node:
+            update_node = False
+            if target_node.screens != new_screens:
+                target_node.screens = new_screens
+                update_node = True
+            if target_node.name != new_name:
+                target_node.name = new_name
+                update_node = True
+            if target_node.data == new_data:
+                target_node.data = new_data
+                update_node = True
+            if update_node:
+                pub.sendMessage('update_screens', update=True)
+            target_node.refresh()
         else:
-            self.NODE_LIST.add(Node(payload[0], new_scr, payload[4],
-                                    payload[6]))
-            pub.sendMessage("update_screens", update=True)
+            self.NODE_LIST.add(Node(node_id, new_screens, new_name, new_data))
+            pub.sendMessage('update_screens', update=True)
 
     def find_node(self, node_id):
         """
@@ -688,8 +740,8 @@ class SWNP:
         :rtype: :class:`swnp.Node`
 
         """
-        n = ''
+        result_node = None
         for node in self.NODE_LIST:
-            if node and node.id == node_id:
-                n = node
-        return n
+            if node.id == node_id:
+                result_node = node
+        return result_node

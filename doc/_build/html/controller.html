@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Controller module &mdash; DiWaCS 0.9.2.5 documentation</title>
+    <title>Controller package &mdash; DiWaCS 0.9.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2.5',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.2.5 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
-    <link rel="next" title="Filesystem module" href="filesystem.html" />
+    <link rel="next" title="Dialogs module" href="dialogs.html" />
     <link rel="prev" title="Send file module" href="send_file.html" /> 
   </head>
   <body>
@@ -41,12 +39,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filesystem.html" title="Filesystem module"
+          <a href="dialogs.html" title="Dialogs module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="send_file.html" title="Send file module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -56,9 +54,12 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-controller">
-<span id="controller-module"></span><h1>Controller module<a class="headerlink" href="#module-controller" title="Permalink to this headline">¶</a></h1>
-<p>Created on 28.5.2012</p>
+  <div class="section" id="controller-package">
+<h1>Controller package<a class="headerlink" href="#controller-package" title="Permalink to this headline">¶</a></h1>
+<p>Used to control the database.</p>
+<div class="section" id="module-controller.activity">
+<span id="controller-activity-module"></span><h2>controller.activity module<a class="headerlink" href="#module-controller.activity" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -68,8 +69,251 @@
 </tbody>
 </table>
 <dl class="function">
-<dt id="controller.AddComputerToSession">
-<tt class="descclassname">controller.</tt><tt class="descname">AddComputerToSession</tt><big>(</big><em>session</em>, <em>name</em>, <em>ip</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#controller.AddComputerToSession" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.activity.add_activity">
+<tt class="descclassname">controller.activity.</tt><tt class="descname">add_activity</tt><big>(</big><em>project_id</em>, <em>pgm_group</em>, <em>session_id=None</em>, <em>activity_id=None</em><big>)</big><a class="headerlink" href="#controller.activity.add_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add activity to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>project_id</strong> (<em>Integer</em>) &#8211; ID of the project Activity is associated with.</li>
+<li><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The PGM Group number.</li>
+<li><strong>session_id</strong> (<em>Integer</em>) &#8211; ID of the session Activity is associated with.</li>
+<li><strong>activity_id</strong> (<em>Integer</em>) &#8211; ID of the activity.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Activity ID of the added activity.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Integer</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.activity.get_active_activity">
+<tt class="descclassname">controller.activity.</tt><tt class="descname">get_active_activity</tt><big>(</big><em>pgm_group</em><big>)</big><a class="headerlink" href="#controller.activity.get_active_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the latest active activity id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The PGM Group number.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Latest active activity ID.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.activity.logger">
+<tt class="descclassname">controller.activity.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.activity.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return controller logger.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.activity.unset_activity">
+<tt class="descclassname">controller.activity.</tt><tt class="descname">unset_activity</tt><big>(</big><em>pgm_group</em><big>)</big><a class="headerlink" href="#controller.activity.unset_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsets activity for PGM Group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The PGM Group number.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controller.common">
+<span id="controller-common-module"></span><h2>controller.common module<a class="headerlink" href="#module-controller.common" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="controller.common.connect_to_database">
+<tt class="descclassname">controller.common.</tt><tt class="descname">connect_to_database</tt><big>(</big><em>expire=False</em><big>)</big><a class="headerlink" href="#controller.common.connect_to_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the database and return a Session object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expire</strong> (<em>Boolean</em>) &#8211; Parameter passed to session maker as expire_on_commit.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Session.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.session.Session</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.create_all">
+<tt class="descclassname">controller.common.</tt><tt class="descname">create_all</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.common.create_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tables to the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.delete_record">
+<tt class="descclassname">controller.common.</tt><tt class="descname">delete_record</tt><big>(</big><em>record_model</em>, <em>id_number</em><big>)</big><a class="headerlink" href="#controller.common.delete_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a record from database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>record_model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>) &#8211; The model for which to delete a record.</li>
+<li><strong>id_number</strong> (<em>Integer</em>) &#8211; Recond id.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.get_action_id_by_name">
+<tt class="descclassname">controller.common.</tt><tt class="descname">get_action_id_by_name</tt><big>(</big><em>action_name</em><big>)</big><a class="headerlink" href="#controller.common.get_action_id_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the static ID of action name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.get_or_create">
+<tt class="descclassname">controller.common.</tt><tt class="descname">get_or_create</tt><big>(</big><em>database</em>, <em>model</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#controller.common.get_or_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches or creates a instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>database</strong> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.session.Session</span></tt>) &#8211; a related database.</li>
+<li><strong>model</strong> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base</span></tt>) &#8211; The model of which an instance is wanted.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An object of the desired model.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.set_node_name">
+<tt class="descclassname">controller.common.</tt><tt class="descname">set_node_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#controller.common.set_node_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the stored node name for own swnp node as global.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Warning :</th><td class="field-body">This should be removed in the future as globals are bad.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.set_node_screens">
+<tt class="descclassname">controller.common.</tt><tt class="descname">set_node_screens</tt><big>(</big><em>screens</em><big>)</big><a class="headerlink" href="#controller.common.set_node_screens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the stored node screens settings for own swnp node as global.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Warning :</th><td class="field-body">This should be removed in the future as globals are bad.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.test_connection">
+<tt class="descclassname">controller.common.</tt><tt class="descname">test_connection</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.common.test_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the connection to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Does the software have access to the database at this time.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.common.update_database">
+<tt class="descclassname">controller.common.</tt><tt class="descname">update_database</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.common.update_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the database connection engine.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This only works when DB_STRING is completely defined by
+the log reader.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controller.computer">
+<span id="controller-computer-module"></span><h2>controller.computer module<a class="headerlink" href="#module-controller.computer" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="controller.computer.add_computer">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">add_computer</tt><big>(</big><em>name</em>, <em>pc_ip</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#controller.computer.add_computer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new computer to the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of the computer.</li>
+<li><strong>pc_ip</strong> (<em>String</em>) &#8211; IP address of the computer.</li>
+<li><strong>wos_id</strong> (<em>Integer</em>) &#8211; Node ID of the computer (usually the last part of IP).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The added computer</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.computer.add_computer_to_session">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">add_computer_to_session</tt><big>(</big><em>session</em>, <em>name</em>, <em>pc_ip</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#controller.computer.add_computer_to_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a computer to a session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -77,9 +321,9 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; A current session.</li>
-<li><strong>name</strong> (<em>String.</em>) &#8211; A name of the computer.</li>
-<li><strong>ip</strong> (<em>Integer.</em>) &#8211; Computers IP address.</li>
-<li><strong>wos_id</strong> (<em>Integer.</em>) &#8211; Wos id of the computer.</li>
+<li><strong>name</strong> (<em>String</em>) &#8211; A name of the computer.</li>
+<li><strong>pc_ip</strong> (<em>Integer</em>) &#8211; Computers IP address.</li>
+<li><strong>wos_id</strong> (<em>Integer</em>) &#8211; Wos id of the computer.</li>
 </ul>
 </td>
 </tr>
@@ -88,26 +332,227 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.AddEvent">
-<tt class="descclassname">controller.</tt><tt class="descname">AddEvent</tt><big>(</big><em>session_id</em>, <em>title</em>, <em>desc</em><big>)</big><a class="headerlink" href="#controller.AddEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds an event to the database.</p>
+<dt id="controller.computer.get_active_computers">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">get_active_computers</tt><big>(</big><em>timeout</em><big>)</big><a class="headerlink" href="#controller.computer.get_active_computers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the active computers from database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; The current session.</li>
-<li><strong>desc</strong> (<em>String.</em>) &#8211; Description of the event.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> (<em>Integer</em>) &#8211; The number of seconds an &#8220;active&#8221; computer may have been idle while
+still being considered active.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of active computers.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List of <a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.AddFileToProject">
-<tt class="descclassname">controller.</tt><tt class="descname">AddFileToProject</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.AddFileToProject" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.computer.get_active_responsive_nodes">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">get_active_responsive_nodes</tt><big>(</big><em>pgm_group</em><big>)</big><a class="headerlink" href="#controller.computer.get_active_responsive_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the wos_id fields of all active responsive nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The responsive group we want.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of node IDs that are both active and responsive.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A list of Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.computer.last_active_computer">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">last_active_computer</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.computer.last_active_computer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the current node last active computer.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This uses 10 seconds as timeout for definition &#8220;not active&#8221;.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.computer.logger">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.computer.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return controller logger.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.computer.refresh_computer">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">refresh_computer</tt><big>(</big><em>computer</em><big>)</big><a class="headerlink" href="#controller.computer.refresh_computer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the computer in database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>computer</strong> (<a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a>) &#8211; The computer to refresh.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The Refreshed computer.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.computer.refresh_computer_by_wos_id">
+<tt class="descclassname">controller.computer.</tt><tt class="descname">refresh_computer_by_wos_id</tt><big>(</big><em>wos_id</em>, <em>new_name=None</em>, <em>new_screens=None</em>, <em>new_responsive=None</em><big>)</big><a class="headerlink" href="#controller.computer.refresh_computer_by_wos_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh the computer by node id and give it optionally new configurations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wos_id</strong> (<em>Integer</em>) &#8211; The ID of the node to refresh.</li>
+<li><strong>new_name</strong> (<em>String</em>) &#8211; Optional new name for the node.</li>
+<li><strong>new_screens</strong> (<em>Integer</em>) &#8211; Optional new screens configuration for the node.</li>
+<li><strong>new_responsive</strong> (<em>Integer</em>) &#8211; Optional new responsive setting for the node.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Success</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controller.handlers">
+<span id="controller-handlers-module"></span><h2>controller.handlers module<a class="headerlink" href="#module-controller.handlers" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="controller.handlers.PROJECT_FILE_EVENT_HANDLER">
+<em class="property">class </em><tt class="descclassname">controller.handlers.</tt><tt class="descname">PROJECT_FILE_EVENT_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.handlers.PROJECT_FILE_EVENT_HANDLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for FileSystem events on project folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_created">
+<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_created event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_deleted">
+<tt class="descname">on_deleted</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_deleted" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_deleted event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_modified">
+<tt class="descname">on_modified</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_modified event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="controller.handlers.SCAN_HANDLER">
+<em class="property">class </em><tt class="descclassname">controller.handlers.</tt><tt class="descname">SCAN_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.handlers.SCAN_HANDLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler for FileSystem events on SCANNING folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="controller.handlers.SCAN_HANDLER.on_created">
+<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.handlers.SCAN_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
+<dd><p>On_created event handler. Logs to database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.handlers.logger">
+<tt class="descclassname">controller.handlers.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.handlers.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return controller logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controller.project">
+<span id="controller-project-module"></span><h2>controller.project module<a class="headerlink" href="#module-controller.project" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="controller.project.add_file_to_project">
+<tt class="descclassname">controller.project.</tt><tt class="descname">add_file_to_project</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.add_file_to_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a file to project. Copies it to the folder and adds a record to
 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -131,8 +576,8 @@ database.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.AddProject">
-<tt class="descclassname">controller.</tt><tt class="descname">AddProject</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#controller.AddProject" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.project.add_project">
+<tt class="descclassname">controller.project.</tt><tt class="descname">add_project</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#controller.project.add_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a project to database and returns a  project instance</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,30 +592,24 @@ database.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.ConnectToDatabase">
-<tt class="descclassname">controller.</tt><tt class="descname">ConnectToDatabase</tt><big>(</big><em>expire=False</em><big>)</big><a class="headerlink" href="#controller.ConnectToDatabase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect to the database and return a Session object</p>
+<dt id="controller.project.check_password">
+<tt class="descclassname">controller.project.</tt><tt class="descname">check_password</tt><big>(</big><em>project_id</em>, <em>password</em><big>)</big><a class="headerlink" href="#controller.project.check_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.CreateAll">
-<tt class="descclassname">controller.</tt><tt class="descname">CreateAll</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.CreateAll" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create tables to the database</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.CreateFileaction">
-<tt class="descclassname">controller.</tt><tt class="descname">CreateFileaction</tt><big>(</big><em>path</em>, <em>action</em>, <em>session_id</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.CreateFileaction" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.project.create_file_action">
+<tt class="descclassname">controller.project.</tt><tt class="descname">create_file_action</tt><big>(</big><em>path</em>, <em>action_id</em>, <em>session_id</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.create_file_action" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logs a file action to the database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path</strong> (<em>String.</em>) &#8211; Filepath.</li>
-<li><strong>action</strong> (<em>Integer.</em>) &#8211; File action id.</li>
-<li><strong>session_id</strong> (<em>Integer.</em>) &#8211; Current session id.</li>
-<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
+<li><strong>path</strong> (<em>String</em>) &#8211; Filepath.</li>
+<li><strong>action_id</strong> (<em>Integer</em>) &#8211; File action id.</li>
+<li><strong>session_id</strong> (<em>Integer</em>) &#8211; Current session id.</li>
+<li><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</li>
 </ul>
 </td>
 </tr>
@@ -179,33 +618,15 @@ database.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.DeleteRecord">
-<tt class="descclassname">controller.</tt><tt class="descname">DeleteRecord</tt><big>(</big><em>Model</em>, <em>idNum</em><big>)</big><a class="headerlink" href="#controller.DeleteRecord" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete a record from database</p>
+<dt id="controller.project.edit_project">
+<tt class="descclassname">controller.project.</tt><tt class="descname">edit_project</tt><big>(</big><em>id_number</em>, <em>row</em><big>)</big><a class="headerlink" href="#controller.project.edit_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the project info.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>Model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>.) &#8211; The model for which to delete a record.</li>
-<li><strong>idNum</strong> (<em>Integer.</em>) &#8211; Recond id.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.EditProject">
-<tt class="descclassname">controller.</tt><tt class="descname">EditProject</tt><big>(</big><em>idNum</em>, <em>row</em><big>)</big><a class="headerlink" href="#controller.EditProject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update a project info</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>idNum</strong> (<em>Integer.</em>) &#8211; Database id number of the project.</li>
+<li><strong>id_number</strong> (<em>Integer</em>) &#8211; Database id number of the project.</li>
 <li><strong>row</strong> (<em>A dictionary</em>) &#8211; The new project information.</li>
 </ul>
 </td>
@@ -215,9 +636,207 @@ database.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.EndSession">
-<tt class="descclassname">controller.</tt><tt class="descname">EndSession</tt><big>(</big><em>session_id</em><big>)</big><a class="headerlink" href="#controller.EndSession" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ends a session, sets its endtime to database. Ends file scanner.</p>
+<dt id="controller.project.get_active_project">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_active_project</tt><big>(</big><em>pgm_group</em><big>)</big><a class="headerlink" href="#controller.project.get_active_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the active project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The PGM Group number.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Active project ID.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_file_path">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_file_path</tt><big>(</big><em>project_id</em>, <em>filename</em><big>)</big><a class="headerlink" href="#controller.project.get_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the filepath for filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Filepath.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_project">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_project</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.get_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches projects by a company.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer</em>) &#8211; A company id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_project_id_by_activity">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_project_id_by_activity</tt><big>(</big><em>activity_id</em><big>)</big><a class="headerlink" href="#controller.project.get_project_id_by_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_project_password">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_project_password</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.get_project_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the project password.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; ID of the project.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_project_path">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_project_path</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.get_project_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the project path from database and return it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id for database.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_projects_by_company">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_projects_by_company</tt><big>(</big><em>company_id</em><big>)</big><a class="headerlink" href="#controller.project.get_projects_by_company" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches projects by a company.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer</em>) &#8211; A company id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.get_recent_files">
+<tt class="descclassname">controller.project.</tt><tt class="descname">get_recent_files</tt><big>(</big><em>project_id</em>, <em>max_files_count=None</em><big>)</big><a class="headerlink" href="#controller.project.get_recent_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches files accessed recently in the project sessions from the database.</p>
+<div class="versionadded">
+<p><span>New in version 0.9.3.0: </span>Added a limit parameter, limits the number of returned results.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Duplicate check has been added at some point in time.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; The project id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of filepaths that have recently been used in this project.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List of String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.init_sync_project_directory">
+<tt class="descclassname">controller.project.</tt><tt class="descname">init_sync_project_directory</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.init_sync_project_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial sync of project dir and database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.is_project_file">
+<tt class="descclassname">controller.project.</tt><tt class="descname">is_project_file</tt><big>(</big><em>filename</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.is_project_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks, if a file belongs to a project. Checks both project folder
+and database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<em>String</em>) &#8211; a filepath.</li>
+<li><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.project.logger">
+<tt class="descclassname">controller.project.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.project.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return controller logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controller.session">
+<span id="controller-session-module"></span><h2>controller.session module<a class="headerlink" href="#module-controller.session" title="Permalink to this headline">¶</a></h2>
+<p>Created on 28.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="controller.session.add_event">
+<tt class="descclassname">controller.session.</tt><tt class="descname">add_event</tt><big>(</big><em>session_id</em>, <em>title</em>, <em>description</em><big>)</big><a class="headerlink" href="#controller.session.add_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an event to the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; The current session.</li>
+<li><strong>description</strong> (<em>String</em>) &#8211; Description of the event.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controller.session.end_session">
+<tt class="descclassname">controller.session.</tt><tt class="descname">end_session</tt><big>(</big><em>session_id</em><big>)</big><a class="headerlink" href="#controller.session.end_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ends a session, sets its endtime to database.
+Ends file scanner.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -229,244 +848,77 @@ database.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.GetOrCreate">
-<tt class="descclassname">controller.</tt><tt class="descname">GetOrCreate</tt><big>(</big><em>session</em>, <em>model</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#controller.GetOrCreate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches or creates a instance.</p>
+<dt id="controller.session.get_active_session">
+<tt class="descclassname">controller.session.</tt><tt class="descname">get_active_session</tt><big>(</big><em>pgm_group</em><big>)</big><a class="headerlink" href="#controller.session.get_active_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the active session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; a related session.</li>
-<li><strong>model</strong> (<tt class="xref py py-func docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base()</span></tt>) &#8211; The model of which an instance is wanted.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The PGM Group number.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The active session ID.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.GetProject">
-<tt class="descclassname">controller.</tt><tt class="descname">GetProject</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProject" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches projects by a company.</p>
+<dt id="controller.session.get_latest_event">
+<tt class="descclassname">controller.session.</tt><tt class="descname">get_latest_event</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.session.get_latest_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the latest event id.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id from database.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The ID of latest event.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.GetProjectPassword">
-<tt class="descclassname">controller.</tt><tt class="descname">GetProjectPassword</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectPassword" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the project password.</p>
+<dt id="controller.session.get_session_id_by_activity">
+<tt class="descclassname">controller.session.</tt><tt class="descname">get_session_id_by_activity</tt><big>(</big><em>activity_id</em><big>)</big><a class="headerlink" href="#controller.session.get_session_id_by_activity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.GetProjectPath">
-<tt class="descclassname">controller.</tt><tt class="descname">GetProjectPath</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectPath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches the project path from database and return it.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id for database.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.GetProjectsByCompany">
-<tt class="descclassname">controller.</tt><tt class="descname">GetProjectsByCompany</tt><big>(</big><em>company_id</em><big>)</big><a class="headerlink" href="#controller.GetProjectsByCompany" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches projects by a company.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer.</em>) &#8211; A company id from database.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.GetRecentFiles">
-<tt class="descclassname">controller.</tt><tt class="descname">GetRecentFiles</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetRecentFiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches files accessed recently in the project sessions from the
-database.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Add a limit parameter, currently fetches all files.</p>
-</div>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">Duplicate check.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; The project id</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a list of files</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.GetSessionsByProject">
-<tt class="descclassname">controller.</tt><tt class="descname">GetSessionsByProject</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.GetSessionsByProject" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.session.get_sessions_by_project">
+<tt class="descclassname">controller.session.</tt><tt class="descname">get_sessions_by_project</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.session.get_sessions_by_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches sessions for a project.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.InitSyncProjectDir">
-<tt class="descclassname">controller.</tt><tt class="descname">InitSyncProjectDir</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.InitSyncProjectDir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initial sync of project dir and database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
-</tr>
-</tbody>
-</table>
+<dt id="controller.session.logger">
+<tt class="descclassname">controller.session.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#controller.session.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return controller logger.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="controller.IsProjectFile">
-<tt class="descclassname">controller.</tt><tt class="descname">IsProjectFile</tt><big>(</big><em>filename</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.IsProjectFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks, if a file belongs to a project. Checks both project folder
-and database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>String.</em>) &#8211; a filepath.</li>
-<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="class">
-<dt id="controller.PROJECT_FILE_EVENT_HANDLER">
-<em class="property">class </em><tt class="descclassname">controller.</tt><tt class="descname">PROJECT_FILE_EVENT_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for FileSystem events on project folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_created">
-<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
-<dd><p>On_created event handler. Logs to database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_deleted">
-<tt class="descname">on_deleted</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_deleted" title="Permalink to this definition">¶</a></dt>
-<dd><p>On_deleted event handler. Logs to database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="controller.PROJECT_FILE_EVENT_HANDLER.on_modified">
-<tt class="descname">on_modified</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.PROJECT_FILE_EVENT_HANDLER.on_modified" title="Permalink to this definition">¶</a></dt>
-<dd><p>On_modified event handler. Logs to database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="controller.SCAN_HANDLER">
-<em class="property">class </em><tt class="descclassname">controller.</tt><tt class="descname">SCAN_HANDLER</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.SCAN_HANDLER" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for FileSystem events on SCANNING folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="controller.SCAN_HANDLER.on_created">
-<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#controller.SCAN_HANDLER.on_created" title="Permalink to this definition">¶</a></dt>
-<dd><p>On_created event handler. Logs to database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (an instance of <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEvent</span></tt>) &#8211; The event.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.StartNewSession">
-<tt class="descclassname">controller.</tt><tt class="descname">StartNewSession</tt><big>(</big><em>project_id</em>, <em>session_id=None</em>, <em>old_session_id=None</em><big>)</big><a class="headerlink" href="#controller.StartNewSession" title="Permalink to this definition">¶</a></dt>
+<dt id="controller.session.start_new_session">
+<tt class="descclassname">controller.session.</tt><tt class="descname">start_new_session</tt><big>(</big><em>project_id</em>, <em>session_id=None</em>, <em>old_session_id=None</em><big>)</big><a class="headerlink" href="#controller.session.start_new_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a session to the database and return a session object.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>project_id</strong> (<em>Integer.</em>) &#8211; Project id from database.</li>
-<li><strong>session_id</strong> (<em>Integer.</em>) &#8211; an existing session id from database.</li>
-<li><strong>old_session_id</strong> (<em>Integer.</em>) &#8211; A session id of a session which will be continued.</li>
+<li><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</li>
+<li><strong>session_id</strong> (<em>Integer</em>) &#8211; an existing session id from database.</li>
+<li><strong>old_session_id</strong> (<em>Integer</em>) &#8211; A session id of a session which will be continued.</li>
 </ul>
 </td>
 </tr>
@@ -474,6 +926,7 @@ and database.</p>
 </table>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -487,13 +940,28 @@ and database.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Controller module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Controller package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.activity">controller.activity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.common">controller.common module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.computer">controller.computer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.handlers">controller.handlers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.project">controller.project module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-controller.session">controller.session module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wos.html">WOS module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
@@ -516,9 +984,9 @@ and database.</p>
 		
 		<h4>Next topic</h4>
 		<p class="topless">
-		<a href="filesystem.html" 
+		<a href="dialogs.html" 
 		   title="next chapter">
-		Filesystem module</a></p>
+		Dialogs module</a></p>
 
 
 <div id="searchbox" style="display: none">
@@ -548,18 +1016,18 @@ and database.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="filesystem.html" title="Filesystem module"
+          <a href="dialogs.html" title="Dialogs module"
              >next</a> |</li>
         <li class="right" >
           <a href="send_file.html" title="Send file module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Nick Eriksson.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>

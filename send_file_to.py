@@ -36,12 +36,13 @@ def main():
             filepath = sys.argv[2]
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
+            socket.setsockopt(zmq.LINGER, 5000)
             socket.connect("tcp://127.0.0.1:5555")
             command = 'send_to;' + str(node_id) + ';' + str(filepath)
             socket.send(command)
             socket.close()
             return 0
-        except:
+        except zmq.ZMQError:
             pass
     return 1
 

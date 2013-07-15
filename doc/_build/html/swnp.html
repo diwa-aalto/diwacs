@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SWNP module &mdash; DiWaCS 0.9.2.5 documentation</title>
+    <title>SWNP module &mdash; DiWaCS 0.9.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2.5',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.2.5 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
-    <link rel="next" title="Utils module" href="utils.html" />
-    <link rel="prev" title="Models module" href="models.html" /> 
+    <link rel="next" title="Testing module" href="testing.html" />
+    <link rel="prev" title="Models state" href="state.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,12 +39,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="Utils module"
+          <a href="testing.html" title="Testing module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="models.html" title="Models module"
+          <a href="state.html" title="Models state"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -69,18 +67,18 @@
 </table>
 <dl class="class">
 <dt id="swnp.Message">
-<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">Message</tt><big>(</big><em>TAG</em>, <em>PREFIX</em>, <em>PAYLOAD</em><big>)</big><a class="headerlink" href="#swnp.Message" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">Message</tt><big>(</big><em>tag</em>, <em>prefix</em>, <em>payload</em><big>)</big><a class="headerlink" href="#swnp.Message" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a Message.</p>
-<p>Messages are divided into three parts: TAG, PREFIX, PAYLOAD.
+<p>Messages are divided into three parts: tag, prefix, payload.
 Messages are encoded to json for transmission.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>TAG</strong> (<em>String</em>) &#8211; TAG of the message.</li>
-<li><strong>PREFIX</strong> (<em>String</em>) &#8211; PREFIX of the message.</li>
-<li><strong>PAYLOAD</strong> (<em>String</em>) &#8211; PAYLOAD of the message.</li>
+<li><strong>tag</strong> (<em>String</em>) &#8211; tag of the message.</li>
+<li><strong>prefix</strong> (<em>String</em>) &#8211; prefix of the message.</li>
+<li><strong>payload</strong> (<em>String</em>) &#8211; payload of the message.</li>
 </ul>
 </td>
 </tr>
@@ -94,7 +92,7 @@ Messages are encoded to json for transmission.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>json_dict</strong> (<em>json.</em>) &#8211; The json.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>json_dict</strong> (<em>json</em>) &#8211; The json.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Initializes a message from JSON object.</td>
 </tr>
@@ -126,14 +124,14 @@ Messages are encoded to json for transmission.</p>
 
 <dl class="class">
 <dt id="swnp.Node">
-<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">Node</tt><big>(</big><em>id</em>, <em>screens</em>, <em>name=None</em>, <em>data=None</em><big>)</big><a class="headerlink" href="#swnp.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">Node</tt><big>(</big><em>node_id</em>, <em>screens</em>, <em>name=None</em>, <em>data=None</em><big>)</big><a class="headerlink" href="#swnp.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a node in the network.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>id</strong> (<em>Integer</em>) &#8211; Node id.</li>
+<li><strong>node_id</strong> (<em>Integer</em>) &#8211; Node id.</li>
 <li><strong>screens</strong> (<em>Integer</em>) &#8211; Amount of visible screens.</li>
 <li><strong>name</strong> (<em>String</em>) &#8211; The name of the node.</li>
 </ul>
@@ -141,6 +139,12 @@ Messages are encoded to json for transmission.</p>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="swnp.Node.get_age">
+<tt class="descname">get_age</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.Node.get_age" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the elapsed time since last refresh.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="swnp.Node.refresh">
 <tt class="descname">refresh</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.Node.refresh" title="Permalink to this definition">¶</a></dt>
@@ -151,7 +155,7 @@ Messages are encoded to json for transmission.</p>
 
 <dl class="class">
 <dt id="swnp.SWNP">
-<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>id=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>node_id=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main class of swnp.</p>
 <p>This class has the required ZeroMQ bindings and is responsible for
 communicating with other instances.</p>
@@ -167,40 +171,14 @@ communicating with other instances.</p>
 <li><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The Multicast Group this node wants to be a part of.</li>
 <li><strong>screens</strong> (<em>Integer</em>) &#8211; The number of visible screens. Defaults to 0.</li>
 <li><strong>name</strong> (<em>String</em>) &#8211; The name of the instance.</li>
-<li><strong>id</strong> (<em>Integer</em>) &#8211; ID of the instance.</li>
+<li><strong>node_id</strong> (<em>Integer</em>) &#8211; ID of the current instance.</li>
 <li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.Context</span></tt>) &#8211; ZeroMQ context to use.</li>
-<li><strong>error_handler</strong> (<a class="reference internal" href="wos.html#wos.CONN_ERR_TH" title="wos.CONN_ERR_TH"><tt class="xref py py-class docutils literal"><span class="pre">wos.CONN_ERR_TH</span></tt></a>) &#8211; Error handler for the init constructor.</li>
+<li><strong>error_handler</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wos.CONN_ERR_TH</span></tt>) &#8211; Error handler for the init constructor.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="swnp.SWNP.StartSubRoutine">
-<tt class="descname">StartSubRoutine</tt><big>(</big><em>target</em>, <em>routine</em>, <em>name</em>, <em>args</em><big>)</big><a class="headerlink" href="#swnp.SWNP.StartSubRoutine" title="Permalink to this definition">¶</a></dt>
-<dd><p>A wrapper for starting up subroutine threads.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>target</strong> (<tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt>) &#8211; Variable that contains the current thread for routine.</li>
-<li><strong>routine</strong> &#8211; The routine to run.</li>
-<li><strong>name</strong> (<em>String</em>) &#8211; Name of the routine.</li>
-<li><strong>args</strong> (<em>List</em>) &#8211; Arguments for the routine.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The thread of subroutine.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="swnp.SWNP.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.SWNP.close" title="Permalink to this definition">¶</a></dt>
@@ -237,7 +215,9 @@ communicating with other instances.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">json</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON formated string.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -311,6 +291,34 @@ communicating with other instances.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="swnp.SWNP.set_name">
+<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#swnp.SWNP.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the name for the instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; New name of the instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="swnp.SWNP.set_responsive">
+<tt class="descname">set_responsive</tt><big>(</big><em>responsive</em><big>)</big><a class="headerlink" href="#swnp.SWNP.set_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the responsive flag for the instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>responsive</strong> (<em>Integer</em>) &#8211; New number of screens.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="swnp.SWNP.set_screens">
 <tt class="descname">set_screens</tt><big>(</big><em>screens</em><big>)</big><a class="headerlink" href="#swnp.SWNP.set_screens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the number of screens for the instance.</p>
@@ -330,18 +338,26 @@ communicating with other instances.</p>
 <dd><p>Shuts down all connections, no exit.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="swnp.SWNP.sub_routine">
-<tt class="descname">sub_routine</tt><big>(</big><em>sub_urls</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subscriber routine for the node ID.</p>
+<dl class="staticmethod">
+<dt id="swnp.SWNP.start_sub_routine">
+<em class="property">static </em><tt class="descname">start_sub_routine</tt><big>(</big><em>target</em>, <em>routine</em>, <em>name</em>, <em>args</em><big>)</big><a class="headerlink" href="#swnp.SWNP.start_sub_routine" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for starting up subroutine threads.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sub_urls</strong> (<em>List of Strings</em>) &#8211; Subscribing URLs.</li>
-<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target</strong> (<tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt>) &#8211; Variable that contains the current thread for routine.</li>
+<li><strong>routine</strong> &#8211; The routine to run.</li>
+<li><strong>name</strong> (<em>String</em>) &#8211; Name of the routine.</li>
+<li><strong>args</strong> (<em>List</em>) &#8211; Arguments for the routine.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The thread of subroutine.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt></p>
 </td>
 </tr>
 </tbody>
@@ -349,18 +365,28 @@ communicating with other instances.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="swnp.SWNP.sub_routine_sys">
-<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_urls</em>, <em>unused_context</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
+<dt id="swnp.SWNP.sub_routine">
+<tt class="descname">sub_routine</tt><big>(</big><em>sub_urls</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscriber routine for the node ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sub_urls</strong> (<em>List of Strings</em>) &#8211; Subscribing URLs.</li>
-<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.core.context.Context</span></tt>) &#8211; ZeroMQ context for message sending.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sub_urls</strong> (<em>List of Strings</em>) &#8211; Subscribing URLs.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="swnp.SWNP.sub_routine_sys">
+<tt class="descname">sub_routine_sys</tt><big>(</big><em>sub_urls</em><big>)</big><a class="headerlink" href="#swnp.SWNP.sub_routine_sys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscriber routine for the node ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sub_urls</strong> (<em>List of Strings</em>) &#8211; Subscribing URLs.</td>
 </tr>
 </tbody>
 </table>
@@ -389,16 +415,14 @@ communicating with other instances.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="swnp.testStorageConnection">
-<tt class="descclassname">swnp.</tt><tt class="descname">testStorageConnection</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.testStorageConnection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Try to access StorageProjects</p>
+<dt id="swnp.set_logger_level">
+<tt class="descclassname">swnp.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#swnp.set_logger_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the logger level for swnp logger.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Does the path exist.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; Level of logging.</td>
 </tr>
 </tbody>
 </table>
@@ -417,13 +441,20 @@ communicating with other instances.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wos.html">WOS module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
@@ -438,17 +469,17 @@ communicating with other instances.</p>
 				
 				<h4>Previous topic</h4>
 				<p class="topless">
-				<a href="models.html" 
+				<a href="state.html" 
 				   title="previous chapter">
-				Models module</a></p>
+				Models state</a></p>
 	
 	
 		
 		<h4>Next topic</h4>
 		<p class="topless">
-		<a href="utils.html" 
+		<a href="testing.html" 
 		   title="next chapter">
-		Utils module</a></p>
+		Testing module</a></p>
 
 
 <div id="searchbox" style="display: none">
@@ -478,18 +509,18 @@ communicating with other instances.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="utils.html" title="Utils module"
+          <a href="testing.html" title="Testing module"
              >next</a> |</li>
         <li class="right" >
-          <a href="models.html" title="Models module"
+          <a href="state.html" title="Models state"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Nick Eriksson.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>

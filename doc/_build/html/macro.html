@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Macro module &mdash; DiWaCS 0.9.2.5 documentation</title>
+    <title>Macro module &mdash; DiWaCS 0.9.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2.5',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.2.5 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Models module" href="models.html" />
-    <link rel="prev" title="Filesystem module" href="filesystem.html" /> 
+    <link rel="prev" title="Graphical Design module" href="graphicaldesign.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,9 +42,9 @@
           <a href="models.html" title="Models module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="filesystem.html" title="Filesystem module"
+          <a href="graphicaldesign.html" title="Graphical Design module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -60,14 +58,66 @@
 <span id="macro-module"></span><h1>Macro module<a class="headerlink" href="#module-macro" title="Permalink to this headline">¶</a></h1>
 <p>macro.py defines a few user input functions.</p>
 <dl class="function">
-<dt id="macro.Click">
-<tt class="descclassname">macro.</tt><tt class="descname">Click</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Click" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse click: LeftButton down, LeftButton up.</p>
+<dt id="macro.GetKeydown">
+<tt class="descclassname">macro.</tt><tt class="descname">GetKeydown</tt><big>(</big><em>code</em><big>)</big><a class="headerlink" href="#macro.GetKeydown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.HardwareInput">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">HardwareInput</tt><a class="headerlink" href="#macro.HardwareInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.Input">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">Input</tt><a class="headerlink" href="#macro.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.Input_I">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">Input_I</tt><a class="headerlink" href="#macro.Input_I" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.KeyBdInput">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">KeyBdInput</tt><a class="headerlink" href="#macro.KeyBdInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.MacroPoint">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">MacroPoint</tt><a class="headerlink" href="#macro.MacroPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the x and y components of coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attribute x:</th><td class="field-body">c_ulong</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Attribute y:</th><td class="field-body">c_ulong</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="macro.MouseInput">
+<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">MouseInput</tt><a class="headerlink" href="#macro.MouseInput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.GetPos">
-<tt class="descclassname">macro.</tt><tt class="descname">GetPos</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.GetPos" title="Permalink to this definition">¶</a></dt>
+<dt id="macro.click">
+<tt class="descclassname">macro.</tt><tt class="descname">click</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse click_type: LeftButton down, LeftButton up.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="macro.get_mouse_position">
+<tt class="descclassname">macro.</tt><tt class="descname">get_mouse_position</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.get_mouse_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current position of the mouse.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -75,15 +125,15 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The position of the mouse.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#macro.POINT" title="macro.POINT"><tt class="xref py py-class docutils literal"><span class="pre">POINT</span></tt></a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#macro.MacroPoint" title="macro.MacroPoint"><tt class="xref py py-class docutils literal"><span class="pre">MacroPoint</span></tt></a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.GetSendkeys">
-<tt class="descclassname">macro.</tt><tt class="descname">GetSendkeys</tt><big>(</big><em>code</em><big>)</big><a class="headerlink" href="#macro.GetSendkeys" title="Permalink to this definition">¶</a></dt>
+<dt id="macro.get_sendkeys">
+<tt class="descclassname">macro.</tt><tt class="descname">get_sendkeys</tt><big>(</big><em>code</em><big>)</big><a class="headerlink" href="#macro.get_sendkeys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a character for a key code.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -96,14 +146,14 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.Hold">
-<tt class="descclassname">macro.</tt><tt class="descname">Hold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Hold" title="Permalink to this definition">¶</a></dt>
+<dt id="macro.hold">
+<tt class="descclassname">macro.</tt><tt class="descname">hold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.hold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a mouse hold: LeftButton down.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.Key">
-<tt class="descclassname">macro.</tt><tt class="descname">Key</tt><big>(</big><em>event</em>, <em>kcode</em><big>)</big><a class="headerlink" href="#macro.Key" title="Permalink to this definition">¶</a></dt>
+<dt id="macro.key_press">
+<tt class="descclassname">macro.</tt><tt class="descname">key_press</tt><big>(</big><em>event</em>, <em>kcode</em><big>)</big><a class="headerlink" href="#macro.key_press" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to send a single virtual keycode to the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -120,35 +170,35 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.MiddleClick">
-<tt class="descclassname">macro.</tt><tt class="descname">MiddleClick</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleClick" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse middle click: MiddleButton down, MiddleButton up.</p>
+<dt id="macro.middle_click">
+<tt class="descclassname">macro.</tt><tt class="descname">middle_click</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.middle_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click_type: MiddleButton down, MiddleButton up.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.MiddleHold">
-<tt class="descclassname">macro.</tt><tt class="descname">MiddleHold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleHold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse middle click: MiddleButton down.</p>
+<dt id="macro.middle_hold">
+<tt class="descclassname">macro.</tt><tt class="descname">middle_hold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.middle_hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click_type: MiddleButton down.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.MiddleRelease">
-<tt class="descclassname">macro.</tt><tt class="descname">MiddleRelease</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.MiddleRelease" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse middle click: MiddleButton up.</p>
+<dt id="macro.middle_release">
+<tt class="descclassname">macro.</tt><tt class="descname">middle_release</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.middle_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse middle click_type: MiddleButton up.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.Move">
-<tt class="descclassname">macro.</tt><tt class="descname">Move</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.Move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the cursor for x amount in horizontal direction and y amount in
-vertical direction.</p>
+<dt id="macro.move">
+<tt class="descclassname">macro.</tt><tt class="descname">move</tt><big>(</big><em>pos_x</em>, <em>pos_y</em><big>)</big><a class="headerlink" href="#macro.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>move the cursor for pos_x amount in horizontal direction and pos_y amount
+in vertical direction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>Integer</em>) &#8211; Amount to move in horizontal direction.</li>
-<li><strong>y</strong> (<em>Integer</em>) &#8211; Amount to move in vertical direction.</li>
+<li><strong>pos_x</strong> (<em>Integer</em>) &#8211; Amount to move in horizontal direction.</li>
+<li><strong>pos_y</strong> (<em>Integer</em>) &#8211; Amount to move in vertical direction.</li>
 </ul>
 </td>
 </tr>
@@ -157,16 +207,16 @@ vertical direction.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.MoveTo">
-<tt class="descclassname">macro.</tt><tt class="descname">MoveTo</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.MoveTo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the mouse cursor to point (x, y) on screen.</p>
+<dt id="macro.move_to">
+<tt class="descclassname">macro.</tt><tt class="descname">move_to</tt><big>(</big><em>pos_x</em>, <em>pos_y</em><big>)</big><a class="headerlink" href="#macro.move_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>move the mouse cursor to point (pos_x, pos_y) on screen.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>Integer</em>) &#8211; X coordinate of the desired position.</li>
-<li><strong>y</strong> (<em>Integer</em>) &#8211; Y coordinate of the desired position.</li>
+<li><strong>pos_x</strong> (<em>Integer</em>) &#8211; X coordinate of the desired position.</li>
+<li><strong>pos_y</strong> (<em>Integer</em>) &#8211; Y coordinate of the desired position.</li>
 </ul>
 </td>
 </tr>
@@ -174,60 +224,52 @@ vertical direction.</p>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="macro.POINT">
-<em class="property">class </em><tt class="descclassname">macro.</tt><tt class="descname">POINT</tt><a class="headerlink" href="#macro.POINT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores the x and y components of coordinates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attribute x:</th><td class="field-body">c_ulong</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Attribute y:</th><td class="field-body">c_ulong</td>
-</tr>
-</tbody>
-</table>
+<dl class="function">
+<dt id="macro.release">
+<tt class="descclassname">macro.</tt><tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse release_type: LeftButton up.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.Release">
-<tt class="descclassname">macro.</tt><tt class="descname">Release</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.Release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse release: LeftButton up.</p>
+<dt id="macro.release_all_keys">
+<tt class="descclassname">macro.</tt><tt class="descname">release_all_keys</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.release_all_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset every keycode state to UP state.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.RightClick">
-<tt class="descclassname">macro.</tt><tt class="descname">RightClick</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightClick" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse right click: RightButton down, RightButton up.</p>
+<dt id="macro.right_click">
+<tt class="descclassname">macro.</tt><tt class="descname">right_click</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.right_click" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse right click_type: RightButton down, RightButton up.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.RightHold">
-<tt class="descclassname">macro.</tt><tt class="descname">RightHold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightHold" title="Permalink to this definition">¶</a></dt>
+<dt id="macro.right_hold">
+<tt class="descclassname">macro.</tt><tt class="descname">right_hold</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.right_hold" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a mouse right hold: RightButton down.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.RightRelease">
-<tt class="descclassname">macro.</tt><tt class="descname">RightRelease</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.RightRelease" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send a mouse right release: RightButton up.</p>
+<dt id="macro.right_release">
+<tt class="descclassname">macro.</tt><tt class="descname">right_release</tt><big>(</big><big>)</big><a class="headerlink" href="#macro.right_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a mouse right release_type: RightButton up.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.SendInput">
-<tt class="descclassname">macro.</tt><tt class="descname">SendInput</tt><big>(</big><em>intype</em>, <em>data</em>, <em>flags</em>, <em>scan=0</em>, <em>mouse_data=0</em><big>)</big><a class="headerlink" href="#macro.SendInput" title="Permalink to this definition">¶</a></dt>
-<dd><p>SendInput sends virtual user input.</p>
+<dt id="macro.send_input">
+<tt class="descclassname">macro.</tt><tt class="descname">send_input</tt><big>(</big><em>intype</em>, <em>data</em>, <em>flags</em>, <em>scan=0</em>, <em>mouse_data=0</em><big>)</big><a class="headerlink" href="#macro.send_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>send_input sends virtual user input.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>intype</strong> (<em>String</em>) &#8211; Input type, either &#8216;m&#8217; for mouse input or &#8216;k&#8217; for                   keyboard input.</li>
-<li><strong>data</strong> (<em>Integer or (Integer, Integer).</em>) &#8211; Input data, keycode to input or a tuple of (x, y) for mouse.</li>
+<li><strong>intype</strong> (<em>String</em>) &#8211; Input type, either &#8216;mouse_input&#8217; for mouse input or &#8216;key_input&#8217; for
+keyboard input.</li>
+<li><strong>data</strong> (<em>Integer or (Integer, Integer)</em>) &#8211; Input data, keycode to input or a tuple of (x, y) for mouse.</li>
 <li><strong>flags</strong> (<em>Integer</em>) &#8211; Input flags, used to separate keyup and keydown events.</li>
-<li><strong>scan</strong> (<em>Integer</em>) &#8211; Input scancode. More info in:                 <a class="reference external" href="http://en.wikipedia.org/wiki/Scancode">http://en.wikipedia.org/wiki/Scancode</a></li>
-<li><strong>mouse_data</strong> (<em>Integer</em>) &#8211; Represents additional information about mouse events                       for example wheel amount.</li>
+<li><strong>scan</strong> (<em>Integer</em>) &#8211; Input scancode. More info in: <a class="reference external" href="http://en.wikipedia.org/wiki/Scancode">http://en.wikipedia.org/wiki/Scancode</a></li>
+<li><strong>mouse_data</strong> (<em>Integer</em>) &#8211; Represents additional information about mouse events for example wheel
+amount.</li>
 </ul>
 </td>
 </tr>
@@ -236,17 +278,17 @@ vertical direction.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.Slide">
-<tt class="descclassname">macro.</tt><tt class="descname">Slide</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#macro.Slide" title="Permalink to this definition">¶</a></dt>
-<dd><p>Slide the mouse for x amount in horizontal direction and y amount in
-vertical direction.</p>
+<dt id="macro.slide">
+<tt class="descclassname">macro.</tt><tt class="descname">slide</tt><big>(</big><em>difference_x</em>, <em>difference_y</em><big>)</big><a class="headerlink" href="#macro.slide" title="Permalink to this definition">¶</a></dt>
+<dd><p>slide the mouse for difference_x amount in horizontal direction and
+difference_y amount in vertical direction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>Integer</em>) &#8211; The amount to slide in horizontal direction.</li>
-<li><strong>y</strong> (<em>Integer</em>) &#8211; The amount to slide in vertical direction.</li>
+<li><strong>difference_x</strong> (<em>Integer</em>) &#8211; The amount to slide in horizontal direction.</li>
+<li><strong>difference_y</strong> (<em>Integer</em>) &#8211; The amount to slide in vertical direction.</li>
 </ul>
 </td>
 </tr>
@@ -255,17 +297,17 @@ vertical direction.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="macro.SlideTo">
-<tt class="descclassname">macro.</tt><tt class="descname">SlideTo</tt><big>(</big><em>x</em>, <em>y</em>, <em>speed=0</em><big>)</big><a class="headerlink" href="#macro.SlideTo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Slides the mouse to point (x, y)</p>
+<dt id="macro.slide_to">
+<tt class="descclassname">macro.</tt><tt class="descname">slide_to</tt><big>(</big><em>target_x</em>, <em>target_y</em>, <em>speed='normal'</em><big>)</big><a class="headerlink" href="#macro.slide_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slides the mouse to point (target_x, target_y)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>Integer</em>) &#8211; The target X coordinate.</li>
-<li><strong>y</strong> (<em>Integer</em>) &#8211; The target Y coordinate.</li>
-<li><strong>speed</strong> (<em>String</em>) &#8211; The speed of motion &#8216;slow&#8217; or &#8216;fast&#8217;, default 0.</li>
+<li><strong>target_x</strong> (<em>Integer</em>) &#8211; The target X coordinate.</li>
+<li><strong>target_y</strong> (<em>Integer</em>) &#8211; The target Y coordinate.</li>
+<li><strong>speed</strong> (<em>String</em>) &#8211; The speed of motion &#8216;slow&#8217;, &#8216;normal&#8217; or &#8216;fast&#8217;.</li>
 </ul>
 </td>
 </tr>
@@ -286,13 +328,20 @@ vertical direction.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Macro module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wos.html">WOS module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
@@ -307,9 +356,9 @@ vertical direction.</p>
 				
 				<h4>Previous topic</h4>
 				<p class="topless">
-				<a href="filesystem.html" 
+				<a href="graphicaldesign.html" 
 				   title="previous chapter">
-				Filesystem module</a></p>
+				Graphical Design module</a></p>
 	
 	
 		
@@ -350,15 +399,15 @@ vertical direction.</p>
           <a href="models.html" title="Models module"
              >next</a> |</li>
         <li class="right" >
-          <a href="filesystem.html" title="Filesystem module"
+          <a href="graphicaldesign.html" title="Graphical Design module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Nick Eriksson.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>

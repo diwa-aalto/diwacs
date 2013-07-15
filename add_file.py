@@ -37,13 +37,14 @@ def main():
             filepath = sys.argv[1]
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
+            socket.setsockopt(zmq.LINGER, 5000)
             #: Uses interprocess ZeroMQ socket to inform of the operation.
             socket.connect("tcp://127.0.0.1:5555")
             command = 'add_to_project;0;' + str(filepath)
             socket.send(command)
             socket.close()
             return 0
-        except:
+        except zmq.ZMQError:
             pass
     return 1
 

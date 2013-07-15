@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Models state &mdash; DiWaCS 0.9.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="SWNP module" href="swnp.html" />
+    <link rel="prev" title="Setup module" href="setup.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="swnp.html" title="SWNP module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="Setup module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-state">
+<span id="models-state"></span><h1>Models state<a class="headerlink" href="#module-state" title="Permalink to this headline">¶</a></h1>
+<p>Created on 4.7.2013</p>
+<p>&#64;author: neriksso</p>
+<dl class="class">
+<dt id="state.State">
+<em class="property">class </em><tt class="descclassname">state.</tt><tt class="descname">State</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#state.State" title="Permalink to this definition">¶</a></dt>
+<dd><p>classdocs</p>
+<dl class="method">
+<dt id="state.State.end_current_project">
+<tt class="descname">end_current_project</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.end_current_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the current project.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.end_current_session">
+<tt class="descname">end_current_session</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.end_current_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>End the current session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.get_random_responsive">
+<tt class="descname">get_random_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.get_random_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a random node amongst all the responsive nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.handle_file_send">
+<tt class="descname">handle_file_send</tt><big>(</big><em>filenames</em>, <em>progressdialog=None</em><big>)</big><a class="headerlink" href="#state.State.handle_file_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a file link to another node.</p>
+<p>First parses all the files and folder structure, then confirms weather
+the users wishes to add the items to project before beginning the copy
+routine.</p>
+<p>The copy routine first creates all the needed subfolders and then sums
+up all the file sizes to be copied. Then it will update the dialog
+in the beginning/end of every file transaction and whenever there&#8217;s
+been more than 1 second from the last update dialog update. Assuming
+the progressdialog parameter has been given.</p>
+<dl class="docutils">
+<dt>The progress dialog, if supplied, is updated as follows:</dt>
+<dd><ul class="first last simple">
+<li>If there&#8217;s less than DEF_FILES (<strong>40</strong>) files the dialog             will not be shown or updated.</li>
+<li>If the data size sum is less than DEF_SIZE (<strong>2 MB</strong>) the             dialog will not be shown or updated.</li>
+<li>Title will contain the total percentage of data transfer.</li>
+<li>Message will contain the percentage of current file transfer.</li>
+<li>Progress bar is set to percent [0, 100] of the total data             transfer.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filenames</strong> (<em>List of String</em>) &#8211; All the files/folders to be copied.</li>
+<li><strong>progressdialog</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.ProgressDialog</span></tt>) &#8211; The progress dialog to update (optional).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.message_handler">
+<tt class="descname">message_handler</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#state.State.message_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message handler for received messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (an instance of <a class="reference internal" href="swnp.html#swnp.Message" title="swnp.Message"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Message</span></tt></a>) &#8211; Received message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.on_project_selected">
+<tt class="descname">on_project_selected</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.on_project_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.remove_observers">
+<tt class="descname">remove_observers</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.remove_observers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_current_project">
+<tt class="descname">set_current_project</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#state.State.set_current_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start current project loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; The project id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_current_session">
+<tt class="descname">set_current_session</tt><big>(</big><em>session_id</em><big>)</big><a class="headerlink" href="#state.State.set_current_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set current session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session_id</strong> (<em>Integer</em>) &#8211; a session id from database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_observers">
+<tt class="descname">set_observers</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_observers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_project_observer">
+<tt class="descname">set_project_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_project_observer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observer for file changes in project directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_responsive">
+<tt class="descname">set_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_scan_observer">
+<tt class="descname">set_scan_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_scan_observer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Observer for created files in scanned or taken with camera.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.start_audio_recorder">
+<tt class="descname">start_audio_recorder</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_audio_recorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the audio recorder thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.start_current_project">
+<tt class="descname">start_current_project</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start current project loop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.start_current_session">
+<tt class="descname">start_current_session</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start current project loop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.start_new_session">
+<tt class="descname">start_new_session</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_new_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a new session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.stop_responsive">
+<tt class="descname">stop_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.stop_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.swnp_send">
+<tt class="descname">swnp_send</tt><big>(</big><em>node</em>, <em>message</em><big>)</big><a class="headerlink" href="#state.State.swnp_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a message to the node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>node</strong> (<em>String</em>) &#8211; The node for which to send a message.</li>
+<li><strong>message</strong> (<em>String</em>) &#8211; The message.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="state.create_config">
+<tt class="descclassname">state.</tt><tt class="descname">create_config</tt><big>(</big><big>)</big><a class="headerlink" href="#state.create_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a config file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="state.initialization_test">
+<tt class="descclassname">state.</tt><tt class="descname">initialization_test</tt><big>(</big><big>)</big><a class="headerlink" href="#state.initialization_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="state.load_config">
+<tt class="descclassname">state.</tt><tt class="descname">load_config</tt><big>(</big><big>)</big><a class="headerlink" href="#state.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a config file or creates one.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Models state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="setup.html" 
+				   title="previous chapter">
+				Setup module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="swnp.html" 
+		   title="next chapter">
+		SWNP module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="swnp.html" title="SWNP module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="setup.html" title="Setup module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

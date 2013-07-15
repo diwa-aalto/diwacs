@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Models module &mdash; DiWaCS 0.9.2.5 documentation</title>
+    <title>Models module &mdash; DiWaCS 0.9.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2.5',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.2.5 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
-    <link rel="next" title="SWNP module" href="swnp.html" />
+    <link rel="next" title="Setup module" href="setup.html" />
     <link rel="prev" title="Macro module" href="macro.html" /> 
   </head>
   <body>
@@ -41,12 +39,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="swnp.html" title="SWNP module"
+          <a href="setup.html" title="Setup module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="macro.html" title="Macro module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -79,7 +77,7 @@ the action.</p>
 <dl class="docutils">
 <dt>Field:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the action, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the action, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the action (Max 50 characters).</li>
 </ul>
 </dd>
@@ -101,12 +99,12 @@ the action.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of activity, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the session activity belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of activity, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the session activity belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Session relationship.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the project activity belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the project activity belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Project relationship.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">active</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Boolean)</span></tt>)        - Boolean flag indicating that the project is active.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">active</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.BOOLEAN)</span></tt>)        - Boolean flag indicating that the project is active.</li>
 </ul>
 </dd>
 </dl>
@@ -131,7 +129,7 @@ the action.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the company, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the company, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the company (Max 50 characters).</li>
 </ul>
 </dd>
@@ -153,16 +151,16 @@ the action.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of computer, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of computer, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the computer.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">ip</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.INTEGER)</span></tt>)        - Internet Protocol address of the computer (Defined as unsigned).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">ip</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.INTEGER)</span></tt>)        - Internet Protocol address of the computer (Defined as unsigned).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">mac</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>        - Media Access Control address of the computer.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>)        - Time of the last network activity from the computer.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">screens</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.SMALLINT)</span></tt>)        - Number of screens on the computer.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">responsive</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.TINYINT)</span></tt>)        - The responsive value of the computer.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the user currently using the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)</span></tt>)        - Time of the last network activity from the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">screens</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)</span></tt>)        - Number of screens on the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">responsive</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)</span></tt>)        - The responsive value of the computer.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the user currently using the computer.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">user</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The current user.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">wos_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - <strong>WOS</strong> ID.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">wos_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - <strong>WOS</strong> ID.</li>
 </ul>
 </dd>
 </dl>
@@ -176,11 +174,11 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the event, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the event, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Title of the event (Max 40 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">desc</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - More in-depth description of the event (Max 500 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>)        - Time the event took place.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the session this event belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)</span></tt>)        - Time the event took place.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the session this event belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Session this event belongs to.</li>
 </ul>
 </dd>
@@ -194,9 +192,9 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the file, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the file, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">path</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Path of the file on DiWa (max 255 chars).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the project this file belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the project this file belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Project this file belongs to.</li>
 </ul>
 </dd>
@@ -205,22 +203,22 @@ session.</p>
 
 <dl class="class">
 <dt id="models.FileAction">
-<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">FileAction</tt><big>(</big><em>file</em>, <em>action</em>, <em>session=None</em>, <em>computer=None</em>, <em>user=None</em><big>)</big><a class="headerlink" href="#models.FileAction" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class representation of a fileaction.</p>
+<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">FileAction</tt><big>(</big><em>fileobject</em>, <em>action</em>, <em>session=None</em>, <em>computer=None</em>, <em>user=None</em><big>)</big><a class="headerlink" href="#models.FileAction" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class representation of a file action.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the FileAction, used as primary key in the database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">file_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlaclhemy.types.Integer)</span></tt>)        - ID of the file this FileAction affects.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the FileAction, used as primary key in the database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">file_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlaclhemy.types.INTEGER)</span></tt>)        - ID of the file this FileAction affects.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">file</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship)</span></tt>)        - The file this FileAction affects.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">action_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the action affecting the file.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">action_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the action affecting the file.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">action</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship)</span></tt>)        - Action affecting the file.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">action_time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>)        - Time the action took place on.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the user performing the action.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">action_time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)</span></tt>)        - Time the action took place on.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the user performing the action.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">user</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - User peforming the action.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">computer_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the computer user performed the action on.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">computer_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the computer user performed the action on.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">computer</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Computer user performed the action on.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the session user performed the action in.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the session user performed the action in.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Session user performed the action in.</li>
 </ul>
 </dd>
@@ -230,7 +228,7 @@ session.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file</strong> (<a class="reference internal" href="#models.File" title="models.File"><tt class="xref py py-class docutils literal"><span class="pre">models.File</span></tt></a>) &#8211; The file which is subjected to the action.</li>
+<li><strong>fileobject</strong> (<a class="reference internal" href="#models.File" title="models.File"><tt class="xref py py-class docutils literal"><span class="pre">models.File</span></tt></a>) &#8211; The file which is subjected to the action.</li>
 <li><strong>action</strong> (<a class="reference internal" href="#models.Action" title="models.Action"><tt class="xref py py-class docutils literal"><span class="pre">models.Action</span></tt></a>) &#8211; The action which is applied to the file.</li>
 <li><strong>session</strong> (<a class="reference internal" href="#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; The session in which the FileAction took place on.</li>
 <li><strong>computer</strong> (<a class="reference internal" href="#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a>) &#8211; The computer from which the user performed the action.</li>
@@ -249,9 +247,9 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of project, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of project, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the project (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the company that owns the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the company that owns the project.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The company that owns the project.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">dir</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Directory path for the project files (Max 255 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">password</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Password for the project (Max 40 characters).</li>
@@ -280,13 +278,13 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of session, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of session, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of session (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the project the session belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the project the session belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The project the session belongs to.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">starttime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>)        - Time the session began, defaults to <cite>now()</cite>.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">endtime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.dialects.mysql.DATETIME)</span></tt>)        - The time session ended.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the previous session.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">starttime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)</span></tt>)        - Time the session began, defaults to <cite>now()</cite>.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">endtime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)</span></tt>)        - The time session ended.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the previous session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - The previous session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">participants</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Users that belong to this session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">computers</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Computers that belong to this session.</li>
@@ -302,8 +300,8 @@ session.</p>
 </tbody>
 </table>
 <dl class="method">
-<dt id="models.Session.addUser">
-<tt class="descname">addUser</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#models.Session.addUser" title="Permalink to this definition">¶</a></dt>
+<dt id="models.Session.AddUser">
+<tt class="descname">AddUser</tt><big>(</big><em>user</em><big>)</big><a class="headerlink" href="#models.Session.AddUser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add users to a session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -316,8 +314,8 @@ session.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="models.Session.fileRoutine">
-<tt class="descname">fileRoutine</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.fileRoutine" title="Permalink to this definition">¶</a></dt>
+<dt id="models.Session.FileRoutine">
+<tt class="descname">FileRoutine</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.FileRoutine" title="Permalink to this definition">¶</a></dt>
 <dd><p>File checking routine for logging.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,15 +328,15 @@ session.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="models.Session.get_last_checked">
-<tt class="descname">get_last_checked</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.get_last_checked" title="Permalink to this definition">¶</a></dt>
+<dt id="models.Session.GetLastChecked">
+<tt class="descname">GetLastChecked</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.GetLastChecked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch <tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field (None before
-<a class="reference internal" href="#models.Session.start" title="models.Session.start"><tt class="xref py py-meth docutils literal"><span class="pre">models.Session.start()</span></tt></a> is called).</td>
+<tt class="xref py py-meth docutils literal"><span class="pre">models.Session.start()</span></tt> is called).</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">None</span></tt></td>
 </tr>
@@ -347,8 +345,8 @@ session.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="models.Session.start">
-<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.start" title="Permalink to this definition">¶</a></dt>
+<dt id="models.Session.Start">
+<tt class="descname">Start</tt><big>(</big><big>)</big><a class="headerlink" href="#models.Session.Start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a session.
 Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_checked</span></tt> field to current DateTime.</p>
 </dd></dl>
@@ -362,12 +360,12 @@ Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_chec
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the user, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - ID of the user, used as primary key in database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the user (Max 50 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">email</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Email address of the user (Max 100 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Title of the user in the company (Max 50 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">department</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Department of the user in the company (Max 100 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - Company id of the employing company.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)</span></tt>)        - Company id of the employing company.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Company relationship.</li>
 </ul>
 </dd>
@@ -399,13 +397,20 @@ Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_chec
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wos.html">WOS module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
@@ -428,9 +433,9 @@ Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_chec
 		
 		<h4>Next topic</h4>
 		<p class="topless">
-		<a href="swnp.html" 
+		<a href="setup.html" 
 		   title="next chapter">
-		SWNP module</a></p>
+		Setup module</a></p>
 
 
 <div id="searchbox" style="display: none">
@@ -460,18 +465,18 @@ Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_chec
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="swnp.html" title="SWNP module"
+          <a href="setup.html" title="Setup module"
              >next</a> |</li>
         <li class="right" >
           <a href="macro.html" title="Macro module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.2.5 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Nick Eriksson.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
     </div>
   </body>
 </html>

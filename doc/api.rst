@@ -13,19 +13,17 @@ Documentation generated on |date| at |time|.
 	add_file
 	send_file
 	controller
+	dialogs
+	diwacs
+	diwavars
 	filesystem
+	graphicaldesign
 	macro
 	models
+	setup
+	state
 	swnp
+	testing
+	threads
 	utils
-	wos
 
-.. index::
-   module: add_file
-   module: send_file
-   module: controller
-   module: filesystem
-   module: macro
-   module: models
-   module: swnp
-   module: utils

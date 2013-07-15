@@ -1,0 +1,734 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Threads package &mdash; DiWaCS 0.9.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="up" title="Automated Code Documentation" href="api.html" />
+    <link rel="next" title="Utils module" href="utils.html" />
+    <link rel="prev" title="Testing module" href="testing.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utils module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="threads-package">
+<h1>Threads package<a class="headerlink" href="#threads-package" title="Permalink to this headline">¶</a></h1>
+<p>Set of threading functionality.</p>
+<div class="section" id="module-threads.audiorecorder">
+<span id="threads-audiorecorder-module"></span><h2>threads.audiorecorder module<a class="headerlink" href="#module-threads.audiorecorder" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.audiorecorder.AudioRecorder">
+<em class="property">class </em><tt class="descclassname">threads.audiorecorder.</tt><tt class="descname">AudioRecorder</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>A thread for capturing audio continuously.
+It keeps a buffer that can be saved to a file.
+By convention AudioRecorder is usually written in mixed case
+even as we prefer upper case for threading types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt>) &#8211; Parent of the thread.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.audiorecorder.AudioRecorder.find_input_device">
+<tt class="descname">find_input_device</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.find_input_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the microphone device.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.audiorecorder.AudioRecorder.open_mic_stream">
+<tt class="descname">open_mic_stream</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.open_mic_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the stream object for microphone.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.audiorecorder.AudioRecorder.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Continuously record from the microphone to the buffer.</p>
+<p>If the buffer is full, the first frame will be removed and
+the new block appended.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.audiorecorder.AudioRecorder.save">
+<tt class="descname">save</tt><big>(</big><em>ide</em>, <em>path</em><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the buffer to a file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.audiorecorder.AudioRecorder.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop audio recorder.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.audiorecorder.logger">
+<tt class="descclassname">threads.audiorecorder.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.checkupdate">
+<span id="threads-checkupdate-module"></span><h2>threads.checkupdate module<a class="headerlink" href="#module-threads.checkupdate" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.checkupdate.CHECK_UPDATE">
+<em class="property">class </em><tt class="descclassname">threads.checkupdate.</tt><tt class="descname">CHECK_UPDATE</tt><a class="headerlink" href="#threads.checkupdate.CHECK_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for checking version updates.</p>
+<dl class="staticmethod">
+<dt id="threads.checkupdate.CHECK_UPDATE.get_pad">
+<em class="property">static </em><tt class="descname">get_pad</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.checkupdate.CHECK_UPDATE.get_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the padfile object using PAD_URL setting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Filelike object with additional methods geturl(), info() and
+getcode().</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.checkupdate.CHECK_UPDATE.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.checkupdate.CHECK_UPDATE.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns weather the update checking was successful.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.checkupdate.CHECK_UPDATE.show_dialog">
+<tt class="descname">show_dialog</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#threads.checkupdate.CHECK_UPDATE.show_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the dialog that promps the user to download newer version of
+the software.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>String</em>) &#8211; URL address of the new version.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.checkupdate.logger">
+<tt class="descclassname">threads.checkupdate.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.checkupdate.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.common">
+<span id="threads-common-module"></span><h2>threads.common module<a class="headerlink" href="#module-threads.common" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-threads.connectionerror">
+<span id="threads-connectionerror-module"></span><h2>threads.connectionerror module<a class="headerlink" href="#module-threads.connectionerror" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.connectionerror.CONNECTION_ERROR_THREAD">
+<em class="property">class </em><tt class="descclassname">threads.connectionerror.</tt><tt class="descname">CONNECTION_ERROR_THREAD</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#threads.connectionerror.CONNECTION_ERROR_THREAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for checking connection errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>wx.Frame</em>) &#8211; Parent object.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.connectionerror.CONNECTION_ERROR_THREAD.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.connectionerror.CONNECTION_ERROR_THREAD.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.connectionerror.logger">
+<tt class="descclassname">threads.connectionerror.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.connectionerror.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.contextmenu">
+<span id="threads-contextmenu-module"></span><h2>threads.contextmenu module<a class="headerlink" href="#module-threads.contextmenu" title="Permalink to this headline">¶</a></h2>
+<p>Created on 27.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.contextmenu.ContextMenuFailure">
+<em class="property">class </em><tt class="descclassname">threads.contextmenu.</tt><tt class="descname">ContextMenuFailure</tt><big>(</big><em>self</em>, <em>EventType type=wxEVT_NULL</em>, <em>int winid=0</em><big>)</big><a class="headerlink" href="#threads.contextmenu.ContextMenuFailure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a failure of CMFH initialization.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER">
+<em class="property">class </em><tt class="descclassname">threads.contextmenu.</tt><tt class="descname">SEND_FILE_CONTEX_MENU_HANDLER</tt><big>(</big><em>parent</em>, <em>context</em>, <em>send_file</em>, <em>handle_file</em><big>)</big><a class="headerlink" href="#threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for OS context menu actions like file sending to other node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.Context</span></tt>) &#8211; ZeroMQ Context for creating sockets.</li>
+<li><strong>send_file</strong> (<em>Function</em>) &#8211; Sends files.</li>
+<li><strong>handle_file</strong> (<em>Function</em>) &#8211; Handles files.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.contextmenu.SEND_FILE_CONTEX_MENU_HANDLER.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.contextmenu.logger">
+<tt class="descclassname">threads.contextmenu.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.contextmenu.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.current">
+<span id="threads-current-module"></span><h2>threads.current module<a class="headerlink" href="#module-threads.current" title="Permalink to this headline">¶</a></h2>
+<p>Created on 27.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.current.CURRENT_PROJECT">
+<em class="property">class </em><tt class="descclassname">threads.current.</tt><tt class="descname">CURRENT_PROJECT</tt><big>(</big><em>swnp</em><big>)</big><a class="headerlink" href="#threads.current.CURRENT_PROJECT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for transmitting current project selection.
+When user selects a project, an instance is started.
+When a new selection is made, by any DiWaCS instance,
+the old instance is terminated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from the database.</li>
+<li><strong>swnp</strong> (<a class="reference internal" href="swnp.html#swnp.SWNP" title="swnp.SWNP"><tt class="xref py py-class docutils literal"><span class="pre">swnp.SWNP</span></tt></a>) &#8211; SWNP instance for sending data to the network.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.current.CURRENT_PROJECT.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.current.CURRENT_PROJECT.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="threads.current.CURRENT_SESSION">
+<em class="property">class </em><tt class="descclassname">threads.current.</tt><tt class="descname">CURRENT_SESSION</tt><big>(</big><em>swnp</em><big>)</big><a class="headerlink" href="#threads.current.CURRENT_SESSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for transmitting current session id, when one is started by
+the user.  When the session is ended, by any DiWaCS instance, the
+instance is terminated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session_id</strong> (<em>Integer</em>) &#8211; Session id from the database.</li>
+<li><strong>swnp</strong> (<a class="reference internal" href="swnp.html#swnp.SWNP" title="swnp.SWNP"><tt class="xref py py-class docutils literal"><span class="pre">swnp.SWNP</span></tt></a>) &#8211; SWNP instance for sending data to the network.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.current.CURRENT_SESSION.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.current.CURRENT_SESSION.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.current.logger">
+<tt class="descclassname">threads.current.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.current.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.diwathread">
+<span id="threads-diwathread-module"></span><h2>threads.diwathread module<a class="headerlink" href="#module-threads.diwathread" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.diwathread.DIWA_THREAD">
+<em class="property">class </em><tt class="descclassname">threads.diwathread.</tt><tt class="descname">DIWA_THREAD</tt><big>(</big><em>target=None</em>, <em>name=None</em>, <em>args=()</em>, <em>kwargs=None</em><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc string here.</p>
+<dl class="method">
+<dt id="threads.diwathread.DIWA_THREAD.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the thread.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="threads.diwathread.DIWA_THREAD.stop_all">
+<em class="property">static </em><tt class="descname">stop_all</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.stop_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop all program threads except the calling one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.diwathread.DIWA_THREAD.stop_is_set">
+<tt class="descname">stop_is_set</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.stop_is_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is the thread supposed to stop.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="threads.diwathread.TimeoutException">
+<em class="property">exception </em><tt class="descclassname">threads.diwathread.</tt><tt class="descname">TimeoutException</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#threads.diwathread.TimeoutException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a thread timeout event.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.diwathread.logger">
+<tt class="descclassname">threads.diwathread.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.inputcapture">
+<span id="threads-inputcapture-module"></span><h2>threads.inputcapture module<a class="headerlink" href="#module-threads.inputcapture" title="Permalink to this headline">¶</a></h2>
+<p>Created on 5.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.inputcapture.INPUT_CAPTURE">
+<em class="property">class </em><tt class="descclassname">threads.inputcapture.</tt><tt class="descname">INPUT_CAPTURE</tt><big>(</big><em>parent</em>, <em>swnp</em><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thread for capturing input from mouse/keyboard.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">GUI</span></tt>) &#8211; Parent instance.</li>
+<li><strong>swnp</strong> (<a class="reference internal" href="swnp.html#swnp.SWNP" title="swnp.SWNP"><tt class="xref py py-class docutils literal"><span class="pre">swnp.SWNP</span></tt></a>) &#8211; SWNP instance for sending data to the network.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.hook">
+<tt class="descname">hook</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.on_keyboard_event">
+<tt class="descname">on_keyboard_event</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.on_keyboard_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when keyboard events are received.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.on_mouse_event">
+<tt class="descname">on_mouse_event</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.on_mouse_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when mouse events are received.</p>
+<blockquote>
+<div><ul class="simple">
+<li>WM_MOUSEFIRST = 0x200</li>
+<li>WM_MOUSEMOVE = 0x200</li>
+<li>WM_LBUTTONDOWN = 0x201</li>
+<li>WM_LBUTTONUP = 0x202</li>
+<li>WM_LBUTTONDBLCLK = 0x203</li>
+<li>WM_RBUTTONDOWN = 0x204</li>
+<li>WM_RBUTTONUP = 0x205</li>
+<li>WM_RBUTTONDBLCLK = 0x206</li>
+<li>WM_MBUTTONDOWN = 0x207</li>
+<li>WM_MBUTTONUP = 0x208</li>
+<li>WM_MBUTTONDBLCLK = 0x209</li>
+<li>WM_MOUSEWHEEL = 0x20A</li>
+<li>WM_MOUSEHWHEEL = 0x20E</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.reset_mouse_events">
+<tt class="descname">reset_mouse_events</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.reset_mouse_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.inputcapture.INPUT_CAPTURE.unhook">
+<tt class="descname">unhook</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.unhook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="threads.inputcapture.MOUSE_CAPTURE">
+<em class="property">class </em><tt class="descclassname">threads.inputcapture.</tt><tt class="descname">MOUSE_CAPTURE</tt><big>(</big><em>parent</em>, <em>swnp</em><big>)</big><a class="headerlink" href="#threads.inputcapture.MOUSE_CAPTURE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+<dl class="method">
+<dt id="threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events">
+<tt class="descname">parse_mouse_events</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.inputcapture.logger">
+<tt class="descclassname">threads.inputcapture.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.inputcapture.set_capture">
+<tt class="descclassname">threads.inputcapture.</tt><tt class="descname">set_capture</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#threads.inputcapture.set_capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set&#8217;s the capture value for threads.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>Boolean</em>) &#8211; Is the capture on.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-threads.worker">
+<span id="threads-worker-module"></span><h2>threads.worker module<a class="headerlink" href="#module-threads.worker" title="Permalink to this headline">¶</a></h2>
+<p>Created on 27.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="threads.worker.WORKER_THREAD">
+<em class="property">class </em><tt class="descclassname">threads.worker.</tt><tt class="descname">WORKER_THREAD</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Worker thread for non-UI jobs.</p>
+<dl class="staticmethod">
+<dt id="threads.worker.WORKER_THREAD.add_project_registry_entry">
+<em class="property">static </em><tt class="descname">add_project_registry_entry</tt><big>(</big><em>reg_type</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.add_project_registry_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds &#8220;Add to project&#8221; context menu item to registry. The item
+will be added to SoftwareClasses&lt;reg_type&gt;, where &lt;reg_type&gt;
+can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg_type</strong> (<em>String</em>) &#8211; Registry type.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="threads.worker.WORKER_THREAD.add_registry_entry">
+<em class="property">static </em><tt class="descname">add_registry_entry</tt><big>(</big><em>name</em>, <em>node_id</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.add_registry_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a node to registry.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; Node name.</li>
+<li><strong>id</strong> (<em>Integer</em>) &#8211; Node id.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.worker.WORKER_THREAD.check_responsive">
+<tt class="descname">check_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.check_responsive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.worker.WORKER_THREAD.create_event">
+<tt class="descname">create_event</tt><big>(</big><em>title</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.create_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.worker.WORKER_THREAD.parse_config">
+<tt class="descname">parse_config</tt><big>(</big><em>config_object</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.parse_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles config file settings.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="threads.worker.WORKER_THREAD.remove_all_registry_entries">
+<em class="property">static </em><tt class="descname">remove_all_registry_entries</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.remove_all_registry_entries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all related registry entries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="threads.worker.WORKER_THREAD.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the worker thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="threads.worker.logger">
+<tt class="descclassname">threads.worker.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the common logger.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+	<h3>Table of Contents</h3>
+	<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Threads package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.audiorecorder">threads.audiorecorder module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.checkupdate">threads.checkupdate module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.common">threads.common module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.connectionerror">threads.connectionerror module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.contextmenu">threads.contextmenu module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.current">threads.current module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.diwathread">threads.diwathread module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.inputcapture">threads.inputcapture module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-threads.worker">threads.worker module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">User Interface</a></li>
+</ul>
+
+
+
+	
+				
+				<h4>Previous topic</h4>
+				<p class="topless">
+				<a href="testing.html" 
+				   title="previous chapter">
+				Testing module</a></p>
+	
+	
+		
+		<h4>Next topic</h4>
+		<p class="topless">
+		<a href="utils.html" 
+		   title="next chapter">
+		Utils module</a></p>
+
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Utils module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing module"
+             >previous</a> |</li>
+        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+          <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Nick Eriksson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

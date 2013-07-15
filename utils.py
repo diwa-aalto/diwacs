@@ -7,7 +7,7 @@ Recreated on 17.5.2013
 # System imports.
 import base64
 import hashlib
-import logging
+from logging import config, getLogger
 import socket
 import subprocess
 
@@ -20,52 +20,84 @@ import wmi
 # My imports.
 import controller
 import diwavars
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('utils')
 
 
-def GetEncryptedDirName(name, hashed_password):
+LOGGER = None
+
+
+def __init_logger():
+    """
+    Used to initialize the logger, when running from diwacs.py
+
+    """
+    global LOGGER
+    config.fileConfig('logging.conf')
+    LOGGER = getLogger('utils')
+
+
+def set_logger_level(level):
+    """
+    Docstring here.
+
+    """
+    if LOGGER:
+        LOGGER.setLevel(level)
+
+
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(set_logger_level)
+
+
+def get_encrypted_directory_name(name, hashed_password):
     """
     Returns the encrypted name for project directory.
 
     """
     if not hashed_password or len(hashed_password) < 1:
         return name
-    m = hashlib.sha256()
-    m.update(name + hashed_password)
-    digest = m.digest()
-    myhash = base64.b32encode(digest)
-    return myhash.replace('=', '') if myhash else hashed_password
+    sha = hashlib.sha256()
+    sha.update(name + hashed_password)
+    digest = sha.digest()
+    digest = base64.b32encode(digest)
+    return digest.replace('=', '') if digest else hashed_password
 
 
-def HashPassword(password):
+def hash_password(password):
     """
     Hashes the provided password.
 
     """
     if not password:
         return ''
-    m = hashlib.sha1()
-    m.update(diwavars.PASSWORD_SALT + password)
+    sha = hashlib.sha1()
+    sha.update(diwavars.PASSWORD_SALT + password)
     for i in xrange(diwavars.PASSWORD_ITERATIONS):
-        password = m.hexdigest()
-        m = hashlib.sha1()
-        m.update(str(i) + diwavars.PASSWORD_SALT + str(i) + password + str(i))
-    result = m.hexdigest()
-    logger.debug('PASSWD: %s' % result)
+        password = sha.hexdigest()
+        sha = hashlib.sha1()
+        hashform = '%d%s%d%s%d'
+        hashform = hashform % (i, diwavars.PASSWORD_SALT, i, password, i)
+        sha.update(hashform)
+    result = sha.hexdigest()
+    # LOGGER.debug('PASSWD: %s' % result)
     return result
 
 
-def CheckProjectPassword(project_id, password):
+def check_project_password(project_id, password):
     """
     Compares the the provided password with the project password.
 
     """
-    return controller.GetProjectPassword(project_id) == HashPassword(password)
+    try:
+        hs = hash_password(password)
+        return controller.get_project_password(project_id) == hs
+    except Exception, e:
+        LOGGER.debug('CheckPassword exception: %s' % str(e))
+        return False
 
 
 def IterIsLast(iterable):
-    """ IterIsLast(iterable) -> generates (item, islast) pairs
+    """
+    IterIsLast(iterable) -> generates (item, islast) pairs.
 
     Generates pairs where the first element is an item from the iterable
     source and the second element is a boolean flag indicating if it is the
@@ -81,10 +113,6 @@ def IterIsLast(iterable):
         yield prev, False
         prev = item
     yield prev, True
-
-
-def SetLoggerLevel(level):
-    logger.setLevel(level)
 
 
 def DottedIPToInt(dotted_ip):
@@ -153,7 +181,7 @@ def GetMacForIp(ip):
     """Returns the mac address for an local IP address.
 
     :param ip: IP address
-    :type ip: String.
+    :type ip: String
 
     """
     try:
@@ -164,7 +192,7 @@ def GetMacForIp(ip):
                 if ip_address == ip:
                     return str(interface.MACAddress).translate(None, ':')
     except Exception, e:
-        logger.exception("Exception in GetMacForIp: %s", str(e))
+        LOGGER.exception("Exception in GetMacForIp: %s", str(e))
     return None
 
 
@@ -188,7 +216,7 @@ def MapNetworkShare(letter, share=None):
     """Maps the network share to a letter.
 
     :param letter: The letter for which to map.
-    :type letter: String.
+    :type letter: String
     :param share: The network share, defaults to None which unmaps the letter.
     :type share: String
 
@@ -197,12 +225,12 @@ def MapNetworkShare(letter, share=None):
         win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
     except Exception, e:
         if int(e[0]) != ERROR_NOT_CONNECTED:
-            logger.exception("error mapping share %s %s %s", letter,
+            LOGGER.exception("error mapping share %s %s %s", letter,
                              share, str(e))
     # Special case:
     if share is not None:
         try:
             win32wnet.WNetAddConnection2(DISK, letter, share)
         except Exception, e:
-            logger.exception("error mapping share %s %s %s", letter, share,
+            LOGGER.exception("error mapping share %s %s %s", letter, share,
                              str(e))
