@@ -412,9 +412,6 @@ class SWNP:
                         LOGGER.exception('DEPRECATED METHOD USED!!!')
                         # self.sync_handler(msg_obj)
                     elif prefix == 'MSG':
-                        logger.debug('RCV: %s;%s' %
-                                     (msg_obj.PREFIX,
-                                      msg_obj.PAYLOAD))
                         pub.sendMessage('message_received',
                                         message=msg_obj.payload)
                 except Again:
