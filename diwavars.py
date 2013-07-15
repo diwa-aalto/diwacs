@@ -1,6 +1,9 @@
 """
 DiWaCS Variables
 
+.. moduleauthor:: neriksso
+:author: neriksso
+
 """
 import pyaudio
 import os

@@ -1,6 +1,7 @@
 """
 Created on 17.5.2013
 
+.. moduleauthor:: neriksso
 :author: neriksso
 
 """

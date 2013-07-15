@@ -1,8 +1,10 @@
-'''
+"""
 Created on 12.9.2012
 
-@author: neriksso
-'''
+.. moduleauthor:: neriksso
+:author: neriksso
+
+"""
 import sys
 import zmq
 import json

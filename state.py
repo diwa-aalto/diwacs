@@ -1,7 +1,8 @@
 """
 Created on 4.7.2013
 
-@author: neriksso
+.. moduleauthor:: neriksso
+:author: neriksso
 
 """
 # Standard imports.

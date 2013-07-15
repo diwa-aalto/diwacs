@@ -2,6 +2,7 @@
 Created on 23.5.2012
 
 
+.. moduleauthor:: neriksso
 :author: neriksso
 :warning: Requires :py:mod:`sqlalchemy` and :py:mod:`pywin32`
 :synopsis: Used to represent the different database structures on DiWa.

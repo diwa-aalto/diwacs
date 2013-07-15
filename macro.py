@@ -1,5 +1,7 @@
 """
-macro.py defines a few user input functions.
+.. moduleauthor:: neriksso
+:author: neriksso
+:synopsis: macro.py defines a few user input functions.
 
 """
 
