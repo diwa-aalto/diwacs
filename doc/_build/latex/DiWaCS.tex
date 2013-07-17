@@ -14,7 +14,7 @@
 
 
 \title{DiWaCS Documentation}
-\date{July 15, 2013}
+\date{July 17, 2013}
 \release{0.9.3.0}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
@@ -167,7 +167,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-07-15 at 14:51.
+Documentation generated on 2013-07-16 at 12:31.
 
 
 \section{Add file module}
@@ -321,14 +321,6 @@ Latest active activity ID.
 Integer
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.activity)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.activity.logger}\pysiglinewithargsret{\code{controller.activity.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
@@ -611,14 +603,6 @@ Boolean
 
 \end{fulllineitems}
 
-\index{logger() (in module controller.computer)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.computer.logger}\pysiglinewithargsret{\code{controller.computer.}\bfcode{logger}}{}{}
-Return controller logger.
-
-\end{fulllineitems}
-
 \index{refresh\_computer() (in module controller.computer)}
 
 \begin{fulllineitems}
@@ -629,10 +613,10 @@ Refresh the computer in database.
 \textbf{computer} ({\hyperref[models:models.Computer]{\code{models.Computer}}}) -- The computer to refresh.
 
 \item[{Returns}] \leavevmode
-The Refreshed computer.
+Success
 
 \item[{Return type}] \leavevmode
-{\hyperref[models:models.Computer]{\code{models.Computer}}}
+Boolean
 
 \end{description}\end{quote}
 
@@ -754,14 +738,6 @@ On\_created event handler. Logs to database.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.handlers)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.logger}\pysiglinewithargsret{\code{controller.handlers.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
@@ -1031,14 +1007,6 @@ Boolean
 
 \end{fulllineitems}
 
-\index{logger() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.logger}\pysiglinewithargsret{\code{controller.project.}\bfcode{logger}}{}{}
-Return controller logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{controller.session module}
@@ -1054,6 +1022,7 @@ neriksso
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.session.add_event}\pysiglinewithargsret{\code{controller.session.}\bfcode{add\_event}}{\emph{session\_id}, \emph{title}, \emph{description}}{}
 Adds an event to the database.
+Returns the ID field of the added event.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1063,6 +1032,12 @@ Adds an event to the database.
 \textbf{description} (\emph{String}) -- Description of the event.
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+The event ID.
+
+\item[{Return type}] \leavevmode
+Integer
 
 \end{description}\end{quote}
 
@@ -1138,14 +1113,6 @@ Fetches sessions for a project.
 
 \end{fulllineitems}
 
-\index{logger() (in module controller.session)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.session.logger}\pysiglinewithargsret{\code{controller.session.}\bfcode{logger}}{}{}
-Return controller logger.
-
-\end{fulllineitems}
-
 \index{start\_new\_session() (in module controller.session)}
 
 \begin{fulllineitems}
@@ -1174,6 +1141,15 @@ Creates a session to the database and return a session object.
 \label{dialogs:dialogs-module}\label{dialogs::doc}\label{dialogs:module-dialogs}\index{dialogs (module)}
 Created on 4.6.2013
 \begin{quote}\begin{description}
+\item[{platform}] \leavevmode
+Windows Vista, Windows 7, Windows 8
+
+\item[{synopsis}] \leavevmode
+Define the pop-up dialogs for the application.
+
+\item[{note}] \leavevmode
+Requires WxPython.
+
 \item[{author}] \leavevmode
 neriksso
 
@@ -2005,6 +1981,11 @@ Used to set logger level.
 \section{DiWaVars module}
 \label{diwavars:module-diwavars}\label{diwavars:diwavars-module}\label{diwavars::doc}\index{diwavars (module)}
 DiWaCS Variables
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\end{description}\end{quote}
 \index{add\_logger\_initializer() (in module diwavars)}
 
 \begin{fulllineitems}
@@ -2397,37 +2378,6 @@ Sets the logger level for filesystem logger.
 
 \end{fulllineitems}
 
-\index{snapshot() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.snapshot}\pysiglinewithargsret{\code{filesystem.}\bfcode{snapshot}}{\emph{path}}{}
-Start the worker thread for snapshot.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{path} (\emph{String}) -- File path where to store the snapshot.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{snapshot\_procedure() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.snapshot_procedure}\pysiglinewithargsret{\code{filesystem.}\bfcode{snapshot\_procedure}}{\emph{path}}{}
-Worker for storing the snapshot.
-
-\begin{notice}{warning}{Warning:}
-This object has a timeout of 1 minute. So consider terminating
-the thread on shutdown if it's hanging.
-\end{notice}
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{path} (\emph{String}) -- File path where to store the snapshot.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{test\_storage\_connection() (in module filesystem)}
 
 \begin{fulllineitems}
@@ -2447,7 +2397,7 @@ Boolean
 
 
 \section{Graphical Design module}
-\label{graphicaldesign:graphical-design-module}\label{graphicaldesign::doc}\phantomsection\label{graphicaldesign:module-graphicaldesign}\index{graphicaldesign (module)}
+\label{graphicaldesign:graphical-design-module}\label{graphicaldesign:module-graphicaldesign}\label{graphicaldesign::doc}\index{graphicaldesign (module)}
 Created on 6.6.2013
 \begin{quote}\begin{description}
 \item[{author}] \leavevmode
@@ -2757,8 +2707,14 @@ Start a thread to show the notification.
 
 
 \section{Macro module}
-\label{macro:macro-module}\label{macro:module-macro}\label{macro::doc}\index{macro (module)}
+\label{macro:macro-module}\label{macro:module-macro}\label{macro::doc}\index{macro (module)}\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{synopsis}] \leavevmode
 macro.py defines a few user input functions.
+
+\end{description}\end{quote}
 \index{GetKeydown() (in module macro)}
 
 \begin{fulllineitems}
@@ -3548,8 +3504,11 @@ pypi.python.org/pypi/setuptools
 \section{Models state}
 \label{state:module-state}\label{state::doc}\label{state:models-state}\index{state (module)}
 Created on 4.7.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
 
-@author: neriksso
+\end{description}\end{quote}
 \index{State (class in state)}
 
 \begin{fulllineitems}
@@ -4223,6 +4182,62 @@ Created on 20.5.2013
 Kristian
 
 \end{description}\end{quote}
+\index{DiwaTest (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.DiwaTest}\pysigline{\strong{class }\code{testing.}\bfcode{DiwaTest}}
+Container for unittest cases.
+
+\end{fulllineitems}
+
+\index{TestFilesystem (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestFilesystem}}{\emph{methodName='runTest'}}{}
+Test filesystem module.
+\index{test\_searchfile() (testing.TestFilesystem method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem.test_searchfile}\pysiglinewithargsret{\bfcode{test\_searchfile}}{}{}
+Test searchfile function.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestUtils (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestUtils}}{\emph{methodName='runTest'}}{}
+Test utils module.
+\index{test\_getpassword() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.test_getpassword}\pysiglinewithargsret{\bfcode{test\_getpassword}}{}{}
+Test get\_project\_password function.
+
+\end{fulllineitems}
+
+\index{test\_iterislast() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.test_iterislast}\pysiglinewithargsret{\bfcode{test\_iterislast}}{}{}
+Test IterIsLast function.
+
+\end{fulllineitems}
+
+\index{test\_passwordhash() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.test_passwordhash}\pysiglinewithargsret{\bfcode{test\_passwordhash}}{}{}
+Test the password hash generation.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 
 
 \section{Threads package}
@@ -4297,14 +4312,6 @@ Stop audio recorder.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.audiorecorder)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.audiorecorder.logger}\pysiglinewithargsret{\code{threads.audiorecorder.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.checkupdate module}
@@ -4364,14 +4371,6 @@ the software.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.checkupdate)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.checkupdate.logger}\pysiglinewithargsret{\code{threads.checkupdate.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.common module}
@@ -4410,14 +4409,6 @@ Starts the thread.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.connectionerror)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.connectionerror.logger}\pysiglinewithargsret{\code{threads.connectionerror.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4474,14 +4465,6 @@ Stops the thread.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.contextmenu)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.contextmenu.logger}\pysiglinewithargsret{\code{threads.contextmenu.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4554,14 +4537,6 @@ Starts the thread.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.current)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.current.logger}\pysiglinewithargsret{\code{threads.current.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.diwathread module}
@@ -4577,6 +4552,15 @@ neriksso
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.diwathread.DIWA_THREAD}\pysiglinewithargsret{\strong{class }\code{threads.diwathread.}\bfcode{DIWA\_THREAD}}{\emph{target=None}, \emph{name=None}, \emph{args=()}, \emph{kwargs=None}}{}
 Doc string here.
+\index{remove\_self() (threads.diwathread.DIWA\_THREAD method)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.diwathread.DIWA_THREAD.remove_self}\pysiglinewithargsret{\bfcode{remove\_self}}{}{}
+Removes self from the thread list, this should be used only when
+the thread is sure to die soon.
+
+\end{fulllineitems}
+
 \index{stop() (threads.diwathread.DIWA\_THREAD method)}
 
 \begin{fulllineitems}
@@ -4609,14 +4593,6 @@ Is the thread supposed to stop.
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.diwathread.TimeoutException}\pysiglinewithargsret{\strong{exception }\code{threads.diwathread.}\bfcode{TimeoutException}}{\emph{message}}{}
 Represents a thread timeout event.
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.diwathread)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.diwathread.logger}\pysiglinewithargsret{\code{threads.diwathread.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4762,14 +4738,6 @@ Docstring here.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.inputcapture)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.inputcapture.logger}\pysiglinewithargsret{\code{threads.inputcapture.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 \index{set\_capture() (in module threads.inputcapture)}
 
 \begin{fulllineitems}
@@ -4793,6 +4761,32 @@ Created on 27.6.2013
 neriksso
 
 \end{description}\end{quote}
+\index{SNAPSHOT\_THREAD (class in threads.worker)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.worker.SNAPSHOT_THREAD}\pysiglinewithargsret{\strong{class }\code{threads.worker.}\bfcode{SNAPSHOT\_THREAD}}{\emph{path}}{}
+Worker thread for taking snapshot.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{path} (\emph{String}) -- File path where to store the snapshot.
+
+\end{description}\end{quote}
+\index{run() (threads.worker.SNAPSHOT\_THREAD method)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.worker.SNAPSHOT_THREAD.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+Worker procedure for storing the snapshot.
+
+\begin{notice}{warning}{Warning:}
+This object has a timeout of 1 minute. So consider terminating
+the thread on shutdown if it's hanging.
+\end{notice}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 \index{WORKER\_THREAD (class in threads.worker)}
 
 \begin{fulllineitems}
@@ -4875,19 +4869,11 @@ Run the worker thread.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.worker)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.worker.logger}\pysiglinewithargsret{\code{threads.worker.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \section{Utils module}
 \label{utils:utils-module}\label{utils:module-utils}\label{utils::doc}\index{utils (module)}
-Recreated on 17.5.2013
+Created on 17.5.2013
 \begin{quote}\begin{description}
 \item[{author}] \leavevmode
 neriksso

@@ -6,6 +6,7 @@ Created on 27.6.2013
 """
 # Standard imports.
 from logging import getLevelName
+from datetime import datetime
 import os
 from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
                      CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
@@ -17,11 +18,12 @@ from wx import CallLater
 # Own imports.
 import controller
 import diwavars
-import filesystem
 import threads.common
 from threads.checkupdate import CHECK_UPDATE
 from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
+import urllib2
+import base64
 
 
 def _logger():
@@ -41,18 +43,48 @@ def _logger():
 
 class SNAPSHOT_THREAD(DIWA_THREAD):
     """
-    Worker thread for non-UI jobs.
+    Worker thread for taking snapshot.
 
-    :param path: Filepath
+    :param path: File path where to store the snapshot.
+    :type path: String
 
     """
     def __init__(self, path):
-        DIWA_THREAD.__init__(self, name='Snapshot', args=(path,))
+        DIWA_THREAD.__init__(self, name='Snapshot')
+        self.path = path
         self.daemon = True
         self.start()
 
     def run(self):
-        pass  # Copy snapshot_procedure here.
+        """
+        Worker procedure for storing the snapshot.
+
+        .. warning::
+            This object has a timeout of 1 minute. So consider terminating
+            the thread on shutdown if it's hanging.
+
+        """
+        filepath = os.path.join(self.path, 'Snapshots')
+        try:
+            os.makedirs(filepath)
+        except OSError:
+            pass
+        request = urllib2.Request(diwavars.CAMERA_URL)
+        base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
+                                                      diwavars.CAMERA_PASS))
+        request.add_header('Authorization', 'Basic %s' % base64string.strip())
+        event_id = controller.get_latest_event()
+        try:
+            data = urllib2.urlopen(request, timeout=60).read()
+            datestring = datetime.now().strftime('%d%m%Y%H%M%S')
+            name = str(event_id) + '_' + datestring + '.jpg'
+            _logger().debug('snapshot filename: %s', name)
+            with open(os.path.join(filepath, name), 'wb') as output:
+                output.write(data)
+        except (IOError, OSError) as excp:
+            # urllib2.URLError inherits IOError so both the write
+            # and URL errors are caught by this.
+            _logger().exception('Snapshot exception: %s', str(excp))
 
 
 #: TODO:
@@ -356,8 +388,8 @@ class WORKER_THREAD(DIWA_THREAD):
                     #       session.
         event_id = controller.add_event(session_id, title, '')
         path = controller.get_project_path(project_id)
+        SNAPSHOT_THREAD(path)
         try:
-            filesystem.snapshot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')
             if diwavars.AUDIO:
                 logmsg = 'Buffering audio for %d seconds.'

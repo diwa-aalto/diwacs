@@ -328,12 +328,12 @@ class DeleteProjectDialog(wx.Dialog):
         self.yes_delete = wx.CheckBox(self, wx.ID_ANY, yes_text)
         self.files_delete = wx.CheckBox(self, wx.ID_ANY, files_text)
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
-        self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
+        self.check_box = wx.Button(self, wx.ID_ANY, 'Cancel')
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk, self)
-        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel, self)
+        self.check_box.Bind(wx.EVT_BUTTON, self.OnCancel, self)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         button_sizer.Add(self.ok_button, 0)
-        button_sizer.Add(self.cancel_button, 0)
+        button_sizer.Add(self.check_box, 0)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notice, 0, wx.ALL, 5)
         sizer.Add(self.yes_delete, 0, wx.ALL, 5)
@@ -630,7 +630,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.edit_button = wx.Button(self, wx.ID_ANY, 'Modify...')
         self.delete_button = wx.Button(self, wx.ID_ANY, 'Delete...')
         self.select_button = wx.Button(self, wx.ID_ANY, 'Select')
-        self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
+        self.check_box = wx.Button(self, wx.ID_ANY, 'Cancel')
 
         self.add_button.Bind(wx.EVT_BUTTON, self.OnProjectAdd)
         self.edit_button.Bind(wx.EVT_BUTTON, self.OnProjectEdit)
@@ -639,7 +639,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.delete_button.Disable()
         self.select_button.Bind(wx.EVT_BUTTON, self.OnProjectSelect)
         self.select_button.Disable()
-        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
+        self.check_box.Bind(wx.EVT_BUTTON, self.OnCancel)
 
         # Layout
         main_sizer_h = wx.BoxSizer(wx.HORIZONTAL)
@@ -651,7 +651,7 @@ class ProjectSelectDialog(wx.Dialog):
         button_sizer.Add(self.edit_button)
         button_sizer.Add(self.delete_button)
         selection_sizer.Add(self.select_button)
-        selection_sizer.Add(self.cancel_button)
+        selection_sizer.Add(self.check_box)
         main_sizer_h.Add(button_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
         main_sizer_v.Add(main_sizer_h, 1, wx.EXPAND)
         main_sizer_v.Add(selection_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
@@ -885,12 +885,13 @@ class ProjectSelectedDialog(wx.Dialog):
             self.project_name = controller.get_project(project_id).name
             ltext = ProjectSelectedDialog.ptext % self.project_name
             self.notice = wx.StaticText(self, label=ltext)
-            self.cb = wx.CheckBox(self, -1, 'No, do not start a new session.')
+            self.check_box = wx.CheckBox(self, -1,
+                                         'No, do not start a new session.')
             self.ok_button = wx.Button(self, -1, 'OK')
             self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
             self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.cb, 0, wx.ALL, 5)
+            self.sizer.Add(self.check_box, 0, wx.ALL, 5)
             self.sizer.Add(self.ok_button, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
@@ -901,7 +902,7 @@ class ProjectSelectedDialog(wx.Dialog):
 
     def OnOk(self, event):
         event.Skip()
-        self.EndModal(2 if self.cb.GetValue() else 1)
+        self.EndModal(2 if self.check_box.GetValue() else 1)
 
 
 class UpdateDialog(wx.Dialog):

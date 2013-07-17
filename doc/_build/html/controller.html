@@ -390,9 +390,9 @@ still being considered active.</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>computer</strong> (<a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a>) &#8211; The computer to refresh.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The Refreshed computer.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Success</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="models.html#models.Computer" title="models.Computer"><tt class="xref py py-class docutils literal"><span class="pre">models.Computer</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
 </tr>
 </tbody>
 </table>
@@ -793,15 +793,22 @@ and database.</p>
 <dl class="function">
 <dt id="controller.session.add_event">
 <tt class="descclassname">controller.session.</tt><tt class="descname">add_event</tt><big>(</big><em>session_id</em>, <em>title</em>, <em>description</em><big>)</big><a class="headerlink" href="#controller.session.add_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds an event to the database.</p>
+<dd><p>Adds an event to the database.
+Returns the ID field of the added event.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>session</strong> (<a class="reference internal" href="models.html#models.Session" title="models.Session"><tt class="xref py py-class docutils literal"><span class="pre">models.Session</span></tt></a>) &#8211; The current session.</li>
 <li><strong>description</strong> (<em>String</em>) &#8211; Description of the event.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The event ID.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Integer</p>
 </td>
 </tr>
 </tbody>

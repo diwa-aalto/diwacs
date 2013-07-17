@@ -354,6 +354,13 @@ instance is terminated.</p>
 <em class="property">class </em><tt class="descclassname">threads.diwathread.</tt><tt class="descname">DIWA_THREAD</tt><big>(</big><em>target=None</em>, <em>name=None</em>, <em>args=()</em>, <em>kwargs=None</em><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Doc string here.</p>
 <dl class="method">
+<dt id="threads.diwathread.DIWA_THREAD.remove_self">
+<tt class="descname">remove_self</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.remove_self" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes self from the thread list, this should be used only when
+the thread is sure to die soon.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="threads.diwathread.DIWA_THREAD.stop">
 <tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop the thread.</p>
@@ -506,6 +513,31 @@ instance is terminated.</p>
 </tr>
 </tbody>
 </table>
+<dl class="class">
+<dt id="threads.worker.SNAPSHOT_THREAD">
+<em class="property">class </em><tt class="descclassname">threads.worker.</tt><tt class="descname">SNAPSHOT_THREAD</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#threads.worker.SNAPSHOT_THREAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Worker thread for taking snapshot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.worker.SNAPSHOT_THREAD.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.SNAPSHOT_THREAD.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Worker procedure for storing the snapshot.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This object has a timeout of 1 minute. So consider terminating
+the thread on shutdown if it&#8217;s hanging.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="threads.worker.WORKER_THREAD">
 <em class="property">class </em><tt class="descclassname">threads.worker.</tt><tt class="descname">WORKER_THREAD</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD" title="Permalink to this definition">¶</a></dt>

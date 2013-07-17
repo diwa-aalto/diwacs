@@ -411,58 +411,6 @@ def search_file(filename, search_path, case_sensitive=True):
     return ''
 
 
-# TODO: Move snapshot to threads as a class...
-#       this procedure here requires us to import threads package
-#       which creates a circular dependency in the project AND
-#       this should anyways be a thread...
-def snapshot(path):
-    """
-    Start the worker thread for snapshot.
-
-    :param path: File path where to store the snapshot.
-    :type path: String
-
-    """
-    thread = threads.DIWA_THREAD(target=snapshot_procedure, args=(path,))
-    thread.daemon = True
-    thread.start()
-
-
-def snapshot_procedure(path):
-    """
-    Worker for storing the snapshot.
-
-    .. warning::
-        This object has a timeout of 1 minute. So consider terminating
-        the thread on shutdown if it's hanging.
-
-    :param path: File path where to store the snapshot.
-    :type path: String
-
-    """
-    filepath = os.path.join(path, 'Snapshots')
-    try:
-        os.makedirs(filepath)
-    except OSError:
-        pass
-    request = urllib2.Request(diwavars.CAMERA_URL)
-    base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
-                                                  diwavars.CAMERA_PASS))
-    request.add_header('Authorization', 'Basic %s' % base64string.strip())
-    event_id = controller.get_latest_event()
-    try:
-        data = urllib2.urlopen(request, timeout=60).read()
-        datestring = datetime.datetime.now().strftime('%d%m%Y%H%M%S')
-        name = str(event_id) + '_' + datestring + '.jpg'
-        LOGGER.debug('snapshot filename: %s', name)
-        with open(os.path.join(filepath, name), 'wb') as output:
-            output.write(data)
-    except (IOError, OSError) as excp:
-        # urllib2.URLError inherits IOError so both the write and url errors
-        # are caught by this.
-        LOGGER.exception('Snapshot exception: %s', str(excp))
-
-
 def test_storage_connection():
     """
     Try to access \\\\Storage\\Projects

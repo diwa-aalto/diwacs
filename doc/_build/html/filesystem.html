@@ -280,39 +280,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="filesystem.snapshot">
-<tt class="descclassname">filesystem.</tt><tt class="descname">snapshot</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.snapshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start the worker thread for snapshot.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.snapshot_procedure">
-<tt class="descclassname">filesystem.</tt><tt class="descname">snapshot_procedure</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.snapshot_procedure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Worker for storing the snapshot.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This object has a timeout of 1 minute. So consider terminating
-the thread on shutdown if it&#8217;s hanging.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="filesystem.test_storage_connection">
 <tt class="descclassname">filesystem.</tt><tt class="descname">test_storage_connection</tt><big>(</big><big>)</big><a class="headerlink" href="#filesystem.test_storage_connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Try to access \StorageProjects</p>

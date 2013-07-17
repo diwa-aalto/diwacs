@@ -54,8 +54,375 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="dialogs-module">
-<h1>Dialogs module<a class="headerlink" href="#dialogs-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-dialogs">
+<span id="dialogs-module"></span><h1>Dialogs module<a class="headerlink" href="#module-dialogs" title="Permalink to this headline">¶</a></h1>
+<p>Created on 4.6.2013</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Windows Vista, Windows 7, Windows 8</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Define the pop-up dialogs for the application.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">note:</th><td class="field-body">Requires WxPython.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="dialogs.AddProjectDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">AddProjectDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id=None</em><big>)</big><a class="headerlink" href="#dialogs.AddProjectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for adding a new project</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Frame</span></tt>) &#8211; Parent frame.</li>
+<li><strong>title</strong> (<em>String</em>) &#8211; A title for the dialog.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dialogs.AddProjectDialog.OnAdd">
+<tt class="descname">OnAdd</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.AddProjectDialog.OnAdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the addition of a project to database, when &#8220;Add&#8221; button
+is pressed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.AddProjectDialog.OnClose">
+<tt class="descname">OnClose</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.AddProjectDialog.OnClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles &#8220;Close&#8221; button presses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.AddProjectDialog.OnText">
+<tt class="descname">OnText</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.AddProjectDialog.OnText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for text changed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="dialogs.CloseError">
+<em class="property">exception </em><tt class="descclassname">dialogs.</tt><tt class="descname">CloseError</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#dialogs.CloseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class describing an error while closing application.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.ConnectionErrorDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ConnectionErrorDialog</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#dialogs.ConnectionErrorDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a connection error dialog that informs the user about reconnection
+attempts made by the software.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.DeleteProjectDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">DeleteProjectDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.DeleteProjectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for deleting project.</p>
+<dl class="method">
+<dt id="dialogs.DeleteProjectDialog.OnCancel">
+<tt class="descname">OnCancel</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.DeleteProjectDialog.OnCancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for pressing Cancel button.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.DeleteProjectDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.DeleteProjectDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for pressing OK button.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.ErrorDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ErrorDialog</tt><big>(</big><em>parent</em>, <em>message</em><big>)</big><a class="headerlink" href="#dialogs.ErrorDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error dialog.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.PreferencesDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">PreferencesDialog</tt><big>(</big><em>parent</em>, <em>config_object</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates and displays a preferences dialog that allows the user to
+change some settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_object</strong> (<tt class="xref py py-class docutils literal"><span class="pre">configobj.ConfigObj</span></tt>) &#8211; a Config object</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.LoadPreferences">
+<tt class="descname">LoadPreferences</tt><big>(</big><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.LoadPreferences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the current preferences and fills the text controls.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.OnCancel">
+<tt class="descname">OnCancel</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.OnCancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the dialog without modifications.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.OpenConfig">
+<tt class="descname">OpenConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.OpenConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens config file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.SavePreferences">
+<tt class="descname">SavePreferences</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.SavePreferences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the preferences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.ProjectAuthenticationDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectAuthenticationDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.ProjectAuthenticationDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for project authentication.</p>
+<dl class="method">
+<dt id="dialogs.ProjectAuthenticationDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectAuthenticationDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called on OK button press.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.ProjectSelectDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectSelectDialog</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for selecting a project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Frame</span></tt>) &#8211; Parent frame.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnCancel">
+<tt class="descname">OnCancel</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnCancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles &#8220;Cancel&#8221; button presses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnProjectAdd">
+<tt class="descname">OnProjectAdd</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnProjectAdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows a modal dialog for adding a new project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnProjectDelete">
+<tt class="descname">OnProjectDelete</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnProjectDelete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a project.
+Starts a <tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt>, if necessary.
+Shows a dialog of the selected project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnProjectEdit">
+<tt class="descname">OnProjectEdit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnProjectEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows a modal dialog for adding a new project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnProjectSelect">
+<tt class="descname">OnProjectSelect</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnProjectSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the selection of a project.</p>
+<p>Starts a <tt class="xref py py-class docutils literal"><span class="pre">wos.CURRENT_PROJECT</span></tt>, if necessary.
+Shows a dialog of the selected project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI Event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.OnSelectionChange">
+<tt class="descname">OnSelectionChange</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.OnSelectionChange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for selection change of the listbox.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ProjectSelectDialog.UpdateProjects">
+<tt class="descname">UpdateProjects</tt><big>(</big><em>company_id=1</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectDialog.UpdateProjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches all projects from the database, based on the company.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer</em>) &#8211; A company id, the owner of the projects.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The total number of projects.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.ProjectSelectedDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectSelectedDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dialog for project selection confirmation.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.SendProgressBar">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">SendProgressBar</tt><big>(</big><em>parent</em>, <em>title</em>, <em>ypos</em><big>)</big><a class="headerlink" href="#dialogs.SendProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements file send progress bar...</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dialogs.UpdateDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">UpdateDialog</tt><big>(</big><em>title</em>, <em>url</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#dialogs.UpdateDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Dialog which notifies about a software update.
+Contains the URL which the user can click on.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> (<em>String</em>) &#8211; Title of the dialog.</li>
+<li><strong>url</strong> (<em>String</em>) &#8211; URL of the update.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dialogs.set_logger_level">
+<tt class="descclassname">dialogs.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#dialogs.set_logger_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the logger level for dialogs logger.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; Level of logging.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dialogs.show_modal_and_destroy">
+<tt class="descclassname">dialogs.</tt><tt class="descname">show_modal_and_destroy</tt><big>(</big><em>class_</em>, <em>parent</em>, <em>params=None</em><big>)</big><a class="headerlink" href="#dialogs.show_modal_and_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to show modal and destroy afterwards.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The implementation is kind of ugly, but guarantees a safe execution
+of the dialog without memory leaks and with all exceptions logged.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>class</strong> (<em>type</em>) &#8211; The type of dialog to show.</li>
+<li><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Window</span></tt>) &#8211; The parent wx.Window of this object.</li>
+<li><strong>params</strong> (<em>Dictionary.</em>) &#8211; The params to give for __init__ call.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The modal result value.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Integer</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
