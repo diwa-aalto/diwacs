@@ -110,7 +110,7 @@ class State(object):
         try:
             self.audio_recorder = threads.AudioRecorder(self)
             self.audio_recorder.daemon = True
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Audio recorder exception: %s', str(excp))
         self.exited = False
         self.responsive = ''
@@ -121,8 +121,6 @@ class State(object):
         self.error_th.daemon = True
         self.error_th.start()
         self.worker = threads.WORKER_THREAD(self)
-        self.worker.daemon = True
-        self.worker.start()
         self.swnp = None
         self.config_was_created = False
         try:
@@ -140,7 +138,7 @@ class State(object):
                 node_id=node_id,
                 error_handler=self.error_th
             )
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('loading config exception: %s', str(excp))
         self.initialized = False
         self.cmfh = None
@@ -187,7 +185,7 @@ class State(object):
                 self.set_current_project(pid)
                 self.set_current_session(sid)
                 self.parent.OnProject()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('State.initialize exception: %s', str(excp))
 
     def destroy(self):
@@ -356,7 +354,7 @@ class State(object):
                              for src, dst in src_dst_list]
         try:
             self._handle_file_copy(src_dst_list, mydirs, progressdialog)
-        except IOError, excp:
+        except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
         return returnvalue
 
@@ -444,7 +442,7 @@ class State(object):
                     else:
                         LOGGER.exception('Received invalid wx_image.')
                     wx_image = None
-                except (ValueError, IOError), excp:
+                except (ValueError, IOError) as excp:
                     LOGGER.exception('Receive wx_image exception: %s',
                                      str(excp))
             elif cmd == 'new_responsive':
@@ -525,7 +523,7 @@ class State(object):
                 self.set_current_session(sid)
                 if old_project_id != pid:
                     self.parent.OnProject()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Exception in MessageHandler: %s', str(excp))
 
     def on_project_selected(self):
@@ -650,7 +648,7 @@ class State(object):
                 self.project_folder_observer.start()
             self.is_responsive = True
             self.swnp.set_responsive('responsive')
-        except Exception, excp:
+        except Exception as excp:
             self.is_responsive = False
             self.swnp.set_responsive('')
             LOGGER.exception('Error setting PROJECT observer: %s', str(excp))
@@ -675,7 +673,7 @@ class State(object):
             self.scan_observer.start()
             self.is_responsive = True
             self.swnp.set_responsive('responsive')
-        except Exception, excp:
+        except Exception as excp:
             self.is_responsive = False
             self.swnp.set_responsive('')
             LOGGER.exception('Error setting scan observer: %s', str(excp))
@@ -732,7 +730,7 @@ class State(object):
         """ Starts the audio recorder thread. """
         try:
             self.audio_recorder.start()
-        except Exception, excp:
+        except Exception as excp:
             logmsg = 'Starting audio recorder exception: %s'
             LOGGER.exception(logmsg, str(excp))
 

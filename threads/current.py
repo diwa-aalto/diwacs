@@ -14,8 +14,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 

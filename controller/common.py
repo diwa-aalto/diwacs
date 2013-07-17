@@ -126,7 +126,7 @@ def create_all():
             database.add(Action(xy_tuple[1]))
         database.commit()
         database.close()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
+    except sqlalchemy.exc.SQLAlchemyError as excp:
         LOGGER.exception('create_all Exception: %s', str(excp))
 
 
@@ -225,6 +225,6 @@ def test_connection():
         database.query(Project).count()
         database.close()
         return True
-    except sqlalchemy.exc.SQLAlchemyError, excp:
+    except sqlalchemy.exc.SQLAlchemyError as excp:
         LOGGER.exception('EXCPT_TEST_CONNECTION: %s', str(excp))
         return False

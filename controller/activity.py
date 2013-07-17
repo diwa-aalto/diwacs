@@ -17,8 +17,18 @@ import sqlalchemy
 from models import Activity, Project, Session
 
 
-def logger():
-    """ Return controller logger. """
+def _logger():
+    """
+    Get the current logger for controller package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return controller.common.LOGGER
 
 
@@ -42,6 +52,8 @@ def add_activity(project_id, pgm_group, session_id=None, activity_id=None):
     :rtype: Integer
 
     """
+    database = None
+    result = None
     try:
         database = controller.common.connect_to_database()
         project = database.query(Project).filter(Project.id == project_id)
@@ -64,11 +76,12 @@ def add_activity(project_id, pgm_group, session_id=None, activity_id=None):
         database.add(activity)
         database.commit()
         database.expunge(activity)
+        result = activity.id
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().exception('add_activity exception: %s', str(excp))
+    if database:
         database.close()
-        return activity.id
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('add_activity exception: %s', str(excp))
-        return None
+    return result
 
 
 def get_active_activity(pgm_group):

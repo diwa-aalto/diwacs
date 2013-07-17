@@ -21,8 +21,18 @@ import threading
 import os
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -63,7 +73,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         Stops the thread.
 
         """
-        logger().debug('BEGINNING CLOSE ON CMFH')
+        _logger().debug('BEGINNING CLOSE ON CMFH')
         try:
             stop_socket = self.context.socket(zmq.REQ)
             stop_socket.setsockopt(zmq.LINGER, 0)
@@ -77,9 +87,9 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                 pass
             stop_socket.close()
             self.socket.close()
-        except Exception, excp:
-            logger().exception('ERROR:\n%s', excp)
-        logger().debug('CMFH closed')
+        except Exception as excp:
+            _logger().exception('ERROR:\n%s', excp)
+        _logger().debug('CMFH closed')
 
     def __on_send_to(self, id_, param):
         """ Send to handler. """
@@ -136,8 +146,8 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         try:
             (user, msg) = param.split(':', 1)
             self.parent.trayicon.ShowNotification(user, msg)
-        except Exception, excp:
-            logger().exception('CHATMSG_EXCEPTION: %s', str(excp))
+        except Exception as excp:
+            _logger().exception('CHATMSG_EXCEPTION: %s', str(excp))
         return 'OK'
 
     @staticmethod
@@ -181,7 +191,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
 
         """
 
-        logger().debug('CMFH INITIALIZED------------------------------')
+        _logger().debug('CMFH INITIALIZED------------------------------')
         handlers = {
             'send_to': self.__on_send_to,
             'add_to_project': self.__on_add_to_project,
@@ -198,22 +208,22 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
-                logger().debug('CMFH got message: %s', message)
+                _logger().debug('CMFH got message: %s', message)
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
                     self.socket.send(handlers[cmd](id_, path))
                 else:
                     self.socket.send('ERROR')
-                    logger().info('CMFH: Unknown command: %s', cmd)
+                    _logger().info('CMFH: Unknown command: %s', cmd)
             except zmq.Again:
                 pass
-            except zmq.ZMQError, zerr:
+            except zmq.ZMQError as zerr:
                 # context terminated so quit silently
                 if zerr.strerror == 'Context was terminated':
                     break
                 else:
-                    logger().exception('CMFH exception: %s', zerr.strerror)
-            except Exception, excp:
-                logger().exception('Exception in CMFH: %s', str(excp))
+                    _logger().exception('CMFH exception: %s', zerr.strerror)
+            except Exception as excp:
+                _logger().exception('Exception in CMFH: %s', str(excp))
                 self.socket.send('ERROR')
-        logger().debug('CMFH DESTROYED------------------------------')
+        _logger().debug('CMFH DESTROYED------------------------------')

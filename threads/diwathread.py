@@ -11,8 +11,18 @@ import threading
 import threads.common
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -41,8 +51,16 @@ class DIWA_THREAD(threading.Thread):
             is_me = diwa_thread == threading.current_thread()
             is_alive = diwa_thread.isAlive()
             if is_alive and not is_me:
-                logger().debug('KillAll: %s', diwa_thread.getName())
+                _logger().debug('KillAll: %s', diwa_thread.getName())
                 diwa_thread.stop()
+
+    def remove_self(self):
+        """
+        Removes self from the thread list, this should be used only when
+        the thread is sure to die soon.
+
+        """
+        DIWA_THREAD.thread_list.remove(self)
 
     def stop(self):
         """ Stop the thread. """

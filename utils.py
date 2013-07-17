@@ -91,8 +91,8 @@ def check_project_password(project_id, password):
     try:
         hs = hash_password(password)
         return controller.get_project_password(project_id) == hs
-    except Exception, e:
-        LOGGER.debug('CheckPassword exception: %s' % str(e))
+    except Exception as excp:
+        LOGGER.debug('CheckPassword exception: %s' % str(excp))
         return False
 
 
@@ -192,8 +192,8 @@ def GetMacForIp(ip):
             for ip_address in interface.IPAddress:
                 if ip_address == ip:
                     return str(interface.MACAddress).translate(None, ':')
-    except Exception, e:
-        LOGGER.exception("Exception in GetMacForIp: %s", str(e))
+    except Exception as excp:
+        LOGGER.exception("Exception in GetMacForIp: %s", str(excp))
     return None
 
 
@@ -222,16 +222,17 @@ def MapNetworkShare(letter, share=None):
     :type share: String
 
     """
+    logmsg = 'error mapping share %s %s %s'
     try:
         win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
-    except Exception, e:
-        if int(e[0]) != ERROR_NOT_CONNECTED:
-            LOGGER.exception("error mapping share %s %s %s", letter,
-                             share, str(e))
-    # Special case:
+    except Exception as excp:
+        # NOT_CONNECTED can be safely ignored as this is the state that
+        # we wished for in the beginning.
+        if int(excp[0]) != ERROR_NOT_CONNECTED:
+            LOGGER.exception(logmsg, letter, share, str(excp))
+    # If we still need to reconnect it.
     if share is not None:
         try:
             win32wnet.WNetAddConnection2(DISK, letter, share)
-        except Exception, e:
-            LOGGER.exception("error mapping share %s %s %s", letter, share,
-                             str(e))
+        except Exception as excp:
+            LOGGER.exception(logmsg, letter, share, str(excp))

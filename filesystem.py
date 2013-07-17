@@ -201,7 +201,7 @@ def get_current_wallpaper(win):
             LOGGER.debug('keyval2: ' + str(wallpaper_path))
             if (wallpaper_path) and len(wallpaper_path):
                 wallpaper = wallpaper_path
-    except (ValueError, IOError, OSError), excp:
+    except (ValueError, IOError, OSError) as excp:
         LOGGER.exception('get_current_wallpaper exception: %s', str(excp))
     if key is not None:
         CloseKey(key)
@@ -304,7 +304,7 @@ def open_file(filepath):
                 os.startfile(filepath)
             except OSError:
                 subprocess.call(('start', filepath), shell=True)
-    except OSError, excp:
+    except OSError as excp:
         # Subprocess.call failed!
         LOGGER.exception('Open file exception: %s', str(excp))
 
@@ -381,7 +381,7 @@ def screen_capture(path, node_id):
         nameform = str(event_id) + '_' + node_id + '_' + stringform + '.png'
         filepath = os.path.join(filepath, nameform)
         grab.save(filepath, format='PNG')
-    except (IOError, OSError), excp:
+    except (IOError, OSError) as excp:
         LOGGER.exception('screen_capture exception:%s', str(excp))
 
 
@@ -411,6 +411,10 @@ def search_file(filename, search_path, case_sensitive=True):
     return ''
 
 
+# TODO: Move snapshot to threads as a class...
+#       this procedure here requires us to import threads package
+#       which creates a circular dependency in the project AND
+#       this should anyways be a thread...
 def snapshot(path):
     """
     Start the worker thread for snapshot.
@@ -453,7 +457,7 @@ def snapshot_procedure(path):
         LOGGER.debug('snapshot filename: %s', name)
         with open(os.path.join(filepath, name), 'wb') as output:
             output.write(data)
-    except (IOError, OSError), excp:
+    except (IOError, OSError) as excp:
         # urllib2.URLError inherits IOError so both the write and url errors
         # are caught by this.
         LOGGER.exception('Snapshot exception: %s', str(excp))

@@ -5,16 +5,12 @@ Created on 27.6.2013
 
 """
 # Standard imports.
-
-# Third party imports.
-
-# System imports.
 from logging import getLevelName
 import os
 from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
                      CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
 
-# 3rd party imports.
+# Third party imports.
 import pyHook
 from wx import CallLater
 
@@ -28,11 +24,43 @@ from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
+class SNAPSHOT_THREAD(DIWA_THREAD):
+    """
+    Worker thread for non-UI jobs.
+
+    :param path: Filepath
+
+    """
+    def __init__(self, path):
+        DIWA_THREAD.__init__(self, name='Snapshot', args=(path,))
+        self.daemon = True
+        self.start()
+
+    def run(self):
+        pass  # Copy snapshot_procedure here.
+
+
+#: TODO:
+#    Does the execution actually happen in WORKER_THREAD when one
+#    of it's methods is called?
+#    If not this design is flawed and should be replaced by something
+#    like: WORKER_THREAD.add_callback(target_method, **kwargs)
+#
 class WORKER_THREAD(DIWA_THREAD):
     """
     Worker thread for non-UI jobs.
@@ -43,6 +71,8 @@ class WORKER_THREAD(DIWA_THREAD):
     def __init__(self, parent):
         DIWA_THREAD.__init__(self, name='CMFH')
         self.parent = parent
+        self.daemon = True
+        self.start()
 
     def check_responsive(self):
         """
@@ -51,17 +81,17 @@ class WORKER_THREAD(DIWA_THREAD):
         """
         if not self.parent.responsive and not self.parent.is_responsive:
             nodes = controller.get_active_responsive_nodes(diwavars.PGM_GROUP)
-            logger().debug('Responsive checking active: %s', str(nodes))
+            _logger().debug('Responsive checking active: %s', str(nodes))
             if not nodes:
                 if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
                     self.parent.SetResponsive()
-                    logger().debug('Setting self as responsive')
+                    _logger().debug('Setting self as responsive')
             else:
                 self.parent.responsive = str(nodes[0].wos_id)
                 if self.parent.responsive == self.parent.swnp.node.id:
                     self.parent.SetResponsive()
         logmsg = 'Responsive checked. Current responsive is: %s'
-        logger().debug(logmsg, str(self.parent.responsive))
+        _logger().debug(logmsg, str(self.parent.responsive))
 
     @staticmethod
     def add_project_registry_entry(reg_type):
@@ -100,8 +130,8 @@ class WORKER_THREAD(DIWA_THREAD):
         :type id: Integer
 
         """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' +
-                str(name), 'command']
+        keys = ['Software', 'Classes', '*', 'shell',
+                'DiWaCS: Open in %s' % name, 'command']
         key = ''
         for k, islast in IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -149,9 +179,9 @@ class WORKER_THREAD(DIWA_THREAD):
                         count += 1
                 except WindowsError:
                     break
-        except Exception, excp:
+        except Exception as excp:
             excp_string = 'Exception in remove_all_registry_entries: %s'
-            logger().exception(excp_string, str(excp))
+            _logger().exception(excp_string, str(excp))
         if main_key:
             CloseKey(main_key)
 
@@ -226,7 +256,7 @@ class WORKER_THREAD(DIWA_THREAD):
         vk_mod = pyHook.HookConstants.VKeyToID(value[0])
         vk_key = pyHook.HookConstants.VKeyToID(value[1])
         if (vk_mod == 0) or (vk_key == 0):
-            logger().exception('INVALID KEYCODES: %s, %s', value[0], value[1])
+            _logger().exception('INVALID KEYCODES: %s, %s', value[0], value[1])
             return
         diwavars.update_keys(vk_mod, vk_key)
 
@@ -238,11 +268,11 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_audio(parent, value):
         """ Short stub setter. """
-        logger().debug('AUDIO in config: %s', str(value))
+        _logger().debug('AUDIO in config: %s', str(value))
         value = eval(value)
         if value:
             diwavars.update_audio(value)
-            logger().debug('Starting audio recorder')
+            _logger().debug('Starting audio recorder')
             parent.StartAudioRecorder()
 
     @staticmethod
@@ -304,7 +334,7 @@ class WORKER_THREAD(DIWA_THREAD):
             'RESPONSIVE': WORKER_THREAD.__on_responsive
         }
         for key, value in config_object.items():
-            logger().debug('(' + key + '=' + value + ')')
+            _logger().debug('(' + key + '=' + value + ')')
             if key in handler:
                 handler[key](value)
             elif key == 'AUDIO':
@@ -317,23 +347,29 @@ class WORKER_THREAD(DIWA_THREAD):
         Docstring here.
 
         """
+        project_id = self.parent.diwa_state.current_project_id
+        session_id = self.parent.diwa_state.current_session_id
+        if (project_id < 1) or (session_id < 1):
+            return  # TODO: Define a new exception type and catch
+                    #       it in the UI design to display an
+                    #       informative pop-up about project and
+                    #       session.
+        event_id = controller.add_event(session_id, title, '')
+        path = controller.get_project_path(project_id)
         try:
-            project_id = self.parent.diwa_state.current_project_id
-            session_id = self.parent.diwa_state.current_session_id
-            ide = controller.add_event(session_id, title, '')
-            path = controller.get_project_path(project_id)
-            filesystem.Snaphot(path)
+            filesystem.snapshot(path)
             self.parent.SwnpSend('SYS', 'screenshot;0')
             if diwavars.AUDIO:
-                logger().debug('Buffering audio for %d seconds',
-                             diwavars.WINDOW_TAIL)
+                logmsg = 'Buffering audio for %d seconds.'
+                _logger().debug(logmsg, diwavars.WINDOW_TAIL)
                 self.parent.status_text.SetLabel('Recording...')
-                CallLater(diwavars.WINDOW_TAIL * 1000,
-                          self.parent.audio_recorder.save, ide, path)
+                CallLater(millis=diwavars.WINDOW_TAIL * 1000,
+                          callable=self.parent.audio_recorder.save,
+                          args=(event_id, path))
         except:
-            logger().exception('Create Event exception')
+            _logger().exception('Create Event exception.')
 
     def run(self):
-        """ Run the worker thread. """
+        """Run the worker thread."""
         while not self._stop.isSet():
             pass

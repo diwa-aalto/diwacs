@@ -332,7 +332,7 @@ class SWNP:
                     self.NODE_LIST.discard(node)
                 if len(to_be_removed) > 0:
                     pub.sendMessage('update_screens', update=True)
-            except Exception, excp:
+            except Exception as excp:
                 LOGGER.exception('Timeout Exception: %s', str(excp))
             sleep(TIMEOUT)
 
@@ -346,7 +346,7 @@ class SWNP:
             msg = msg_format % (self.id, int(self.node.screens),
                                 self.node.name, self.node.data)
             self.send('SYS', PREFIX_CHOICES[4], msg)
-        except ZMQError, excp:
+        except ZMQError as excp:
             LOGGER.exception('do_ping exception: %s', str(excp))
 
     def ping_routine(self, error_handler):
@@ -358,10 +358,10 @@ class SWNP:
         comp = None
         try:
             comp = controller.add_computer(self.node.name, self.ip, self.id)
-        except:
-            LOGGER.exception("Ping routine exception")
-        error = False
-        LOGGER.debug("Ping routine started")
+        except Exception as excp:
+            LOGGER.exception('Ping routine exception: %s', str(excp))
+        previous_success = False
+        LOGGER.debug('Ping routine started.')
         while not self.ping_stop.isSet():
             # Read envelope with address
             try:
@@ -369,16 +369,14 @@ class SWNP:
                 self.node.refresh()
                 if comp:
                     comp.screens = self.node.screens
-                    controller.refresh_computer(comp)
-                error = False
+                    success = controller.refresh_computer(comp)
+                    if not success and previous_success:
+                        error_handler.queue.append(CloseError)
+                    previous_success = success
                 sleep(PING_RATE)
-            except (exc.OperationalError, exc.DBAPIError):
-                if not error:
-                    error = True
-                    error_handler.queue.append(CloseError)
-            except Exception, excp:
+            except Exception as excp:
                 LOGGER.exception('Ping_routine exception: %s', str(excp))
-        LOGGER.debug("Ping routine closed")
+        LOGGER.debug('Ping routine closed.')
         error_handler.stop()
 
     def sub_routine(self, sub_urls):
@@ -419,15 +417,15 @@ class SWNP:
                     # Non-blocking mode was requested and no messages
                     # are available at the moment.
                     pass
-                except ValueError, excp:
+                except ValueError as excp:
                     LOGGER.debug('ValueError: %s - %s', str(contents),
                                  str(excp))
                 except (SystemExit, ContextTerminated, ZMQError):
                     self.terminating = True
                     LOGGER.debug('Exit sub routine')
                     break
-                except Exception, e:
-                    LOGGER.exception('SWNP EXCEPTION: %s', str(e))
+                except Exception as excp:
+                    LOGGER.exception('SWNP EXCEPTION: %s', str(excp))
         LOGGER.debug('Closing sub')
         while len(subscribers):
             sub = subscribers.pop()
@@ -512,7 +510,7 @@ class SWNP:
                     # are available at the moment or there was a parse
                     # error.
                     pass
-                except ValueError, excp:
+                except ValueError as excp:
                     LOGGER.exception('ValueError: %s', str(excp))
                 except (SystemExit, ContextTerminated):
                     # context associated with the specified
@@ -520,7 +518,7 @@ class SWNP:
                     self.terminating = True
                     LOGGER.exception('SYS-EXCPT: %s', str(excp))
                     break
-                except Exception, excp:
+                except Exception as excp:
                     LOGGER.info('SWNP MSG: %s', str(contents))
                     LOGGER.exception('SWNP_SYS EXCEPTION: %s', str(excp))
                     self.terminating = True
@@ -567,7 +565,7 @@ class SWNP:
         LOGGER.debug('closing threads')
         try:
             self.shutdown()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Close error: %s', str(excp))
         alive_sub = str(not self.sub_thread.isAlive())
         alive_sys = str(not self.sub_thread_sys.isAlive())

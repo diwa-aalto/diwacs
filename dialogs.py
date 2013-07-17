@@ -1,7 +1,9 @@
 """
 Created on 4.6.2013
 
-.. moduleauthor:: neriksso
+:platform: Windows Vista, Windows 7, Windows 8
+:synopsis: Define the pop-up dialogs for the application.
+:note: Requires WxPython.
 :author: neriksso
 
 """
@@ -19,7 +21,6 @@ from models import Company, Project
 import filesystem
 import utils
 from sqlalchemy.dialects.oracle.zxjdbc import SQLException
-import datetime
 
 
 LOGGER = None
@@ -81,7 +82,7 @@ def show_modal_and_destroy(class_, parent, params=None):
         else:
             dialog = class_(parent)
         result = dialog.ShowModal()
-    except Exception, excp:
+    except Exception as excp:
         LOGGER.exception('Exception in %s: %s', str(class_), str(excp))
     finally:
         try:
@@ -208,7 +209,7 @@ class AddProjectDialog(wx.Dialog):
             LOGGER.info('Created Project: %s (id=%d)', project.name,
                         project.id)
             result = project.id
-        except SQLException, excp:
+        except SQLException as excp:
             LOGGER.exception('Error in add project: %s', str(excp))
             self.EndModal(0)
             return
@@ -590,7 +591,7 @@ class ProjectAuthenticationDialog(wx.Dialog):
             password_checker = utils.check_project_password
             if password_checker(self.project_id, self.password.GetValue()):
                 result = 0
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('OnOk EXception: %s', str(excp))
             self.EndModal(1)
         self.EndModal(result)
@@ -831,7 +832,7 @@ class ProjectSelectDialog(wx.Dialog):
                          'self.diwa_state.current_project_id')
             try:
                 self.diwa_state.set_current_project(project_id)
-            except Exception, excp:
+            except Exception as excp:
                 LOGGER.exception('index_parent_exception: %s', str(excp))
         try:
             params = {'title': 'Project Selected',
@@ -844,7 +845,7 @@ class ProjectSelectDialog(wx.Dialog):
             self.GetParent().OnProject()
             self.GetParent().OnSession(None)
             self.GetParent().Refresh()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Project Selected Exception: %s', str(excp))
         LOGGER.debug('Asked to start session.')
         self.EndModal(0)
@@ -894,7 +895,7 @@ class ProjectSelectedDialog(wx.Dialog):
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
             self.SetFocus()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Dialog exception: %s', str(excp))
             self.EndModal(0)
 

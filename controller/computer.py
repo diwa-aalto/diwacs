@@ -17,8 +17,18 @@ from models import Computer
 import utils
 
 
-def logger():
-    """ Return controller logger. """
+def _logger():
+    """
+    Get the current logger for controller package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return controller.common.LOGGER
 
 
@@ -58,7 +68,7 @@ def add_computer(name, pc_ip, wos_id):
                 computer = temp_pc
                 database.commit()
         else:
-            logger().debug('no computer instance  found')
+            _logger().debug('no computer instance  found')
             temp_pc = Computer(ip=ip_int, name=name, mac=wanted_mac,
                                wos_id=wos_id)
             database.add(temp_pc)
@@ -66,8 +76,8 @@ def add_computer(name, pc_ip, wos_id):
             database.commit()
         if computer:
             database.expunge(computer)
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('add_computer exception: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().exception('add_computer exception: %s', str(excp))
     if database:
         database.close()
     return computer
@@ -86,7 +96,7 @@ def get_active_computers(timeout):
     :rtype: List of :py:class:`models.Computer`
 
     """
-    logger().debug('get_active_computers called with timeout %d', int(timeout))
+    _logger().debug('get_active_computers called with timeout %d', int(timeout))
     result = []
     database = None
     if not timeout:
@@ -141,12 +151,13 @@ def refresh_computer(computer):
     :param computer: The computer to refresh.
     :type computer: :py:class:`models.Computer`
 
-    :returns: The Refreshed computer.
-    :rtype: :py:class:`models.Computer`
+    :returns: Success
+    :rtype: Boolean
 
     """
     database = None
-    target = computer
+    target = None
+    result = False
     try:
         database = controller.common.connect_to_database()
         try:
@@ -154,8 +165,11 @@ def refresh_computer(computer):
             temp_computer = temp_computer.filter(Computer.id == computer.id)
             temp_computer = temp_computer.one()
             target = temp_computer
+            # Computer already exists...
         except sqlalchemy.exc.SQLAlchemyError:
             pass
+        if not target:
+            target = computer
         target.time = sqlalchemy.func.now()
         target.responsive = diwavars.RESPONSIVE
         target.name = controller.common.NODE_NAME
@@ -163,17 +177,12 @@ def refresh_computer(computer):
         database.add(target)
         database.commit()
         database.expunge(target)
-    except sqlalchemy.exc.DBAPIError, excp:
-        try:
-            database.expunge(target)
-        except sqlalchemy.exc.SQLAlchemyError:
-            pass
-        database.close()
-        logger().debug('exc.DBAPIError detected: %s', str(excp))
-        raise excp
+        result = True
+    except sqlalchemy.exc.SQLAlchemyError as excp: 
+        _logger().debug('SQLAlchemyError detected: %s', str(excp))
     if database:
         database.close()
-    return computer
+    return result
 
 
 def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
@@ -213,9 +222,9 @@ def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
         database.add(computer)
         database.commit()
         database.expunge(computer)
-    except sqlalchemy.exc.SQLAlchemyError, excp:
+    except sqlalchemy.exc.SQLAlchemyError as excp:
         success = False
-        logger().debug('exc.DBAPIError detected: %s', str(excp))
+        _logger().debug('exc.DBAPIError detected: %s', str(excp))
     if database:
         database.close()
     return success
@@ -248,7 +257,7 @@ def add_computer_to_session(session, name, pc_ip, wos_id):
         database.commit()
         database.expunge(session)
         database.expunge(comp)
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().debug('Exception in add_computer_to_session: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().debug('Exception in add_computer_to_session: %s', str(excp))
     if database:
         database.close()

@@ -17,8 +17,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -47,5 +57,5 @@ class CONNECTION_ERROR_THREAD(DIWA_THREAD):
                     msg = 'ConnectionErrorHandler'
                     CallAfter(pub.sendMessage, msg, error=True)
                 except Exception:
-                    logger().exception('Connection error checker exception')
+                    _logger().exception('Connection error checker exception')
             sleep(0.05)

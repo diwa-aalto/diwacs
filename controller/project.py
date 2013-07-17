@@ -21,8 +21,18 @@ from models import (Action, Activity, Company, File, FileAction, Project,
 import utils
 
 
-def logger():
-    """ Return controller logger. """
+def _logger():
+    """
+    Get the current logger for controller package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return controller.common.LOGGER
 
 
@@ -58,9 +68,9 @@ def add_file_to_project(filepath, project_id):
             database.add(project_file)
             database.commit()
         path = newpath
-    except sqlalchemy.exc.SQLAlchemyError, excp:
+    except sqlalchemy.exc.SQLAlchemyError as excp:
         logmsg = 'Add file to project(%d) exception: %s'
-        logger().exception(logmsg, (project_id, str(excp)))
+        _logger().exception(logmsg, (project_id, str(excp)))
     if database:
         database.close()
     return path
@@ -103,7 +113,7 @@ def add_project(data):
         if not directory_set:
             database.close()
             return None
-        logger().debug('Adding project: %s', name)
+        _logger().debug('Adding project: %s', name)
         company = database.query(Company)
         company_name_filter = Company.name.contains(company_data['name'])
         company = company.filter(company_name_filter).one()
@@ -120,7 +130,7 @@ def add_project(data):
         database.commit()
         result = project
     except sqlalchemy.exc.SQLAlchemyError:
-        logger().exception('Add project exception')
+        _logger().exception('Add project exception')
     if database:
         database.close()
     return result
@@ -183,9 +193,9 @@ def create_file_action(path, action_id, session_id, project_id):
         database.add(file_object)
         database.add(file_action_object)
         database.commit()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
+    except sqlalchemy.exc.SQLAlchemyError as excp:
         database.close()
-        raise excp
+        _logger().exception('Failed to create FileAction: %s', str(excp))
     database.close()
 
 
@@ -389,7 +399,7 @@ def edit_project(id_number, row):
             database.add(record)
             database.commit()
     except sqlalchemy.exc.SQLAlchemyError:
-        logger().exception('edit_project exception')
+        _logger().exception('edit_project exception')
     if database:
         database.close()
 
@@ -403,7 +413,7 @@ def init_sync_project_directory(project_id):
 
     """
     database = None
-    logger().debug('init_sync_project_dir(%d)', project_id)
+    _logger().debug('init_sync_project_dir(%d)', project_id)
     if not project_id or project_id < 1:
         return
     try:
@@ -414,7 +424,7 @@ def init_sync_project_directory(project_id):
         if not project_path:
             database.close()
             return
-        logger().debug('Project path: %s', project_path)
+        _logger().debug('Project path: %s', project_path)
         project_filepaths = [project.path for project in project_files]
         for root, directories, files in os.walk(project_path):
             for filename in files:
@@ -425,16 +435,16 @@ def init_sync_project_directory(project_id):
                     index = project_filepaths.index(target_path)
                     project_files.pop(index)
                     project_filepaths.pop(index)
-        logger().debug('Pathwalk complete!')
+        _logger().debug('Pathwalk complete!')
         project_filepaths = []
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
             file_.project_id = None
             database.add(file_)
-        logger().debug('Path processing complete.')
+        _logger().debug('Path processing complete.')
         database.commit()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('Init sync project dir error: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().exception('Init sync project dir error: %s', str(excp))
     if database:
         database.close()
 
@@ -461,13 +471,13 @@ def is_project_file(filename, project_id):
         basename = os.path.basename(filename)
         if isinstance(basename, str):
             basename = unicode(basename, errors='replace')
-        logger().debug('is_project_file %s %s', str(type(filename)), filename)
+        _logger().debug('is_project_file %s %s', str(type(filename)), filename)
         files = database.query(File)
         files = files.filter(File.project_id == project_id,
                              File.path.like(u'%' + basename))
         files = files.order_by(sqlalchemy.desc(File.id)).all()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('is_project_file query exception: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().exception('is_project_file query exception: %s', str(excp))
         files = []
     if database:
         database.close()

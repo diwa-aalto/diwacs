@@ -18,8 +18,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -43,7 +53,7 @@ class CHECK_UPDATE(DIWA_THREAD):
 
         """
         url = diwavars.PAD_URL
-        logger().debug('CHECK_UPDATE called with pad-url: %s', url)
+        _logger().debug('CHECK_UPDATE called with pad-url: %s', url)
         result = None
         try:
             result = urllib2.urlopen(url)
@@ -64,8 +74,8 @@ class CHECK_UPDATE(DIWA_THREAD):
             dlg = UpdateDialog(self.latest_version, url)
             dlg.ShowModal()
             dlg.Destroy()
-        except Exception, excp:
-            logger().exception('Update Dialog Exception: %s', str(excp))
+        except Exception as excp:
+            _logger().exception('Update Dialog Exception: %s', str(excp))
 
     def run(self):
         """
@@ -77,21 +87,21 @@ class CHECK_UPDATE(DIWA_THREAD):
         try:
             padfile = CHECK_UPDATE.get_pad()
             if padfile is None:
-                logger().exception('Pad could not be found in URL.')
+                _logger().exception('Pad could not be found in URL.')
                 return
             tree = parse(padfile)
         except urllib2.URLError:
-            logger().exception('Update checker exception retrieving pad-file')
+            _logger().exception('Update checker exception retrieving pad-file')
             return
         except XMLSyntaxError:
-            logger().exception('Update checker exception parsing pad-file')
+            _logger().exception('Update checker exception parsing pad-file')
             return
         except ParseError:
-            logger().exception('Update checker exception parsing pad-file')
+            _logger().exception('Update checker exception parsing pad-file')
             return
-        except Exception, excp:
+        except Exception as excp:
             logstr = 'Update checker exception, generic: %s'
-            logger().exception(logstr, str(excp))
+            _logger().exception(logstr, str(excp))
             return
         self.latest_version = tree.findtext('Program_Info/Program_Version')
         url_p = 'Proram_Info/Web_Info/Application_URLs/Primary_Download_URL'

@@ -21,6 +21,21 @@ from threads.diwathread import DIWA_THREAD
 CAPTURE = False
 
 
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
+    return threads.common.LOGGER
+
+
 def set_capture(value):
     """
     Set's the capture value for threads.
@@ -31,11 +46,6 @@ def set_capture(value):
     """
     global CAPTURE
     CAPTURE = value
-
-
-def logger():
-    """ Get the common logger. """
-    return threads.common.LOGGER
 
 
 class MOUSE_CAPTURE(DIWA_THREAD):
@@ -73,8 +83,7 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                         for id_ in self.parent.selected_nodes:
                             self.swnp(id_, msg)
                 else:
-                    msg = 'mouse_event;%d,%d' % (int(event.Message),
-                                                 int(event.Wheel))
+                    msg = 'mouse_event;%d,%d' % (event.Message, event.Wheel)
                     for id_ in self.parent.selected_nodes:
                         self.swnp(id_, msg)
 
@@ -164,7 +173,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
             if CAPTURE:
                 self.mouse_thread.queue.append(event)
         except:
-            logger().exception('MouseEventCatch exception')
+            _logger().exception('MouseEventCatch exception')
         # return True to pass the event to other handlers
         return not CAPTURE
 
@@ -176,7 +185,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
         key = event.KeyID
         if CAPTURE:
             if key == diwavars.KEY and self.windowskeydown:
-                logger().debug('ESCAPE - CAPTURE')
+                _logger().debug('ESCAPE - CAPTURE')
                 set_capture(False)
                 self.reset_mouse_events()
                 for id_ in self.parent.selected_nodes:

@@ -15,20 +15,34 @@ import controller.activity
 from models import Activity, Event, Project, Session
 
 
-def logger():
-    """ Return controller logger. """
+def _logger():
+    """
+    Get the current logger for controller package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return controller.common.LOGGER
 
 
 def add_event(session_id, title, description):
     """
     Adds an event to the database.
+    Returns the ID field of the added event.
 
     :param session: The current session.
     :type session: :class:`models.Session`
 
     :param description: Description of the event.
     :type description: String
+
+    :returns: The event ID.
+    :rtype: Integer
 
     """
     event_id = None
@@ -44,10 +58,10 @@ def add_event(session_id, title, description):
         database.commit()
         event_id = event.id
     except sqlalchemy.exc.SQLAlchemyError:
-        logger().exception('add event exception.')
+        _logger().exception('add event exception.')
     if database:
         database.close()
-    logger().info('A new event added.')
+    _logger().info('A new event added.')
     return event_id
 
 
@@ -157,7 +171,7 @@ def end_session(session_id):
     database = None
     if not session_id or session_id < 1:
         return
-    logger().debug('end_session(%d)', session_id)
+    _logger().debug('end_session(%d)', session_id)
     try:
         database = controller.common.connect_to_database()
         session = database.query(Session).filter(Session.id == session_id)
@@ -165,8 +179,8 @@ def end_session(session_id):
         session.endtime = sqlalchemy.func.now()
         database.add(session)
         database.commit()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('end_session exception: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        _logger().exception('end_session exception: %s', str(excp))
     if database:
         database.close()
 

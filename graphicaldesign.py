@@ -191,9 +191,9 @@ class DropTarget(wx.PyDropTarget):
             command = 'open;%s' % str(filenames)
             self.parent.SwnpSend(str(iterated), command)
             self.my_send_dialogs.remove(deltay)
-        except Exception, error:
+        except Exception as excp:
             LOGGER.exception('OnData exception: %s - %s',
-                             filenames, str(error))
+                             filenames, str(excp))
 
     def OnData(self, x, y, d):
         """
@@ -225,7 +225,7 @@ class DropTarget(wx.PyDropTarget):
                 LOGGER.debug('Sent wx_image to %d with length %d',
                              int(node_id), len(msg) - len('wx_image;'))
                 image_buffer.close()
-            except IOError, excp:
+            except IOError as excp:
                 LOGGER.debug('IOError while sending wx_image: %s',
                              str(excp))
         if data_type in [wx.DF_UNICODETEXT, wx.DF_TEXT]:
@@ -244,7 +244,7 @@ class DropTarget(wx.PyDropTarget):
                                                name='on_data',
                                                args=[node_id, filenames])
                 data_thread.run()
-            except (ValueError, IOError, OSError), excp:
+            except (ValueError, IOError, OSError) as excp:
                 LOGGER.exception('CreateSendThread: %s', str(excp))
         else:
             LOGGER.debug('Unknown filedrop format: %s', str(data_type))
@@ -587,7 +587,7 @@ class GUItemplate(wx.Frame):
                 self.filedrops.insert(i, drop_target)
                 sbox.Add(screen)
                 self.screens.Add(sbox, 0, wx.LEFT | wx.RIGHT, border=3)
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('Init screens exception: %s', str(excp))
         self.Layout()
         self.Refresh()
@@ -607,8 +607,8 @@ class GUItemplate(wx.Frame):
                                 str(node_id) + '.png')
         try:
             filesystem.save_screen(img_path)
-        except Exception, e:
-            LOGGER.exception('save_screen exception: %s', str(e))
+        except Exception as excp:
+            LOGGER.exception('save_screen exception: %s', str(excp))
         self.screens = wx.BoxSizer(wx.HORIZONTAL)
         self.InitScreens()
 
@@ -696,7 +696,7 @@ class GUItemplate(wx.Frame):
             self.closebtn.faceDnClr = self.panel.GetBackgroundColour()
             self.closebtn.SetToolTip(wx.ToolTip('Exit'))
             btnsizer.Add(self.closebtn, 0, wx.RIGHT, 1)
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('UI exception: %s', str(excp))
 
         vbox.Add(btnsizer, 0, wx.EXPAND | wx.BOTTOM, 3)

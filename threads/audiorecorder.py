@@ -21,8 +21,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -98,8 +108,8 @@ class AudioRecorder(DIWA_THREAD):
                     element = self.buffer.popleft()
                     del element
                 self.buffer.append(data)
-            except IOError, excp:
-                logger().exception('Error recording: %s', str(excp))
+            except IOError as excp:
+                _logger().exception('Error recording: %s', str(excp))
 
     def save(self, ide, path):
         """Save the buffer to a file."""
@@ -119,5 +129,5 @@ class AudioRecorder(DIWA_THREAD):
             wave_file.close()
             CallAfter(self.parent.ClearStatusText)
         except:
-            logger().exception('audio save exception')
+            _logger().exception('audio save exception')
             CallAfter(self.parent.ClearStatusText)

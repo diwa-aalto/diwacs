@@ -737,8 +737,9 @@ class GraphicalUserInterface(GUItemplate):
                 self.Destroy()
                 LOGGER.info('Application closed!')
                 wx.GetApp().ExitMainLoop()
-            except CloseError, excp:
-                raise excp
+            except CloseError:
+                raise   # Raise without parameter rises the original exception.
+                        # This also preseves the original traceback.
             except Exception, e:
                 LOGGER.exception('Exception in Close: %s', str(e))
                 for thread in threading.enumerate():
