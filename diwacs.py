@@ -5,6 +5,10 @@ Created on 8.5.2012
 :author: neriksso
 
 """
+#:TODO: Consider replacing "formatstring % (args, ...)" with
+#       "formatstring.format(args)"
+
+
 # Critical imports
 import sys
 import diwavars

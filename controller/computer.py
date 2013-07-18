@@ -77,7 +77,9 @@ def add_computer(name, pc_ip, wos_id):
         if computer:
             database.expunge(computer)
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        _logger().exception('add_computer exception: %s', str(excp))
+        log_msg = 'Exception in add_computer call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()
     return computer
@@ -96,10 +98,9 @@ def get_active_computers(timeout):
     :rtype: List of :py:class:`models.Computer`
 
     """
-    _logger().debug('get_active_computers called with timeout %d', int(timeout))
     result = []
     database = None
-    if not timeout:
+    if (timeout is None) or timeout < 1:
         return result
     try:
         database = controller.common.connect_to_database()
@@ -107,10 +108,11 @@ def get_active_computers(timeout):
         my_filter = sqlalchemy.func.timestampdiff(diff_unit, Computer.time,
                                                   sqlalchemy.func.now())
         pcs = database.query(Computer)
-        pcs = pcs.filter(my_filter < timeout).all()
-        result = pcs
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
+        result = pcs.filter(my_filter < timeout).all()
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        log_msg = 'Exception in get_active_computers call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()
     return result
@@ -119,6 +121,9 @@ def get_active_computers(timeout):
 def get_active_responsive_nodes(pgm_group):
     """
     Return the wos_id fields of all active responsive nodes.
+
+    .. note::
+        This uses 10 seconds as timeout for definition "not active".
 
     :param pgm_group: The responsive group we want.
     :type pgm_group: Integer
@@ -158,6 +163,8 @@ def refresh_computer(computer):
     database = None
     target = None
     result = False
+    if computer is None:
+        return result
     try:
         database = controller.common.connect_to_database()
         try:
@@ -165,10 +172,8 @@ def refresh_computer(computer):
             temp_computer = temp_computer.filter(Computer.id == computer.id)
             temp_computer = temp_computer.one()
             target = temp_computer
-            # Computer already exists...
         except sqlalchemy.exc.SQLAlchemyError:
-            pass
-        if not target:
+            # Computer did not already exist...
             target = computer
         target.time = sqlalchemy.func.now()
         target.responsive = diwavars.RESPONSIVE
@@ -178,8 +183,10 @@ def refresh_computer(computer):
         database.commit()
         database.expunge(target)
         result = True
-    except sqlalchemy.exc.SQLAlchemyError as excp: 
-        _logger().debug('SQLAlchemyError detected: %s', str(excp))
+    except sqlalchemy.exc.SQLAlchemyError as excp:
+        log_msg = 'Exception in refresh_computer call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()
     return result
@@ -222,9 +229,11 @@ def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
         database.add(computer)
         database.commit()
         database.expunge(computer)
+        success = True
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        success = False
-        _logger().debug('exc.DBAPIError detected: %s', str(excp))
+        log_msg = 'Exception in refresh_computer_by_wos_id call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()
     return success
@@ -258,6 +267,8 @@ def add_computer_to_session(session, name, pc_ip, wos_id):
         database.expunge(session)
         database.expunge(comp)
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        _logger().debug('Exception in add_computer_to_session: %s', str(excp))
+        log_msg = 'Exception in add_computer_to_session call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()

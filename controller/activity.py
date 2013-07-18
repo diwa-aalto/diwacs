@@ -78,7 +78,8 @@ def add_activity(project_id, pgm_group, session_id=None, activity_id=None):
         database.expunge(activity)
         result = activity.id
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        _logger().exception('add_activity exception: %s', str(excp))
+        log_msg = 'Exception on add_activity call: {exception!s}'
+        _logger().exception(log_msg.format(exception=excp))
     if database:
         database.close()
     return result

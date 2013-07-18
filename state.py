@@ -42,7 +42,7 @@ def __init_logger():
     """
     global LOGGER
     config.fileConfig('logging.conf')
-    LOGGER = getLogger('guitemplates')
+    LOGGER = getLogger('state')
 
 
 def __set_logger_level(level):
@@ -600,7 +600,8 @@ class State(object):
         elif project and self.current_project_id != project_id:
             self.current_project_id = project_id
             self.current_project = project
-            LOGGER.info('Project name is %s', project.name)
+            LOGGER.info('Project name is %s%s', project.name,
+                        ' (responsive)' if self.is_responsive else '')
             self.worker.remove_all_registry_entries()
             self.worker.add_project_registry_entry('*')
             self.worker.add_project_registry_entry('Folder')
@@ -639,12 +640,15 @@ class State(object):
                         del self.project_folder_observer
                 except NameError:
                     pass
+                LOGGER.debug('Initialize observer!')
                 self.project_folder_observer = Observer()
+                #: TODO: Debug if this is actually initialized sometimes.
                 file_event_handler = controller.PROJECT_FILE_EVENT_HANDLER
                 pfevthandler = file_event_handler(self.current_project_id)
                 ppath = controller.get_project_path(self.current_project_id)
                 self.project_folder_observer.schedule(pfevthandler, path=ppath,
                                                       recursive=True)
+                LOGGER.debug('Starting observer for file-events now...')
                 self.project_folder_observer.start()
             self.is_responsive = True
             self.swnp.set_responsive('responsive')

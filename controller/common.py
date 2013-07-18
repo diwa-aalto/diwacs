@@ -54,18 +54,21 @@ ENGINE = None  # create_engine(DATABASE, echo=True)
 NODE_NAME = ''
 NODE_SCREENS = 0
 ACTIONS = {
-                       1: 'Created',
-                       2: 'Deleted',
-                       3: 'Updated',
-                       4: 'Renamed from something',
-                       5: 'Renamed to something',
-                       6: 'Opened',
-                       7: 'Closed',
-            }
+   1: 'Created',
+   2: 'Deleted',
+   3: 'Updated',
+   4: 'Renamed from something',
+   5: 'Renamed to something',
+   6: 'Opened',
+   7: 'Closed',
+}
 
 
 def get_action_id_by_name(action_name):
-    """ Get the static ID of action name. """
+    """
+    Get the static ID of action name.
+
+    """
     for temp_id, temp_name in ACTIONS:
         if temp_name == action_name:
             return temp_id
@@ -78,7 +81,8 @@ def update_database():
 
     .. note::
         This only works when DB_STRING is completely defined by
-        the log reader.
+        the log reader as otherwise the create_engine would cause
+        an exception.
 
     """
     global ENGINE
@@ -113,7 +117,7 @@ def create_all():
     Create tables to the database.
 
     """
-    if not ENGINE:
+    if ENGINE is None:
         return
     try:
         database = connect_to_database()
@@ -122,12 +126,14 @@ def create_all():
         database.execute('SET foreign_key_checks = 1')
         database.commit()
         Base.metadata.create_all(ENGINE)  # @UndefinedVariable
-        for xy_tuple in ACTIONS.items():
-            database.add(Action(xy_tuple[1]))
+        for (action_id, action_name) in ACTIONS.items():
+            database.add(Action(action_name))
         database.commit()
         database.close()
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        LOGGER.exception('create_all Exception: %s', str(excp))
+        log_msg = 'Exception on create_all call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        LOGGER.exception(log_msg)
 
 
 def connect_to_database(expire=False):
@@ -141,7 +147,7 @@ def connect_to_database(expire=False):
     :rtype: :py:class:`sqlalchemy.orm.session.Session`
 
     """
-    if not ENGINE:
+    if ENGINE is None:
         LOGGER.exception('No engine!')
         return None
     initializer = sqlalchemy.orm.sessionmaker
@@ -163,6 +169,8 @@ def delete_record(record_model, id_number):
     :rtype: Boolean
 
     """
+    database = None
+    result = False
     try:
         database = connect_to_database()
         record = database.query(record_model).filter_by(id=id_number).one()
@@ -170,16 +178,20 @@ def delete_record(record_model, id_number):
             for session in record.sessions:
                 LOGGER.debug(str(session))
                 database.delete(session)
-            db_command = 'Delete from activity where project_id=%d'
-            database.execute(db_command % id_number)
+            db_command = 'DELETE FRM activity WHERE project_id={project_id}'
+            db_command = db_command.format(project_id=id_number)
+            database.execute(db_command)
         database.delete(record)
         database.commit()
-        database.close()
-        return True
+        result = True
     except sqlalchemy.exc.SQLAlchemyError:
-        excp_string = 'Delete record exception model %s id %d.'
-        LOGGER.exception(excp_string, record_model, id_number)
-        return False
+        log_msg = ('Delete record exception model {model_name!s} with '
+                   'id {id_number}.')
+        log_msg = log_msg.format(model_name=record_model, id_number=id_number)
+        LOGGER.exception(log_msg)
+    if database is not None:
+        database.close()
+    return result
 
 
 def get_or_create(database, model, **kwargs):
@@ -194,10 +206,12 @@ def get_or_create(database, model, **kwargs):
 
     :returns: An object of the desired model.
 
+    :throws: :py:class:`sqlalchemy.exc.SQLAlchemyException`
+
      """
     instance = database.query(model).filter_by(**kwargs)
     instance = instance.order_by(sqlalchemy.desc(model.id)).first()
-    if instance:
+    if instance is not None:
         return instance
     if 'path' in kwargs and 'project_id' in kwargs:
         project = database.query(Project)
@@ -218,13 +232,17 @@ def test_connection():
     :rtype: Boolean
 
     """
+    database = None
+    result = False
     try:
         database = connect_to_database()
-        if not database:
-            return False
         database.query(Project).count()
         database.close()
-        return True
+        result = True
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        LOGGER.exception('EXCPT_TEST_CONNECTION: %s', str(excp))
-        return False
+        log_msg = 'Exception in test_connection call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        LOGGER.exception(log_msg)
+    if database is not None:
+        database.close()
+    return result
