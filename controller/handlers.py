@@ -38,6 +38,7 @@ def _logger():
 class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
     """
     Handler for FileSystem events on project folder.
+    It uses watchdog library internally.
 
     :param project_id: Project id from database.
     :type project_id: Integer
@@ -166,6 +167,8 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         """
         On_modified event handler.
 
+        This should get called when a project file has been moved.
+
         - If the file exists in database:
             - If the target path is inside project directory, change the\
             path entry in database.
@@ -189,7 +192,6 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
             database.close()
 
 
-#:TODO: Just merge this with our PROJECT_FILE_EVENT_HANDLER...
 class SCAN_HANDLER(FileSystemEventHandler):
     """
     Handler for FileSystem events on SCANNING folder.
@@ -213,6 +215,7 @@ class SCAN_HANDLER(FileSystemEventHandler):
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
 
         """
+        database = None
         try:
             project_path = controller.project.get_project_path(self.project_id)
             if not project_path:
@@ -221,8 +224,23 @@ class SCAN_HANDLER(FileSystemEventHandler):
             basename = os.path.basename(file_path)
             _logger().debug('on_created at: %s (%s)', project_path, basename)
             new_path = os.path.join(project_path, basename)
-            if 'Scan' in file_path:
-                sleep(60)
+            try:
+                # Let's build the directory path to the file.
+                path_parts = os.path.dirname(file_path)
+                path_parts = os.path.splitdrive(path_parts)[1]  # (drive, path)
+                # Now it is for example: [this part]
+                # C:[\Some\path\To\dir]\myfile.txt
+                path_parts = path_parts.strip(os.path.sep)
+                path_parts = path_parts.split(os.path.sep)
+                # ['Some', 'path', 'To', 'dir']
+                path_parts = [part.lower() for part in path_parts]
+                # ['some', 'path', 'to', 'dir']
+                if 'scan' in path_parts:
+                    # The file is a subdirectory of "scan" folder in
+                    # some sense.
+                    sleep(60)
+            except (IndexError, ValueError):
+                pass
             shutil.copy2(file_path, new_path)
             database = controller.common.connect_to_database()
             project = database.query(Project)
@@ -231,12 +249,17 @@ class SCAN_HANDLER(FileSystemEventHandler):
             file_object = File(path=new_path, project=project)
             action_object = database.query(Action).filter(Action.id == 1).one()
             file_action_object = FileAction(file_object, action_object)
-            _logger().debug('FileAction: %s', str(file_action_object))
             database.add(file_object)
             database.add(file_action_object)
             database.commit()
-            database.close()
+            log_msg = ('FileAction FILE(id={file_id}, name="{file_name}") '
+                       'ACTION (id=1, name="Created")')
+            log_msg = log_msg.format(file_id=file_object.id,
+                                     file_name=basename)
+            _logger().debug(log_msg)
         except Exception as excp:
             log_msg = 'Exception in SCAN HANDLER: {exception!s}'
             log_msg = log_msg.format(exception=excp)
             _logger().exception(log_msg)
+        if database:
+            database.close()

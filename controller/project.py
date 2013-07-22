@@ -8,6 +8,7 @@ Created on 28.6.2013
 import controller.common
 
 # System imports.
+import sys
 import os
 
 # Third party imports.
@@ -413,7 +414,9 @@ def init_sync_project_directory(project_id):
 
     """
     database = None
-    _logger().debug('init_sync_project_dir(%d)', project_id)
+    log_msg = 'init_sync_project_directory project ID = {project_id}'
+    log_msg = log_msg.format(project_id=project_id)
+    _logger().debug(log_msg)
     if not project_id or project_id < 1:
         return
     try:
@@ -424,27 +427,27 @@ def init_sync_project_directory(project_id):
         if not project_path:
             database.close()
             return
-        _logger().debug('Project path: %s', project_path)
         project_filepaths = [project.path for project in project_files]
-        for root, directories, files in os.walk(project_path):
-            for filename in files:
-                target_path = os.path.join(root, filename)
-                if target_path not in project_filepaths:
-                    add_file_to_project(target_path, project_id)
+        for root, directories, basenames in os.walk(project_path):
+            filepaths = [os.path.join(root, name) for name in basenames]
+            for filepath in filepaths:
+                if filepath not in project_filepaths:
+                    add_file_to_project(filepath, project_id)
                 else:
-                    index = project_filepaths.index(target_path)
+                    index = project_filepaths.index(filepath)
                     project_files.pop(index)
                     project_filepaths.pop(index)
-        _logger().debug('Pathwalk complete!')
         project_filepaths = []
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
             file_.project_id = None
             database.add(file_)
-        _logger().debug('Path processing complete.')
         database.commit()
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        _logger().exception('Init sync project dir error: %s', str(excp))
+        log_msg = ('Exception in Initial project directory synchronization '
+                   'call: {exception!s}')
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
     if database:
         database.close()
 
@@ -464,9 +467,18 @@ def is_project_file(filename, project_id):
 
     """
     database = None
+    # Python3 has a different str definition (=unicode)
+    # and unicode is not defined. Although the module is for
+    # python 2.X we try to support 3.X also.
+    py3k = sys.version_info >= (3, 0)
     try:
-        if isinstance(filename, str):
-            filename = unicode(filename, errors='replace')
+        if py3k:
+            # str is unicode in 3.X and this just enforces the type.
+            filename = str(filename)
+        else:
+            # In 2.X we can have either str or unicode...
+            if isinstance(filename, str):
+                filename = unicode(filename, errors='replace')
         database = controller.common.connect_to_database()
         basename = os.path.basename(filename)
         if isinstance(basename, str):
@@ -477,7 +489,9 @@ def is_project_file(filename, project_id):
                              File.path.like(u'%' + basename))
         files = files.order_by(sqlalchemy.desc(File.id)).all()
     except sqlalchemy.exc.SQLAlchemyError as excp:
-        _logger().exception('is_project_file query exception: %s', str(excp))
+        log_msg = 'Exception in is_project_file call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        _logger().exception(log_msg)
         files = []
     if database:
         database.close()

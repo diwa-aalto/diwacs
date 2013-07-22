@@ -644,9 +644,9 @@ class State(object):
                 self.project_folder_observer = Observer()
                 #: TODO: Debug if this is actually initialized sometimes.
                 file_event_handler = controller.PROJECT_FILE_EVENT_HANDLER
-                pfevthandler = file_event_handler(self.current_project_id)
-                ppath = controller.get_project_path(self.current_project_id)
-                self.project_folder_observer.schedule(pfevthandler, path=ppath,
+                event_handler = file_event_handler(self.current_project_id)
+                path = controller.get_project_path(self.current_project_id)
+                self.project_folder_observer.schedule(event_handler, path,
                                                       recursive=True)
                 LOGGER.debug('Starting observer for file-events now...')
                 self.project_folder_observer.start()

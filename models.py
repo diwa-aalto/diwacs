@@ -4,16 +4,12 @@ Created on 23.5.2012
 
 .. moduleauthor:: neriksso
 :author: neriksso
-:warning: Requires :py:mod:`sqlalchemy` and :py:mod:`pywin32`
+:note: Requires :py:mod:`sqlalchemy` and :py:mod:`pywin32`
 :synopsis: Used to represent the different database structures on DiWa.
 
 """
 import datetime
-import os
 #import time
-from time import sleep
-import win32com.client
-import pythoncom
 from sqlalchemy import Column, ForeignKey, Table, sql, text
 from sqlalchemy.types import BOOLEAN, DATETIME, INTEGER, SMALLINT, String
 # from sqlalchemy.dialects import mysql
@@ -42,17 +38,38 @@ class Company(Base):
 
     """
     __tablename__ = 'company'
-    id = Column(INTEGER, primary_key=True, nullable=False, autoincrement=True,
-                default=text("coalesce(max(company.id),0)+1 from company"))
-    name = Column(String(50, convert_unicode=True), nullable=False)
+
+    id = Column(
+        name='id',
+        type_=INTEGER,
+        primary_key=True,
+        nullable=False,
+        autoincrement=True,
+        default=text('COALESCE(MAX(company.id),0)+1 FROM company')
+    )
+
+    name = Column(
+        name='name',
+        type_=String(
+            length=50,
+            collation='utf8_general_ci',
+            convert_unicode=True
+        ),
+        nullable=False
+    )
 
     def __init__(self, name):
         self.name = name
+
+    def __str__(self):
+        return self.name
 
 
 class User(Base):
     """
     A class representation of a user.
+
+    :note: Currently not used anywhere.
 
     Fields:
         * :py:attr:`id`\
@@ -90,12 +107,56 @@ class User(Base):
 
     """
     __tablename__ = 'user'
-    id = Column(INTEGER, primary_key=True, nullable=False, autoincrement=True,
-                default=text("coalesce(max(user.id),0)+1 from user"))
-    name = Column(String(50, convert_unicode=True), nullable=False)
-    email = Column(String(100, convert_unicode=True), nullable=True)
-    title = Column(String(50, convert_unicode=True), nullable=True)
-    department = Column(String(100, convert_unicode=True), nullable=True)
+
+    id = Column(
+        name='id',
+        type_=INTEGER,
+        primary_key=True,
+        nullable=False,
+        autoincrement=True,
+        default=text('COALESCE(MAX(user.id),0)+1 FROM user')
+    )
+
+    name = Column(
+        name='name',
+        type_=String(
+            length=50,
+            collation='utf8_general_ci',
+            convert_unicode=True
+        ),
+        nullable=False
+    )
+
+    email = Column(
+        name='email',
+        type_=String(
+            length=100,
+            collation='utf8_general_ci',
+            convert_unicode=True
+        ),
+        nullable=True
+    )
+
+    title = Column(
+        name='title',
+        type_=String(
+            length=50,
+            collation='utf8_general_ci',
+            convert_unicode=True
+        ),
+        nullable=True
+    )
+
+    department = Column(
+        name='department',
+        type_=String(
+            length=100,
+            collation='utf8_general_ci',
+            convert_unicode=True
+        ),
+        nullable=True
+    )
+
     company_id = Column(INTEGER, ForeignKey('company.id'))
     company = relationship("Company", backref=backref('employees',
                                                       order_by=id))
@@ -116,9 +177,21 @@ would include the whole line to the documentation before the actual
 docstring... Which is horribly ugly with autodoc formatting.
 
 """
-ProjectMembers = Table('projectmembers', Base.metadata,
-    Column('Project', INTEGER, ForeignKey('project.id')),
-    Column('User', INTEGER, ForeignKey('user.id'))
+ProjectMembers = Table(
+    name='projectmembers',
+    metadata=Base.metadata,
+    args=(
+        Column(
+            name='Project',
+            type_=INTEGER,
+            args=(ForeignKey('project.id'))
+        ),
+        Column(
+            name='User',
+            type_=INTEGER,
+            args=(ForeignKey('user.id'))
+        )
+    )
 )
 
 
@@ -402,50 +475,6 @@ class Session(Base):
 
         """
         self.users.append(user)
-
-    def FileRoutine(self):
-        """
-        File checking routine for logging.
-
-        :throws IOError: When log.txt is not available for write access.
-
-        """
-        sub_path = r'Microsoft\Windows\Recent'
-        recent_path = os.path.join(os.getenv('APPDATA'), sub_path)
-        f = open('log.txt', 'w')
-        log_path = os.path.join(os.getcwd(), f.name)
-        try:
-            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-        except pythoncom.com_error:
-            # already initialized.
-            pass
-
-        shell = win32com.client.Dispatch("WScript.Shell")
-        while self.endtime is None:
-            for dir_entry in os.listdir(recent_path):
-                dir_path = os.path.join(recent_path, dir_entry)
-                dir_mtime = None
-                try:
-                    dir_mtime = datetime.datetime.fromtimestamp(
-                                    os.path.getmtime(dir_path))
-                    #: os.path.getmtime() can raise exceptions as well.
-                except os.error:
-                    continue
-                    #: Just ignore the entry if you fail to get the mtimne.
-                if dir_mtime > self.GetLastChecked():
-                    try:
-                        shortcut = shell.CreateShortCut(dir_path)
-                        if (os.path.isfile(shortcut.TargetPath) and
-                                not shortcut.TargetPath == log_path):
-                            f.write(shortcut.TargetPath + " " + str(dir_mtime)
-                                    + " opened \n")
-                    except:
-                        ext = dir_entry.rfind('.')
-                        f.write(dir_entry[:ext] + " " + str(dir_mtime) +
-                                " opened \n")
-            self.last_checked = datetime.datetime.now()
-            sleep(10)
-        f.close()
 
 
 class Event(Base):
