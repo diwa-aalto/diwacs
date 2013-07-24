@@ -156,7 +156,7 @@ class State(object):
         # Other
         ipgm = diwavars.PGM_GROUP
         self.activity = None
-        self.project_folder_observer = None
+        self.project_observer = None
         self.scan_observer = None
         self.selected_nodes = controller.get_active_activity(ipgm)
         self.current_project_id = 0
@@ -408,6 +408,7 @@ class State(object):
                       0x205: 0x0010, 0x207: 0x0020, 0x208: 0x0040,
                       0x20A: 0x0800, 0x20E: 0x1000}
 
+    #: TODO: Too long!
     def message_handler(self, message):
         """
         Message handler for received messages.
@@ -527,7 +528,10 @@ class State(object):
             LOGGER.exception('Exception in MessageHandler: %s', str(excp))
 
     def on_project_selected(self):
-        """ Docstring. """
+        """
+        Docstring.
+
+        """
         if not self.current_project:
             return
         controller.init_sync_project_directory(self.current_project_id)
@@ -537,20 +541,15 @@ class State(object):
                                                 self.activity)
         self.swnp_send('SYS', 'current_activity;%s' % str(self.activity))
 
-    def remove_observers(self):
-        """ Docstring. """
-        try:
-            if self.project_folder_observer:
-                self.project_folder_observer.stop()
-                del self.project_folder_observer
-        except NameError:
-            pass
-        try:
-            if self.scan_observer:
-                self.scan_observer.stop()
-                del self.scan_observer
-        except NameError:
-            pass
+    def remove_observer(self):
+        """
+        Docstring.
+
+        """
+        if self.project_observer is not None:
+            self.project_observer.unschedule_all()
+            self.project_observer.stop()
+            self.project_observer = None
 
     def set_current_session(self, session_id):
         """
@@ -587,30 +586,31 @@ class State(object):
         """
         project_id = int(project_id)
         project = controller.get_project(project_id)
-        if not project or project_id < 1:
+        if (project is None) or (project_id < 1):
             self.current_project_id = 0
             self.current_project = None
             self.set_current_session(0)
-            if self.scan_observer:
-                self.scan_observer.unschedule_all()
-                self.scan_observer.stop()
-            if self.project_folder_observer:
-                self.project_folder_observer.unschedule_all()
-                self.project_folder_observer.stop()
+            self.remove_observer()
         elif project and self.current_project_id != project_id:
             self.current_project_id = project_id
             self.current_project = project
-            LOGGER.info('Project name is %s%s', project.name,
-                        ' (responsive)' if self.is_responsive else '')
+            extra = ' (responsive)' if self.is_responsive else ''
+            log_msg = 'Project "{name}" selected{extra}'
+            log_msg = log_msg.format(name=project.name, extra=extra)
+            LOGGER.info(log_msg)
             self.worker.remove_all_registry_entries()
             self.worker.add_project_registry_entry('*')
             self.worker.add_project_registry_entry('Folder')
-            LOGGER.debug("setting project path")
             project_path = controller.get_project_path(project_id)
             utils.MapNetworkShare('W:', project_path)
             if self.is_responsive:
-                LOGGER.debug("Starting observers.")
-                self.set_observers()
+                LOGGER.debug('Starting observers.')
+                try:
+                    self.set_observer()
+                except (ValueError, IOError, OSError) as excp:
+                    log_msg = 'self.set_observer() raised: {exception!s}'
+                    log_msg = log_msg.format(exception=excp)
+                    LOGGER.exception(log_msg)
             LOGGER.info('Project set to %s (%s)', project_id, project.name)
 
     def set_responsive(self):
@@ -621,66 +621,28 @@ class State(object):
         self.is_responsive = True
         self.start_current_session()
 
-    def set_observers(self):
-        """ Docstring. """
+    def set_observer(self):
+        """
+        Docstring.
+
+        Set an observer for file changes in project directory and
+        and observer for image uploads by camera in scan folder.
+
+        """
         LOGGER.debug('Set observers')
-        self.set_scan_observer()
-        self.set_project_observer()
-
-    def set_project_observer(self):
-        """
-        Observer for file changes in project directory.
-
-        """
-        try:
-            if self.current_project_id:
-                try:
-                    if self.project_folder_observer:
-                        self.project_folder_observer.stop()
-                        del self.project_folder_observer
-                except NameError:
-                    pass
-                LOGGER.debug('Initialize observer!')
-                self.project_folder_observer = Observer()
-                #: TODO: Debug if this is actually initialized sometimes.
-                file_event_handler = controller.PROJECT_FILE_EVENT_HANDLER
-                event_handler = file_event_handler(self.current_project_id)
-                path = controller.get_project_path(self.current_project_id)
-                self.project_folder_observer.schedule(event_handler, path,
-                                                      recursive=True)
-                LOGGER.debug('Starting observer for file-events now...')
-                self.project_folder_observer.start()
-            self.is_responsive = True
-            self.swnp.set_responsive('responsive')
-        except Exception as excp:
-            self.is_responsive = False
-            self.swnp.set_responsive('')
-            LOGGER.exception('Error setting PROJECT observer: %s', str(excp))
-
-    def set_scan_observer(self):
-        """
-        Observer for created files in scanned or taken with camera.
-
-        """
-        try:
-            LOGGER.debug("Setting scan observer")
-            if self.scan_observer:
-                try:
-                    self.scan_observer.stop()
-                    self.scan_observer = None
-                except NameError:
-                    pass
-            self.scan_observer = Observer()
-            path = r'\\' + diwavars.STORAGE + r'\Pictures'
-            shandler = controller.SCAN_HANDLER(self.current_project_id)
-            self.scan_observer.schedule(shandler, path=path, recursive=True)
-            self.scan_observer.start()
-            self.is_responsive = True
-            self.swnp.set_responsive('responsive')
-        except Exception as excp:
-            self.is_responsive = False
-            self.swnp.set_responsive('')
-            LOGGER.exception('Error setting scan observer: %s', str(excp))
+        if self.current_project is not None:
+            self.remove_observer()
+            self.project_observer = Observer(timeout=5)
+            event_handler = controller.PROJECT_EVENT_HANDLER
+            handle_project = event_handler(self.current_project_id, 'project')
+            handle_scanner = event_handler(self.current_project_id, 'scanner')
+            path_project = self.current_project.path
+            path_scanner = r'\\' + os.path.join(diwavars.STORAGE, 'Pictures')
+            self.project_observer.schedule(handle_project, path_project, True)
+            self.project_observer.schedule(handle_scanner, path_scanner, True)
+            self.project_observer.start()
+        self.is_responsive = True
+        self.swnp.set_responsive('responsive')
 
     def start_current_project(self):
         """
@@ -741,7 +703,7 @@ class State(object):
     def stop_responsive(self):
         """ Docstring. """
         diwavars.update_responsive(0)
-        self.remove_observers()
+        self.remove_observer()
         self.end_current_project()
         self.end_current_session()
 

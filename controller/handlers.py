@@ -35,7 +35,7 @@ def _logger():
     return controller.common.LOGGER
 
 
-class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
+class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
     """
     Handler for FileSystem events on project folder.
     It uses watchdog library internally.
@@ -44,17 +44,63 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
     :type project_id: Integer
 
     """
-    def __init__(self, project_id):
+    # -------------- CLASS VARIABLES --------------
+    project_handler = {
+        'created': PROJECT_EVENT_HANDLER._on_created_project,
+        'deleted': PROJECT_EVENT_HANDLER._on_deleted_project,
+        'modified': PROJECT_EVENT_HANDLER._on_modified_project,
+        'moved': PROJECT_EVENT_HANDLER._on_moved_project
+    }
+
+    scanner_handler = {
+        'created': PROJECT_EVENT_HANDLER._on_created_scanner
+    }
+
+    # -------------- CONSTRUCTOR --------------
+    def __init__(self, project_id, handler_type='project'):
+        # Initialize.
         self.project_id = project_id
         FileSystemEventHandler.__init__(self)
-        log_msg = ('PROJECT_FILE_EVENT_HANDLER initialized for project '
-                   'with ID {project_id}')
-        log_msg = log_msg.format(project_id=project_id)
+        self.actions = None
+        # Handler is a project file handler...
+        if handler_type == 'project':
+            log_msg = ('PROJECT_EVENT_HANDLER initialized for project '
+                       'with ID {project_id}')
+            self.actions = PROJECT_EVENT_HANDLER.project_handler
+        # Handler is a project scanner handler.
+        elif handler_type == 'scanner':
+            log_msg = ('Project image scan handler initialized for project '
+                       'with ID {project_id}')
+            self.actions = PROJECT_EVENT_HANDLER.scanner_handler
+        # Undefined handler type.
+        else:
+            raise NotImplementedError()
+        # Populate the log_mgs with data and log.
+        log_msg = log_msg.format(**self.__dict__)
         _logger().debug(log_msg)
 
+    # -------------- PUBLIC METHODS --------------
     def on_created(self, event):
+        if 'created' in self.actions:
+            self.actions['created'](event)
+
+    def on_deleted(self, event):
+        if 'deleted' in self.actions:
+            self.actions['deleted'](event)
+
+    def on_modified(self, event):
+        if 'modified' in self.actions:
+            self.actions['modified'](event)
+
+    def on_moved(self, event):
+        if 'moved' in self.actions:
+            self.actions['moved'](event)
+
+    # -------------- PRIVATE METHODS VARIABLES --------------
+    def _on_created_project(self, event):
         """
-        On_created event handler. Logs to database.
+        On_created event handler for project files.
+        Logs to database.
 
         :param event: The event.
         :type event: :py:class:`watchdog.events.FileSystemEvent`
@@ -88,9 +134,10 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         if database is not None:
             database.close()
 
-    def on_deleted(self, event):
+    def _on_deleted_project(self, event):
         """
-        On_deleted event handler. Logs to database.
+        On_deleted event handler for project files.
+        Logs to database.
 
         :param event: The event.
         :type event: :py:class:`watchdog.events.FileSystemEvent`
@@ -127,9 +174,10 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         if database is not None:
             database.close()
 
-    def on_modified(self, event):
+    def _on_modified_project(self, event):
         """
-        On_modified event handler. Logs to database.
+        On_modified event handler for project files.
+        Logs to database.
 
         :param event: The event.
         :type event: :py:class:`watchdog.events.FileSystemEvent`
@@ -163,9 +211,9 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         if database is not None:
             database.close()
 
-    def on_moved(self, event):
+    def _on_moved_project(self, event):
         """
-        On_modified event handler.
+        On_modified event handler for project files.
 
         This should get called when a project file has been moved.
 
@@ -191,25 +239,10 @@ class PROJECT_FILE_EVENT_HANDLER(FileSystemEventHandler):
         if database is not None:
             database.close()
 
-
-class SCAN_HANDLER(FileSystemEventHandler):
-    """
-    Handler for FileSystem events on SCANNING folder.
-
-    :param project_id: Project id from database.
-    :type project_id: Integer
-
-    """
-    def __init__(self, project_id):
-        self.project_id = project_id
-        FileSystemEventHandler.__init__(self)
-        log_msg = 'SCAN_HANDLER initialized for project with ID {project_id}'
-        log_msg = log_msg.format(project_id=project_id)
-        _logger().debug(log_msg)
-
-    def on_created(self, event):
+    def _on_created_scanner(self, event):
         """
-        On_created event handler. Logs to database.
+        On_created event handler for project scanned files.
+        Logs to database.
 
         :param event: The event.
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`

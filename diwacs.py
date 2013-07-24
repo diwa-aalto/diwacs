@@ -724,7 +724,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.closebtn.SetToolTip(None)
                 if not event == 'conn_err' and self.diwa_state.is_responsive:
                     LOGGER.debug('On exit self is responsive')
-                    self.diwa_state.remove_observers()
+                    self.diwa_state.remove_observer()
                 last_computer = controller.last_active_computer()
                 if not event == 'conn_err' and last_computer:
                     LOGGER.debug('On exit self is last active comp.')

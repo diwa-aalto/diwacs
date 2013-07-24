@@ -24,7 +24,7 @@ from controller.computer import (
 )
 
 # Import handlers
-from controller.handlers import PROJECT_FILE_EVENT_HANDLER, SCAN_HANDLER
+from controller.handlers import PROJECT_EVENT_HANDLER
 
 # Import project
 from controller.project import (

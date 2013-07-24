@@ -400,19 +400,18 @@ class SWNP:
             for s in subscribers:
                 try:
                     [address, contents] = s.recv_multipart(zmq.NOBLOCK)
-                    msg_obj = loads(contents,
-                                    object_hook=Message.from_json)
-                    prefix = msg_obj.prefix
-                    if msg_obj.payload == self.id and prefix == 'LEAVE':
+                    message = loads(contents, object_hook=Message.from_json)
+                    (tag, prefix, payload) = (message.tag, message.prefix,
+                                              message.payload)
+                    if payload == self.id and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
                         self.terminating = True
                         break
                     elif prefix == 'SYNC':
                         LOGGER.exception('DEPRECATED METHOD USED!!!')
-                        # self.sync_handler(msg_obj)
+                        # self.sync_handler(message)
                     elif prefix == 'MSG':
-                        pub.sendMessage('message_received',
-                                        message=msg_obj.payload)
+                        pub.sendMessage('message_received', payload)
                 except Again:
                     # Non-blocking mode was requested and no messages
                     # are available at the moment.
