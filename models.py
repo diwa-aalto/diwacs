@@ -28,15 +28,9 @@ import diwavars
 ENGINE = None  # create_engine(DATABASE, echo=True)
 LOGGER = None
 BASE = declarative_base()
-ACTIONS = {
-   1: 'Created',
-   2: 'Deleted',
-   3: 'Updated',
-   4: 'Renamed from something',
-   5: 'Renamed to something',
-   6: 'Opened',
-   7: 'Closed',
-}
+ACTIONS = {1: 'Created', 2: 'Deleted', 3: 'Updated',
+           4: 'Renamed from something', 5: 'Renamed to something', 6: 'Opened',
+           7: 'Closed'}
 
 
 def __init_logger():
@@ -113,14 +107,27 @@ class Base(BASE):
         }
         return '<id={id}, item={name}>'.format(**kwargs)
 
-    _default_method_values = {
-        'all': [],
-        'count': 0,
-        'delete': [],
-        'exists': False,
-        'first': None,
-        'one': None
-    }
+    _default_method_values = {'all': [], 'count': 0, 'delete': [],
+                              'exists': False, 'first': None, 'one': None}
+
+    @classmethod
+    def delete(cls, instance):
+        """Delete an object of this class from the database."""
+        database = None
+        try:
+            database = connect_to_database()
+            database.delete(instance)
+            database.commit()
+            return True
+        except SQLAlchemyError, excp:
+            log_msg = 'Exception in {class_name}.delete() : {exception!s}'
+            log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
+            LOGGER.exception(log_msg)
+            return False
+        finally:
+            if (database is not None) and hasattr(database, 'close'):
+                database.close()
+            database = None
 
     @classmethod
     def get(cls, method, *filters):
@@ -174,6 +181,11 @@ class Base(BASE):
 
         """
         return cls.get('one', cls.id == id_)
+
+    @classmethod
+    def id_ordering(cls, instance):
+        """Key function for id ordering."""
+        return instance.id
 
     def update(self):
         """
@@ -487,11 +499,6 @@ class Computer(Base):
         self.responsive = responsive
         self.wos_id = wos_id
         Base.__init__(self, Computer.mac == mac)
-
-    @classmethod
-    def id_ordering(cls, computer):
-        """Key function for id ordering."""
-        return computer.id
 
     @classmethod
     def time_ordering(cls, computer):

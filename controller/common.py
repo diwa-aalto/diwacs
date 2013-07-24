@@ -20,7 +20,8 @@ import logging
 import sqlalchemy
 
 # Own imports.
-from models import Action, Base, File, Project
+from models import Activity, File, Project, Session, Company
+
 
 LOGGER = None
 
@@ -53,17 +54,6 @@ diwavars.add_logger_level_setter(__set_logger_level)
 ENGINE = None  # create_engine(DATABASE, echo=True)
 NODE_NAME = ''
 NODE_SCREENS = 0
-
-
-def get_action_id_by_name(action_name):
-    """
-    Get the static ID of action name.
-
-    """
-    for temp_id, temp_name in ACTIONS:
-        if temp_name == action_name:
-            return temp_id
-    return 0
 
 
 def update_database():
@@ -103,25 +93,6 @@ def set_node_screens(screens):
     NODE_SCREENS = screens
 
 
-def connect_to_database(expire=False):
-    """
-    Connect to the database and return a Session object.
-
-    :param expire: Parameter passed to session maker as expire_on_commit.
-    :type expire: Boolean
-
-    :returns: Session.
-    :rtype: :py:class:`sqlalchemy.orm.session.Session`
-
-    """
-    if ENGINE is None:
-        LOGGER.exception('No engine!')
-        return None
-    initializer = sqlalchemy.orm.sessionmaker
-    session_maker = initializer(bind=ENGINE, expire_on_commit=expire)
-    return session_maker()
-
-
 def delete_record(record_model, id_number):
     """
     Delete a record from database
@@ -136,32 +107,23 @@ def delete_record(record_model, id_number):
     :rtype: Boolean
 
     """
-    database = None
-    result = False
     try:
-        database = connect_to_database()
-        record = database.query(record_model).filter_by(id=id_number).one()
-        if record_model == Project:
-            for session in record.sessions:
-                LOGGER.debug(str(session))
-                database.delete(session)
-            db_command = 'DELETE FRM activity WHERE project_id={project_id}'
-            db_command = db_command.format(project_id=id_number)
-            database.execute(db_command)
-        database.delete(record)
-        database.commit()
-        result = True
+        instance = record_model.get_by_id(id_number)
+        if isinstance(instance, Project):
+            Session.get('delete', Session.project_id == id_number)
+            Activity.get('delete', Activity.project_id == id_number)
+        record_model.delete(instance)
+        return True
     except sqlalchemy.exc.SQLAlchemyError:
         log_msg = ('Delete record exception model {model_name!s} with '
                    'id {id_number}.')
-        log_msg = log_msg.format(model_name=record_model, id_number=id_number)
+        log_msg = log_msg.format(model_name=record_model.__name__,
+                                 id_number=id_number)
         LOGGER.exception(log_msg)
-    if database is not None:
-        database.close()
-    return result
+        return False
 
 
-def get_or_create(database, model, **kwargs):
+def get_or_create(model, **kwargs):
     """
     Fetches or creates a instance.
 
@@ -175,20 +137,12 @@ def get_or_create(database, model, **kwargs):
 
     :throws: :py:class:`sqlalchemy.exc.SQLAlchemyException`
 
-     """
-    instance = database.query(model).filter_by(**kwargs)
-    instance = instance.order_by(sqlalchemy.desc(model.id)).first()
-    if instance is not None:
-        return instance
-    if 'path' in kwargs and 'project_id' in kwargs:
-        project = database.query(Project)
-        project = project.filter(Project.id == kwargs['project_id']).one()
-        instance = File(path=kwargs['path'], project=project)
-        database.add(instance)
-        database.commit()
-        return instance
-    instance = model(**kwargs)
-    return instance
+    """
+    candidates = model.get('all', **kwargs)
+    candidates.sort(key=model.id_ordering)
+    if candidates:
+        return candidates.pop()
+    return model(**kwargs)
 
 
 def test_connection():
@@ -199,17 +153,4 @@ def test_connection():
     :rtype: Boolean
 
     """
-    database = None
-    result = False
-    try:
-        database = connect_to_database()
-        database.query(Project).count()
-        database.close()
-        result = True
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in test_connection call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        LOGGER.exception(log_msg)
-    if database is not None:
-        database.close()
-    return result
+    return Company.get('count') > 0

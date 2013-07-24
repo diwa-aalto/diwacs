@@ -20,6 +20,7 @@ import filesystem
 from models import (Action, Activity, Company, File, FileAction, Project,
                     Session)
 import utils
+import models
 
 
 def _logger():
@@ -166,38 +167,12 @@ def create_file_action(path, action_id, session_id, project_id):
 
     """
     project_file = is_project_file(path, project_id)
-    database = None
-
-    file_object = None
-    try:
-        database = controller.common.connect_to_database()
-        if project_file:
-            file_object = controller.common.get_or_create(database, File,
-                                                          path=project_file)
-        else:
-            file_object = controller.common.get_or_create(database, File,
-                                                          path=path)
-    except sqlalchemy.exc.SQLAlchemyError:
-        database.close()
-        return
-
-    try:
-        action_object = database.query(Action).filter(Action.id == action_id)
-        action_object = action_object.one()
-        session_object = None
-        if session_id > 0:
-            session_object = database.query(Session)
-            session_object = session_object.filter(Session.id == session_id)
-            session_object = session_object.one()
-        file_action_object = FileAction(file_object, action_object,
-                                        session_object)
-        database.add(file_object)
-        database.add(file_action_object)
-        database.commit()
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        database.close()
-        _logger().exception('Failed to create FileAction: %s', str(excp))
-    database.close()
+    project_file = project_file if project_file else path
+    kwargs = {'path': project_file, 'project_id': project_id}
+    file_object = controller.common.get_or_create(File, **kwargs)
+    action_object = Action.get_by_id(action_id)
+    session_object = Session.get_by_id(session_id) if session_id > 0 else None
+    return FileAction(file_object, action_object, session_object)
 
 
 def get_active_project(pgm_group):
