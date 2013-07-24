@@ -32,21 +32,28 @@ def main():
     :rtype: Integer
 
     """
-    if len(sys.argv) == 2:
-        try:
-            filepath = sys.argv[1]
-            context = zmq.Context()
-            socket = context.socket(zmq.REQ)
-            socket.setsockopt(zmq.LINGER, 5000)
-            #: Uses interprocess ZeroMQ socket to inform of the operation.
-            socket.connect("tcp://127.0.0.1:5555")
-            command = 'add_to_project;0;' + str(filepath)
-            socket.send(command)
+    context = None
+    socket = None
+    try:
+        filepath = sys.argv[1]
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)
+        socket.setsockopt(zmq.LINGER, 5000)
+        #: Uses interprocess ZeroMQ socket to inform diwacs of the operation.
+        socket.connect('tcp://127.0.0.1:5555')
+        command = 'add_to_project;0;' + str(filepath)
+        socket.send(command)
+        socket.close()
+        return 0
+    except (ValueError, IOError, IndexError):
+        return 1
+    finally:
+        if (socket is not None) and hasattr(socket, 'close'):
             socket.close()
-            return 0
-        except zmq.ZMQError:
-            pass
-    return 1
+        socket = None
+        if (context is not None) and hasattr(context, 'destroy'):
+            context.destroy()
+        context = None
 
 
 if __name__ == '__main__':

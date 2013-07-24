@@ -53,15 +53,6 @@ diwavars.add_logger_level_setter(__set_logger_level)
 ENGINE = None  # create_engine(DATABASE, echo=True)
 NODE_NAME = ''
 NODE_SCREENS = 0
-ACTIONS = {
-   1: 'Created',
-   2: 'Deleted',
-   3: 'Updated',
-   4: 'Renamed from something',
-   5: 'Renamed to something',
-   6: 'Opened',
-   7: 'Closed',
-}
 
 
 def get_action_id_by_name(action_name):
@@ -110,30 +101,6 @@ def set_node_screens(screens):
     """
     global NODE_SCREENS
     NODE_SCREENS = screens
-
-
-def create_all():
-    """
-    Create tables to the database.
-
-    """
-    if ENGINE is None:
-        return
-    try:
-        database = connect_to_database()
-        database.execute('SET foreign_key_checks = 0')
-        database.execute('DROP table IF EXISTS Action')
-        database.execute('SET foreign_key_checks = 1')
-        database.commit()
-        Base.metadata.create_all(ENGINE)  # @UndefinedVariable
-        for (action_id, action_name) in ACTIONS.items():
-            database.add(Action(action_name))
-        database.commit()
-        database.close()
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception on create_all call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        LOGGER.exception(log_msg)
 
 
 def connect_to_database(expire=False):

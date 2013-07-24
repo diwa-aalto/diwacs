@@ -28,6 +28,15 @@ import diwavars
 ENGINE = None  # create_engine(DATABASE, echo=True)
 LOGGER = None
 BASE = declarative_base()
+ACTIONS = {
+   1: 'Created',
+   2: 'Deleted',
+   3: 'Updated',
+   4: 'Renamed from something',
+   5: 'Renamed to something',
+   6: 'Opened',
+   7: 'Closed',
+}
 
 
 def __init_logger():
@@ -53,39 +62,6 @@ def __set_logger_level(level):
 
 diwavars.add_logger_initializer(__init_logger)
 diwavars.add_logger_level_setter(__set_logger_level)
-
-
-def connect_to_database(expire=False):
-    """
-    Connect to the database and return a Session object.
-
-    :param expire: Parameter passed to session maker as expire_on_commit.
-    :type expire: Boolean
-
-    :returns: Session.
-    :rtype: :py:class:`sqlalchemy.orm.session.Session`
-
-    """
-    if ENGINE is None:
-        LOGGER.exception('No engine!')
-        return None
-    session_function = sessionmaker(bind=ENGINE, expire_on_commit=expire)
-    return session_function()
-
-
-def update_database():
-    """
-    Update the database connection engine.
-
-    .. note::
-        This only works when DB_STRING is completely defined by
-        the log reader as otherwise the create_engine call would
-        cause an exception.
-
-    """
-    global ENGINE
-    if diwavars.DB_STRING:
-        ENGINE = create_engine(diwavars.DB_STRING, echo=False)
 
 
 class ItemAlreadyExistsException(SQLAlchemyError):
@@ -225,60 +201,84 @@ class Base(BASE):
             database = None
 
 
-ProjectMembers = Table(
-    name='projectmembers',
-    metadata=Base,
-    args=(
-        Column(
-            name='Project',
-            type_=INTEGER,
-            args=(ForeignKey('project.id'))
-        ),
-        Column(
-            name='User',
-            type_=INTEGER,
-            args=(ForeignKey('user.id'))
-        )
-    )
+def connect_to_database(expire=False):
+    """
+    Connect to the database and return a Session object.
+
+    :param expire: Parameter passed to session maker as expire_on_commit.
+    :type expire: Boolean
+
+    :returns: Session.
+    :rtype: :py:class:`sqlalchemy.orm.session.Session`
+
+    """
+    if ENGINE is None:
+        LOGGER.exception('No engine!')
+        return None
+    session_function = sessionmaker(bind=ENGINE, expire_on_commit=expire)
+    return session_function()
+
+
+def create_all():
+    """
+    Create tables to the database.
+
+    """
+    if ENGINE is None:
+        return
+    try:
+        database = connect_to_database()
+        database.execute('SET foreign_key_checks = 0')
+        database.execute('DROP table IF EXISTS Action')
+        database.execute('SET foreign_key_checks = 1')
+        database.commit()
+        BASE.metadata.create_all(ENGINE)  # @UndefinedVariable
+        for action_id in ACTIONS:
+            database.add(Action(ACTIONS[action_id]))
+        database.commit()
+    except SQLAlchemyError as excp:
+        log_msg = 'Exception on create_all call: {exception!s}'
+        log_msg = log_msg.format(exception=excp)
+        LOGGER.exception(log_msg)
+    finally:
+        if (database is not None) and hasattr(database, 'close'):
+            database.close()
+        database = None
+
+
+def update_database():
+    """
+    Update the database connection engine.
+
+    .. note::
+        This only works when DB_STRING is completely defined by
+        the log reader as otherwise the create_engine call would
+        cause an exception.
+
+    """
+    global ENGINE
+    if diwavars.DB_STRING:
+        ENGINE = create_engine(diwavars.DB_STRING, echo=False)
+
+
+ProjectMembers = Table('projectmembers', BASE.metadata,
+    Column(name='Project', type_=INTEGER, args=(ForeignKey('project.id'))),
+    Column(name='User', type_=INTEGER, args=(ForeignKey('user.id')))
 )
 
-SessionParticipants = Table(
-    name='sessionparticipants',
-    metadata=BASE.metadata,
-    args=(
-        Column(
-            name='Session',
-            type_=INTEGER,
-            args=(ForeignKey('session.id'))
-        ),
-        Column(
-            name='User',
-            type_=INTEGER,
-            args=(ForeignKey('user.id'))
-        )
-    )
+SessionParticipants = Table('sessionparticipants', BASE.metadata,
+    Column(name='Session', type_=INTEGER, args=(ForeignKey('session.id'))),
+    Column(name='User', type_=INTEGER, args=(ForeignKey('user.id')))
 )
 
-SessionComputers = Table(
-    name='sessioncomputers',
-    metadata=BASE.metadata,
-    args=(
-        Column(
-            name='Session',
-            type_=INTEGER,
-            args=(ForeignKey('session.id'))
-        ),
-        Column(
-            name='Computer',
-            type_=INTEGER,
-            args=(ForeignKey('computer.id'))
-        )
-    )
+SessionComputers = Table('sessioncomputers', BASE.metadata,
+    Column(name='Session', type_=INTEGER, args=(ForeignKey('session.id'))),
+    Column(name='Computer', type_=INTEGER, args=(ForeignKey('computer.id')))
 )
 
 
 # -------------- CLASSES -------------------------------------------------
-class Action(BASE):
+class Action(Base):
     """
     A class representation of a action. A file action uses this to describe
     the action.
@@ -296,17 +296,14 @@ class Action(BASE):
     :type name: :py:class:`String`
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     def __init__(self, name):
         self.name = name
+        Base.__init__(self, Action.name == name)
 
     def __str__(self):
         return self.name
@@ -346,36 +343,19 @@ class Activity(Base):
     :type session: :py:class:`models.Session`
 
     """
-    session_id = Column(
-        name='session_id',
-        type_=INTEGER,
-        args=(ForeignKey('session.id')),
-        nullable=True
-    )
+    session_id = Column('session_id', INTEGER, ForeignKey('session.id'),
+                        nullable=True)
 
-    project_id = Column(
-        name='project_id',
-        type_=INTEGER,
-        args=(ForeignKey('project.id')),
-        nullable=False
-    )
+    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
+                        nullable=False)
 
-    active = Column(
-        name='active',
-        type_=BOOLEAN,
-        nullable=False,
-        default=True
-    )
+    active = Column('active', BOOLEAN, nullable=False, default=True)
 
-    session = relationship(
-        argument='Session',
-        backref=backref('activities', order_by=id)
-    )
+    session = relationship('Session',
+                           backref=backref('activities', order_by=id))
 
-    project = relationship(
-        argument='Project',
-        backref=backref('activities', order_by=id)
-    )
+    project = relationship('Project',
+                           backref=backref('activities', order_by=id))
 
     def __init__(self, project, session=None):
         self.project = project
@@ -403,12 +383,8 @@ class Company(Base):
 
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
@@ -478,66 +454,30 @@ class Computer(Base):
 
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    ip = Column(
-        name='ip',
-        type_=INTEGER(unsigned=True),
-        nullable=False
-    )
+    ip = Column('ip', INTEGER(unsigned=True), nullable=False)
 
     mac = Column(
-        name='mac',
-        type_=String(
-            length=12,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'mac',
+        String(length=12, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    time = Column(
-        name='time',
-        type_=DATETIME,
-        nullable=True
-    )
+    time = Column('time', DATETIME, nullable=True)
 
-    screens = Column(
-        name='screens',
-        type_=SMALLINT,
-        nullable=True,
-        default=0
-    )
+    screens = Column('screens', SMALLINT, nullable=True, default=0)
 
-    responsive = Column(
-        name='responsive',
-        type_=SMALLINT,
-        nullable=True
-    )
+    responsive = Column('responsive', type_=SMALLINT, nullable=True)
 
-    wos_id = Column(
-        name='wos_id',
-        type_=INTEGER,
-        nullable=True
-    )
+    wos_id = Column('wos_id', INTEGER, nullable=True)
 
-    user_id = Column(
-        name='user_id',
-        type_=INTEGER,
-        args=(ForeignKey('user.id'))
-    )
+    user_id = Column('user_id', INTEGER, ForeignKey('user.id'))
 
-    user = relationship(
-        argument='User',
-        backref=backref('computers', order_by=id)
-    )
+    user = relationship('User', backref=backref('computers', order_by=id))
 
     def __init__(self, name, ip, mac, screens, responsive, wos_id):
         self.name = name
@@ -626,41 +566,22 @@ class Event(Base):
 
     """
     title = Column(
-        name='title',
-        type_=String(
-            length=40,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'title',
+        String(length=40, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
     desc = Column(
-        name='desc',
-        type_=String(
-            length=500,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'desc',
+        String(length=500, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    time = Column(
-        name='time',
-        type_=DATETIME,
-        default=func.now()
-    )
+    time = Column('time', DATETIME, default=func.now())
 
-    session_id = Column(
-        name='session_id',
-        type_=INTEGER,
-        args=(ForeignKey('session.id'))
-    )
+    session_id = Column('session_id', INTEGER, ForeignKey('session.id'))
 
-    session = relationship(
-        argument='Session',
-        backref=backref('events', order_by=id)
-    )
+    session = relationship('Session', backref=backref('events', order_by=id))
 
     def __init__(self, session, title='', description=''):
         self.title = title
@@ -691,26 +612,15 @@ class File(Base):
 
     """
     path = Column(
-        name='path',
-        type_=String(
-            length=255,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'path',
+        String(length=255, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    project_id = Column(
-        name='project_id',
-        type_=INTEGER,
-        args=(ForeignKey('project.id')),
-        nullable=True
-    )
+    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
+                        nullable=True)
 
-    project = relationship(
-        argument='Project',
-        backref=backref('files', order_by=id)
-    )
+    project = relationship('Project', backref=backref('files', order_by=id))
 
     def __init__(self, file_path, project=None):
         self.path = file_path
@@ -786,71 +696,32 @@ class FileAction(Base):
     :type user: :py:class:`models.User`
 
     """
-    file_id = Column(
-        name='file_id',
-        type_=INTEGER,
-        args=(ForeignKey('file.id')),
-        nullable=False
-    )
+    file_id = Column('file_id', INTEGER, ForeignKey('file.id'), nullable=False)
 
-    action_id = Column(
-        name='action_id',
-        type_=INTEGER,
-        args=(ForeignKey('action.id')),
-        nullable=False
-    )
+    action_id = Column('action_id', INTEGER, ForeignKey('action.id'),
+                       nullable=False)
 
-    action_time = Column(
-        name='action_time',
-        type_=DATETIME,
-        default=func.now()
-    )
+    action_time = Column('action_time', DATETIME, default=func.now())
 
-    user_id = Column(
-        name='user_id',
-        type_=INTEGER,
-        args=(ForeignKey('user.id')),
-        nullable=True
-    )
+    user_id = Column('user_id', INTEGER, ForeignKey('user.id'), nullable=True)
 
-    computer_id = Column(
-        name='computer_id',
-        type_=INTEGER,
-        args=(ForeignKey('computer.id')),
-        nullable=True
-    )
+    computer_id = Column('computer_id', INTEGER, ForeignKey('computer.id'),
+                         nullable=True)
 
-    session_id = Column(
-        name='session_id',
-        type_=INTEGER,
-        args=(ForeignKey('session.id')),
-        nullable=True
-    )
+    session_id = Column('session_id', INTEGER, ForeignKey('session.id'),
+                        nullable=True)
 
-    file = relationship(
-        argument='File',
-        backref=backref('actions', order_by=id)
-    )
+    file = relationship('File', backref=backref('actions', order_by=id))
 
-    action = relationship(
-        argument='Action',
-        backref=backref('actions', order_by=id)
-    )
+    action = relationship('Action', backref=backref('actions', order_by=id))
 
-    user = relationship(
-        argument='User',
-        backref=backref('fileactions', order_by=id)
-    )
+    user = relationship('User', backref=backref('fileactions', order_by=id))
 
-    computer = relationship(
-        argument='Computer',
-        backref=backref('fileactions', order_by=id)
-    )
+    computer = relationship('Computer',
+                            backref=backref('fileactions', order_by=id))
 
-    session = relationship(
-        argument='Session',
-        backref=backref('fileactions', order_by=id)
-    )
+    session = relationship('Session',
+                           backref=backref('fileactions', order_by=id))
 
     def __init__(self, file_, action, session=None, computer=None,
                  user=None):
@@ -903,53 +774,31 @@ class Project(Base):
 
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    company_id = Column(
-        name='company_id',
-        type_=INTEGER,
-        args=(ForeignKey('company.id')),
-        nullable=False
-    )
+    company_id = Column('company_id', INTEGER, ForeignKey('company.id'),
+                        nullable=False)
 
     dir = Column(
-        name='dir',
-        type_=String(
-            length=255,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'dir',
+        String(length=255, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     password = Column(
-        name='password',
-        type_=String(
-            length=40,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'password',
+        String(length=40, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    company = relationship(
-        argument='Company',
-        backref=backref(name='projects', order_by=id),
-        uselist=False
-    )
+    company = relationship('Company',
+                           backref=backref(name='projects', order_by=id),
+                           uselist=False)
 
-    members = relationship(
-        argument='User',
-        secondary=ProjectMembers,
-        backref=backref('projects')
-    )
+    members = relationship('User', ProjectMembers, backref=backref('projects'))
 
     def __init__(self, name, directory, company, password):
         self.name = name
@@ -1005,64 +854,31 @@ class Session(Base):
 
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    project_id = Column(
-        name='project_id',
-        type_=INTEGER,
-        args=(ForeignKey('project.id')),
-        nullable=False
-    )
+    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
+                        nullable=False)
 
-    starttime = Column(
-        name='starttime',
-        type_=DATETIME,
-        default=func.now(),
-        nullable=True
-    )
+    starttime = Column('starttime', DATETIME, default=func.now(),
+                       nullable=True)
 
-    endtime = Column(
-        name='endtime',
-        type_=DATETIME,
-        nullable=True
-    )
+    endtime = Column('endtime', DATETIME, nullable=True)
 
-    previous_session_id = Column(
-        name='previous_session_id',
-        type_=INTEGER,
-        args=(ForeignKey('session.id')),
-        nullable=True
-    )
+    previous_session_id = Column('previous_session_id', INTEGER,
+                                 ForeignKey('session.id'), nullable=True)
 
-    project = relationship(
-        argument='Project',
-        backref=backref('sessions', order_by=id)
-    )
+    project = relationship('Project', backref=backref('sessions', order_by=id))
 
-    previous_session = relationship(
-        argument='Session',
-        uselist=False,
-        remote_side=[id]
-    )
+    previous_session = relationship('Session', uselist=False, remote_side=[id])
 
-    participants = relationship(
-        argument='User',
-        secondary=SessionParticipants,
-        backref=backref('sessions')
-    )
+    participants = relationship('User', SessionParticipants,
+                                backref=backref('sessions'))
 
-    computers = relationship(
-        argument='Computer',
-        secondary=SessionComputers,
-        backref=backref('sessions')
-    )
+    computers = relationship('Computer', SessionComputers,
+                             backref=backref('sessions'))
 
     def __init__(self, project, previous_session=None):
         self.project = project
@@ -1144,56 +960,34 @@ class User(Base):
 
     """
     name = Column(
-        name='name',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'name',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
     email = Column(
-        name='email',
-        type_=String(
-            length=100,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'email',
+        String(length=100, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     title = Column(
-        name='title',
-        type_=String(
-            length=50,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'title',
+        String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     department = Column(
-        name='department',
-        type_=String(
-            length=100,
-            collation='utf8_general_ci',
-            convert_unicode=True
-        ),
+        'department',
+        String(length=100, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    company_id = Column(
-        name='company_id',
-        type_=INTEGER,
-        args=(ForeignKey('company.id')),
-        nullable=False
-    )
+    company_id = Column('company_id', INTEGER, ForeignKey('company.id'),
+                        nullable=False)
 
-    company = relationship(
-        argument='Company',
-        backref=backref('employees', order_by=id)
-    )
+    company = relationship('Company',
+                           backref=backref('employees', order_by=id))
 
     def __init__(self, name, company, email=None, title=None, department=None):
         self.name = name
