@@ -21,6 +21,7 @@ import wmi
 # My imports.
 import controller
 import diwavars
+from models import Project
 
 
 LOGGER = None
@@ -89,8 +90,9 @@ def check_project_password(project_id, password):
 
     """
     try:
+        project_pwd = Project.get_by_id(project_id).password
         hs = hash_password(password)
-        return controller.get_project_password(project_id) == hs
+        return project_pwd == hs
     except Exception as excp:
         LOGGER.debug('CheckPassword exception: %s' % str(excp))
         return False

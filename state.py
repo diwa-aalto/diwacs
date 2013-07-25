@@ -30,6 +30,8 @@ import swnp
 import threads
 import utils
 from dialogs import show_modal_and_destroy
+from models import Project
+from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -79,7 +81,7 @@ def create_config():
     """
     try:
         os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
-    except (os.error, IOError):
+    except OSError:
         pass
     shutil.copy('config.ini', diwavars.CONFIG_PATH)
 
@@ -99,7 +101,6 @@ class State(object):
     classdocs
 
     """
-
     DEF_SIZE = 2 * 1024 * 1024
     DEF_FILES = 40
     DEF_BUFFER = 1024 * 1024
@@ -130,6 +131,7 @@ class State(object):
             self.worker.parse_config(diwavars.CONFIG)
             screens = int(diwavars.CONFIG['SCREENS'])
             name = diwavars.CONFIG['NAME']
+            #:FIXME: What the actual?
             node_id = ('observer' if self.is_responsive else '')
             self.swnp = swnp.SWNP(
                 pgm_group=int(diwavars.PGM_GROUP),
@@ -154,11 +156,10 @@ class State(object):
         self.current_session_thread = threads.CURRENT_PROJECT(self.swnp)
         self.current_session_thread.deamon = True
         # Other
-        ipgm = diwavars.PGM_GROUP
         self.activity = None
         self.project_observer = None
         self.scan_observer = None
-        activity = controller.get_active_activity(ipgm)
+        activity = controller.get_active_activity(diwavars.PGM_GROUP)
         self.selected_nodes = activity.id if activity else 0
         self.current_project_id = 0
         self.current_session_id = 0
@@ -187,9 +188,11 @@ class State(object):
                 self.set_current_session(sid)
                 self.parent.OnProject()
         except Exception as excp:
-            LOGGER.exception('State.initialize exception: %s', str(excp))
+            LOGGER.exception('State.initialize exception: {0!s}'.format(excp))
+            raise
 
     def destroy(self):
+        """ Docstring. """
         if self.cmfh:
             LOGGER.debug('Cmfh closing...')
             self.cmfh.stop()
@@ -296,7 +299,7 @@ class State(object):
         :type progressdialog: :py:class:`wx.ProgressDialog`
 
         """
-        proj = controller.get_project_path(self.current_project_id)
+        path = self.current_project.path
         src_dst_list = []
         returnvalue = []
         contains_folders = False
@@ -308,7 +311,7 @@ class State(object):
                 contains_folders = True
                 copyroot = filename
                 cidx = len(copyroot) + 1
-                res = os.path.join(proj, os.path.basename(filename))
+                res = os.path.join(path, os.path.basename(filename))
                 LOGGER.debug('Project target: %s', res)
                 mydirs.append(res)
                 returnvalue.append(res)
@@ -317,7 +320,7 @@ class State(object):
                     relativeroot = ''
                     if len(currentroot) > cidx:
                         relativeroot = currentroot[cidx:]
-                    targetroot = os.path.join(proj, os.path.basename(filename),
+                    targetroot = os.path.join(path, os.path.basename(filename),
                                               relativeroot)
                     LOGGER.debug('PTROOT: %s', targetroot)
                     for directory in dirs:
@@ -332,7 +335,7 @@ class State(object):
                         item = (t_source, t_destination)
                         src_dst_list.append(item)
             else:
-                path_ = os.path.join(proj, os.path.basename(filename))
+                path_ = os.path.join(path, os.path.basename(filename))
                 returnvalue.append(path_)
                 src_dst_list.append((filename, path_))
         params = {'message': 'Add the dragged objects to project?',
@@ -351,7 +354,7 @@ class State(object):
         if not contains_folders and result == wx.ID_NO:
             # Change project folders to temp folder.
             tmp = os.path.join(r'\\' + diwavars.STORAGE, 'Projects', 'temp')
-            src_dst_list = [(src, dst.replace(proj, tmp))
+            src_dst_list = [(src, dst.replace(path, tmp))
                              for src, dst in src_dst_list]
         try:
             self._handle_file_copy(src_dst_list, mydirs, progressdialog)
@@ -504,7 +507,7 @@ class State(object):
                 if self.swnp.node.screens > 0:
                     pid = self.current_project_id
                     LOGGER.info('Taking a screenshot.')
-                    project_path = controller.get_project_path(pid)
+                    project_path = self.current_project.path
                     filesystem.screen_capture(project_path, self.swnp.node.id)
             elif cmd == 'current_session':
                 target = int(target)
@@ -586,8 +589,8 @@ class State(object):
 
         """
         project_id = int(project_id)
-        project = controller.get_project(project_id)
-        if (project is None) or (project_id < 1):
+        project = Project.get_by_id(project_id)
+        if project is None:
             self.current_project_id = 0
             self.current_project = None
             self.set_current_session(0)
@@ -602,8 +605,7 @@ class State(object):
             self.worker.remove_all_registry_entries()
             self.worker.add_project_registry_entry('*')
             self.worker.add_project_registry_entry('Folder')
-            project_path = controller.get_project_path(project_id)
-            utils.MapNetworkShare('W:', project_path)
+            utils.MapNetworkShare('W:', project.path)
             if self.is_responsive:
                 LOGGER.debug('Starting observers.')
                 try:

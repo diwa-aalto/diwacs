@@ -282,18 +282,18 @@ def update_database():
 
 
 ProjectMembers = Table('projectmembers', BASE.metadata,
-    Column(name='Project', type_=INTEGER, args=(ForeignKey('project.id'))),
-    Column(name='User', type_=INTEGER, args=(ForeignKey('user.id')))
+    Column('Project', INTEGER, ForeignKey('project.id')),
+    Column('User', INTEGER, ForeignKey('user.id'))
 )
 
 SessionParticipants = Table('sessionparticipants', BASE.metadata,
-    Column(name='Session', type_=INTEGER, args=(ForeignKey('session.id'))),
-    Column(name='User', type_=INTEGER, args=(ForeignKey('user.id')))
+    Column('Session', INTEGER, ForeignKey('session.id')),
+    Column('User', INTEGER, ForeignKey('user.id'))
 )
 
 SessionComputers = Table('sessioncomputers', BASE.metadata,
-    Column(name='Session', type_=INTEGER, args=(ForeignKey('session.id'))),
-    Column(name='Computer', type_=INTEGER, args=(ForeignKey('computer.id')))
+    Column('Session', INTEGER, ForeignKey('session.id')),
+    Column('Computer', INTEGER, ForeignKey('computer.id'))
 )
 
 
@@ -316,7 +316,6 @@ class Action(Base):
     :type name: :py:class:`String`
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
@@ -403,7 +402,6 @@ class Company(Base):
 
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )

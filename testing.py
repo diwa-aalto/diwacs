@@ -14,6 +14,7 @@ import unittest
 import controller
 import filesystem
 import utils
+from models import Project
 
 
 class TestUtils(unittest.TestCase):
@@ -38,7 +39,8 @@ class TestUtils(unittest.TestCase):
         project_id = 84
         expected_prehash = str(project_id) + correct_password
         expected_hash = utils.hash_password(expected_prehash)
-        myhash = controller.get_project_password(project_id)
+        project = Project.get_by_id(project_id)
+        myhash = project.password
         self.assertEquals(myhash, expected_hash)
 
     def test_iterislast(self):

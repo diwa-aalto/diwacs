@@ -553,8 +553,8 @@ class GraphicalUserInterface(GUItemplate):
                 self.diwa_state.end_current_session()
                 self.DisableSessionButton()
                 controller.add_or_update_activity(project_id,
-                                                  diwavars.PGM_GROUP,
-                                                  0, self.diwa_state.activity)
+                                                  diwavars.PGM_GROUP, 0,
+                                                  self.diwa_state.activity)
                 sender('SYS', 'current_session;0')
                 sender('SYS', 'current_activity;%s' %
                        str(self.diwa_state.activity))
@@ -578,8 +578,10 @@ class GraphicalUserInterface(GUItemplate):
                     show_modal_and_destroy(ErrorDialog, self, params)
                     self.Update()
                     return
-                controller.add_activity(project_id, diwavars.PGM_GROUP,
-                                        session_id, self.diwa_state.activity)
+                controller.add_or_update_activity(project_id,
+                                                  diwavars.PGM_GROUP,
+                                                  session_id,
+                                                  self.diwa_state.activity)
                 sender('SYS', 'current_activity;%s' %
                        str(self.diwa_state.activity))
                 sender('SYS', 'current_session;%d' % session_id)

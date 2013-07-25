@@ -6,14 +6,12 @@ Created on 17.5.2013
 
 """
 # System imports.
-import base64
 import datetime
 from logging import config, getLogger
 import os
 import shutil
 import subprocess
 import tempfile
-import urllib2
 from _winreg import (OpenKey, CloseKey, HKEY_CURRENT_USER, QueryValueEx)
 import xmlrpclib
 
@@ -24,7 +22,7 @@ from PIL import Image, ImageOps, ImageGrab
 # Own imports.
 import controller
 import diwavars
-import threads
+from models import Project
 
 
 LOGGER = None
@@ -68,7 +66,7 @@ def copy_file_to_project(filepath, project_id):
     :rtype: String
 
     """
-    project_path = controller.get_project_path(project_id)
+    project_path = Project.get_by_id(project_id).path
     file_project_path = search_file(os.path.basename(filepath), project_path)
     if file_project_path:
         return file_project_path

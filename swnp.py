@@ -265,8 +265,9 @@ class SWNP:
                                                      'Sub sys thread', targs)
         LOGGER.debug('Bound listeners on: %s', str(self.tladdr))
 
-        join_str = ('%s_SCREENS_%d_NAME_%s_DATA_%s' % (self.node.id,
-                    self.node.screens, self.node.name, self.node.data))
+        join_str = '%s_SCREENS_%d_NAME_%s_DATA_%s'
+        join_str = join_str.format(self.node.id, self.node.screens,
+                                   self.node.name, self.node.data)
         self.send('SYS', PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
         self.NODE_LIST.add(self.node)

@@ -156,7 +156,7 @@ class AddProjectDialog(wx.Dialog):
 
         # The project handling.
         if self.project_id:
-            project = controller.get_project(self.project_id)
+            project = Project.get_by_id(project_id)
             self.name.SetValue(project.name)
             self.dir.SetValue(project.dir)
 
@@ -188,18 +188,15 @@ class AddProjectDialog(wx.Dialog):
                 event.Skip()
             return
 
-        database = None
         try:
-            database = controller.connect_to_database()
-            company = database.query(Company).filter(Company.id == 1).one()
-            company_name = company.name
+            company = Company.get_by_id()
             project_data = {
                 'name': self.name.GetValue(),
                 'dir': self.dir.GetValue(),
                 'password': self.password.GetValue()
             }
             company_data = {
-                'name': company_name
+                'name': company.name
             }
             data = {
                 'project': project_data,
@@ -313,7 +310,7 @@ class DeleteProjectDialog(wx.Dialog):
         wx.Dialog.__init__(self, parent=parent, title=title,
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            size=(250, 200))
-        self.project = controller.get_project(project_id)
+        self.project = Project.get_by_id(project_id)
         if not self.project:
             self.Destroy()
             msg = 'The project does not seem to exist anymore.'
@@ -565,7 +562,7 @@ class ProjectAuthenticationDialog(wx.Dialog):
                            size=(250, 200))
         self.parent = parent
         self.project_id = project_id
-        self.project = controller.get_project(project_id)
+        self.project = Project.get_by_id(project_id)
         labeltext = ('Please enter password for Project %s' %
                      self.project.name)
         self.notice = wx.StaticText(self, label=labeltext)
@@ -774,8 +771,9 @@ class ProjectSelectDialog(wx.Dialog):
         LOGGER.debug('OnProjectDelete result: ' + str(result_object))
         if result_object['delete']:
             if result_object['files']:
-                project_path = controller.get_project_path(project_id)
-                filesystem.delete_directory(project_path)
+                project = Project.get_by_id(project_id)
+                filesystem.delete_directory(project.path)
+                project = None
             controller.delete_record(Project, project_id)
             self.UpdateProjects()
         if event:
@@ -798,7 +796,7 @@ class ProjectSelectDialog(wx.Dialog):
                 event.Skip()
             return
         project_id = self.project_index[selected]
-        project = controller.get_project(project_id)
+        project = Project.get_by_id(project_id)
         if not project:
             msg = 'The project does not seem to exist anymore!'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
@@ -882,7 +880,7 @@ class ProjectSelectedDialog(wx.Dialog):
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            size=(250, 200))
         try:
-            self.project_name = controller.get_project(project_id).name
+            self.project_name = Project.get_by_id(project_id).name
             ltext = ProjectSelectedDialog.ptext % self.project_name
             self.notice = wx.StaticText(self, label=ltext)
             self.check_box = wx.CheckBox(self, -1,
