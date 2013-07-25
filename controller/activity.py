@@ -7,12 +7,6 @@ Created on 28.6.2013
 # Critical import.
 import controller.common
 
-# System imports.
-
-
-# Third party imports.
-import sqlalchemy
-
 # Own imports.
 from models import Activity, Project, Session
 
@@ -32,7 +26,7 @@ def _logger():
     return controller.common.LOGGER
 
 
-def add_activity(project_id, pgm_group, session_id=None, activity_id=None):
+def add_or_update_activity(project_id, pgm_group, session_id=0, activity_id=0):
     """
     Add activity to database.
 
@@ -52,64 +46,32 @@ def add_activity(project_id, pgm_group, session_id=None, activity_id=None):
     :rtype: Integer
 
     """
-    database = None
-    result = None
-    try:
-        database = controller.common.connect_to_database()
-        project = database.query(Project).filter(Project.id == project_id)
-        project = project.one()
-        if session_id:
-            session = database.query(Session).filter(Session.id == session_id)
-            session = session.one()
-        else:
-            session = None
-        activity = None
-        if activity_id:
-            activity = database.query(Activity)
-            activity = activity.filter(Activity.id == activity_id)
-            activity = activity.one()
-            activity.project = project
+    project = Project.get_by_id(project_id)
+    session = Session.get_by_id(session_id) if session_id > 0 else None
+    if activity_id > 0:
+        activity = Activity.get_by_id(activity_id)
+        activity.project = project
+        if session_id > 0:
             activity.session = session
-            activity.active = pgm_group
-        else:
-            activity = Activity(project, session)
-        database.add(activity)
-        database.commit()
-        database.expunge(activity)
-        result = activity.id
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception on add_activity call: {exception!s}'
-        _logger().exception(log_msg.format(exception=excp))
-    if database:
-        database.close()
-    return result
+    else:
+        activity = Activity(project, session)
+    activity.active = pgm_group
+    activity.update()
+    return activity.id
 
 
 def get_active_activity(pgm_group):
     """
-    Get the latest active activity id.
+    Get the latest active activity.
 
     :param pgm_group: The PGM Group number.
     :type pgm_group: Integer
 
-    :returns: Latest active activity ID.
-    :rtype: Integer
+    :returns: Latest active activity.
+    :rtype: :py:class:`models.Activity`
 
     """
-    database = None
-    result = None
-    try:
-        database = controller.common.connect_to_database()
-        activity = database.query(Activity)
-        activity = activity.filter(Activity.active == pgm_group)
-        activity = activity.order_by(sqlalchemy.desc(Activity.id)).first()
-        if activity:
-            result = activity.id
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
+    return Activity.get('last', Activity.active == pgm_group)
 
 
 def unset_activity(pgm_group):
@@ -120,15 +82,7 @@ def unset_activity(pgm_group):
     :type pgm_group: Integer
 
     """
-    database = None
-    try:
-        database = controller.common.connect_to_database()
-        activities = database.query(Activity)
-        for activity in activities.filter(Activity.active == pgm_group).all():
-            activity.active = False
-            database.add(activity)
-        database.commit()
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
+    activities = Activity.get('all', Activity.active == pgm_group)
+    for activity in activities:
+        activity.active = None
+        activity.update()  #TODO: Buffer somehow so one connection is enough?

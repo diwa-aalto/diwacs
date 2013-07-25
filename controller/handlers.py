@@ -13,11 +13,14 @@ import shutil
 from time import sleep
 
 # Third party imports.
-from watchdog.events import DirCreatedEvent, FileSystemEventHandler
+from watchdog.events import (FileCreatedEvent, FileDeletedEvent,
+                             FileModifiedEvent, FileMovedEvent,
+                             FileSystemEventHandler)
 
 # Own imports.
 import controller.project
-from models import Action, File, FileAction, Project
+from models import (File, Project, ACTIONS, REVERSE_ACTIONS)
+import diwavars
 
 
 def _logger():
@@ -80,23 +83,50 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         _logger().debug(log_msg)
 
     # -------------- PUBLIC METHODS --------------
+    # These ignore directory events.
     def on_created(self, event):
-        if 'created' in self.actions:
+        if isinstance(event, FileCreatedEvent) and 'created' in self.actions:
             self.actions['created'](event)
 
     def on_deleted(self, event):
-        if 'deleted' in self.actions:
+        if isinstance(event, FileDeletedEvent) and 'deleted' in self.actions:
             self.actions['deleted'](event)
 
     def on_modified(self, event):
-        if 'modified' in self.actions:
+        if isinstance(event, FileModifiedEvent) and 'modified' in self.actions:
             self.actions['modified'](event)
 
     def on_moved(self, event):
-        if 'moved' in self.actions:
+        if isinstance(event, FileMovedEvent) and 'moved' in self.actions:
             self.actions['moved'](event)
 
-    # -------------- PRIVATE METHODS VARIABLES --------------
+    # -------------- PRIVATE METHODS --------------
+    def _project_prototype(self, path, action_id):
+        """
+        On_created event handler for project files.
+        Logs to database.
+
+        :param event: The event.
+        :type event: :py:class:`watchdog.events.FileSystemEvent`
+
+        """
+        #: TODO: In init pass a function to query current session id :p
+        try:
+            log_msg = 'Project file {filename} {action} in {directory}'
+            log_msg = log_msg.format(filename=os.path.basename(path),
+                                     action=ACTIONS[action_id],
+                                     directory=os.path.dirname(path))
+            _logger().debug(log_msg)
+            pgm = diwavars.PGM_GROUP
+            session_id = controller.session.get_active_session(pgm)
+            controller.project.create_file_action(path, action_id, session_id,
+                                                  self.project_id)
+        except Exception as excp:
+            log_msg = ('Exception in Project file handler on_{action} '
+                       'callback: {exception!s}')
+            log_msg = log_msg.format(action=ACTIONS[action_id], exception=excp)
+            _logger().exception(log_msg)
+
     def _on_created_project(self, event):
         """
         On_created event handler for project files.
@@ -106,33 +136,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        # We are only interested in files.
-        if isinstance(event, DirCreatedEvent):
-            return
-        database = None
-        try:
-            database = controller.common.connect_to_database()
-            file_path = event.src_path
-            log_msg = 'Project file {filename} created in {directory}'
-            log_msg = log_msg.format(filename=os.path.basename(file_path),
-                                     directory=os.path.dirname(file_path))
-            _logger().debug(log_msg)
-            project = database.query(Project)
-            project = project.filter(Project.id == self.project_id).one()
-            file_object = File(path=file_path, project=project)
-            action_object = database.query(Action)
-            action_object = action_object.filter(Action.id == 1).one()
-            file_action_object = FileAction(file_object, action_object)
-            database.merge(file_object)
-            database.merge(file_action_object)
-            database.commit()
-        except Exception as excp:
-            log_msg = ('Exception in Project file scanner on_created '
-                       'callback: {exception!s}')
-            log_msg = log_msg.format(exception=excp)
-            _logger().exception(log_msg)
-        if database is not None:
-            database.close()
+        self._project_prototype(event.src_path, REVERSE_ACTIONS['Created'])
 
     def _on_deleted_project(self, event):
         """
@@ -143,36 +147,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        # We are only interested in files.
-        if isinstance(event, DirCreatedEvent):
-            return
-        database = None
-        try:
-            database = controller.common.connect_to_database()
-            project_id = self.project_id
-            file_path = event.src_path
-            log_msg = 'Project file {filename} deleted in {directory}'
-            log_msg = log_msg.format(filename=os.path.basename(file_path),
-                                     directory=os.path.dirname(file_path))
-            _logger().debug(log_msg)
-            file_object = database.query(File)
-            file_object = file_object.filter(File.path == file_path,
-                                             File.project_id == project_id)
-            file_object = file_object.order_by(File.id.desc()).first()
-            action_object = database.query(Action)
-            action_object = action_object.filter(Action.id == 2).one()
-            file_action_object = FileAction(file_object, action_object)
-            file_object.project = None
-            database.merge(file_object)
-            database.merge(file_action_object)
-            database.commit()
-        except Exception as excp:
-            log_msg = ('Exception in Project file scanner on_deleted '
-                       'callback: {exception!s}')
-            log_msg = log_msg.format(exception=excp)
-            _logger().exception(log_msg)
-        if database is not None:
-            database.close()
+        self._project_prototype(event.src_path, REVERSE_ACTIONS['Deleted'])
 
     def _on_modified_project(self, event):
         """
@@ -183,33 +158,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        # We are only interested in files.
-        if isinstance(event, DirCreatedEvent):
-            return
-        database = None
-        try:
-            database = controller.common.connect_to_database()
-            project_id = self.project_id
-            file_object = database.query(File)
-            file_object = file_object.filter(File.path == event.src_path,
-                                             File.project_id == project_id)
-            file_object = file_object.order_by(File.id.desc()).first()
-            _logger().debug('on_modified - query = %s', str(file_object))
-            if not file_object:
-                file_object = self.on_created(event)
-                _logger().debug('on_created result: %s', str(file_object))
-            action_object = database.query(Action).filter(Action.id == 3).one()
-            file_action_object = FileAction(file_object, action_object)
-            database.merge(file_object)
-            database.merge(file_action_object)
-            database.commit()
-        except Exception as excp:
-            log_msg = ('Exception in Project file scanner on_modified '
-                       'callback: {exception!s}')
-            log_msg = log_msg.format(exception=excp)
-            _logger().exception(log_msg)
-        if database is not None:
-            database.close()
+        self._project_prototype(event.src_path, REVERSE_ACTIONS['Updated'])
 
     def _on_moved_project(self, event):
         """
@@ -231,13 +180,41 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        # We are only interested in files.
-        if isinstance(event, DirCreatedEvent):
-            return
-        database = None
-        # TODO: Fill this.
-        if database is not None:
-            database.close()
+        source = os.path.abspath(event.src_path)
+        target = os.path.abspath(event.dest_path)
+        try:
+            project = Project.get_by_id(self.project_id)
+            source_obj = File.get('one', File.project == project,
+                                  File.path == source)
+            project_path = os.path.abspath(project.path)
+            if source_obj is not None:
+                # Case 1
+                if target.startswith(project_path):
+                    source_obj.path = target
+                    act_path = target
+                    action = REVERSE_ACTIONS['Renamed to something']
+                # Case 2
+                else:
+                    source_obj.project_id = None
+                    act_path = source
+                    action = REVERSE_ACTIONS['Deleted']
+                source_obj.update()
+                self._project_prototype(act_path, action)
+            else:
+                # Case 3
+                if target.startswith(project_path):
+                    action = REVERSE_ACTIONS['Created']
+                    self._project_prototype(target, action)
+                # Case 4, should never happen.
+                else:
+                    pass
+        except Exception as excp:
+            log_msg = ('Exception in Project file handler on_moved '
+                       'callback: {exception!s}')
+            log_msg = log_msg.format(exception=excp)
+            _logger().exception(log_msg)
+        #:TODO: If we implement expunge in Base, do it here for File
+        #       in Finally: block.
 
     def _on_created_scanner(self, event):
         """
@@ -248,15 +225,16 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: an instance of :class:`watchdog.events.FileSystemEvent`
 
         """
-        database = None
         try:
-            project_path = controller.project.get_project_path(self.project_id)
-            if not project_path:
+            project = Project.get_by_id(self.project_id)
+            if not project.path:
                 return
             file_path = event.src_path
             basename = os.path.basename(file_path)
-            _logger().debug('on_created at: %s (%s)', project_path, basename)
-            new_path = os.path.join(project_path, basename)
+            log_msg = 'On created at: {path} ({name})'
+            log_msg = log_msg.format(path=project.path, name=basename)
+            _logger().debug(log_msg)
+            new_path = os.path.join(project.path, basename)
             try:
                 # Let's build the directory path to the file.
                 path_parts = os.path.dirname(file_path)
@@ -275,24 +253,8 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
             except (IndexError, ValueError):
                 pass
             shutil.copy2(file_path, new_path)
-            database = controller.common.connect_to_database()
-            project = database.query(Project)
-            project = project.filter(Project.id == self.project_id).one()
-            _logger().debug('File(%s, %s)', new_path, str(project))
-            file_object = File(path=new_path, project=project)
-            action_object = database.query(Action).filter(Action.id == 1).one()
-            file_action_object = FileAction(file_object, action_object)
-            database.add(file_object)
-            database.add(file_action_object)
-            database.commit()
-            log_msg = ('FileAction FILE(id={file_id}, name="{file_name}") '
-                       'ACTION (id=1, name="Created")')
-            log_msg = log_msg.format(file_id=file_object.id,
-                                     file_name=basename)
-            _logger().debug(log_msg)
+            self._project_prototype(new_path, REVERSE_ACTIONS['Created'])
         except Exception as excp:
             log_msg = 'Exception in SCAN HANDLER: {exception!s}'
             log_msg = log_msg.format(exception=excp)
             _logger().exception(log_msg)
-        if database:
-            database.close()

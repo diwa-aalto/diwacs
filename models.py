@@ -14,7 +14,8 @@ import logging
 
 # Third party imports.
 from sqlalchemy import (create_engine, ForeignKey, Column, Table, text,
-                        INTEGER, SMALLINT, DATETIME, BOOLEAN, String)
+                        INTEGER, SMALLINT, DATETIME, BOOLEAN, String,
+                        desc)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker, relationship, backref
@@ -28,9 +29,11 @@ import diwavars
 ENGINE = None  # create_engine(DATABASE, echo=True)
 LOGGER = None
 BASE = declarative_base()
-ACTIONS = {1: 'Created', 2: 'Deleted', 3: 'Updated',
-           4: 'Renamed from something', 5: 'Renamed to something', 6: 'Opened',
-           7: 'Closed'}
+ACTIONS = {
+    1: 'Created', 2: 'Deleted', 3: 'Updated', 4: 'Renamed from something',
+    5: 'Renamed to something', 6: 'Opened', 7: 'Closed'
+}
+REVERSE_ACTIONS = {ACTIONS[key]: key for key in ACTIONS}
 
 
 def __init_logger():
@@ -107,9 +110,6 @@ class Base(BASE):
         }
         return '<id={id}, item={name}>'.format(**kwargs)
 
-    _default_method_values = {'all': [], 'count': 0, 'delete': [],
-                              'exists': False, 'first': None, 'one': None}
-
     @classmethod
     def delete(cls, instance):
         """Delete an object of this class from the database."""
@@ -129,6 +129,10 @@ class Base(BASE):
                 database.close()
             database = None
 
+    _default_method_values = {'all': [], 'count': 0, 'delete': [],
+                              'exists': False, 'first': None, 'last': None,
+                              'one': None}
+
     @classmethod
     def get(cls, method, *filters):
         """
@@ -142,6 +146,7 @@ class Base(BASE):
                 * exists - This returns boolean informing weather the an\
                 object match was found from the database.
                 * first - This returns the first matching object.
+                * last - This returns the last matching object.
                 * one - This returns the object if it exists and raises an\
                 exception if it doesn't or if there's more than one instance\
                 of the desired object.
@@ -160,7 +165,10 @@ class Base(BASE):
             database = connect_to_database()
             query = database.query(cls)
             query = query.filter(*filters)
-            result = getattr(query, method)()
+            if method == 'last':
+                result = query.order_by(desc(cls.id)).first()
+            else:
+                result = getattr(query, method)()
         except SQLAlchemyError, excp:
             log_msg = 'Exception in {class_name}.get() : {exception!s}'
             log_msg = log_msg.format(class_name=cls.__name__, exception=excp)

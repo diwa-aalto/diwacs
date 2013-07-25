@@ -194,7 +194,7 @@ def GetMacForIp(ip):
                     return str(interface.MACAddress).translate(None, ':')
     except Exception as excp:
         LOGGER.exception("Exception in GetMacForIp: %s", str(excp))
-    return None
+    return ''
 
 
 def IntToDottedIP(intip):
@@ -210,7 +210,7 @@ def IntToDottedIP(intip):
     for exp in [3, 2, 1, 0]:
         octet = octet + str(intip / (256 ** exp)) + "."
         intip = intip % (256 ** exp)
-    return(octet.rstrip('.'))
+    return octet.rstrip('.')
 
 
 def MapNetworkShare(letter, share=None):

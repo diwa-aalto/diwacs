@@ -17,7 +17,7 @@ if diwavars.CURRENTLY_RUNNING:
 import logging
 
 # Third party imports.
-import sqlalchemy
+from sqlalchemy.exc import SQLAlchemyError
 
 # Own imports.
 from models import Activity, File, Project, Session, Company
@@ -54,21 +54,6 @@ diwavars.add_logger_level_setter(__set_logger_level)
 ENGINE = None  # create_engine(DATABASE, echo=True)
 NODE_NAME = ''
 NODE_SCREENS = 0
-
-
-def update_database():
-    """
-    Update the database connection engine.
-
-    .. note::
-        This only works when DB_STRING is completely defined by
-        the log reader as otherwise the create_engine would cause
-        an exception.
-
-    """
-    global ENGINE
-    if diwavars.DB_STRING:
-        ENGINE = sqlalchemy.create_engine(diwavars.DB_STRING, echo=False)
 
 
 def set_node_name(name):
@@ -114,7 +99,7 @@ def delete_record(record_model, id_number):
             Activity.get('delete', Activity.project_id == id_number)
         record_model.delete(instance)
         return True
-    except sqlalchemy.exc.SQLAlchemyError:
+    except SQLAlchemyError:
         log_msg = ('Delete record exception model {model_name!s} with '
                    'id {id_number}.')
         log_msg = log_msg.format(model_name=record_model.__name__,

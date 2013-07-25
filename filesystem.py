@@ -104,21 +104,21 @@ def copy_to_temporary_directory(filepath):
 
 
 def create_project_directory(dir_name):
-    """Creates a project directory, if one does not exist in the file system
+    """
+    Creates a project directory, if one does not exist in the file system
 
     :param dir_name: Name of the directory
     :type dir_name: String
 
     """
-    result = ''
+    project_dir = os.path.join(diwavars.PROJECT_PATH, str(dir_name))
     try:
-        project_dir = os.path.join(diwavars.PROJECT_PATH, str(dir_name))
         if not os.path.exists(project_dir):
             os.makedirs(project_dir)
-        result = project_dir
+        return project_dir
     except (ValueError, IOError, OSError):
         LOGGER.exception('Error creating project dir.')
-    return result
+        return ''
 
 
 def delete_directory(path):

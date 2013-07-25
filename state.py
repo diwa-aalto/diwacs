@@ -158,7 +158,8 @@ class State(object):
         self.activity = None
         self.project_observer = None
         self.scan_observer = None
-        self.selected_nodes = controller.get_active_activity(ipgm)
+        activity = controller.get_active_activity(ipgm)
+        self.selected_nodes = activity.id if activity else 0
         self.current_project_id = 0
         self.current_session_id = 0
         self.controlled = None
@@ -535,7 +536,7 @@ class State(object):
         if not self.current_project:
             return
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity = controller.add_activity(self.current_project_id,
+        self.activity = controller.add_or_update_activity(self.current_project_id,
                                                 diwavars.PGM_GROUP,
                                                 self.current_session_id,
                                                 self.activity)
@@ -623,8 +624,6 @@ class State(object):
 
     def set_observer(self):
         """
-        Docstring.
-
         Set an observer for file changes in project directory and
         and observer for image uploads by camera in scan folder.
 
@@ -686,6 +685,7 @@ class State(object):
         if self.current_project is None:
             return 0
         self.end_current_session()
+        #:TODO: When should previous session be passed?
         session = controller.start_new_session(self.current_project_id)
         self.current_session = session
         self.current_session_id = session.id

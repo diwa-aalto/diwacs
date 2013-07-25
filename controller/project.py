@@ -8,17 +8,17 @@ Created on 28.6.2013
 import controller.common
 
 # System imports.
-import sys
 import os
 
 # Third party imports.
 import sqlalchemy
+from sqlalchemy.exc import SQLAlchemyError
 
 # Own imports.
 import controller.activity
 import filesystem
 from models import (Action, Activity, Company, File, FileAction, Project,
-                    Session)
+                    Session, ItemAlreadyExistsException)
 import utils
 import models
 
@@ -53,29 +53,19 @@ def add_file_to_project(filepath, project_id):
     :rtype: String
 
     """
-    if not project_id:
-        return filesystem.copy_file_to_project(filepath, 0)
-    path = ''
-    database = None
+    if File.get('exists', File.path == filepath):
+        return
+    project = Project.get_by_id(project_id)
     try:
-        database = controller.common.connect_to_database()
-        project = database.query(Project).filter(Project.id == project_id)
-        project = project.one()
-        if not project:
-            database.close()
-            return ''
         newpath = filesystem.copy_file_to_project(filepath, project_id)
         if newpath:
-            project_file = File(path=newpath, project=project)
-            database.add(project_file)
-            database.commit()
-        path = newpath
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        logmsg = 'Add file to project(%d) exception: %s'
-        _logger().exception(logmsg, (project_id, str(excp)))
-    if database:
-        database.close()
-    return path
+            File(path=newpath, project=project)
+        return newpath
+    except SQLAlchemyError as excp:
+        log_msg = 'Add file to {project!s} exception: {exception!s}'
+        log_msg = log_msg.format(project=project, exception=excp)
+        _logger().exception(log_msg)
+        return ''
 
 
 def add_project(data):
@@ -96,46 +86,35 @@ def add_project(data):
     company_data = data['company']
     if ('name' not in project_data) or ('name' not in company_data):
         return None
-    database = None
-    result = None
-    try:
-        database = controller.common.connect_to_database()
-        name = project_data['name']
-        directory = ''
-        directory_set = False
-        if 'dir' in project_data:
-            directory = project_data['dir']
-            directory_set = True
-        password = ''
-        if 'password' in project_data:
-            password = project_data['password']
-            password = utils.hash_password(password)
-            directory = utils.get_encrypted_directory_name(name, password)
-            directory_set = True
-        if not directory_set:
-            database.close()
-            return None
-        _logger().debug('Adding project: %s', name)
-        company = database.query(Company)
-        company_name_filter = Company.name.contains(company_data['name'])
-        company = company.filter(company_name_filter).one()
-        project = Project(name=name, company=company, password=password)
-        if directory:
-            project.dir = filesystem.create_project_directory(directory)
-        else:
-            project.dir = filesystem.create_project_directory(str(project.id))
-        if not project.dir:
-            del project
-            database.close()
-            return None
-        database.add(project)
-        database.commit()
-        result = project
-    except sqlalchemy.exc.SQLAlchemyError:
-        _logger().exception('Add project exception')
-    if database:
-        database.close()
-    return result
+    if Project.get('exists', Project.name == project_data['name']):
+        raise ItemAlreadyExistsException('The project exists already!')
+    company = Company.get('one', Company.name == company_data['name'])
+    # Parse data.
+    name = project_data['name']
+    directory = ''
+    directory_set = False
+    if 'dir' in project_data:
+        directory = project_data['dir']
+        directory_set = True
+    password = ''
+    if 'password' in project_data:
+        password = project_data['password']
+        password = utils.hash_password(password)
+        directory = utils.get_encrypted_directory_name(name, password)
+        directory_set = True
+    if not directory_set:
+        return None
+    _logger().debug('Adding project: {name}'.format(name=name))
+    project = Project(name=name, company=company, password=password)
+    if directory:
+        project.dir = filesystem.create_project_directory(directory)
+    else:
+        project.dir = filesystem.create_project_directory(str(project.id))
+    if not project.dir:
+        Project.delete(project)
+        return None
+    project.update()
+    return project
 
 
 def check_password(project_id, password):
@@ -143,10 +122,10 @@ def check_password(project_id, password):
     Docstring here.
 
     """
-    project_password = get_project_password(project_id)
-    if not project_password:
+    project = Project.get_by_id(project_id)
+    if not project.password:
         return True
-    return project_password == utils.hash_password(password)
+    return project.password == utils.hash_password(password)
 
 
 def create_file_action(path, action_id, session_id, project_id):
@@ -186,59 +165,8 @@ def get_active_project(pgm_group):
     :rtype: Integer
 
     """
-    activity_id = controller.activity.get_active_activity(pgm_group)
-    if activity_id == None:
-        return None
-    else:
-        database = controller.common.connect_to_database()
-        result = None
-        try:
-            activity = database.query(Activity)
-            activity = activity.filter(Activity.id == activity_id)
-            activity = activity.one()
-            project = activity.project
-            result = project.id
-        except sqlalchemy.exc.SQLAlchemyError:
-            pass
-        if database:
-            database.close()
-        return result
-
-
-def get_file_path(project_id, filename):
-    """
-    Returns the filepath for filename.
-
-    :returns: Filepath.
-    :rtype: String
-
-    """
-    filepath = is_project_file(filename, project_id)
-    if filepath:
-        return filepath
-    return False
-
-
-def get_project(project_id):
-    """
-    Fetches projects by a company.
-
-    :param company_id: A company id from database.
-    :type company_id: Integer
-
-    """
-    database = None
-    result = None
-    try:
-        database = controller.common.connect_to_database()
-        project = database.query(Project)
-        project = project.filter(Project.id == project_id)
-        result = project.one()
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
+    activity = controller.activity.get_active_activity(pgm_group)
+    return activity.project_id if activity else 0
 
 
 def get_project_id_by_activity(activity_id):
@@ -246,44 +174,8 @@ def get_project_id_by_activity(activity_id):
     Docstring here.
 
     """
-    result = 0
-    try:
-        database = controller.common.connect_to_database()
-        act = database.query(Activity).filter(Activity.id == activity_id).one()
-        database.close()
-        if act.project_id:
-            result = act.project_id
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    return result
-
-
-def get_project_password(project_id):
-    """
-    Returns the project password.
-
-    :param project_id: ID of the project.
-    :type project_id: Integer
-
-    :rtype: String
-
-    """
-    my_project = get_project(project_id)
-    return my_project.password if my_project else ''
-
-
-def get_project_path(project_id):
-    """
-    Fetches the project path from database and return it.
-
-    :param project_id: Project id for database.
-    :type project_id: Integer
-
-    :rtype: String
-
-    """
-    my_project = get_project(project_id)
-    return my_project.dir if my_project else ''
+    activity = Activity.get_by_id(activity_id)
+    return activity.project_id if activity else 0
 
 
 def get_projects_by_company(company_id):
@@ -294,19 +186,7 @@ def get_projects_by_company(company_id):
     :type company_id: Integer
 
     """
-    database = None
-    result = []
-    try:
-        database = controller.common.connect_to_database()
-        projects = database.query(Project)
-        projects = projects.filter(Project.company_id == company_id)
-        projects = projects.order_by(Project.name).all()
-        result = projects
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
+    return Project.get('all', Project.company_id == company_id).sort(key=str)
 
 
 def get_recent_files(project_id, max_files_count=None):
@@ -330,7 +210,7 @@ def get_recent_files(project_id, max_files_count=None):
     database = None
     result = []
     try:
-        database = controller.common.connect_to_database()
+        database = models.connect_to_database()
         my_query = database.query(File.path, FileAction.action_time)
         files = my_query.filter(File.project_id == project_id,
                                 File.id == FileAction.file_id)
@@ -339,45 +219,36 @@ def get_recent_files(project_id, max_files_count=None):
         if max_files_count and type(max_files_count) == int:
             files = files.limit(max_files_count)
         result = files.all()
-    except sqlalchemy.exc.SQLAlchemyError:
+    except SQLAlchemyError:
         pass
     if database:
         database.close()
     return result
 
 
-def edit_project(id_number, row):
+def edit_project(project_id, row):
     """
     Update the project info.
 
-    :param id_number: Database id number of the project.
-    :type id_number: Integer
+    :param project_id: Database id number of the project.
+    :type project_id: Integer
 
     :param row: The new project information.
     :type row: A dictionary
 
     """
-    database = None
-    try:
-        database = controller.common.connect_to_database()
-        record = database.query(Project).filter_by(id=id_number).one()
-        needs_update = False
-        if 'name' in row:
-            record.name = row['name']
-            needs_update = True
-        if 'dir' in row:
-            record.dir = row['dir']
-            needs_update = True
-        if 'password' in row:
-            record.password = row['password']
-            needs_update = True
-        if needs_update:
-            database.add(record)
-            database.commit()
-    except sqlalchemy.exc.SQLAlchemyError:
-        _logger().exception('edit_project exception')
-    if database:
-        database.close()
+    project = Project.get_by_id(project_id)
+    needs_to_update = False
+    for key in row:
+        try:
+            setattr(project, key, row[key])
+            needs_to_update = True
+        except AttributeError, excp:
+            log_msg = 'Attribute error in edit_project: {exception}'
+            log_msg = log_msg.format(exception=excp)
+            _logger().exception(log_msg)
+    if needs_to_update:
+        project.update()
 
 
 def init_sync_project_directory(project_id):
@@ -388,43 +259,36 @@ def init_sync_project_directory(project_id):
     :type project_id: Integer
 
     """
-    database = None
     log_msg = 'init_sync_project_directory project ID = {project_id}'
     log_msg = log_msg.format(project_id=project_id)
     _logger().debug(log_msg)
-    if not project_id or project_id < 1:
+    project = Project.get_by_id(project_id)
+    if not project:
         return
+    project_files = File.get('all', File.project_id == project_id)
+    project_filepaths = [f.path for f in project_files]
     try:
-        database = controller.common.connect_to_database()
-        my_query = database.query(File)
-        project_files = my_query.filter(File.project_id == project_id).all()
-        project_path = get_project_path(project_id)
-        if not project_path:
-            database.close()
-            return
-        project_filepaths = [project.path for project in project_files]
-        for root, directories, basenames in os.walk(project_path):
-            filepaths = [os.path.join(root, name) for name in basenames]
-            for filepath in filepaths:
-                if filepath not in project_filepaths:
-                    add_file_to_project(filepath, project_id)
-                else:
+        for (root, directories, basenames) in os.walk(project.path):
+            for filepath in [os.path.join(root, n) for n in basenames]:
+                if filepath in project_filepaths:
+                    # Simultaneously remove the element from both lists.
                     index = project_filepaths.index(filepath)
                     project_files.pop(index)
                     project_filepaths.pop(index)
-        project_filepaths = []
+                else:
+                    # Add the new file to project.
+                    add_file_to_project(filepath, project_id)
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
+            deleted = models.REVERSE_ACTIONS['Deleted']
+            controller.create_file_action(file_.path, deleted, 0, project_id)
             file_.project_id = None
-            database.add(file_)
-        database.commit()
-    except sqlalchemy.exc.SQLAlchemyError as excp:
+            file_.update()
+    except OSError as excp:
         log_msg = ('Exception in Initial project directory synchronization '
                    'call: {exception!s}')
         log_msg = log_msg.format(exception=excp)
         _logger().exception(log_msg)
-    if database:
-        database.close()
 
 
 def is_project_file(filename, project_id):
@@ -441,44 +305,16 @@ def is_project_file(filename, project_id):
     :rtype: Boolean
 
     """
-    database = None
-    # Python3 has a different str definition (=unicode)
-    # and unicode is not defined. Although the module is for
-    # python 2.X we try to support 3.X also.
-    py3k = sys.version_info >= (3, 0)
-    try:
-        if py3k:
-            # str is unicode in 3.X and this just enforces the type.
-            filename = str(filename)
-        else:
-            # In 2.X we can have either str or unicode...
-            if isinstance(filename, str):
-                filename = unicode(filename, errors='replace')
-        database = controller.common.connect_to_database()
-        basename = os.path.basename(filename)
-        if isinstance(basename, str):
-            basename = unicode(basename, errors='replace')
-        _logger().debug('is_project_file %s %s', str(type(filename)), filename)
-        files = database.query(File)
-        files = files.filter(File.project_id == project_id,
-                             File.path.like(u'%' + basename))
-        files = files.order_by(sqlalchemy.desc(File.id)).all()
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in is_project_file call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-        files = []
-    if database:
-        database.close()
-    for fileobject in files:
-        filebase = os.path.basename(fileobject.path)
-        if isinstance(filebase, str):
-            filebase = unicode(filebase, errors='replace')
-        if filebase == basename:
-            return fileobject.path
     filebase = os.path.basename(filename)
-    project_path = get_project_path(project_id)
-    file_project_path = filesystem.search_file(filebase, project_path)
+    fileabs = os.path.abspath(filename)
+    project = Project.get_by_id(project_id)
+    if File.get('exists', File.path == fileabs, File.project_id == project_id):
+        return True
+    file_project_path = filesystem.search_file(filebase, project.path)
     if file_project_path:
-        return add_file_to_project(file_project_path, project_id)
+        try:
+            file_ = File(file_project_path, project)
+            return file_.path
+        except (ItemAlreadyExistsException, SQLAlchemyError):
+            pass
     return ''

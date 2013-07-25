@@ -9,7 +9,7 @@ import controller.common
 
 # Third party imports.
 import pythoncom
-import sqlalchemy
+from sqlalchemy import text, func
 
 # Own imports.
 import diwavars
@@ -49,81 +49,55 @@ def add_computer(name, pc_ip, wos_id):
     :rtype: :py:class:`models.Computer`
 
     """
-    computer = None
-    database = None
-    try:
-        database = controller.common.connect_to_database(True)
-        setting = pythoncom.COINIT_MULTITHREADED  # pylint: disable=E1101
-        pythoncom.CoInitializeEx(setting)  # pylint: disable=E1101
-        wanted_mac = utils.GetMacForIp(pc_ip)
-        ip_int = utils.DottedIPToInt(pc_ip)
-        if wanted_mac:
-            temp_pc = database.query(Computer).filter_by(mac=wanted_mac)
-            temp_pc = temp_pc.order_by(sqlalchemy.desc(Computer.id)).first()
-            if temp_pc:
-                temp_pc.name = name
-                temp_pc.ip = ip_int
-                temp_pc.wos_id = wos_id
-                database.add(temp_pc)
-                computer = temp_pc
-                database.commit()
-        else:
-            _logger().debug('no computer instance  found')
-            temp_pc = Computer(ip=ip_int, name=name, mac=wanted_mac,
-                               wos_id=wos_id)
-            database.add(temp_pc)
-            computer = temp_pc
-            database.commit()
+    setting = pythoncom.COINIT_MULTITHREADED  # pylint: disable=E1101
+    pythoncom.CoInitializeEx(setting)  # pylint: disable=E1101
+    pc_mac = utils.GetMacForIp(pc_ip)
+    ip_int = utils.DottedIPToInt(pc_ip)
+    # Try finding computer by MAC address.
+    if pc_mac:
+        computer = Computer.get_most_recent_by_mac(pc_mac)
         if computer:
-            database.expunge(computer)
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in add_computer call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-    if database:
-        database.close()
+            computer.name = name
+            computer.ip = ip_int
+            computer.wos_id = wos_id
+            computer.update()
+            return computer
+    # Try finding computer by name...
+    computer = Computer.get('last', Computer.name == name)
+    if computer:
+        computer.ip = ip_int
+        computer.mac = pc_mac
+        computer.wos_id = wos_id
+        computer.update()
+        return computer
+    # Create new...
+    computer = Computer(name, ip_int, pc_mac, controller.common.NODE_SCREENS,
+                        False, wos_id)
     return computer
 
 
-def get_active_computers(timeout):
+def get_active_computers(timeout, *filters):
     """
     Get all the active computers from database.
 
     :param timeout:
         The number of seconds an "active" computer may have been idle while
-        still being considered active.
+        still being considered active. Default is 10 seconds.
     :type timeout: Integer
 
     :returns: A list of active computers.
     :rtype: List of :py:class:`models.Computer`
 
     """
-    result = []
-    database = None
-    if (timeout is None) or timeout < 1:
-        return result
-    try:
-        database = controller.common.connect_to_database()
-        diff_unit = sqlalchemy.text('second')
-        my_filter = sqlalchemy.func.timestampdiff(diff_unit, Computer.time,
-                                                  sqlalchemy.func.now())
-        pcs = database.query(Computer)
-        result = pcs.filter(my_filter < timeout).all()
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in get_active_computers call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-    if database:
-        database.close()
-    return result
+    difference_unit = text('second')
+    age_filter = func.timestampdiff(difference_unit, Computer.time, func.now())
+    filters = (age_filter < timeout,) + filters
+    return Computer.get('all', *filters)
 
 
 def get_active_responsive_nodes(pgm_group):
     """
     Return the wos_id fields of all active responsive nodes.
-
-    .. note::
-        This uses 10 seconds as timeout for definition "not active".
 
     :param pgm_group: The responsive group we want.
     :type pgm_group: Integer
@@ -132,21 +106,17 @@ def get_active_responsive_nodes(pgm_group):
     :rtype: A list of Integer
 
     """
-    nodes = get_active_computers(timeout=10)
-    return [node.wos_id for node in nodes if node.responsive == pgm_group]
+    return get_active_computers(10, Computer.responsive == pgm_group)
 
 
 def last_active_computer():
     """
     Is the current node last active computer.
 
-    .. note::
-        This uses 10 seconds as timeout for definition "not active".
-
     :rtype: Boolean
 
     """
-    return len(get_active_computers(timeout=10)) < 2
+    return len(get_active_computers(10)) < 2
 
 
 def refresh_computer(computer):
@@ -156,40 +126,12 @@ def refresh_computer(computer):
     :param computer: The computer to refresh.
     :type computer: :py:class:`models.Computer`
 
-    :returns: Success
-    :rtype: Boolean
-
     """
-    database = None
-    target = None
-    result = False
-    if computer is None:
-        return result
-    try:
-        database = controller.common.connect_to_database()
-        try:
-            temp_computer = database.query(Computer)
-            temp_computer = temp_computer.filter(Computer.id == computer.id)
-            temp_computer = temp_computer.one()
-            target = temp_computer
-        except sqlalchemy.exc.SQLAlchemyError:
-            # Computer did not already exist...
-            target = computer
-        target.time = sqlalchemy.func.now()
-        target.responsive = diwavars.RESPONSIVE
-        target.name = controller.common.NODE_NAME
-        target.screens = controller.common.NODE_SCREENS
-        database.add(target)
-        database.commit()
-        database.expunge(target)
-        result = True
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in refresh_computer call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-    if database:
-        database.close()
-    return result
+    computer.time = func.now()
+    computer.responsive = diwavars.RESPONSIVE
+    computer.name = controller.common.NODE_NAME
+    computer.screens = controller.common.NODE_SCREENS
+    computer.update()
 
 
 def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
@@ -209,34 +151,20 @@ def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
     :param new_responsive: Optional new responsive setting for the node.
     :type new_responsive: Integer
 
-    :returns: Success
-    :rtype: Boolean
-
     """
-    database = None
-    success = False
-    try:
-        database = controller.common.connect_to_database()
-        computer = database.query(Computer)
-        computer = computer.filter(Computer.wos_id == wos_id).one()
-        computer.time = sqlalchemy.func.now()
-        if new_name:
-            computer.name = new_name
-        if new_screens:
-            computer.screens = new_screens
-        if new_responsive:
-            computer.responsive = new_responsive
-        database.add(computer)
-        database.commit()
-        database.expunge(computer)
-        success = True
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in refresh_computer_by_wos_id call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-    if database:
-        database.close()
-    return success
+    computer = Computer.get('last', Computer.wos_id == wos_id)
+    needs_to_update = False
+    if new_name:
+        needs_to_update = True
+        computer.name = new_name
+    if new_screens:
+        needs_to_update = True
+        computer.screens = new_screens
+    if new_responsive:
+        needs_to_update = True
+        computer.responsive = new_responsive
+    if needs_to_update:
+        computer.update()
 
 
 def add_computer_to_session(session, name, pc_ip, wos_id):
@@ -255,20 +183,10 @@ def add_computer_to_session(session, name, pc_ip, wos_id):
     :param wos_id: Wos id of the computer.
     :type wos_id: Integer
 
+    :note:
+        This is not currently used so consider removing it.
+
     """
-    database = None
-    try:
-        database = controller.common.connect_to_database(True)
-        comp = add_computer(name, pc_ip, wos_id)
-        database.add(comp)
-        session.computers.append(comp)
-        database.add(session)
-        database.commit()
-        database.expunge(session)
-        database.expunge(comp)
-    except sqlalchemy.exc.SQLAlchemyError as excp:
-        log_msg = 'Exception in add_computer_to_session call: {exception!s}'
-        log_msg = log_msg.format(exception=excp)
-        _logger().exception(log_msg)
-    if database:
-        database.close()
+    computer = add_computer(name, pc_ip, wos_id)
+    session.computers.append(computer)
+    session.update()

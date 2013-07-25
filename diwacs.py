@@ -552,8 +552,9 @@ class GraphicalUserInterface(GUItemplate):
             try:
                 self.diwa_state.end_current_session()
                 self.DisableSessionButton()
-                controller.add_activity(project_id, diwavars.PGM_GROUP,
-                                        activity_id=self.diwa_state.activity)
+                controller.add_or_update_activity(project_id,
+                                                  diwavars.PGM_GROUP,
+                                                  0, self.diwa_state.activity)
                 sender('SYS', 'current_session;0')
                 sender('SYS', 'current_activity;%s' %
                        str(self.diwa_state.activity))
