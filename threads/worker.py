@@ -5,6 +5,8 @@ Created on 27.6.2013
 
 """
 # Standard imports.
+import urllib2
+import base64
 from logging import getLevelName
 from datetime import datetime
 import os
@@ -22,8 +24,7 @@ import threads.common
 from threads.checkupdate import CHECK_UPDATE
 from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
-import urllib2
-import base64
+import models
 
 
 def _logger():
@@ -73,18 +74,18 @@ class SNAPSHOT_THREAD(DIWA_THREAD):
         base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
                                                       diwavars.CAMERA_PASS))
         request.add_header('Authorization', 'Basic %s' % base64string.strip())
-        event_id = controller.get_latest_event()
+        event_id = controller.get_latest_event_id()
         try:
             data = urllib2.urlopen(request, timeout=60).read()
             datestring = datetime.now().strftime('%d%m%Y%H%M%S')
             name = str(event_id) + '_' + datestring + '.jpg'
-            _logger().debug('snapshot filename: %s', name)
+            _logger().debug('snapshot filename: {0}'.format(name))
             with open(os.path.join(filepath, name), 'wb') as output:
                 output.write(data)
         except (IOError, OSError) as excp:
             # urllib2.URLError inherits IOError so both the write
             # and URL errors are caught by this.
-            _logger().exception('Snapshot exception: %s', str(excp))
+            _logger().exception('Snapshot exception: {0!s}'.format(excp))
 
 
 #: TODO:
@@ -122,8 +123,8 @@ class WORKER_THREAD(DIWA_THREAD):
                 self.parent.responsive = str(nodes[0].wos_id)
                 if self.parent.responsive == self.parent.swnp.node.id:
                     self.parent.SetResponsive()
-        logmsg = 'Responsive checked. Current responsive is: %s'
-        _logger().debug(logmsg, str(self.parent.responsive))
+        log_msg = 'Responsive checked. Current responsive is: {0}'
+        _logger().debug(log_msg.format(self.parent.responsive))
 
     @staticmethod
     def add_project_registry_entry(reg_type):
@@ -221,37 +222,37 @@ class WORKER_THREAD(DIWA_THREAD):
     def __on_storage(value):
         """ Short stub setter. """
         diwavars.update_storage(value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_db_address(value):
         """ Short stub setter. """
         diwavars.update_database_vars(address=value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_db_name(value):
         """ Short stub setter. """
         diwavars.update_database_vars(name=value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_db_type(value):
         """ Short stub setter. """
         diwavars.update_database_vars(type_=value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_db_user(value):
         """ Short stub setter. """
         diwavars.update_database_vars(user=value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_db_pass(value):
         """ Short stub setter. """
         diwavars.update_database_vars(password=value)
-        controller.update_database()
+        models.update_database()
 
     @staticmethod
     def __on_name(value):
@@ -379,25 +380,25 @@ class WORKER_THREAD(DIWA_THREAD):
         Docstring here.
 
         """
-        project_id = self.parent.diwa_state.current_project_id
-        session_id = self.parent.diwa_state.current_session_id
-        if (project_id < 1) or (session_id < 1):
+        project = self.parent.diwa_state.current_project
+        session = self.parent.diwa_state.current_session
+        if (project is None) or (session is None):
             return  # TODO: Define a new exception type and catch
                     #       it in the UI design to display an
                     #       informative pop-up about project and
                     #       session.
-        event_id = controller.add_event(session_id, title, '')
-        path = controller.get_project_path(project_id)
-        SNAPSHOT_THREAD(path)
+        event_id = controller.add_event(session.id, title, '')
+        SNAPSHOT_THREAD(project.path)
         try:
             self.parent.SwnpSend('SYS', 'screenshot;0')
             if diwavars.AUDIO:
-                logmsg = 'Buffering audio for %d seconds.'
-                _logger().debug(logmsg, diwavars.WINDOW_TAIL)
+                log_msg = 'Buffering audio for {0} seconds.'
+                _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))
                 self.parent.status_text.SetLabel('Recording...')
+                parameters = (event_id, project.path)
                 CallLater(millis=diwavars.WINDOW_TAIL * 1000,
                           callable=self.parent.audio_recorder.save,
-                          args=(event_id, path))
+                          args=parameters)
         except:
             _logger().exception('Create Event exception.')
 

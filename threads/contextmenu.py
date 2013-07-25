@@ -19,6 +19,7 @@ from threads.diwathread import DIWA_THREAD
 import controller
 import threading
 import os
+import models
 
 
 def _logger():
@@ -88,7 +89,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
             stop_socket.close()
             self.socket.close()
         except Exception as excp:
-            _logger().exception('ERROR:\n%s', excp)
+            _logger().exception('ERROR: {0!s}'.format(excp))
         _logger().debug('CMFH closed')
 
     def __on_send_to(self, id_, param):
@@ -115,14 +116,15 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Save audio handler. """
         id_ = id_
         param = param
-        project_id = self.parent.diwa_state.current_project_id
-        project_path = controller.get_project_path(project_id)
+        project = self.parent.diwa_state.current_project
+        if project is None:
+            return 'OK'
         if self.parent.is_responsive and diwavars.AUDIO:
-            ide = controller.get_latest_event()
+            ide = controller.get_latest_event_id()
             timer = threading.Timer(diwavars.WINDOW_TAIL * 1000,
                                     self.parent.audio_recorder.save,
                                     ide,
-                                    project_path)
+                                    project.path)
             timer.start()
             CallAfter(self.parent.status_text.SetLabel, 'Recording...')
         return 'OK'
@@ -136,7 +138,9 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         if not session_id:
             return 'OK'
         for filepath in target:
-            controller.create_file_action(filepath, 6, session_id, project_id)
+            action_id = models.REVERSE_ACTIONS['Opened']
+            controller.create_file_action(filepath, action_id, session_id,
+                                          project_id)
             filesystem.open_file(filepath)
         return 'OK'
 

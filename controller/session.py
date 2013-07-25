@@ -64,7 +64,7 @@ def get_active_session(pgm_group):
     return activity.session if activity else None
 
 
-def get_latest_event():
+def get_latest_event_id():
     """
     Get the latest event id.
 

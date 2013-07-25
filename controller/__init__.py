@@ -36,5 +36,5 @@ from controller.project import (
 # Import session
 from controller.session import (
     get_active_session, get_session_id_by_activity, get_sessions_by_project,
-    end_session, start_new_session, add_event, get_latest_event
+    end_session, start_new_session, add_event, get_latest_event_id
 )

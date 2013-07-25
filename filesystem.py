@@ -376,7 +376,7 @@ def screen_capture(path, node_id):
             os.makedirs(filepath)
         except OSError:
             pass
-        event_id = controller.get_latest_event()
+        event_id = controller.get_latest_event_id()
         stringform = datetime.datetime.now().strftime('%d%m%Y%H%M%S')
         nameform = str(event_id) + '_' + node_id + '_' + stringform + '.png'
         filepath = os.path.join(filepath, nameform)
