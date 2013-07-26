@@ -7,6 +7,7 @@ Created on 28.6.2013
 # Critical imports.
 import sys
 import diwavars
+from sqlalchemy import exc
 
 
 if diwavars.CURRENTLY_RUNNING:
@@ -138,4 +139,10 @@ def test_connection():
     :rtype: Boolean
 
     """
-    return Company.get('count') > 0
+    try:
+        count = Company.get('count')
+        LOGGER.debug('Company count: {0}'.format(count))
+        return count > 0
+    except Exception as excp:
+        LOGGER.exception('FAILED CONNECTION: {0!s}'.format(excp))
+        return False

@@ -31,7 +31,6 @@ import threads
 import utils
 from dialogs import show_modal_and_destroy
 from models import Project
-from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -63,7 +62,13 @@ diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def initialization_test():
-    """ Docstring. """
+    """
+    Used to test that we have are good to go.
+
+    At this time only includes test_connection() from controller, but
+    more tests could be added here.
+
+    """
     error = ''
     if not error and not controller.test_connection():
         error += 'Database connection failed.\n'
@@ -77,6 +82,9 @@ def initialization_test():
 def create_config():
     """
     Creates a config file.
+
+    This actually just copies the default one from installation folder
+    to the ~wos settings folder.
 
     """
     try:
@@ -98,7 +106,12 @@ def load_config():
 
 class State(object):
     """
-    classdocs
+    Used to represent the state of the client.
+
+    All the graphical buttons etc have been removed from here and
+    they are part of the main GraphicalUserInterface class right now.
+    Likewise that class should minimize making direct changes to the
+    current status of the software and only interpret user input.
 
     """
     DEF_SIZE = 2 * 1024 * 1024
@@ -167,7 +180,15 @@ class State(object):
         self.controlling = None
 
     def initialize(self):
-        """ Docstring. """
+        """
+        Finish the initialization (2-stage init).
+
+        :note:
+            As this is not so essential, we could just stick it up to
+            the __init__ but there might be something that needs to be
+            done in between the __init__ and these calls here.
+
+        """
         try:
             self.worker.remove_all_registry_entries()
             cmfh_initializer = threads.SEND_FILE_CONTEX_MENU_HANDLER
@@ -192,7 +213,10 @@ class State(object):
             raise
 
     def destroy(self):
-        """ Docstring. """
+        """
+        Part of the shutdown routine, closes all the threads under this.
+
+        """
         if self.cmfh:
             LOGGER.debug('Cmfh closing...')
             self.cmfh.stop()
@@ -211,15 +235,18 @@ class State(object):
         threads.DIWA_THREAD.stop_all()
 
     def _handle_file_copy(self, src_dst_list, dirs, dialog):
-        """ Docstring. """
+        """
+        Docstring.
+
+        """
         total_len = 0
         total_copied = 0
         filecount = len(src_dst_list)
-        for (src, dst) in src_dst_list:
-            dst = dst
-            total_len += os.path.getsize(src)
+        for item in src_dst_list:
+            total_len += os.path.getsize(item[0])
         do_updates = False
-        if total_len >= State.DEF_SIZE or filecount >= State.DEF_FILES:
+        if (dialog is not None and (total_len >= State.DEF_SIZE or
+                                    filecount >= State.DEF_FILES)):
             LOGGER.debug('PROGRESS VISIBLE!')
             self.parent.Hide()
             dialog.Show()
@@ -230,40 +257,45 @@ class State(object):
                 os.mkdir(directory)
             except IOError:
                 pass
-        i = 1
         first_transaction = True
         lastupdate = datetime.now()
-        for (src, dst) in src_dst_list:
+        for i, (src, dst) in enumerate(src_dst_list):
             curlen = os.path.getsize(src)
             curcopied = 0
             fin = open(src, 'rb')
             fout = open(dst, 'wb')
             while curcopied < curlen:
-                to_copy = min(State.DEF_BUFFER, curlen - curcopied)
-                cstr = fin.read(to_copy)
+                cstr = fin.read(min(State.DEF_BUFFER, curlen - curcopied))
                 fout.write(cstr)
                 curcopied += len(cstr)
-                mydelta = (datetime.now() - lastupdate).total_seconds()
-                condition = (first_transaction or mydelta > 1.0 or
-                             curcopied == curlen)
-                if do_updates and condition:
+                condition = do_updates and (
+                    first_transaction or
+                    (datetime.now() - lastupdate).total_seconds() > 1.0 or
+                    curcopied == curlen
+                )
+                if condition:
                     lastupdate = datetime.now()
                     first_transaction = False
-                    tprc = (100.0 * float(total_copied + curcopied) /
-                            float(total_len))
-                    cprc = (100.0 * float(curcopied) / float(curlen))
-                    bname = os.path.basename(src)
-                    msg_format = '%s %d%% complete (file %d out of %d)'
-                    msg = msg_format % (bname, int(cprc), i, filecount)
-                    title = 'Sending items... %d%% Complete' % int(tprc)
-                    dialog.SetTitle(title)
-                    dialog.Update(int(tprc), msg)
+                    data = {
+                        'filename': os.path.basename(src),
+                        'filepercent': int(100.0 * curcopied / curlen),
+                        'totalpercent': int(100.0 *
+                                            (total_copied + curcopied) /
+                                            total_len),
+                        'file': i + 1,
+                        'filecount': filecount
+                    }
+                    msg = ('{filename} {filepercent}%% complete (file {file} '
+                           'out of {filecount}')
+                    title = 'Sending items... {totalpercent}%% Complete'
+                    dialog.SetTitle(title.format(**data))
+                    dialog.Update(data['totalpercent'], msg.format(**data))
+                # End of conditional.
             fin.close()
             fout.close()
             shutil.copystat(src, dst)
             total_copied += curlen
             self.parent.Update()
-            i += 1
             first_transaction = True
             if do_updates and total_copied >= total_len:
                 dialog.Update(100, '%s complete' % os.path.basename(src))

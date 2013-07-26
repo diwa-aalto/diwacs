@@ -16,9 +16,11 @@ import logging
 from sqlalchemy import (create_engine, ForeignKey, Column, Table, text,
                         INTEGER, SMALLINT, DATETIME, BOOLEAN, String,
                         desc)
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import (declarative_base, declared_attr,
+                                        AbstractConcreteBase)
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm import (sessionmaker, relationship, backref,
+                            configure_mappers)
 from sqlalchemy.sql import func
 
 # Internal imports
@@ -28,7 +30,6 @@ import diwavars
 # CONSTANT
 ENGINE = None  # create_engine(DATABASE, echo=True)
 LOGGER = None
-BASE = declarative_base()
 ACTIONS = {
     1: 'Created', 2: 'Deleted', 3: 'Updated', 4: 'Renamed from something',
     5: 'Renamed to something', 6: 'Opened', 7: 'Closed'
@@ -74,39 +75,41 @@ class ItemAlreadyExistsException(SQLAlchemyError):
                                        'constructor.')
 
 
-class Base(BASE):
+#:FIXME: This does not inherit well.
+class Meta(AbstractConcreteBase):
     """
     A base class for all our DiWa models.
 
     """
-    _format_this = 'COALESCE(MAX({name}.id),0)+1 FROM {name}'
-    __tablename__ = __name__.lower() if (__name__ != 'Base') else ''
+    _this = 'COALESCE(MAX({name}.id),0)+1 FROM {name}'
 
-    id = Column(
-        name='id',
-        type_=INTEGER,
-        primary_key=True,
-        nullable=False,
-        autoincrement=True,
-        default=text(_format_this.format(name=__tablename__))
-    )
+    @declared_attr
+    @classmethod
+    def id(cls):
+        return Column(
+                INTEGER, primary_key=True, nullable=False,
+                autoincrement=True,
+                default=text(cls._this.format(name=cls.__name__.lower()))
+        )
 
     # ------------------------ ACTUAL INTERFACE --------------------------
-    def __init__(self, *uniqueness):
+    def __init__(self):
         """
         Creates the object and instantiates it into the database.
 
         :raises: :py:exc:`ItemAlreadyExistsException`
 
         """
-        if len(uniqueness) and type(self).get('count', *uniqueness) > 0:
+        if not hasattr(self, 'uniqueness'):
+            self.uniqueness = ()
+        if len(self.uniqueness) and type(self).get('exists', *self.uniqueness):
             raise ItemAlreadyExistsException('Item already exists, use get!')
         self.update()
 
     def __repr__(self):
         kwargs = {
             'id': self.id,
-            'name': self.__class__.__name__
+            'name': type(self).__name__
         }
         return '<id={id}, item={name}>'.format(**kwargs)
 
@@ -155,16 +158,18 @@ class Base(BASE):
         Additional parameters may be specified to filter results.
 
         """
-        if method in Base._default_method_values:
-            result = Base._default_method_values[method]
+        LOGGER.debug('Entering try:')
+        if method in Meta._default_method_values:
+            result = Meta._default_method_values[method]
         else:
-            raise Exception(message='method needs to be valid!')
+            raise AttributeError('Method needs to be valid!')
         # Query.
         database = None
         try:
             database = connect_to_database()
             query = database.query(cls)
             query = query.filter(*filters)
+            LOGGER.debug('Company_query: {0}'.format(method))
             if method == 'last':
                 result = query.order_by(desc(cls.id)).first()
             else:
@@ -221,6 +226,9 @@ class Base(BASE):
             database = None
 
 
+Base = declarative_base()
+
+
 def connect_to_database(expire=False):
     """
     Connect to the database and return a Session object.
@@ -252,7 +260,7 @@ def create_all():
         database.execute('DROP table IF EXISTS Action')
         database.execute('SET foreign_key_checks = 1')
         database.commit()
-        BASE.metadata.create_all(ENGINE)  # @UndefinedVariable
+        Base.metadata.create_all(ENGINE)  # @UndefinedVariable
         for action_id in ACTIONS:
             database.add(Action(ACTIONS[action_id]))
         database.commit()
@@ -281,35 +289,35 @@ def update_database():
         ENGINE = create_engine(diwavars.DB_STRING, echo=False)
 
 
-ProjectMembers = Table('projectmembers', BASE.metadata,
+ProjectMembers = Table('projectmembers', Base.metadata,
     Column('Project', INTEGER, ForeignKey('project.id')),
     Column('User', INTEGER, ForeignKey('user.id'))
 )
 
-SessionParticipants = Table('sessionparticipants', BASE.metadata,
+SessionParticipants = Table('sessionparticipants', Base.metadata,
     Column('Session', INTEGER, ForeignKey('session.id')),
     Column('User', INTEGER, ForeignKey('user.id'))
 )
 
-SessionComputers = Table('sessioncomputers', BASE.metadata,
+SessionComputers = Table('sessioncomputers', Base.metadata,
     Column('Session', INTEGER, ForeignKey('session.id')),
     Column('Computer', INTEGER, ForeignKey('computer.id'))
 )
 
 
 # -------------- CLASSES -------------------------------------------------
-class Action(Base):
+class Action(Meta, Base):
     """
     A class representation of a action. A file action uses this to describe
     the action.
 
     Field:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of the action, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of the action (Max 50 characters).
 
     :param name: Name of the action.
@@ -322,37 +330,38 @@ class Action(Base):
 
     def __init__(self, name):
         self.name = name
-        Base.__init__(self, Action.name == name)
+        self.uniqueness = (Action.name == name,)
+        super(Action, self).__init__()
 
     def __str__(self):
         return self.name
 
 
-class Activity(Base):
+class Activity(Meta, Base):
     """
     A class representation of an activity.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of activity, used as primary key in database table.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of the session activity belongs to.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
         - Session relationship.
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of the project activity belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
         - Project relationship.
 
         * :py:attr:`active`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.BOOLEAN)`)\
+        (:py:class:`sqlalchemy.schema.Column(BOOLEAN)`)\
         - Boolean flag indicating that the project is active.
 
     :param project: Project activity belongs to.
@@ -362,13 +371,11 @@ class Activity(Base):
     :type session: :py:class:`models.Session`
 
     """
-    session_id = Column('session_id', INTEGER, ForeignKey('session.id'),
-                        nullable=True)
+    session_id = Column(INTEGER, ForeignKey('session.id'), nullable=True)
 
-    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
-                        nullable=False)
+    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=False)
 
-    active = Column('active', BOOLEAN, nullable=False, default=True)
+    active = Column(BOOLEAN, nullable=False, default=True)
 
     session = relationship('Session',
                            backref=backref('activities', order_by=id))
@@ -381,20 +388,21 @@ class Activity(Base):
         self.project_id = project.id
         self.session = session
         self.session_id = session.id if session else 0
-        Base.__init__(self)
+        self.uniqueness = ()
+        super(Activity, self).__init__()
 
 
-class Company(Base):
+class Company(Meta, Base):
     """
     A class representation of a company.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of the company, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of the company (Max 50 characters).
 
     :param name: The name of the company.
@@ -413,7 +421,8 @@ class Company(Base):
 
         """
         self.name = name
-        Base.__init__(self, Company.name == name)
+        self.uniqueness = (Company.name == name,)
+        super(Company, self).__init__()
 
     def __str__(self):
         """
@@ -426,74 +435,72 @@ class Company(Base):
         return self.name
 
 
-class Computer(Base):
+class Computer(Meta, Base):
     """
     A class representation of a computer.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of computer, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of the computer.
 
         * :py:attr:`ip`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.dialects.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - Internet Protocol address of the computer (Defined as unsigned).
 
         * :py:attr:`mac`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`\
+        (:py:class:`sqlalchemy.schema.Column(String)`\
         - Media Access Control address of the computer.
 
         * :py:attr:`time`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(DATETIME)`)\
         - Time of the last network activity from the computer.
 
         * :py:attr:`screens`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)`)\
+        (:py:class:`sqlalchemy.schema.Column(SMALLINT)`)\
         - Number of screens on the computer.
 
         * :py:attr:`responsive`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)`)\
+        (:py:class:`sqlalchemy.schema.Column(SMALLINT)`)\
         - The responsive value of the computer.
 
         * :py:attr:`user_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - ID of the user currently using the computer.
 
         * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
         - The current user.
 
         * :py:attr:`wos_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
         - Network node ID, usually the last part of IP address (X.X.X.Y).
 
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    ip = Column('ip', INTEGER(unsigned=True), nullable=False)
+    ip = Column(INTEGER(unsigned=True), nullable=False)
 
     mac = Column(
-        'mac',
         String(length=12, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    time = Column('time', DATETIME, nullable=True)
+    time = Column(DATETIME, nullable=True)
 
-    screens = Column('screens', SMALLINT, nullable=True, default=0)
+    screens = Column(SMALLINT, nullable=True, default=0)
 
-    responsive = Column('responsive', type_=SMALLINT, nullable=True)
+    responsive = Column(SMALLINT, nullable=True)
 
-    wos_id = Column('wos_id', INTEGER, nullable=True)
+    wos_id = Column(INTEGER, nullable=True)
 
-    user_id = Column('user_id', INTEGER, ForeignKey('user.id'))
+    user_id = Column(INTEGER, ForeignKey('user.id'))
 
     user = relationship('User', backref=backref('computers', order_by=id))
 
@@ -504,7 +511,8 @@ class Computer(Base):
         self.screens = screens
         self.responsive = responsive
         self.wos_id = wos_id
-        Base.__init__(self, Computer.mac == mac)
+        self.uniqueness = (Computer.mac == mac,)
+        super(Computer, self).__init__()
 
     @classmethod
     def time_ordering(cls, computer):
@@ -517,7 +525,7 @@ class Computer(Base):
         Retrieve a computer by it's hardware identifier.
 
         """
-        computers = Computer.get(Computer.mac == mac_address)
+        computers = Computer.get('all', Computer.mac == mac_address)
 
         # If we got no computers.
         if not computers:
@@ -543,12 +551,12 @@ class Computer(Base):
         return sorted(computers, key=Computer.time_ordering).pop()
 
     def __str__(self):
-        str_msg = '<{wos_id}: name:{name} screens:{screens} {time}>'
-        my_time = ('time: ' + self.time.isoformat()) if self.time else ''
+        str_msg = '<{wos_id}: name:{name} screens:{screens}{time}>'
+        my_time = (' time: ' + self.time.isoformat()) if self.time else ''
         return str_msg.format(time=my_time, **self.__dict__)
 
 
-class Event(Base):
+class Event(Meta, Base):
     """
     A class representation of Event. A simple note with timestamp during a
     session.
@@ -579,20 +587,18 @@ class Event(Base):
 
     """
     title = Column(
-        'title',
         String(length=40, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
     desc = Column(
-        'desc',
         String(length=500, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    time = Column('time', DATETIME, default=func.now())
+    time = Column(DATETIME, default=func.now())
 
-    session_id = Column('session_id', INTEGER, ForeignKey('session.id'))
+    session_id = Column(INTEGER, ForeignKey('session.id'))
 
     session = relationship('Session', backref=backref('events', order_by=id))
 
@@ -600,10 +606,11 @@ class Event(Base):
         self.title = title
         self.desc = description
         self.session = session
-        Base.__init__(self)
+        self.uniqueness = ()
+        super(Event, self).__init__()
 
 
-class File(Base):
+class File(Meta, Base):
     """
     A class representation of a file.
 
@@ -625,26 +632,25 @@ class File(Base):
 
     """
     path = Column(
-        'path',
         String(length=255, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
-                        nullable=True)
+    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=True)
 
     project = relationship('Project', backref=backref('files', order_by=id))
 
     def __init__(self, file_path, project=None):
         self.path = file_path
         self.project = project
-        Base.__init__(self, File.path == file_path)
+        self.uniqueness = (File.path == file_path,)
+        super(File, self).__init__()
 
     def __str__(self):
         return self.path
 
 
-class FileAction(Base):
+class FileAction(Meta, Base):
     """
     A class representation of a file action.
 
@@ -709,20 +715,17 @@ class FileAction(Base):
     :type user: :py:class:`models.User`
 
     """
-    file_id = Column('file_id', INTEGER, ForeignKey('file.id'), nullable=False)
+    file_id = Column(INTEGER, ForeignKey('file.id'), nullable=False)
 
-    action_id = Column('action_id', INTEGER, ForeignKey('action.id'),
-                       nullable=False)
+    action_id = Column(INTEGER, ForeignKey('action.id'), nullable=False)
 
-    action_time = Column('action_time', DATETIME, default=func.now())
+    action_time = Column(DATETIME, default=func.now())
 
-    user_id = Column('user_id', INTEGER, ForeignKey('user.id'), nullable=True)
+    user_id = Column(INTEGER, ForeignKey('user.id'), nullable=True)
 
-    computer_id = Column('computer_id', INTEGER, ForeignKey('computer.id'),
-                         nullable=True)
+    computer_id = Column(INTEGER, ForeignKey('computer.id'), nullable=True)
 
-    session_id = Column('session_id', INTEGER, ForeignKey('session.id'),
-                        nullable=True)
+    session_id = Column(INTEGER, ForeignKey('session.id'), nullable=True)
 
     file = relationship('File', backref=backref('actions', order_by=id))
 
@@ -743,10 +746,11 @@ class FileAction(Base):
         self.session = session
         self.computer = computer
         self.user = user
-        Base.__init__(self)
+        self.uniqueness = ()
+        super(FileAction, self).__init__()
 
 
-class Project(Base):
+class Project(Meta, Base):
     """
     A class representation of a project.
 
@@ -787,22 +791,18 @@ class Project(Base):
 
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    company_id = Column('company_id', INTEGER, ForeignKey('company.id'),
-                        nullable=False)
+    company_id = Column(INTEGER, ForeignKey('company.id'), nullable=False)
 
     dir = Column(
-        'dir',
         String(length=255, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     password = Column(
-        'password',
         String(length=40, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
@@ -818,10 +818,11 @@ class Project(Base):
         self.company = company
         self.dir = directory
         self.password = password
-        Base.__init__(self, Project.name == name)
+        self.uniqueness = (Project.name == name,)
+        super(Project, self).__init__()
 
 
-class Session(Base):
+class Session(Meta, Base):
     """
     A class representation of a session.
 
@@ -867,21 +868,18 @@ class Session(Base):
 
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    project_id = Column('project_id', INTEGER, ForeignKey('project.id'),
-                        nullable=False)
+    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=False)
 
-    starttime = Column('starttime', DATETIME, default=func.now(),
-                       nullable=True)
+    starttime = Column(DATETIME, default=func.now(), nullable=True)
 
-    endtime = Column('endtime', DATETIME, nullable=True)
+    endtime = Column(DATETIME, nullable=True)
 
-    previous_session_id = Column('previous_session_id', INTEGER,
-                                 ForeignKey('session.id'), nullable=True)
+    previous_session_id = Column(INTEGER, ForeignKey('session.id'),
+                                 nullable=True)
 
     project = relationship('Project', backref=backref('sessions', order_by=id))
 
@@ -899,7 +897,8 @@ class Session(Base):
         self.endtime = None
         self.last_checked = None
         self.previous_session = previous_session
-        Base.__init__(self)
+        self.uniqueness = ()
+        super(Session, self).__init__()
 
     def Start(self):
         """
@@ -931,7 +930,7 @@ class Session(Base):
         self.users.append(user)
 
 
-class User(Base):
+class User(Meta, Base):
     """
     A class representation of a user.
 
@@ -973,31 +972,26 @@ class User(Base):
 
     """
     name = Column(
-        'name',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
     email = Column(
-        'email',
         String(length=100, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     title = Column(
-        'title',
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
     department = Column(
-        'department',
         String(length=100, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    company_id = Column('company_id', INTEGER, ForeignKey('company.id'),
-                        nullable=False)
+    company_id = Column(INTEGER, ForeignKey('company.id'), nullable=False)
 
     company = relationship('Company',
                            backref=backref('employees', order_by=id))
@@ -1008,4 +1002,8 @@ class User(Base):
         self.title = title
         self.department = department
         self.company = company
-        Base.__init__(self, User.name == name, User.company_id == company.id)
+        self.uniqueness = (User.name == name, User.company_id == company.id)
+        super(User, self).__init__()
+
+# Resolve the internal mappings so Meta.get() works.
+configure_mappers()

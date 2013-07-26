@@ -265,9 +265,8 @@ class SWNP:
                                                      'Sub sys thread', targs)
         LOGGER.debug('Bound listeners on: %s', str(self.tladdr))
 
-        join_str = '%s_SCREENS_%d_NAME_%s_DATA_%s'
-        join_str = join_str.format(self.node.id, self.node.screens,
-                                   self.node.name, self.node.data)
+        join_str = '{id}_SCREENS_{screens}_NAME_{name}_DATA_{data}'
+        join_str = join_str.format(**self.node.__dict__)
         self.send('SYS', PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
         self.NODE_LIST.add(self.node)
@@ -276,14 +275,14 @@ class SWNP:
         #heartbeat
         self.ping_stop = threading.Event()
         self.ping_thread = threading.Thread(target=self.ping_routine,
-                                            name="Ping thread",
+                                            name='Ping thread',
                                             args=(error_handler,)
                                             )
         self.ping_thread.daemon = True
         self.ping_thread.start()
         self.timeout_stop = threading.Event()
         self.timeout_thread = threading.Thread(target=self.timeout_routine,
-                                               name="timeout thread")
+                                               name='timeout thread')
         self.timeout_thread.daemon = True
         self.timeout_thread.start()
 

@@ -13,6 +13,7 @@ Created on 8.5.2012
 import sys
 import diwavars
 import datetime
+from models import Project
 
 if __name__ == '__main__':
     diwavars.set_running()
@@ -319,11 +320,13 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project_id = self.diwa_state.current_project_id
-        file_path = controller.get_project_path(project_id)
+        file_path = Project.get_by_id(project_id).path
         if file_path:
-            Popen('explorer %s' % str(file_path))
+            Popen('explorer ' + file_path)
         else:
-            LOGGER.exception('Failed explorer: %s', file_path)
+            log_msg = 'Failed explorer: {file_path}'
+            log_msg = log_msg.format(file_path=file_path)
+            LOGGER.exception(log_msg)
             params = {'message': 'Could not open directory.'}
             show_modal_and_destroy(ErrorDialog, self, params)
         if event:

@@ -47,34 +47,26 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
     :type project_id: Integer
 
     """
-    # -------------- CLASS VARIABLES --------------
-    project_handler = {
-        'created': PROJECT_EVENT_HANDLER._on_created_project,
-        'deleted': PROJECT_EVENT_HANDLER._on_deleted_project,
-        'modified': PROJECT_EVENT_HANDLER._on_modified_project,
-        'moved': PROJECT_EVENT_HANDLER._on_moved_project
-    }
-
-    scanner_handler = {
-        'created': PROJECT_EVENT_HANDLER._on_created_scanner
-    }
-
     # -------------- CONSTRUCTOR --------------
     def __init__(self, project_id, handler_type='project'):
         # Initialize.
         self.project_id = project_id
         FileSystemEventHandler.__init__(self)
-        self.actions = None
         # Handler is a project file handler...
         if handler_type == 'project':
             log_msg = ('PROJECT_EVENT_HANDLER initialized for project '
                        'with ID {project_id}')
-            self.actions = PROJECT_EVENT_HANDLER.project_handler
+            self.actions = {
+                'Created': self._on_created_project,
+                'Deleted': self._on_deleted_project,
+                'Modified': self._on_modified_project,
+                'Moved': self._on_moved_project
+            }
         # Handler is a project scanner handler.
         elif handler_type == 'scanner':
             log_msg = ('Project image scan handler initialized for project '
                        'with ID {project_id}')
-            self.actions = PROJECT_EVENT_HANDLER.scanner_handler
+            self.actions = {'Created': self._on_created_scanner}
         # Undefined handler type.
         else:
             raise NotImplementedError()
@@ -85,20 +77,20 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
     # -------------- PUBLIC METHODS --------------
     # These ignore directory events.
     def on_created(self, event):
-        if isinstance(event, FileCreatedEvent) and 'created' in self.actions:
-            self.actions['created'](event)
+        if isinstance(event, FileCreatedEvent) and 'Created' in self.actions:
+            self.actions['Created'](event)
 
     def on_deleted(self, event):
-        if isinstance(event, FileDeletedEvent) and 'deleted' in self.actions:
-            self.actions['deleted'](event)
+        if isinstance(event, FileDeletedEvent) and 'Deleted' in self.actions:
+            self.actions['Deleted'](event)
 
     def on_modified(self, event):
-        if isinstance(event, FileModifiedEvent) and 'modified' in self.actions:
-            self.actions['modified'](event)
+        if isinstance(event, FileModifiedEvent) and 'Modified' in self.actions:
+            self.actions['Modified'](event)
 
     def on_moved(self, event):
-        if isinstance(event, FileMovedEvent) and 'moved' in self.actions:
-            self.actions['moved'](event)
+        if isinstance(event, FileMovedEvent) and 'Moved' in self.actions:
+            self.actions['Moved'](event)
 
     # -------------- PRIVATE METHODS --------------
     def _project_prototype(self, path, action_id):
