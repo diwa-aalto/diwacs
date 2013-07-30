@@ -107,7 +107,7 @@ def end_session(session_id):
     """
     session = Session.get_by_id(session_id)
     session.endtime = func.now()
-    session.update()
+    Session.update(session)
 
 
 def start_new_session(project_id, old_session_id=None):

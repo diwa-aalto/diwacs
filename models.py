@@ -1,7 +1,7 @@
 """
 Created on 23.5.2012
 
-
+.. moduleauthor:: neriksso
 :author: neriksso
 :note: Requires :py:mod:`sqlalchemy`
 :synopsis:
@@ -14,13 +14,12 @@ import logging
 
 # Third party imports.
 from sqlalchemy import (create_engine, ForeignKey, Column, Table, text,
-                        INTEGER, SMALLINT, DATETIME, BOOLEAN, String,
+                        Integer, SmallInteger, DateTime, Boolean, String,
                         desc)
-from sqlalchemy.ext.declarative import (declarative_base, declared_attr,
-                                        AbstractConcreteBase)
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import (sessionmaker, relationship, backref,
-                            configure_mappers)
+from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.sql import func
 
 # Internal imports
@@ -35,6 +34,7 @@ ACTIONS = {
     5: 'Renamed to something', 6: 'Opened', 7: 'Closed'
 }
 REVERSE_ACTIONS = {ACTIONS[key]: key for key in ACTIONS}
+Base = declarative_base()
 
 
 def __init_logger():
@@ -60,173 +60,6 @@ def __set_logger_level(level):
 
 diwavars.add_logger_initializer(__init_logger)
 diwavars.add_logger_level_setter(__set_logger_level)
-
-
-class ItemAlreadyExistsException(SQLAlchemyError):
-    """
-    When the item already exists in the database, you need to use
-    get method instead of constructor.
-
-    """
-    def __init__(self):
-        SQLAlchemyError.__init__(self, 'This item already exists, please use '
-                                       'static method "get" to retrieve the '
-                                       'instance instead of class '
-                                       'constructor.')
-
-
-#:FIXME: This does not inherit well.
-class Meta(AbstractConcreteBase):
-    """
-    A base class for all our DiWa models.
-
-    """
-    _this = 'COALESCE(MAX({name}.id),0)+1 FROM {name}'
-
-    @declared_attr
-    @classmethod
-    def id(cls):
-        return Column(
-                INTEGER, primary_key=True, nullable=False,
-                autoincrement=True,
-                default=text(cls._this.format(name=cls.__name__.lower()))
-        )
-
-    # ------------------------ ACTUAL INTERFACE --------------------------
-    def __init__(self):
-        """
-        Creates the object and instantiates it into the database.
-
-        :raises: :py:exc:`ItemAlreadyExistsException`
-
-        """
-        if not hasattr(self, 'uniqueness'):
-            self.uniqueness = ()
-        if len(self.uniqueness) and type(self).get('exists', *self.uniqueness):
-            raise ItemAlreadyExistsException('Item already exists, use get!')
-        self.update()
-
-    def __repr__(self):
-        kwargs = {
-            'id': self.id,
-            'name': type(self).__name__
-        }
-        return '<id={id}, item={name}>'.format(**kwargs)
-
-    @classmethod
-    def delete(cls, instance):
-        """Delete an object of this class from the database."""
-        database = None
-        try:
-            database = connect_to_database()
-            database.delete(instance)
-            database.commit()
-            return True
-        except SQLAlchemyError, excp:
-            log_msg = 'Exception in {class_name}.delete() : {exception!s}'
-            log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
-            LOGGER.exception(log_msg)
-            return False
-        finally:
-            if (database is not None) and hasattr(database, 'close'):
-                database.close()
-            database = None
-
-    _default_method_values = {'all': [], 'count': 0, 'delete': [],
-                              'exists': False, 'first': None, 'last': None,
-                              'one': None}
-
-    @classmethod
-    def get(cls, method, *filters):
-        """
-        :param method:
-            Valid values are:
-                * all - This returns a list of matching objects.
-                * count - This returns an integer which represents the count\
-                of matching objects.
-                * delete - This deletes all the matching objects from the\
-                database.
-                * exists - This returns boolean informing weather the an\
-                object match was found from the database.
-                * first - This returns the first matching object.
-                * last - This returns the last matching object.
-                * one - This returns the object if it exists and raises an\
-                exception if it doesn't or if there's more than one instance\
-                of the desired object.
-        :type method: String
-
-        Additional parameters may be specified to filter results.
-
-        """
-        LOGGER.debug('Entering try:')
-        if method in Meta._default_method_values:
-            result = Meta._default_method_values[method]
-        else:
-            raise AttributeError('Method needs to be valid!')
-        # Query.
-        database = None
-        try:
-            database = connect_to_database()
-            query = database.query(cls)
-            query = query.filter(*filters)
-            LOGGER.debug('Company_query: {0}'.format(method))
-            if method == 'last':
-                result = query.order_by(desc(cls.id)).first()
-            else:
-                result = getattr(query, method)()
-        except SQLAlchemyError, excp:
-            log_msg = 'Exception in {class_name}.get() : {exception!s}'
-            log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
-            LOGGER.exception(log_msg)
-        finally:
-            if database and hasattr(database, 'close'):
-                database.close()
-            database = None
-        return result
-
-    @classmethod
-    def get_by_id(cls, id_=1):
-        """
-        Gets the instance of model by ID.
-
-        :param id_: ID of the desired model.
-        :type id_: Integer
-
-        """
-        return cls.get('one', cls.id == id_)
-
-    @classmethod
-    def id_ordering(cls, instance):
-        """Key function for id ordering."""
-        return instance.id
-
-    def update(self):
-        """
-        Posts updates to this object into the database.
-
-        :returns: Success value.
-        :rtype: Boolean
-
-        """
-        database = None
-        try:
-            database = connect_to_database()
-            database.add(self)
-            database.commit()
-            return True
-        except SQLAlchemyError, excp:
-            log_msg = 'Exception in {class_name}.update() : {exception!s}'
-            log_msg = log_msg.format(class_name=type(self).__name__,
-                                     exception=excp)
-            LOGGER.exception(log_msg)
-            return False
-        finally:
-            if database and hasattr(database, 'close'):
-                database.close()
-            database = None
-
-
-Base = declarative_base()
 
 
 def connect_to_database(expire=False):
@@ -289,31 +122,190 @@ def update_database():
         ENGINE = create_engine(diwavars.DB_STRING, echo=False)
 
 
+class ItemAlreadyExistsException(Exception):
+    """
+    When the item already exists in the database, you need to use
+    get method instead of constructor.
+
+    """
+    def __init__(self):
+        msg = ('This item already exists, please use static method "get" '
+               'to retrieve the instance instead of class constructor.')
+        super(ItemAlreadyExistsException, self).__init__(self, msg)
+
+
+DEFAULT = 'COALESCE(MAX({0}.id),0)+1 FROM {0}'
+
+
+#:FIXME: This does not inherit well.
+class MethodMixin():
+    """
+    A base class for all our DiWa models.
+
+    """
+    def __init__(self):
+        pass
+
+    # ------------------------ ACTUAL INTERFACE --------------------------
+    def __repr__(self):
+        id_ = getattr(self, 'id', -1)
+        name = type(self).__name__
+        return '<id={0}, item={1}>'.format(id_, name)
+
+    @classmethod
+    def delete(cls, instance):
+        """Delete an object of this class from the database."""
+        database = None
+        try:
+            database = connect_to_database()
+            database.delete(instance)
+            database.commit()
+            return True
+        except SQLAlchemyError, excp:
+            log_msg = 'Exception in {class_name}.delete() : {exception!s}'
+            log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
+            LOGGER.exception(log_msg)
+            return False
+        finally:
+            if (database is not None) and hasattr(database, 'close'):
+                database.close()
+            database = None
+
+    _default_method_values = {'all': [], 'count': 0, 'delete': [],
+                              'exists': False, 'first': None, 'last': None,
+                              'one': None}
+
+    @classmethod
+    def get(cls, method, *filters):
+        """
+        :param method:
+            Valid values are:
+                * all - This returns a list of matching objects.
+                * count - This returns an integer which represents the count\
+                of matching objects.
+                * delete - This deletes all the matching objects from the\
+                database.
+                * exists - This returns boolean informing weather the an\
+                object match was found from the database.
+                * first - This returns the first matching object.
+                * last - This returns the last matching object.
+                * one - This returns the object if it exists and raises an\
+                exception if it doesn't or if there's more than one instance\
+                of the desired object.
+        :type method: String
+
+        Additional parameters may be specified to filter results.
+
+        """
+        LOGGER.debug('Entering try:')
+        if method in MethodMixin._default_method_values:
+            result = MethodMixin._default_method_values[method]
+        else:
+            raise AttributeError('Method needs to be valid!')
+        # Query.
+        database = None
+        try:
+            database = connect_to_database()
+            query = database.query(cls)
+            query = query.filter(*filters)
+            LOGGER.debug('Company_query: {0}'.format(method))
+            if method == 'last':
+                result = query.order_by(desc(getattr(cls, 'id'))).first()
+            else:
+                result = getattr(query, method)()
+        except (NoResultFound, MultipleResultsFound):
+            raise
+        except SQLAlchemyError, excp:
+            log_msg = 'Exception in {class_name}.get() : {exception!s}'
+            log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
+            LOGGER.exception(log_msg)
+        finally:
+            if database and hasattr(database, 'close'):
+                database.close()
+            database = None
+        return result
+
+    @classmethod
+    def get_by_id(cls, id_=1):
+        """
+        Gets the instance of model by ID.
+
+        :param id_: ID of the desired model.
+        :type id_: Integer
+
+        """
+        return cls.get('one', getattr(cls, 'id') == id_)
+
+    @classmethod
+    def id_ordering(cls, instance):
+        """Key function for id ordering."""
+        if not isinstance(instance, cls):
+            msg = 'Invalid instance for type: {0}'
+            raise ValueError(msg.format(cls.__name__))
+        return instance.id
+
+    @classmethod
+    def update(cls, instance):
+        """
+        Posts updates to this object into the database.
+
+        :returns: Success value.
+        :rtype: Boolean
+
+        """
+        database = None
+        try:
+            database = connect_to_database()
+            database.add(instance)
+            database.commit()
+            return True
+        except SQLAlchemyError, excp:
+            log_msg = 'Exception in {0}.update() : {1!s}'
+            log_msg = log_msg.format(cls.__name__, excp)
+            LOGGER.exception(log_msg)
+            return False
+        finally:
+            if database and hasattr(database, 'close'):
+                database.close()
+            database = None
+
+        @classmethod
+        def update_many(cls, instances):
+            """
+            Posts updates to these objects into the database.
+
+            :returns: Success value.
+            :rtype: Boolean
+
+            """
+            database = None
+
+
 ProjectMembers = Table('projectmembers', Base.metadata,
-    Column('Project', INTEGER, ForeignKey('project.id')),
-    Column('User', INTEGER, ForeignKey('user.id'))
+    Column('Project', Integer, ForeignKey('project.id')),
+    Column('User', Integer, ForeignKey('user.id'))
 )
 
 SessionParticipants = Table('sessionparticipants', Base.metadata,
-    Column('Session', INTEGER, ForeignKey('session.id')),
-    Column('User', INTEGER, ForeignKey('user.id'))
+    Column('Session', Integer, ForeignKey('session.id')),
+    Column('User', Integer, ForeignKey('user.id'))
 )
 
 SessionComputers = Table('sessioncomputers', Base.metadata,
-    Column('Session', INTEGER, ForeignKey('session.id')),
-    Column('Computer', INTEGER, ForeignKey('computer.id'))
+    Column('Session', Integer, ForeignKey('session.id')),
+    Column('Computer', Integer, ForeignKey('computer.id'))
 )
 
 
 # -------------- CLASSES -------------------------------------------------
-class Action(Meta, Base):
+class Action(MethodMixin, Base):
     """
     A class representation of a action. A file action uses this to describe
     the action.
 
     Field:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the action, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -323,6 +315,11 @@ class Action(Meta, Base):
     :param name: Name of the action.
     :type name: :py:class:`String`
     """
+    __tablename__ = 'action'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
@@ -330,38 +327,39 @@ class Action(Meta, Base):
 
     def __init__(self, name):
         self.name = name
-        self.uniqueness = (Action.name == name,)
-        super(Action, self).__init__()
+        if Action.get('exists', Action.name == name):
+            raise ItemAlreadyExistsException('Action already exists!')
+        Action.update(self)
 
     def __str__(self):
         return self.name
 
 
-class Activity(Meta, Base):
+class Activity(MethodMixin, Base):
     """
     A class representation of an activity.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of activity, used as primary key in database table.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the session activity belongs to.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
         - Session relationship.
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the project activity belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
         - Project relationship.
 
         * :py:attr:`active`\
-        (:py:class:`sqlalchemy.schema.Column(BOOLEAN)`)\
+        (:py:class:`sqlalchemy.schema.Column(Boolean)`)\
         - Boolean flag indicating that the project is active.
 
     :param project: Project activity belongs to.
@@ -371,11 +369,16 @@ class Activity(Meta, Base):
     :type session: :py:class:`models.Session`
 
     """
-    session_id = Column(INTEGER, ForeignKey('session.id'), nullable=True)
+    __tablename__ = 'activity'
 
-    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
 
-    active = Column(BOOLEAN, nullable=False, default=True)
+    session_id = Column(Integer, ForeignKey('session.id'), nullable=True)
+
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
+
+    active = Column(Boolean, nullable=False, default=True)
 
     session = relationship('Session',
                            backref=backref('activities', order_by=id))
@@ -388,17 +391,16 @@ class Activity(Meta, Base):
         self.project_id = project.id
         self.session = session
         self.session_id = session.id if session else 0
-        self.uniqueness = ()
-        super(Activity, self).__init__()
+        Activity.update(self)
 
 
-class Company(Meta, Base):
+class Company(MethodMixin, Base):
     """
     A class representation of a company.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the company, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -409,6 +411,11 @@ class Company(Meta, Base):
     :type name: :py:class:`String`
 
     """
+    __tablename__ = 'company'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
@@ -421,8 +428,9 @@ class Company(Meta, Base):
 
         """
         self.name = name
-        self.uniqueness = (Company.name == name,)
-        super(Company, self).__init__()
+        if Company.get('exists', Company.name == name):
+            raise ItemAlreadyExistsException('Company already exists!')
+        Company.update(self)
 
     def __str__(self):
         """
@@ -435,13 +443,13 @@ class Company(Meta, Base):
         return self.name
 
 
-class Computer(Meta, Base):
+class Computer(MethodMixin, Base):
     """
     A class representation of a computer.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of computer, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -449,7 +457,7 @@ class Computer(Meta, Base):
         - Name of the computer.
 
         * :py:attr:`ip`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - Internet Protocol address of the computer (Defined as unsigned).
 
         * :py:attr:`mac`\
@@ -457,50 +465,55 @@ class Computer(Meta, Base):
         - Media Access Control address of the computer.
 
         * :py:attr:`time`\
-        (:py:class:`sqlalchemy.schema.Column(DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(DateTime)`)\
         - Time of the last network activity from the computer.
 
         * :py:attr:`screens`\
-        (:py:class:`sqlalchemy.schema.Column(SMALLINT)`)\
+        (:py:class:`sqlalchemy.schema.Column(SmallInteger)`)\
         - Number of screens on the computer.
 
         * :py:attr:`responsive`\
-        (:py:class:`sqlalchemy.schema.Column(SMALLINT)`)\
+        (:py:class:`sqlalchemy.schema.Column(SmallInteger)`)\
         - The responsive value of the computer.
 
         * :py:attr:`user_id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the user currently using the computer.
 
         * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
         - The current user.
 
         * :py:attr:`wos_id`\
-        (:py:class:`sqlalchemy.schema.Column(INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - Network node ID, usually the last part of IP address (X.X.X.Y).
 
     """
+    __tablename__ = 'computer'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    ip = Column(INTEGER(unsigned=True), nullable=False)
+    ip = Column(Integer(unsigned=True), nullable=False)
 
     mac = Column(
         String(length=12, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    time = Column(DATETIME, nullable=True)
+    time = Column(DateTime, nullable=True)
 
-    screens = Column(SMALLINT, nullable=True, default=0)
+    screens = Column(SmallInteger, nullable=True, default=0)
 
-    responsive = Column(SMALLINT, nullable=True)
+    responsive = Column(SmallInteger, nullable=True)
 
-    wos_id = Column(INTEGER, nullable=True)
+    wos_id = Column(Integer, nullable=True)
 
-    user_id = Column(INTEGER, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
 
     user = relationship('User', backref=backref('computers', order_by=id))
 
@@ -511,8 +524,9 @@ class Computer(Meta, Base):
         self.screens = screens
         self.responsive = responsive
         self.wos_id = wos_id
-        self.uniqueness = (Computer.mac == mac,)
-        super(Computer, self).__init__()
+        if Action.get('exists', Computer.mac == mac):
+            raise ItemAlreadyExistsException('Computer already exists!')
+        Computer.update(self)
 
     @classmethod
     def time_ordering(cls, computer):
@@ -556,14 +570,14 @@ class Computer(Meta, Base):
         return str_msg.format(time=my_time, **self.__dict__)
 
 
-class Event(Meta, Base):
+class Event(MethodMixin, Base):
     """
     A class representation of Event. A simple note with timestamp during a
     session.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the event, used as primary key in database table.
 
         * :py:attr:`title`\
@@ -575,17 +589,22 @@ class Event(Meta, Base):
         - More in-depth description of the event (Max 500 characters).
 
         * :py:attr:`time`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
         - Time the event took place.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the session this event belongs to.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
         - Session this event belongs to.
 
     """
+    __tablename__ = 'event'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     title = Column(
         String(length=40, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
@@ -596,9 +615,9 @@ class Event(Meta, Base):
         nullable=True
     )
 
-    time = Column(DATETIME, default=func.now())
+    time = Column(DateTime, default=func.now())
 
-    session_id = Column(INTEGER, ForeignKey('session.id'))
+    session_id = Column(Integer, ForeignKey('session.id'))
 
     session = relationship('Session', backref=backref('events', order_by=id))
 
@@ -606,17 +625,16 @@ class Event(Meta, Base):
         self.title = title
         self.desc = description
         self.session = session
-        self.uniqueness = ()
-        super(Event, self).__init__()
+        Event.update(self)
 
 
-class File(Meta, Base):
+class File(MethodMixin, Base):
     """
     A class representation of a file.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the file, used as primary key in database table.
 
         * :py:attr:`path`\
@@ -624,76 +642,82 @@ class File(Meta, Base):
         - Path of the file on DiWa (max 255 chars).
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the project this file belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
         - Project this file belongs to.
 
     """
+    __tablename__ = 'file'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     path = Column(
         String(length=255, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=True)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
 
     project = relationship('Project', backref=backref('files', order_by=id))
 
     def __init__(self, file_path, project=None):
         self.path = file_path
         self.project = project
-        self.uniqueness = (File.path == file_path,)
-        super(File, self).__init__()
+        if File.get('exists', File.path == file_path):
+            raise ItemAlreadyExistsException('File already exists!')
+        File.update(self)
 
     def __str__(self):
         return self.path
 
 
-class FileAction(Meta, Base):
+class FileAction(MethodMixin, Base):
     """
     A class representation of a file action.
 
     Fields:
 
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the FileAction, used as primary key in the database table.
 
         * :py:attr:`file_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlaclhemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlaclhemy.types.Integer)`)\
         - ID of the file this FileAction affects.
 
         * :py:attr:`file` (:py:class:`sqlalchemy.orm.relationship)`)\
         - The file this FileAction affects.
 
         * :py:attr:`action_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the action affecting the file.
 
         * :py:attr:`action` (:py:class:`sqlalchemy.orm.relationship)`)\
         - Action affecting the file.
 
         * :py:attr:`action_time`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
         - Time the action took place on.
 
         * :py:attr:`user_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the user performing the action.
 
         * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
         - User peforming the action.
 
         * :py:attr:`computer_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the computer user performed the action on.
 
         * :py:attr:`computer` (:py:class:`sqlalchemy.orm.relationship`)\
         - Computer user performed the action on.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the session user performed the action in.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -715,17 +739,22 @@ class FileAction(Meta, Base):
     :type user: :py:class:`models.User`
 
     """
-    file_id = Column(INTEGER, ForeignKey('file.id'), nullable=False)
+    __tablename__ = 'fileaction'
 
-    action_id = Column(INTEGER, ForeignKey('action.id'), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
 
-    action_time = Column(DATETIME, default=func.now())
+    file_id = Column(Integer, ForeignKey('file.id'), nullable=False)
 
-    user_id = Column(INTEGER, ForeignKey('user.id'), nullable=True)
+    action_id = Column(Integer, ForeignKey('action.id'), nullable=False)
 
-    computer_id = Column(INTEGER, ForeignKey('computer.id'), nullable=True)
+    action_time = Column(DateTime, default=func.now())
 
-    session_id = Column(INTEGER, ForeignKey('session.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+
+    computer_id = Column(Integer, ForeignKey('computer.id'), nullable=True)
+
+    session_id = Column(Integer, ForeignKey('session.id'), nullable=True)
 
     file = relationship('File', backref=backref('actions', order_by=id))
 
@@ -746,17 +775,16 @@ class FileAction(Meta, Base):
         self.session = session
         self.computer = computer
         self.user = user
-        self.uniqueness = ()
-        super(FileAction, self).__init__()
+        FileAction.update(self)
 
 
-class Project(Meta, Base):
+class Project(MethodMixin, Base):
     """
     A class representation of a project.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of project, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -764,7 +792,7 @@ class Project(Meta, Base):
         - Name of the project (Max 50 characters).
 
         * :py:attr:`company_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the company that owns the project.
 
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -790,12 +818,17 @@ class Project(Meta, Base):
     :TODO: document `directory` and `password` parameters.
 
     """
+    __tablename__ = 'project'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
     )
 
-    company_id = Column(INTEGER, ForeignKey('company.id'), nullable=False)
+    company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
 
     dir = Column(
         String(length=255, collation='utf8_general_ci', convert_unicode=True),
@@ -818,17 +851,18 @@ class Project(Meta, Base):
         self.company = company
         self.dir = directory
         self.password = password
-        self.uniqueness = (Project.name == name,)
-        super(Project, self).__init__()
+        if Project.get('exists', Project.name == name):
+            raise ItemAlreadyExistsException('Project already exists!')
+        Project.update(self)
 
 
-class Session(Meta, Base):
+class Session(MethodMixin, Base):
     """
     A class representation of a session.
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of session, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -836,22 +870,22 @@ class Session(Meta, Base):
         - Name of session (Max 50 characters).
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the project the session belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
         - The project the session belongs to.
 
         * :py:attr:`starttime`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
         - Time the session began, defaults to `now()`.
 
         * :py:attr:`endtime`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
         - The time session ended.
 
         * :py:attr:`previous_session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the previous session.
 
         * :py:attr:`previous_session`\
@@ -867,18 +901,23 @@ class Session(Meta, Base):
     :type project: :py:class:`models.Project`
 
     """
+    __tablename__ = 'session'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=True
     )
 
-    project_id = Column(INTEGER, ForeignKey('project.id'), nullable=False)
+    project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
 
-    starttime = Column(DATETIME, default=func.now(), nullable=True)
+    starttime = Column(DateTime, default=func.now(), nullable=True)
 
-    endtime = Column(DATETIME, nullable=True)
+    endtime = Column(DateTime, nullable=True)
 
-    previous_session_id = Column(INTEGER, ForeignKey('session.id'),
+    previous_session_id = Column(Integer, ForeignKey('session.id'),
                                  nullable=True)
 
     project = relationship('Project', backref=backref('sessions', order_by=id))
@@ -897,8 +936,7 @@ class Session(Meta, Base):
         self.endtime = None
         self.last_checked = None
         self.previous_session = previous_session
-        self.uniqueness = ()
-        super(Session, self).__init__()
+        Session.update(self)
 
     def Start(self):
         """
@@ -930,7 +968,7 @@ class Session(Meta, Base):
         self.users.append(user)
 
 
-class User(Meta, Base):
+class User(MethodMixin, Base):
     """
     A class representation of a user.
 
@@ -938,7 +976,7 @@ class User(Meta, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - ID of the user, used as primary key in database table.
 
         * :py:attr:`name`\
@@ -958,7 +996,7 @@ class User(Meta, Base):
         - Department of the user in the company (Max 100 characters).
 
         * :py:attr:`company_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)`)\
+        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
         - Company id of the employing company.
 
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -971,6 +1009,11 @@ class User(Meta, Base):
     :type company: :py:class:`models.Company`
 
     """
+    __tablename__ = 'user'
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
+                default=text(DEFAULT.format(__tablename__)))
+
     name = Column(
         String(length=50, collation='utf8_general_ci', convert_unicode=True),
         nullable=False
@@ -991,7 +1034,7 @@ class User(Meta, Base):
         nullable=True
     )
 
-    company_id = Column(INTEGER, ForeignKey('company.id'), nullable=False)
+    company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
 
     company = relationship('Company',
                            backref=backref('employees', order_by=id))
@@ -1003,7 +1046,7 @@ class User(Meta, Base):
         self.department = department
         self.company = company
         self.uniqueness = (User.name == name, User.company_id == company.id)
-        super(User, self).__init__()
-
-# Resolve the internal mappings so Meta.get() works.
-configure_mappers()
+        if User.get('exists', User.name == name,
+                    User.company_id == company.id):
+            raise ItemAlreadyExistsException('User already exists!')
+        User.update(self)

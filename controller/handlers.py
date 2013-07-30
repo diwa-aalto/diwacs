@@ -176,21 +176,21 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         target = os.path.abspath(event.dest_path)
         try:
             project = Project.get_by_id(self.project_id)
-            source_obj = File.get('one', File.project == project,
-                                  File.path == source)
+            source_file = File.get('one', File.project == project,
+                                   File.path == source)
             project_path = os.path.abspath(project.path)
-            if source_obj is not None:
+            if source_file is not None:
                 # Case 1
                 if target.startswith(project_path):
-                    source_obj.path = target
+                    source_file.path = target
                     act_path = target
                     action = REVERSE_ACTIONS['Renamed to something']
                 # Case 2
                 else:
-                    source_obj.project_id = None
+                    source_file.project_id = None
                     act_path = source
                     action = REVERSE_ACTIONS['Deleted']
-                source_obj.update()
+                File.update(source_file)
                 self._project_prototype(act_path, action)
             else:
                 # Case 3

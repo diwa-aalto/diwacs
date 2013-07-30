@@ -95,7 +95,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
     def __on_send_to(self, id_, param):
         """ Send to handler. """
         fpath = str([self.handle_file(param)])
-        self.send_file(str(id_, 'open;%s' % fpath))
+        self.send_file(str(id_, 'open;' + fpath))
         return 'OK'
 
     def __on_add_to_project(self, id_, param):

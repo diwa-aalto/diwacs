@@ -13,7 +13,7 @@ from sqlalchemy import text, func
 
 # Own imports.
 import diwavars
-from models import Computer
+from models import Computer, Session
 import utils
 
 
@@ -60,7 +60,7 @@ def add_computer(name, pc_ip, wos_id):
             computer.name = name
             computer.ip = ip_int
             computer.wos_id = wos_id
-            computer.update()
+            Computer.update(computer)
             return computer
     # Try finding computer by name...
     computer = Computer.get('last', Computer.name == name)
@@ -68,7 +68,7 @@ def add_computer(name, pc_ip, wos_id):
         computer.ip = ip_int
         computer.mac = pc_mac
         computer.wos_id = wos_id
-        computer.update()
+        Computer.update(computer)
         return computer
     # Create new...
     computer = Computer(name, ip_int, pc_mac, controller.common.NODE_SCREENS,
@@ -131,7 +131,7 @@ def refresh_computer(computer):
     computer.responsive = diwavars.RESPONSIVE
     computer.name = controller.common.NODE_NAME
     computer.screens = controller.common.NODE_SCREENS
-    computer.update()
+    Computer.update(computer)
 
 
 def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
@@ -164,7 +164,7 @@ def refresh_computer_by_wos_id(wos_id, new_name=None, new_screens=None,
         needs_to_update = True
         computer.responsive = new_responsive
     if needs_to_update:
-        computer.update()
+        Computer.update(computer)
 
 
 def add_computer_to_session(session, name, pc_ip, wos_id):
@@ -189,4 +189,4 @@ def add_computer_to_session(session, name, pc_ip, wos_id):
     """
     computer = add_computer(name, pc_ip, wos_id)
     session.computers.append(computer)
-    session.update()
+    Session.update(session)

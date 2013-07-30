@@ -6,6 +6,7 @@ Created on 4.7.2013
 
 """
 # Standard imports.
+from ast import literal_eval
 from base64 import b64decode
 import cStringIO
 from datetime import datetime, timedelta
@@ -22,15 +23,15 @@ import wx
 
 # Own imports.
 import controller
+from dialogs import show_modal_and_destroy
 import diwavars
 import filesystem
 import graphicaldesign
 import macro
+from models import REVERSE_ACTIONS, Project
 import swnp
 import threads
 import utils
-from dialogs import show_modal_and_destroy
-from models import Project
 
 
 LOGGER = None
@@ -236,7 +237,17 @@ class State(object):
 
     def _handle_file_copy(self, src_dst_list, dirs, dialog):
         """
-        Docstring.
+        Mass copy files while giving optional output on the progress
+        through a dialog.
+
+        :param src_dst_list: A list of (Source, Target) filepaths.
+        :type src_dst_list: A list of Tuples of Strings.
+
+        :param dirs: All the directories to be created before copying.
+        :type dirs: A list of strings.
+
+        :param dialog: The progress dialog.
+        :type dialog: :py:class:`wx.ProgressDialog`
 
         """
         total_len = 0
@@ -288,8 +299,9 @@ class State(object):
                     msg = ('{filename} {filepercent}%% complete (file {file} '
                            'out of {filecount}')
                     title = 'Sending items... {totalpercent}%% Complete'
-                    dialog.SetTitle(title.format(**data))
-                    dialog.Update(data['totalpercent'], msg.format(**data))
+                    title, msg = [s.format(**data) for s in (title, msg)]
+                    dialog.SetTitle(title)
+                    dialog.Update(data['totalpercent'], msg)
                 # End of conditional.
             fin.close()
             fout.close()
@@ -297,8 +309,8 @@ class State(object):
             total_copied += curlen
             self.parent.Update()
             first_transaction = True
-            if do_updates and total_copied >= total_len:
-                dialog.Update(100, '%s complete' % os.path.basename(src))
+        if do_updates:
+            dialog.Update(100, 'file transfer complete')
 
     def handle_file_send(self, filenames, progressdialog=None):
         """
@@ -424,7 +436,7 @@ class State(object):
         """
         nodes = self.swnp.get_list()
         #: TODO: Ask why this had the limitation?
-        # nodes = [node for node in nodes if node.id <= 10]
+        # nodes = [n for n in nodes if n.id <= 10]
         if len(nodes) < 2:
             self.set_responsive()
             return
@@ -444,124 +456,157 @@ class State(object):
                       0x205: 0x0010, 0x207: 0x0020, 0x208: 0x0040,
                       0x20A: 0x0800, 0x20E: 0x1000}
 
-    #: TODO: Too long!
+    @staticmethod
+    def _on_mouse_event(parameters):
+        target, wheel = [int(i) for i in parameters.split(',')]
+        flags = 0
+        mouse_data = 0
+        if target in State.TARGET_TO_FLAG:
+            flags = State.TARGET_TO_FLAG[target]
+        if target in [0x20A, 0x20E]:
+            mouse_data = wheel * 120
+        macro.send_input('m', (0, 0), flags, 0, mouse_data)
+
+    @staticmethod
+    def _on_mouse_move(parameters):
+        pos_x, pos_y = [int(i) for i in parameters.split(',')]
+        macro.send_input('m', (pos_x, pos_y), 0x0001)
+
+    @staticmethod
+    def _on_key(parameters):
+        evt_code, key, scan = [int(i) for i in parameters.split(',')]
+        flags = 0
+        if evt_code == 257:
+            flags = 2
+        macro.send_input('k', key, flags, scan)
+
+    @staticmethod
+    def _on_url(parameters):
+        LOGGER.debug('Open URL: {0}'.format(parameters))
+        webbrowser.open(parameters)
+
+    def _on_open(self, parameters):
+        #  Open all files in list.
+        target = literal_eval(parameters)
+        for filename in target:
+            log_msg = 'Opening file: {basename}'
+            LOGGER.info(log_msg.format(basename=os.path.basename(filename)))
+            if os.path.exists(filename):
+                if self.current_session:
+                    action_id = REVERSE_ACTIONS['Opened']
+                    controller.create_file_action(filename, action_id,
+                                                  self.current_session_id,
+                                                  self.current_project_id)
+                filesystem.open_file(filename)
+
+    def _on_wx_image(self, parameters):
+        image_data = b64decode(parameters)
+        image_buffer = cStringIO.StringIO(image_data)
+        wx_image = wx.EmptyImage()
+        wx_image.LoadStream(image_buffer)
+        if wx_image.Ok():
+            graphicaldesign.ImageViewer(self.parent, wx_image)
+        else:
+            LOGGER.exception('Received invalid wx_image.')
+        wx_image = None
+
+    def _on_new_responsive(self, parameters):
+        if self.is_responsive:
+            self.stop_responsive()
+            self.is_responsive = False
+            self.responsive = parameters
+            LOGGER.info('Responsive changed to: {0}'.format(parameters))
+
+    def _on_event(self, parameters):
+        LOGGER.info('event: {0}'.format(parameters))
+        if self.is_responsive:
+            self.worker.create_event(parameters)
+
+    def _on_remote_start(self, parameters):
+        macro.release_all_keys()
+        self.controlled = parameters
+        LOGGER.debug('CONTROLLED: {0}'.format(parameters))
+
+    def _on_remote_end(self, parameters):  # @UnusedVariable
+        if self.controlled:
+            macro.release_all_keys()
+        if self.controlling:
+            self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
+            del self.selected_nodes[:]
+            threads.inputcapture.set_capture(False)
+            self.capture_thread.unhook()
+            self.parent.overlay.Hide()
+        self.controlled = False
+        self.controlling = False
+
+    def _on_set(self, parameters):
+        if parameters == 'responsive':
+            if diwavars.RESPONSIVE > 0:
+                self.is_responsive = True
+                self.set_responsive()
+
+    def _on_screenshot(self, parameters):  # @UnusedVariable
+        if self.swnp.node.screens > 0:
+            LOGGER.info('Taking a screenshot.')
+            project_path = self.current_project.path
+            filesystem.screen_capture(project_path, self.swnp.node.id)
+
+    def _on_current_activity(self, parameters):
+        self.activity = int(parameters)
+        old_project_id = self.current_project_id
+        pid = controller.get_project_id_by_activity(self.activity)
+        sid = controller.get_session_id_by_activity(self.activity)
+        if old_project_id != pid:
+            self.set_current_project(pid)
+        self.set_current_session(sid)
+        if old_project_id != pid:
+            self.parent.OnProject()
+
+    def _on_current_project(self, parameters):
+        project_id = int(parameters)
+        if project_id != self.current_project_id:
+            self.set_current_project(project_id)
+            self.parent.OnProject()
+
+    def _on_current_session(self, parameters):
+        session_id = int(parameters)
+        if session_id != self.current_session_id:
+            self.set_current_session(session_id)
+
     def message_handler(self, message):
         """
         Message handler for received messages.
 
         :param message: Received message.
-        :type message: an instance of :class:`swnp.Message`
+        :type message: String
 
         """
-        #: TODO: Check message param type...
+        message_routine = {
+            'mouse_event': State._on_mouse_event,
+            'mouse_move': State._on_mouse_move,
+            'key': State._on_key,
+            'url': State._on_url,
+            'open': self._on_open,
+            'wx_image': self._on_wx_image,
+            'new_responsive': self._on_new_responsive,
+            'event': self._on_event,
+            'remote_start': self._on_remote_start,
+            'remote_end': self._on_remote_end,
+            'set': self._on_set,
+            'screenshot': self._on_screenshot,
+            'current_activity': self._on_current_activity,
+            'current_project': self._on_current_project,
+            'current_session': self._on_current_session
+        }
+        LOGGER.debug('ZMQ PUBSUB Message: ' + message)
         try:
-            LOGGER.debug('ZMQ PUBSUB Message:' + str(message))
-            csid, cpid = (self.current_session_id, self.current_project_id)
-            cmd, target = message.split(';', 1)
-            if cmd == 'open':
-                #  Open all files in list.
-                target = eval(target)
-                for filename in target:
-                    LOGGER.info('opening file: %s', os.path.basename(filename))
-                    if os.path.exists(filename):
-                        if csid:
-                            controller.create_file_action(filename, 6, csid,
-                                                          cpid)
-                        filesystem.open_file(filename)
-            elif cmd == 'wx_image':
-                try:
-                    image_data = b64decode(target)
-                    image_buffer = cStringIO.StringIO(image_data)
-                    wx_image = wx.EmptyImage()
-                    wx_image.LoadStream(image_buffer)
-                    if wx_image.Ok():
-                        graphicaldesign.ImageViewer(self.parent, wx_image)
-                    else:
-                        LOGGER.exception('Received invalid wx_image.')
-                    wx_image = None
-                except (ValueError, IOError) as excp:
-                    LOGGER.exception('Receive wx_image exception: %s',
-                                     str(excp))
-            elif cmd == 'new_responsive':
-                if self.is_responsive:
-                    self.stop_responsive()
-                    self.is_responsive = False
-                    self.responsive = target
-                    LOGGER.info('Responsive changed to: %s', str(target))
-            elif cmd == 'event':
-                LOGGER.info('event: %s', str(target))
-                if self.is_responsive:
-                    self.worker.create_event(target)
-            elif cmd == 'key':
-                evt_code, key, scan = target.split(',')
-                evt_code = int(evt_code)
-                flags = 0
-                if evt_code == 257:
-                    flags = 2
-                macro.send_input('k', int(key), flags, int(scan))
-            elif cmd == 'remote_start':
-                macro.release_all_keys()
-                self.controlled = target
-                LOGGER.debug('CONTROLLED: %s', str(target))
-            elif cmd == 'remote_end':
-                if self.controlled:
-                    macro.release_all_keys()
-                if self.controlling:
-                    self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
-                    del self.selected_nodes[:]
-                    threads.inputcapture.set_capture(False)
-                    self.capture_thread.unhook()
-                    self.parent.overlay.Hide()
-                self.controlled = False
-                self.controlling = False
-            elif cmd == 'mouse_move':
-                pos_x, pos_y = target.split(',')
-                input_data = [int(pos_x), int(pos_y)]
-                macro.send_input('m', input_data, 0x0001)
-            elif cmd == 'mouse_event':
-                target, wheel = target.split(',')
-                (target, wheel) = (int(target), int(wheel))
-                flags = 0
-                mouse_data = 0
-                if target in State.TARGET_TO_FLAG:
-                    flags = State.TARGET_TO_FLAG[target]
-                if target in [0x20A, 0x20E]:
-                    mouse_data = wheel * 120
-                macro.send_input('m', [0, 0], flags, 0, mouse_data)
-            elif cmd == 'url':
-                LOGGER.debug('Open URL: %s', str(target))
-                webbrowser.open(target)
-            elif cmd == 'set' and target == 'responsive':
-                if not diwavars.RESPONSIVE == 0:
-                    self.is_responsive = True
-                    self.set_responsive()
-            elif cmd == 'screenshot':
-                if self.swnp.node.screens > 0:
-                    pid = self.current_project_id
-                    LOGGER.info('Taking a screenshot.')
-                    project_path = self.current_project.path
-                    filesystem.screen_capture(project_path, self.swnp.node.id)
-            elif cmd == 'current_session':
-                target = int(target)
-                if self.current_session_id != target:
-                    self.set_current_session(target)
-            elif cmd == 'current_project':
-                target = int(target)
-                if cpid != target:
-                    self.set_current_project(target)
-                    self.parent.OnProject()
-            elif cmd == 'current_activity':
-                self.activity = target
-                old_project_id = self.current_project_id
-                pid = controller.get_project_id_by_activity(self.activity)
-                sid = controller.get_session_id_by_activity(self.activity)
-                if old_project_id != pid:
-                    self.set_current_project(pid)
-                self.set_current_session(sid)
-                if old_project_id != pid:
-                    self.parent.OnProject()
+            cmd, parameters = message.split(';', 1)
+            if cmd in message_routine:
+                message_routine[cmd](parameters)
         except Exception as excp:
-            LOGGER.exception('Exception in MessageHandler: %s', str(excp))
+            log_msg = 'Exception in MessageHandler: {exception!s}'
+            log_msg = log_msg.format(exception=excp)
+            LOGGER.exception(log_msg)
 
     def on_project_selected(self):
         """

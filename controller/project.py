@@ -113,7 +113,7 @@ def add_project(data):
     if not project.dir:
         Project.delete(project)
         return None
-    project.update()
+    Project.update(project)
     return project
 
 
@@ -248,7 +248,7 @@ def edit_project(project_id, row):
             log_msg = log_msg.format(exception=excp)
             _logger().exception(log_msg)
     if needs_to_update:
-        project.update()
+        Project.update(project)
 
 
 def init_sync_project_directory(project_id):
@@ -283,7 +283,7 @@ def init_sync_project_directory(project_id):
             deleted = models.REVERSE_ACTIONS['Deleted']
             controller.create_file_action(file_.path, deleted, 0, project_id)
             file_.project_id = None
-            file_.update()
+            File.update(file_)
     except OSError as excp:
         log_msg = ('Exception in Initial project directory synchronization '
                    'call: {exception!s}')

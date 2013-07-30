@@ -701,7 +701,6 @@ class GraphicalUserInterface(GUItemplate):
                 pass
         self.diwa_state.worker.check_responsive()
         self.Thaw()                         # Pair for freeze()
-#-------------------- CONTINUE HERE ------------------------------------------#
 
     def OnExit(self, event):
         """
