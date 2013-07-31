@@ -135,7 +135,7 @@ class State(object):
         self.random = Random()
         self.error_th.daemon = True
         self.error_th.start()
-        self.worker = threads.WORKER_THREAD(self)
+        self.worker = threads.WORKER_THREAD(parent)
         self.swnp = None
         self.config_was_created = False
         try:
@@ -616,7 +616,8 @@ class State(object):
         if not self.current_project:
             return
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity = controller.add_or_update_activity(self.current_project_id,
+        self.activity = controller.add_or_update_activity(
+                                                self.current_project_id,
                                                 diwavars.PGM_GROUP,
                                                 self.current_session_id,
                                                 self.activity)

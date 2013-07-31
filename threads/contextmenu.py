@@ -119,7 +119,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         project = self.parent.diwa_state.current_project
         if project is None:
             return 'OK'
-        if self.parent.is_responsive and diwavars.AUDIO:
+        if self.parent.diwa_state.is_responsive and diwavars.AUDIO:
             ide = controller.get_latest_event_id()
             timer = threading.Timer(diwavars.WINDOW_TAIL * 1000,
                                     self.parent.audio_recorder.save,

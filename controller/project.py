@@ -186,7 +186,9 @@ def get_projects_by_company(company_id):
     :type company_id: Integer
 
     """
-    return Project.get('all', Project.company_id == company_id).sort(key=str)
+    projects = Project.get('all', Project.company_id == company_id)
+    projects.sort(key=str)
+    return projects
 
 
 def get_recent_files(project_id, max_files_count=None):

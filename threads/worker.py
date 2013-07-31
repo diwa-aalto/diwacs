@@ -98,6 +98,9 @@ class WORKER_THREAD(DIWA_THREAD):
     """
     Worker thread for non-UI jobs.
 
+    :param parent: The GUI object.
+    :type parant: :py:class:`diwacs.GraphicalUserInterface`
+
     """
     _version_checker = None
 
@@ -112,19 +115,21 @@ class WORKER_THREAD(DIWA_THREAD):
         Docstring here.
 
         """
-        if not self.parent.responsive and not self.parent.is_responsive:
+        state = self.parent.diwa_state
+        if not state.responsive and not state.is_responsive:
             nodes = controller.get_active_responsive_nodes(diwavars.PGM_GROUP)
-            _logger().debug('Responsive checking active: %s', str(nodes))
+            log_msg = 'Active nodes: ' + ', '.join([str(n) for n in nodes])
+            _logger().debug(log_msg)
             if not nodes:
                 if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
-                    self.parent.SetResponsive()
+                    state.set_responsive()
                     _logger().debug('Setting self as responsive')
             else:
-                self.parent.responsive = str(nodes[0].wos_id)
-                if self.parent.responsive == self.parent.swnp.node.id:
-                    self.parent.SetResponsive()
+                state.responsive = str(nodes[0].wos_id)
+                if state.responsive == state.swnp.node.id:
+                    state.set_responsive()
         log_msg = 'Responsive checked. Current responsive is: {0}'
-        _logger().debug(log_msg.format(self.parent.responsive))
+        _logger().debug(log_msg.format(state.responsive))
 
     @staticmethod
     def add_project_registry_entry(reg_type):
@@ -306,7 +311,7 @@ class WORKER_THREAD(DIWA_THREAD):
         if value:
             diwavars.update_audio(value)
             _logger().debug('Starting audio recorder')
-            parent.StartAudioRecorder()
+            parent.diwa_state.start_audio_recorder()
 
     @staticmethod
     def __on_logger_level(value):

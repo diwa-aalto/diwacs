@@ -143,14 +143,11 @@ class MethodMixin():
     A base class for all our DiWa models.
 
     """
-    def __init__(self):
-        pass
-
     # ------------------------ ACTUAL INTERFACE --------------------------
-    def __repr__(self):
-        id_ = getattr(self, 'id', -1)
-        name = type(self).__name__
-        return '<id={0}, item={1}>'.format(id_, name)
+    #def __repr__(self):
+    #    id_ = getattr(self, 'id', -1)
+    #    name = type(self).__name__
+    #    return '<id={0}, item={1}>'.format(id_, name)
 
     @classmethod
     def delete(cls, instance):
@@ -197,7 +194,6 @@ class MethodMixin():
         Additional parameters may be specified to filter results.
 
         """
-        LOGGER.debug('Entering try:')
         if method in MethodMixin._default_method_values:
             result = MethodMixin._default_method_values[method]
         else:
@@ -208,7 +204,6 @@ class MethodMixin():
             database = connect_to_database()
             query = database.query(cls)
             query = query.filter(*filters)
-            LOGGER.debug('Company_query: {0}'.format(method))
             if method == 'last':
                 result = query.order_by(desc(getattr(cls, 'id'))).first()
             else:
@@ -269,15 +264,29 @@ class MethodMixin():
                 database.close()
             database = None
 
-        @classmethod
-        def update_many(cls, instances):
-            """
-            Posts updates to these objects into the database.
+    @classmethod
+    def update_many(cls, instances):
+        """
+        Posts updates to these objects into the database.
 
-            :returns: Success value.
-            :rtype: Boolean
+        :returns: Success value.
+        :rtype: Boolean
 
-            """
+        """
+        database = None
+        try:
+            database = connect_to_database()
+            database.add_all(instances)
+            database.commit()
+            return True
+        except SQLAlchemyError, excp:
+            log_msg = 'Exception in {0}.update() : {1!s}'
+            log_msg = log_msg.format(cls.__name__, excp)
+            LOGGER.exception(log_msg)
+            return False
+        finally:
+            if database and hasattr(database, 'close'):
+                database.close()
             database = None
 
 
@@ -320,10 +329,7 @@ class Action(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=True)
 
     def __init__(self, name):
         self.name = name
@@ -416,10 +422,7 @@ class Company(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=False)
 
     def __init__(self, name):
         """
@@ -493,17 +496,11 @@ class Computer(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=False)
 
     ip = Column(Integer(unsigned=True), nullable=False)
 
-    mac = Column(
-        String(length=12, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    mac = Column(String(length=12, convert_unicode=True), nullable=True)
 
     time = Column(DateTime, nullable=True)
 
@@ -565,9 +562,9 @@ class Computer(MethodMixin, Base):
         return sorted(computers, key=Computer.time_ordering).pop()
 
     def __str__(self):
-        str_msg = '<{wos_id}: name:{name} screens:{screens}{time}>'
+        str_msg = '<{wos_id}: name:{name} screens:{screens}{iftime}>'
         my_time = (' time: ' + self.time.isoformat()) if self.time else ''
-        return str_msg.format(time=my_time, **self.__dict__)
+        return str_msg.format(iftime=my_time, **self.__dict__)
 
 
 class Event(MethodMixin, Base):
@@ -605,15 +602,9 @@ class Event(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    title = Column(
-        String(length=40, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    title = Column(String(length=40, convert_unicode=True), nullable=False)
 
-    desc = Column(
-        String(length=500, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    desc = Column(String(length=500, convert_unicode=True), nullable=True)
 
     time = Column(DateTime, default=func.now())
 
@@ -654,10 +645,7 @@ class File(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    path = Column(
-        String(length=255, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    path = Column(String(length=255, convert_unicode=True), nullable=False)
 
     project_id = Column(Integer, ForeignKey('project.id'), nullable=True)
 
@@ -823,22 +811,13 @@ class Project(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=False)
 
     company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
 
-    dir = Column(
-        String(length=255, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    dir = Column(String(length=255, convert_unicode=True), nullable=True)
 
-    password = Column(
-        String(length=40, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    password = Column(String(length=40, convert_unicode=True), nullable=True)
 
     company = relationship('Company',
                            backref=backref(name='projects', order_by=id),
@@ -906,10 +885,7 @@ class Session(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=True)
 
     project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
 
@@ -1014,25 +990,14 @@ class User(MethodMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True,
                 default=text(DEFAULT.format(__tablename__)))
 
-    name = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=False
-    )
+    name = Column(String(length=50, convert_unicode=True), nullable=False)
 
-    email = Column(
-        String(length=100, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    email = Column(String(length=100, convert_unicode=True), nullable=True)
 
-    title = Column(
-        String(length=50, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    title = Column(String(length=50, convert_unicode=True), nullable=True)
 
-    department = Column(
-        String(length=100, collation='utf8_general_ci', convert_unicode=True),
-        nullable=True
-    )
+    department = Column(String(length=100, convert_unicode=True),
+                        nullable=True)
 
     company_id = Column(Integer, ForeignKey('company.id'), nullable=False)
 

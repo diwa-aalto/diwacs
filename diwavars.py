@@ -42,7 +42,7 @@ def set_blank_cursor(value):
 APPLICATION_NAME = 'DiWaCS'
 
 # current application version
-VERSION = '0.9.3.0'
+VERSION = '0.9.3.1'
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')

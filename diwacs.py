@@ -101,8 +101,9 @@ class EventList(EventListTemplate):
         label = self.custom_event.GetValue()
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
-        if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, 'event;%s' % label)
+        if not self.parent.diwa_state.is_responsive:
+            self.parent.SwnpSend(self.parent.diwa_state.responsive,
+                                 'event;' + label)
         elif project and session:
             wx.CallAfter(self.parent.worker.create_event, label)
         self.custom_event.SetValue('')
@@ -194,7 +195,7 @@ class GraphicalUserInterface(GUItemplate):
         NodeScreen.update_bitmaps()
 
         # List for choices
-        LOGGER.debug('WxPython version %s', str(wx.version()))
+        LOGGER.debug('WxPython version {0!s}'.format(wx.version()))
         self.list = EventList(self)
         splash_screen = MySplashScreen()
         splash_screen.Show()
