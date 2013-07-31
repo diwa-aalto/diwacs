@@ -24,7 +24,7 @@ import threads.common
 from threads.checkupdate import CHECK_UPDATE
 from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
-import models
+import modelsbase
 
 
 def _logger():
@@ -227,37 +227,37 @@ class WORKER_THREAD(DIWA_THREAD):
     def __on_storage(value):
         """ Short stub setter. """
         diwavars.update_storage(value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_db_address(value):
         """ Short stub setter. """
         diwavars.update_database_vars(address=value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_db_name(value):
         """ Short stub setter. """
         diwavars.update_database_vars(name=value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_db_type(value):
         """ Short stub setter. """
         diwavars.update_database_vars(type_=value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_db_user(value):
         """ Short stub setter. """
         diwavars.update_database_vars(user=value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_db_pass(value):
         """ Short stub setter. """
         diwavars.update_database_vars(password=value)
-        models.update_database()
+        modelsbase.update_database()
 
     @staticmethod
     def __on_name(value):

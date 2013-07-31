@@ -28,7 +28,8 @@ import diwavars
 import filesystem
 import graphicaldesign
 import macro
-from models import REVERSE_ACTIONS, Project
+from modelsbase import REVERSE_ACTIONS
+from models import Project
 import swnp
 import threads
 import utils
@@ -683,7 +684,7 @@ class State(object):
             self.worker.remove_all_registry_entries()
             self.worker.add_project_registry_entry('*')
             self.worker.add_project_registry_entry('Folder')
-            utils.MapNetworkShare('W:', project.path)
+            utils.MapNetworkShare('W:', project.dir)
             if self.is_responsive:
                 LOGGER.debug('Starting observers.')
                 try:

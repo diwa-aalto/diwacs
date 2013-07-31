@@ -186,7 +186,6 @@ class GraphicalUserInterface(GUItemplate):
     WOS Application Frame.
 
     """
-
     def __init__(self):
         # SUPER #
         super(GraphicalUserInterface, self).__init__(parent=None,

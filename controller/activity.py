@@ -56,7 +56,7 @@ def add_or_update_activity(project_id, pgm_group, session_id=0, activity_id=0):
     else:
         activity = Activity(project, session)
     activity.active = pgm_group
-    Activity.update(activity)
+    activity.update()
     return activity.id
 
 
@@ -85,5 +85,4 @@ def unset_activity(pgm_group):
     activities = Activity.get('all', Activity.active == pgm_group)
     for activity in activities:
         activity.active = None
-        Activity.update(activity)   # TODO: Buffer somehow so one
-                                    #       connection is enough?
+    Activity.update_many(activities)

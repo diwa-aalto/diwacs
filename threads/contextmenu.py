@@ -20,6 +20,7 @@ import controller
 import threading
 import os
 import models
+import modelsbase
 
 
 def _logger():
@@ -138,7 +139,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         if not session_id:
             return 'OK'
         for filepath in target:
-            action_id = models.REVERSE_ACTIONS['Opened']
+            action_id = modelsbase.REVERSE_ACTIONS['Opened']
             controller.create_file_action(filepath, action_id, session_id,
                                           project_id)
             filesystem.open_file(filepath)

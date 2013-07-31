@@ -17,10 +17,12 @@ from sqlalchemy.exc import SQLAlchemyError
 # Own imports.
 import controller.activity
 import filesystem
+from modelsbase import ItemAlreadyExistsException
 from models import (Action, Activity, Company, File, FileAction, Project,
-                    Session, ItemAlreadyExistsException)
+                    Session)
 import utils
 import models
+import modelsbase
 
 
 def _logger():
@@ -250,7 +252,7 @@ def edit_project(project_id, row):
             log_msg = log_msg.format(exception=excp)
             _logger().exception(log_msg)
     if needs_to_update:
-        Project.update(project)
+        project.update()
 
 
 def init_sync_project_directory(project_id):
@@ -270,7 +272,7 @@ def init_sync_project_directory(project_id):
     project_files = File.get('all', File.project_id == project_id)
     project_filepaths = [f.path for f in project_files]
     try:
-        for (root, directories, basenames) in os.walk(project.path):
+        for (root, directories, basenames) in os.walk(project.dir):
             for filepath in [os.path.join(root, n) for n in basenames]:
                 if filepath in project_filepaths:
                     # Simultaneously remove the element from both lists.
@@ -282,10 +284,10 @@ def init_sync_project_directory(project_id):
                     add_file_to_project(filepath, project_id)
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
-            deleted = models.REVERSE_ACTIONS['Deleted']
+            deleted = modelsbase.REVERSE_ACTIONS['Deleted']
             controller.create_file_action(file_.path, deleted, 0, project_id)
             file_.project_id = None
-            File.update(file_)
+        File.update_many(project_files)
     except OSError as excp:
         log_msg = ('Exception in Initial project directory synchronization '
                    'call: {exception!s}')

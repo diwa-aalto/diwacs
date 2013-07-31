@@ -19,7 +19,8 @@ from watchdog.events import (FileCreatedEvent, FileDeletedEvent,
 
 # Own imports.
 import controller.project
-from models import (File, Project, ACTIONS, REVERSE_ACTIONS)
+from modelsbase import ACTIONS, REVERSE_ACTIONS
+from models import File, Project
 import diwavars
 
 
@@ -190,7 +191,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
                     source_file.project_id = None
                     act_path = source
                     action = REVERSE_ACTIONS['Deleted']
-                File.update(source_file)
+                source_file.update()
                 self._project_prototype(act_path, action)
             else:
                 # Case 3
