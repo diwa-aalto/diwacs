@@ -6,31 +6,31 @@
 \contentsline {subsection}{\numberline {1.3.1}controller.activity module}{4}{subsection.1.3.1}
 \contentsline {subsection}{\numberline {1.3.2}controller.common module}{4}{subsection.1.3.2}
 \contentsline {subsection}{\numberline {1.3.3}controller.computer module}{5}{subsection.1.3.3}
-\contentsline {subsection}{\numberline {1.3.4}controller.handlers module}{7}{subsection.1.3.4}
+\contentsline {subsection}{\numberline {1.3.4}controller.handlers module}{6}{subsection.1.3.4}
 \contentsline {subsection}{\numberline {1.3.5}controller.project module}{7}{subsection.1.3.5}
-\contentsline {subsection}{\numberline {1.3.6}controller.session module}{9}{subsection.1.3.6}
-\contentsline {section}{\numberline {1.4}Dialogs module}{10}{section.1.4}
-\contentsline {section}{\numberline {1.5}DiWaCS module}{13}{section.1.5}
-\contentsline {section}{\numberline {1.6}DiWaVars module}{16}{section.1.6}
-\contentsline {section}{\numberline {1.7}Filesystem module}{17}{section.1.7}
-\contentsline {section}{\numberline {1.8}Graphical Design module}{18}{section.1.8}
-\contentsline {section}{\numberline {1.9}Macro module}{20}{section.1.9}
-\contentsline {section}{\numberline {1.10}Models module}{23}{section.1.10}
-\contentsline {section}{\numberline {1.11}Setup module}{27}{section.1.11}
-\contentsline {section}{\numberline {1.12}Models state}{27}{section.1.12}
-\contentsline {section}{\numberline {1.13}SWNP module}{29}{section.1.13}
-\contentsline {section}{\numberline {1.14}Testing module}{32}{section.1.14}
-\contentsline {section}{\numberline {1.15}Threads package}{32}{section.1.15}
-\contentsline {subsection}{\numberline {1.15.1}threads.audiorecorder module}{32}{subsection.1.15.1}
-\contentsline {subsection}{\numberline {1.15.2}threads.checkupdate module}{33}{subsection.1.15.2}
-\contentsline {subsection}{\numberline {1.15.3}threads.common module}{33}{subsection.1.15.3}
-\contentsline {subsection}{\numberline {1.15.4}threads.connectionerror module}{33}{subsection.1.15.4}
-\contentsline {subsection}{\numberline {1.15.5}threads.contextmenu module}{34}{subsection.1.15.5}
-\contentsline {subsection}{\numberline {1.15.6}threads.current module}{34}{subsection.1.15.6}
-\contentsline {subsection}{\numberline {1.15.7}threads.diwathread module}{35}{subsection.1.15.7}
-\contentsline {subsection}{\numberline {1.15.8}threads.inputcapture module}{35}{subsection.1.15.8}
-\contentsline {subsection}{\numberline {1.15.9}threads.worker module}{36}{subsection.1.15.9}
-\contentsline {section}{\numberline {1.16}Utils module}{37}{section.1.16}
+\contentsline {subsection}{\numberline {1.3.6}controller.session module}{8}{subsection.1.3.6}
+\contentsline {section}{\numberline {1.4}Dialogs module}{9}{section.1.4}
+\contentsline {section}{\numberline {1.5}DiWaCS module}{11}{section.1.5}
+\contentsline {section}{\numberline {1.6}DiWaVars module}{14}{section.1.6}
+\contentsline {section}{\numberline {1.7}Filesystem module}{16}{section.1.7}
+\contentsline {section}{\numberline {1.8}Graphical Design module}{17}{section.1.8}
+\contentsline {section}{\numberline {1.9}Macro module}{19}{section.1.9}
+\contentsline {section}{\numberline {1.10}Models module}{21}{section.1.10}
+\contentsline {section}{\numberline {1.11}Setup module}{26}{section.1.11}
+\contentsline {section}{\numberline {1.12}Models state}{26}{section.1.12}
+\contentsline {section}{\numberline {1.13}SWNP module}{28}{section.1.13}
+\contentsline {section}{\numberline {1.14}Testing module}{31}{section.1.14}
+\contentsline {section}{\numberline {1.15}Threads package}{31}{section.1.15}
+\contentsline {subsection}{\numberline {1.15.1}threads.audiorecorder module}{31}{subsection.1.15.1}
+\contentsline {subsection}{\numberline {1.15.2}threads.checkupdate module}{32}{subsection.1.15.2}
+\contentsline {subsection}{\numberline {1.15.3}threads.common module}{32}{subsection.1.15.3}
+\contentsline {subsection}{\numberline {1.15.4}threads.connectionerror module}{32}{subsection.1.15.4}
+\contentsline {subsection}{\numberline {1.15.5}threads.contextmenu module}{33}{subsection.1.15.5}
+\contentsline {subsection}{\numberline {1.15.6}threads.current module}{33}{subsection.1.15.6}
+\contentsline {subsection}{\numberline {1.15.7}threads.diwathread module}{34}{subsection.1.15.7}
+\contentsline {subsection}{\numberline {1.15.8}threads.inputcapture module}{34}{subsection.1.15.8}
+\contentsline {subsection}{\numberline {1.15.9}threads.worker module}{35}{subsection.1.15.9}
+\contentsline {section}{\numberline {1.16}Utils module}{36}{section.1.16}
 \contentsline {chapter}{\numberline {2}Bugs}{39}{chapter.2}
 \contentsline {chapter}{\numberline {3}Features}{41}{chapter.3}
 \contentsline {chapter}{\numberline {4}License}{43}{chapter.4}
@@ -52,5 +52,5 @@
 \contentsline {section}{\numberline {4.16}Appendix}{47}{section.4.16}
 \contentsline {chapter}{\numberline {5}User Interface}{49}{chapter.5}
 \contentsline {chapter}{\numberline {6}Indices and tables}{51}{chapter.6}
-\contentsline {chapter}{Python Module Index}{53}{section*.327}
-\contentsline {chapter}{Index}{55}{section*.328}
+\contentsline {chapter}{Python Module Index}{53}{section*.315}
+\contentsline {chapter}{Index}{55}{section*.316}
