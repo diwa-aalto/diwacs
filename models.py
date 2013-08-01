@@ -1,7 +1,6 @@
 """
 Created on 23.5.2012
 
-.. moduleauthor:: neriksso
 :author: neriksso
 :note: Requires :py:mod:`sqlalchemy`
 :synopsis:

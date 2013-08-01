@@ -1,7 +1,6 @@
 """
 Created on 8.5.2012
 
-.. moduleauthor:: nick26
 :author: nick26
 
 :synopsis:

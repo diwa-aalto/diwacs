@@ -1,7 +1,6 @@
 """
 Created on 4.7.2013
 
-.. moduleauthor:: neriksso
 :author: neriksso
 
 """
@@ -716,7 +715,7 @@ class State(object):
             event_handler = controller.PROJECT_EVENT_HANDLER
             handle_project = event_handler(self.current_project_id, 'project')
             handle_scanner = event_handler(self.current_project_id, 'scanner')
-            path_project = self.current_project.path
+            path_project = self.current_project.dir
             path_scanner = r'\\' + os.path.join(diwavars.STORAGE, 'Pictures')
             self.project_observer.schedule(handle_project, path_project, True)
             self.project_observer.schedule(handle_scanner, path_scanner, True)

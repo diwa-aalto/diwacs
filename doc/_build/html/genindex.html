@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Index &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" /> 
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -83,10 +83,6 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.activity.add_activity">add_activity() (in module controller.activity)</a>
-  </dt>
-
-      
   <dt><a href="controller.html#controller.computer.add_computer">add_computer() (in module controller.computer)</a>
   </dt>
 
@@ -110,10 +106,14 @@
   <dt><a href="diwavars.html#diwavars.add_logger_initializer">add_logger_initializer() (in module diwavars)</a>
   </dt>
 
+      
+  <dt><a href="diwavars.html#diwavars.add_logger_level_setter">add_logger_level_setter() (in module diwavars)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="diwavars.html#diwavars.add_logger_level_setter">add_logger_level_setter() (in module diwavars)</a>
+  <dt><a href="controller.html#controller.activity.add_or_update_activity">add_or_update_activity() (in module controller.activity)</a>
   </dt>
 
       
@@ -205,10 +205,6 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.common.connect_to_database">connect_to_database() (in module controller.common)</a>
-  </dt>
-
-      
   <dt><a href="threads.html#threads.connectionerror.CONNECTION_ERROR_THREAD">CONNECTION_ERROR_THREAD (class in threads.connectionerror)</a>
   </dt>
 
@@ -259,10 +255,6 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.common.create_all">create_all() (in module controller.common)</a>
-  </dt>
-
-      
   <dt><a href="state.html#state.create_config">create_config() (in module state)</a>
   </dt>
 
@@ -309,6 +301,10 @@
   </dt>
 
       
+  <dt><a href="state.html#state.State.destroy">destroy() (state.State method)</a>
+  </dt>
+
+      
   <dt><a href="dialogs.html#module-dialogs">dialogs (module)</a>
   </dt>
 
@@ -320,12 +316,12 @@
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.DisableSessionButton">DisableSessionButton() (diwacs.GraphicalUserInterface method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="threads.html#threads.diwathread.DIWA_THREAD">DIWA_THREAD (class in threads.diwathread)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="diwacs.html#module-diwacs">diwacs (module)</a>
   </dt>
@@ -421,15 +417,11 @@
   </dt>
 
       
-  <dt><a href="models.html#models.Session.FileRoutine">FileRoutine() (models.Session method)</a>
+  <dt><a href="filesystem.html#module-filesystem">filesystem (module)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="filesystem.html#module-filesystem">filesystem (module)</a>
-  </dt>
-
       
   <dt><a href="threads.html#threads.audiorecorder.AudioRecorder.find_input_device">find_input_device() (threads.audiorecorder.AudioRecorder method)</a>
   </dt>
@@ -448,10 +440,6 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="controller.html#controller.common.get_action_id_by_name">get_action_id_by_name() (in module controller.common)</a>
-  </dt>
-
       
   <dt><a href="controller.html#controller.activity.get_active_activity">get_active_activity() (in module controller.activity)</a>
   </dt>
@@ -489,15 +477,15 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.project.get_file_path">get_file_path() (in module controller.project)</a>
-  </dt>
-
-      
-  <dt><a href="controller.html#controller.session.get_latest_event">get_latest_event() (in module controller.session)</a>
+  <dt><a href="controller.html#controller.session.get_latest_event_id">get_latest_event_id() (in module controller.session)</a>
   </dt>
 
       
   <dt><a href="swnp.html#swnp.SWNP.get_list">get_list() (swnp.SWNP method)</a>
+  </dt>
+
+      
+  <dt><a href="models.html#models.Computer.get_most_recent_by_mac">get_most_recent_by_mac() (models.Computer class method)</a>
   </dt>
 
       
@@ -517,23 +505,11 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.project.get_project">get_project() (in module controller.project)</a>
-  </dt>
-
-      
   <dt><a href="controller.html#controller.project.get_project_id_by_activity">get_project_id_by_activity() (in module controller.project)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="controller.html#controller.project.get_project_password">get_project_password() (in module controller.project)</a>
-  </dt>
-
-      
-  <dt><a href="controller.html#controller.project.get_project_path">get_project_path() (in module controller.project)</a>
-  </dt>
-
       
   <dt><a href="controller.html#controller.project.get_projects_by_company">get_projects_by_company() (in module controller.project)</a>
   </dt>
@@ -832,6 +808,10 @@
   <dt><a href="swnp.html#swnp.Node">Node (class in swnp)</a>
   </dt>
 
+      
+  <dt><a href="state.html#state.State.node_id">node_id (state.State attribute)</a>
+  </dt>
+
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
@@ -845,33 +825,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="controller.html#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_created">on_created() (controller.handlers.PROJECT_FILE_EVENT_HANDLER method)</a>
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="controller.html#controller.handlers.SCAN_HANDLER.on_created">(controller.handlers.SCAN_HANDLER method)</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt><a href="controller.html#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_deleted">on_deleted() (controller.handlers.PROJECT_FILE_EVENT_HANDLER method)</a>
-  </dt>
-
-      
   <dt><a href="threads.html#threads.inputcapture.INPUT_CAPTURE.on_keyboard_event">on_keyboard_event() (threads.inputcapture.INPUT_CAPTURE method)</a>
   </dt>
 
       
-  <dt><a href="controller.html#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_modified">on_modified() (controller.handlers.PROJECT_FILE_EVENT_HANDLER method)</a>
-  </dt>
-
-      
   <dt><a href="threads.html#threads.inputcapture.INPUT_CAPTURE.on_mouse_event">on_mouse_event() (threads.inputcapture.INPUT_CAPTURE method)</a>
-  </dt>
-
-      
-  <dt><a href="controller.html#controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_moved">on_moved() (controller.handlers.PROJECT_FILE_EVENT_HANDLER method)</a>
   </dt>
 
       
@@ -948,8 +906,6 @@
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.OnMBBtn">OnMBBtn() (diwacs.GraphicalUserInterface method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="dialogs.html#dialogs.DeleteProjectDialog.OnOk">OnOk() (dialogs.DeleteProjectDialog method)</a>
   </dt>
@@ -964,6 +920,8 @@
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.OnPreferences">OnPreferences() (diwacs.GraphicalUserInterface method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.OnProject">OnProject() (diwacs.GraphicalUserInterface method)</a>
   </dt>
@@ -1071,7 +1029,7 @@
   </dt>
 
       
-  <dt><a href="controller.html#controller.handlers.PROJECT_FILE_EVENT_HANDLER">PROJECT_FILE_EVENT_HANDLER (class in controller.handlers)</a>
+  <dt><a href="controller.html#controller.handlers.PROJECT_EVENT_HANDLER">PROJECT_EVENT_HANDLER (class in controller.handlers)</a>
   </dt>
 
       
@@ -1123,7 +1081,7 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="state.html#state.State.remove_observers">remove_observers() (state.State method)</a>
+  <dt><a href="state.html#state.State.remove_observer">remove_observer() (state.State method)</a>
   </dt>
 
       
@@ -1200,10 +1158,6 @@
 
       
   <dt><a href="dialogs.html#dialogs.PreferencesDialog.SavePreferences">SavePreferences() (dialogs.PreferencesDialog method)</a>
-  </dt>
-
-      
-  <dt><a href="controller.html#controller.handlers.SCAN_HANDLER">SCAN_HANDLER (class in controller.handlers)</a>
   </dt>
 
       
@@ -1311,11 +1265,7 @@
   </dt>
 
       
-  <dt><a href="state.html#state.State.set_observers">set_observers() (state.State method)</a>
-  </dt>
-
-      
-  <dt><a href="state.html#state.State.set_project_observer">set_project_observer() (state.State method)</a>
+  <dt><a href="state.html#state.State.set_observer">set_observer() (state.State method)</a>
   </dt>
 
       
@@ -1337,19 +1287,15 @@
   </dt>
 
       
-  <dt><a href="state.html#state.State.set_scan_observer">set_scan_observer() (state.State method)</a>
-  </dt>
-
-      
   <dt><a href="swnp.html#swnp.SWNP.set_screens">set_screens() (swnp.SWNP method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.SetProjectName">SetProjectName() (diwacs.GraphicalUserInterface method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="diwacs.html#diwacs.GraphicalUserInterface.Shift">Shift() (diwacs.GraphicalUserInterface method)</a>
   </dt>
@@ -1567,6 +1513,10 @@
   </dt>
 
       
+  <dt><a href="models.html#models.Computer.time_ordering">time_ordering() (models.Computer class method)</a>
+  </dt>
+
+      
   <dt><a href="swnp.html#swnp.SWNP.timeout_routine">timeout_routine() (swnp.SWNP method)</a>
   </dt>
 
@@ -1598,10 +1548,6 @@
 
       
   <dt><a href="diwavars.html#diwavars.update_camera_vars">update_camera_vars() (in module diwavars)</a>
-  </dt>
-
-      
-  <dt><a href="controller.html#controller.common.update_database">update_database() (in module controller.common)</a>
   </dt>
 
       
@@ -1719,7 +1665,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

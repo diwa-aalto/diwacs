@@ -1,8 +1,6 @@
 """
 Created on 5.6.2012
 
-.. moduleauthor:: neriksso
-
 :platform: Windows
 :synopsis: Used to add a file in the current project.
 :warning: Requires ZeroMQ.

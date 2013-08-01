@@ -98,7 +98,7 @@ def delete_record(record_model, id_number):
         if isinstance(instance, Project):
             Session.get('delete', Session.project_id == id_number)
             Activity.get('delete', Activity.project_id == id_number)
-        record_model.delete(instance)
+        instance.delete()
         return True
     except SQLAlchemyError:
         log_msg = ('Delete record exception model {model_name!s} with '

@@ -1,7 +1,6 @@
 """
 Created on 20.5.2013
 
-.. moduleauthor:: Kristian
 :author: Kristian
 
 """

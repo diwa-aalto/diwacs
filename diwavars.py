@@ -1,7 +1,6 @@
 """
 DiWaCS Variables
 
-.. moduleauthor:: neriksso
 :author: neriksso
 
 """

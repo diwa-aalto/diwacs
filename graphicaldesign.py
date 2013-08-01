@@ -1,7 +1,6 @@
 """
 Created on 6.6.2013
 
-.. moduleauthor:: neriksso
 :author: neriksso
 :synopsis:
     This file represents graphical designs of some GUI elements in DiWaCS.

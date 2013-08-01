@@ -113,7 +113,7 @@ def add_project(data):
     else:
         project.dir = filesystem.create_project_directory(str(project.id))
     if not project.dir:
-        Project.delete(project)
+        project.delete()
         return None
     Project.update(project)
     return project
