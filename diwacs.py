@@ -561,7 +561,7 @@ class GraphicalUserInterface(GUItemplate):
                 sender('SYS', 'current_activity;%s' %
                        str(self.diwa_state.activity))
                 LOGGER.info('Session ended.')
-            except Exception, excp:
+            except Exception as excp:
                 LOGGER.exception('OnSession exception: %s', str(excp))
             # TODO: Check all wx.ICON_INFORMATION uses and maybe
             #       create a common dialog for it.
@@ -591,7 +591,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.EnableSessionButton()
                 self.panel.SetFocus()
                 self.Update()
-            except Exception, excp:
+            except Exception as excp:
                 LOGGER.exception('OnSession exception: %s', str(excp))
         if event:
             event.Skip()
@@ -748,8 +748,8 @@ class GraphicalUserInterface(GUItemplate):
             except CloseError:
                 raise   # Raise without parameter rises the original exception.
                         # This also preseves the original traceback.
-            except Exception, e:
-                LOGGER.exception('Exception in Close: %s', str(e))
+            except Exception as excp:
+                LOGGER.exception('Exception in Close: %s', str(excp))
                 for thread in threading.enumerate():
                     LOGGER.debug(thread.getName())
                 self.Destroy()
@@ -874,7 +874,7 @@ def main(profile):
     try:
         window = GraphicalUserInterface()
         app.MainLoop()
-    except Exception, excp:
+    except Exception as excp:
         LOGGER.exception('GENERIC EXCEPTION: %s', str(excp))
     finally:
         if window:
@@ -902,7 +902,7 @@ def main(profile):
             with open(log_path, 'w') as ofile:
                 ofile.write('PROFILE DATA:\n\n')
                 ofile.write(sval)
-        except (ValueError, IOError, OSError), excp:
+        except (ValueError, IOError, OSError) as excp:
             LOGGER.exception('PROFILING EXCEPTION: %s', str(excp))
         LOGGER.info('...PROFILING PRINT END')
 

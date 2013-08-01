@@ -7,7 +7,6 @@ Created on 28.6.2013
 # Critical imports.
 import sys
 import diwavars
-from sqlalchemy import exc
 
 
 if diwavars.CURRENTLY_RUNNING:
@@ -21,7 +20,7 @@ import logging
 from sqlalchemy.exc import SQLAlchemyError
 
 # Own imports.
-from models import Activity, File, Project, Session, Company
+from models import Activity, Project, Session, Company
 
 
 LOGGER = None

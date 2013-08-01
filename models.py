@@ -563,6 +563,9 @@ class Project(MethodMixin, Base):
             raise ItemAlreadyExistsException('Project already exists!')
         Project.update(self)
 
+    def __str__(self):
+        return self.name
+
 
 class Session(MethodMixin, Base):
     """

@@ -88,7 +88,16 @@ def add_project(data):
     company_data = data['company']
     if ('name' not in project_data) or ('name' not in company_data):
         return None
-    if Project.get('exists', Project.name == project_data['name']):
+    project_name = project_data['name']
+    _logger().debug('<{0}: {1}>'.format(type(project_name).__name__,
+                                        str(project_name)))
+    _logger().debug('[{0}: {1}]'.format(type(Project.name).__name__,
+                                        str(Project.name)))
+    expression = (Project.name == project_name)
+    _logger().debug('"{0}: {1}"'.format(type(expression).__name__,
+                                        str(expression)))
+    exists = Project.get('exists', expression)
+    if exists:
         raise ItemAlreadyExistsException('The project exists already!')
     company = Company.get('one', Company.name == company_data['name'])
     # Parse data.
@@ -247,7 +256,7 @@ def edit_project(project_id, row):
         try:
             setattr(project, key, row[key])
             needs_to_update = True
-        except AttributeError, excp:
+        except AttributeError as excp:
             log_msg = 'Attribute error in edit_project: {exception}'
             log_msg = log_msg.format(exception=excp)
             _logger().exception(log_msg)

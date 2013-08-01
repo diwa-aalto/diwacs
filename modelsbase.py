@@ -154,7 +154,7 @@ class MethodMixin():
             database.delete(self)
             database.commit()
             return True
-        except SQLAlchemyError, excp:
+        except SQLAlchemyError as excp:
             log_msg = 'Exception in {class_name}.delete() : {exception!s}'
             log_msg = log_msg.format(class_name=self.__class__.__name__,
                                      exception=excp)
@@ -175,7 +175,7 @@ class MethodMixin():
                 database.delete(instance)
             database.commit()
             return True
-        except SQLAlchemyError, excp:
+        except SQLAlchemyError as excp:
             log_msg = 'Exception in {class_name}.delete() : {exception!s}'
             log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
             LOGGER.exception(log_msg)
@@ -225,9 +225,12 @@ class MethodMixin():
                 result = query.order_by(desc(getattr(cls, 'id'))).first()
             else:
                 result = getattr(query, method)()
+            if method == 'exists':
+                # The result is a query still...
+                result = database.query(result)
         except (NoResultFound, MultipleResultsFound):
             raise
-        except SQLAlchemyError, excp:
+        except SQLAlchemyError as excp:
             log_msg = 'Exception in {class_name}.get() : {exception!s}'
             log_msg = log_msg.format(class_name=cls.__name__, exception=excp)
             LOGGER.exception(log_msg)
@@ -246,7 +249,7 @@ class MethodMixin():
         :type id_: Integer
 
         """
-        return cls.get('one', getattr(cls, 'id') == id_)
+        return cls.get('one', cls.id == id_)
 
     @classmethod
     def id_ordering(cls, instance):
@@ -270,7 +273,7 @@ class MethodMixin():
             database.add(self)
             database.commit()
             return True
-        except SQLAlchemyError, excp:
+        except SQLAlchemyError as excp:
             log_msg = 'Exception in {0}.update() : {1!s}'
             log_msg = log_msg.format(self.__class__.__name__, excp)
             LOGGER.exception(log_msg)
@@ -295,7 +298,7 @@ class MethodMixin():
             database.add_all(instances)
             database.commit()
             return True
-        except SQLAlchemyError, excp:
+        except SQLAlchemyError as excp:
             log_msg = 'Exception in {0}.update() : {1!s}'
             log_msg = log_msg.format(cls.__name__, excp)
             LOGGER.exception(log_msg)

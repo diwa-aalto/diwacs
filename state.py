@@ -39,7 +39,8 @@ LOGGER = None
 
 def __init_logger():
     """
-    Used to initialize the logger, when running from diwacs.py
+    Used to initialize the logger, when running from diwa client
+    (not intended for use when imported for unit tests).
 
     """
     global LOGGER
@@ -49,7 +50,7 @@ def __init_logger():
 
 def __set_logger_level(level):
     """
-    Sets the logger level for guitemplates logger.
+    Sets the logger level for state logger.
 
     :param level: Level of logging.
     :type level: Integer
@@ -75,7 +76,7 @@ def initialization_test():
         error += 'Database connection failed.\n'
     if error:
         error += 'Press OK to exit.'
-        LOGGER.debug(error)
+        LOGGER.error(error)
         return error
     return False
 
@@ -97,7 +98,7 @@ def create_config():
 
 def load_config():
     """
-    Loads a config file or creates one.
+    Loads a config file, creating it if it does not exists.
 
     """
     if not os.path.exists(diwavars.CONFIG_PATH):
@@ -146,7 +147,7 @@ class State(object):
             screens = int(diwavars.CONFIG['SCREENS'])
             name = diwavars.CONFIG['NAME']
             #:FIXME: What the actual?
-            node_id = ('observer' if self.is_responsive else '')
+            node_id = 'observer' if self.is_responsive else ''
             self.swnp = swnp.SWNP(
                 pgm_group=int(diwavars.PGM_GROUP),
                 screens=screens,

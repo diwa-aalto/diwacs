@@ -20,7 +20,7 @@ import diwavars
 from models import Company, Project
 import filesystem
 import utils
-from sqlalchemy.dialects.oracle.zxjdbc import SQLException
+from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -181,13 +181,14 @@ class AddProjectDialog(wx.Dialog):
 
         """
         result = None
+        LOGGER.debug('__onadd__')
         if self.name.GetValue() == '':  # or not self.passw.GetValue():
             msg = 'Please fill all necessary fields'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             if event:
                 event.Skip()
             return
-
+        LOGGER.debug('__onadd1__')
         try:
             company = Company.get_by_id()
             project_data = {
@@ -206,16 +207,18 @@ class AddProjectDialog(wx.Dialog):
             LOGGER.info('Created Project: %s (id=%d)', project.name,
                         project.id)
             result = project.id
-        except SQLException as excp:
+        except Exception as excp:
             LOGGER.exception('Error in add project: %s', str(excp))
             self.EndModal(0)
             return
+        LOGGER.debug('__onadd2__')
 
         if not result:
             LOGGER.exception('ERROR in add project!')
             self.EndModal(0)
             return
 
+        LOGGER.debug('__onadd3__')
         if result != self.parent.diwa_state.current_project_id:
             self.parent.set_current_project(project.id)
             self.parent.start_current_project()
@@ -228,6 +231,7 @@ class AddProjectDialog(wx.Dialog):
             if dlg_result == wx.ID_YES:
                 self.parent.OnSession(None)
 
+        LOGGER.debug('__onadd4__')
         self.EndModal(result)
 
     def OnText(self, event):
@@ -485,7 +489,7 @@ class PreferencesDialog(wx.Dialog):
         screens = self.config['SCREENS']
         commands = self.config['RUN_CMD']
         name = self.config['NAME']
-        LOGGER.debug('config: %s', str(self.config))
+        LOGGER.debug('config: {0!s}'.format(self.config))
         # Screens.
         if int(screens) > 0:
             self.screens_show.SetValue(1)

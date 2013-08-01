@@ -598,7 +598,7 @@ class SWNP:
                 if msg.prefix != 'PING':
                     self.publisher_loopback.send_multipart(myMess)
                 self.publisher.send_multipart(myMess)
-            except (ZMQError, ValueError), excp:
+            except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))
 
     def get_buffer(self):
