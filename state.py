@@ -28,7 +28,7 @@ import filesystem
 import graphicaldesign
 import macro
 from modelsbase import REVERSE_ACTIONS
-from models import Project
+from models import Project, Session
 import swnp
 import threads
 import utils
@@ -61,6 +61,10 @@ def __set_logger_level(level):
 
 diwavars.add_logger_initializer(__init_logger)
 diwavars.add_logger_level_setter(__set_logger_level)
+
+
+class SessionChangeException(Exception):
+    pass
 
 
 def initialization_test():
@@ -623,7 +627,28 @@ class State(object):
                                                 diwavars.PGM_GROUP,
                                                 self.current_session_id,
                                                 self.activity)
-        self.swnp_send('SYS', 'current_activity;%s' % str(self.activity))
+        self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity))
+
+    def on_session_changed(self, desired_state):
+        """
+        Docstring.
+
+        """
+        update = controller.add_or_update_activity
+        if desired_state:
+            session_id = self.start_new_session()
+            if session_id < 1:
+                raise SessionChangeException()
+            self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
+                                   session_id, self.activity)
+        else:
+            self.end_current_session()
+            self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
+                                   0, self.activity)
+        send_session = 'current_session;{0}'.format(self.current_session_id)
+        send_activity = 'current_activity;{0}'.format(self.activity)
+        self.swnp_send('SYS', send_session)
+        self.swnp_send('SYS', send_activity)
 
     def remove_observer(self):
         """

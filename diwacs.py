@@ -13,6 +13,7 @@ import sys
 import diwavars
 import datetime
 from models import Project
+from state import SessionChangeException
 
 if __name__ == '__main__':
     diwavars.set_running()
@@ -544,7 +545,6 @@ class GraphicalUserInterface(GUItemplate):
         """
         session_id = self.diwa_state.current_session_id
         project_id = self.diwa_state.current_project_id
-        sender = self.diwa_state.swnp_send
         if project_id <= 0:
             # We should not ever get here as the button should be disabled!
             params = {'message': 'No project selected.'}
@@ -552,14 +552,8 @@ class GraphicalUserInterface(GUItemplate):
         elif session_id > 0:
             # We want to end our session!
             try:
-                self.diwa_state.end_current_session()
+                self.diwa_state.on_session_changed(False)
                 self.DisableSessionButton()
-                controller.add_or_update_activity(project_id,
-                                                  diwavars.PGM_GROUP, 0,
-                                                  self.diwa_state.activity)
-                sender('SYS', 'current_session;0')
-                sender('SYS', 'current_activity;%s' %
-                       str(self.diwa_state.activity))
                 LOGGER.info('Session ended.')
             except Exception as excp:
                 LOGGER.exception('OnSession exception: %s', str(excp))
@@ -569,30 +563,20 @@ class GraphicalUserInterface(GUItemplate):
                       'caption': 'Information',
                       'style': wx.OK | wx.ICON_INFORMATION}
             show_modal_and_destroy(wx.MessageDialog, self, params)
-            self.Refresh()
         else:
             # We want to start a new session!
             try:
-                session_id = self.diwa_state.start_new_session()
-                if session_id < 1:
-                    params = {'message': 'Failed to start a new session!'}
-                    LOGGER.exception(params['message'])
-                    show_modal_and_destroy(ErrorDialog, self, params)
-                    self.Update()
-                    return
-                controller.add_or_update_activity(project_id,
-                                                  diwavars.PGM_GROUP,
-                                                  session_id,
-                                                  self.diwa_state.activity)
-                sender('SYS', 'current_activity;%s' %
-                       str(self.diwa_state.activity))
-                sender('SYS', 'current_session;%d' % session_id)
-                LOGGER.info('OnSession started: %d', session_id)
+                self.diwa_state.on_session_changed(True)
                 self.EnableSessionButton()
-                self.panel.SetFocus()
-                self.Update()
+                LOGGER.info('Session started: {0}'.format(session_id))
+            except SessionChangeException:
+                params = {'message': 'Failed to start a new session!'}
+                LOGGER.exception(params['message'])
+                show_modal_and_destroy(ErrorDialog, self, params)
             except Exception as excp:
                 LOGGER.exception('OnSession exception: %s', str(excp))
+        self.panel.SetFocus()
+        self.Update()
         if event:
             event.Skip()
 

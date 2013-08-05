@@ -230,7 +230,10 @@ class AddProjectDialog(wx.Dialog):
         self.EndModal(result)
 
     def OnText(self, event):
-        """ Event handler for text changed. """
+        """
+        Event handler for text changed.
+
+        """
         source_object = event.GetEventObject()
         source_string = source_object.GetValue()
         if source_object == self.dir:
