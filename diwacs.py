@@ -635,9 +635,9 @@ class GraphicalUserInterface(GUItemplate):
             else:
                 # Start remote
                 threads.inputcapture.set_capture(True)
-                self.diwa_state.capture_thread.reset_mouse_events()
                 self.diwa_state.capture_thread.hook()
-                sender(node.id, 'remote_start;%s' % node_manager.node.id)
+                sender(node.id,
+                       'remote_start;{0}'.format(node_manager.node.id))
                 self.selected_nodes.append(node.id)
                 self.Refresh()
                 tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)

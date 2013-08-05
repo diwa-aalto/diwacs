@@ -203,7 +203,7 @@ class State(object):
                                          self.handle_file_send)
             self.cmfh.daemon = True
             self.cmfh.start()
-            self.capture_thread = threads.INPUT_CAPTURE(self, self.swnp_send)
+            self.capture_thread = threads.INPUT_CAPTURE(self.parent, self.swnp)
             self.capture_thread.daemon = True
             self.capture_thread.start()
 

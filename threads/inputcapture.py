@@ -70,8 +70,10 @@ class MOUSE_CAPTURE(DIWA_THREAD):
         while not self._stop.is_set():
             if len(self.queue) > 0:
                 event = self.queue.popleft()
+                if event.Injected:
+                    continue
                 if event.Message == 0x200:
-                    if self.pos_x == False and self.pos_y == False:
+                    if self.pos_x < 0 or self.pos_y < 0:
                         self.pos_x = event.Position[0]
                         self.pos_y = event.Position[1]
                     else:
@@ -80,15 +82,14 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                         self.pos_x = event.Position[0]
                         self.pos_y = event.Position[1]
                         msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
-                        _logger().debug('Sending: {0}'.format(msg))
+                        _logger().debug(msg)
                         for id_ in self.parent.selected_nodes:
-                            self.swnp(id_, msg)
+                            self.swnp.send(str(id_), 'MSG', msg)
                 else:
                     msg = 'mouse_event;{0},{1}'.format(event.Message,
                                                        event.Wheel)
-                    _logger().debug('Sending: {0}'.format(msg))
                     for id_ in self.parent.selected_nodes:
-                        self.swnp(id_, msg)
+                        self.swnp.send(str(id_), 'MSG', msg)
 
 
 class INPUT_CAPTURE(DIWA_THREAD):
@@ -131,7 +132,6 @@ class INPUT_CAPTURE(DIWA_THREAD):
                     self.hookmanager.UnhookKeyboard()
                 if hasattr(self.hookmanager, 'mouse_hook'):
                     self.hookmanager.UnhookMouse()
-            self.mouse_thread.queue.clear()
             self.reset_mouse_events()
             self.modifierdown = False
         except Exception as excp:
@@ -143,7 +143,6 @@ class INPUT_CAPTURE(DIWA_THREAD):
 
         """
         try:
-            self.mouse_thread.queue.clear()
             self.reset_mouse_events()
             self.hookmanager.HookKeyboard()
             self.hookmanager.HookMouse()
@@ -156,8 +155,9 @@ class INPUT_CAPTURE(DIWA_THREAD):
         Docstring here.
 
         """
-        self.mouse_thread.pos_x = False
-        self.mouse_thread.pos_y = False
+        self.mouse_thread.pos_x = -1
+        self.mouse_thread.pos_y = -1
+        self.mouse_thread.queue.clear()
 
     def on_mouse_event(self, event):
         """
@@ -197,15 +197,17 @@ class INPUT_CAPTURE(DIWA_THREAD):
                 _logger().debug('ESCAPE - CAPTURE')
                 try:
                     set_capture(False)
+                    self.unhook()
+                    self.parent.overlay.Hide()
                     self.reset_mouse_events()
                     for id_ in self.parent.selected_nodes:
-                        self.swnp(id_, 'key;%d,%d,%d' % (WM_KEYUP,
-                                                         diwavars.KEY_MODIFIER,
-                                                         diwavars.KEY_MODIFIER))
-                        self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
+                        msg = 'key;{0},{1},{2}'.format(WM_KEYUP,
+                                                       diwavars.KEY_MODIFIER,
+                                                       diwavars.KEY_MODIFIER)
+                        end = 'remote_end;{0}'.format(self.swnp.node.id)
+                        self.swnp.send(str(id_), 'MSG', msg)
+                        self.swnp.send(str(id_), 'MSG', end)
                     self.parent.selected_nodes = []
-                    self.parent.overlay.Hide()
-                    self.unhook()
                 except Exception as excp:
                     _logger().exception(str(excp))
                 return False
@@ -218,7 +220,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
             for id_ in self.parent.selected_nodes:
                 msg = 'key;{0},{1},{2}'.format(event.Message, event.KeyID,
                                                event.ScanCode)
-                self.swnp(id_, msg)
+                self.swnp.send(str(id_), 'MSG', msg)
             return False
         return True
 
