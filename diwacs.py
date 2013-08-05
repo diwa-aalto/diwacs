@@ -320,7 +320,7 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project_id = self.diwa_state.current_project_id
-        file_path = Project.get_by_id(project_id).path
+        file_path = Project.get_by_id(project_id).dir
         if file_path:
             Popen('explorer ' + file_path)
         else:
@@ -556,7 +556,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.DisableSessionButton()
                 LOGGER.info('Session ended.')
             except Exception as excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
+                LOGGER.exception('OnSession exception: {0!s}'.format(excp))
             # TODO: Check all wx.ICON_INFORMATION uses and maybe
             #       create a common dialog for it.
             params = {'message': 'Session ended!',
