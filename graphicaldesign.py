@@ -130,8 +130,8 @@ class BlackOverlay(wx.Frame):
         for index, hotkey in enumerate(hotkey_table):
             if hotkey in replaces:
                 hotkey_table[index] = replaces[hotkey]
-        label_format = 'Press %s + %s to end remote control'
-        label_text = label_format % hotkey_table
+        label_format = 'Press {0} + {1} to end remote control'
+        label_text = label_format.format(*hotkey_table)
         self.exit_label.SetLabel(label_text)
 
 

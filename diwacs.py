@@ -620,29 +620,33 @@ class GraphicalUserInterface(GUItemplate):
             return
         node_manager = self.diwa_state.swnp
         sender = self.diwa_state.swnp_send
-        if node.id == node_manager.node.id:
-            if self.diwa_state.controlled:
-                sender(node_manager.node.id, 'remote_end;now')
-                sender(str(self.diwa_state.controlled), 'remote_end;now')
-            return
-        if node.id in self.selected_nodes:
-            # End Remote
-            self.selected_nodes.remove(node.id)
-            threads.inputcapture.set_capture(False)
-            self.diwa_state.capture_thread.unhook()
-            self.overlay.Hide()
-        else:
-            # Start remote
-            threads.inputcapture.set_capture(True)
-            self.diwa_state.capture_thread.reset_mouse_events()
-            self.diwa_state.capture_thread.hook()
-            sender(node.id, 'remote_start;%s' % node_manager.node.id)
-            self.selected_nodes.append(node.id)
-            self.Refresh()
-            tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
-            tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
-            self.overlay.SetText(tmod, tkey)
-            self.overlay.Show()
+        try:
+            if node.id == node_manager.node.id:
+                if self.diwa_state.controlled:
+                    sender(node_manager.node.id, 'remote_end;now')
+                    sender(str(self.diwa_state.controlled), 'remote_end;now')
+                return
+            if node.id in self.selected_nodes:
+                # End Remote
+                self.selected_nodes.remove(node.id)
+                threads.inputcapture.set_capture(False)
+                self.diwa_state.capture_thread.unhook()
+                self.overlay.Hide()
+            else:
+                # Start remote
+                threads.inputcapture.set_capture(True)
+                self.diwa_state.capture_thread.reset_mouse_events()
+                self.diwa_state.capture_thread.hook()
+                sender(node.id, 'remote_start;%s' % node_manager.node.id)
+                self.selected_nodes.append(node.id)
+                self.Refresh()
+                tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
+                tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
+                self.overlay.SetText(tmod, tkey)
+                self.overlay.Show()
+        except Exception, excp:
+            LOGGER.exception('EXCPT! {0}'.format(excp))
+            sys.exit()
 
     def UpdateScreens(self, update):
         """
