@@ -574,7 +574,7 @@ class GraphicalUserInterface(GUItemplate):
             # We want to start a new session!
             try:
                 session_id = self.diwa_state.start_new_session()
-                if session_id == 0:
+                if session_id < 1:
                     params = {'message': 'Failed to start a new session!'}
                     LOGGER.exception(params['message'])
                     show_modal_and_destroy(ErrorDialog, self, params)

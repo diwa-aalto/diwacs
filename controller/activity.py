@@ -9,7 +9,7 @@ import controller.common
 
 # Own imports.
 from models import Activity, Project, Session
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _logger():
@@ -52,9 +52,8 @@ def add_or_update_activity(project_id, pgm_group, session_id=0, activity_id=0):
     if activity_id > 0:
         try:
             activity = Activity.get_by_id(activity_id)
-            activity.project = project
-            if session_id > 0:
-                activity.session = session
+            activity.project_id = project_id
+            activity.session_id = session_id
         except NoResultFound:
             activity = Activity(project, session)
     else:

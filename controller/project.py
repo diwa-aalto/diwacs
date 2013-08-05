@@ -216,7 +216,7 @@ def get_recent_files(project_id, max_files_count=None):
     database = None
     result = []
     try:
-        database = models.connect_to_database()
+        database = modelsbase.connect_to_database()
         my_query = database.query(File.path, FileAction.action_time)
         files = my_query.filter(File.project_id == project_id,
                                 File.id == FileAction.file_id)

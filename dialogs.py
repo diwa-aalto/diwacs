@@ -180,14 +180,12 @@ class AddProjectDialog(wx.Dialog):
 
         """
         result = None
-        LOGGER.debug('__onadd__')
         if self.name.GetValue() == '':  # or not self.passw.GetValue():
             msg = 'Please fill all necessary fields'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             if event:
                 event.Skip()
             return
-        LOGGER.debug('__onadd1__')
         try:
             company = Company.get_by_id()
             project_data = {
@@ -210,27 +208,29 @@ class AddProjectDialog(wx.Dialog):
             LOGGER.exception('Error in add project: %s', str(excp))
             self.EndModal(0)
             return
-        LOGGER.debug('__onadd2__')
 
         if not result:
             LOGGER.exception('ERROR in add project!')
             self.EndModal(0)
             return
-
-        LOGGER.debug('__onadd3__')
-        if result != self.parent.diwa_state.current_project_id:
-            self.parent.set_current_project(project.id)
-            self.parent.start_current_project()
-            self.parent.OnProject()
-            LOGGER.debug('Current Project set')
-            params = {'message': 'Do you want to start a new session?',
-                      'caption': 'Session',
-                      'style': wx.YES_NO | wx.ICON_QUESTION}
-            dlg_result = show_modal_and_destroy(wx.MessageDialog, self, params)
-            if dlg_result == wx.ID_YES:
-                self.parent.OnSession(None)
-
-        LOGGER.debug('__onadd4__')
+        try:
+            if result != self.parent.diwa_state.current_project_id:
+                self.parent.diwa_state.set_current_project(project.id)
+                self.parent.diwa_state.start_current_project_thread()
+                self.parent.OnProject()
+                LOGGER.debug('Current Project set')
+                params = {
+                    'message': 'Do you want to start a new session?',
+                    'caption': 'Session',
+                    'style': wx.YES_NO | wx.ICON_QUESTION
+                }
+                dlg_result = show_modal_and_destroy(wx.MessageDialog, self,
+                                                    params)
+                if dlg_result == wx.ID_YES:
+                    self.parent.OnSession(None)
+        except Exception as excp:
+            log_msg = 'Exception in Project creation: {0!s}'
+            LOGGER.exception(log_msg.format(excp))
         self.EndModal(result)
 
     def OnText(self, event):
@@ -613,6 +613,7 @@ class ProjectSelectDialog(wx.Dialog):
                            title='Project Selection',
                            size=(400, 300),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
+        self.parent = parent
         self.diwa_state = parent.diwa_state
         self.project_index = []
         self.project_list = wx.ListBox(self, wx.ID_ANY, choices=[],
@@ -703,7 +704,8 @@ class ProjectSelectDialog(wx.Dialog):
         project_id = 0
         try:
             params = {'title': 'Create a Project'}
-            project_id = show_modal_and_destroy(AddProjectDialog, self, params)
+            project_id = show_modal_and_destroy(AddProjectDialog, self.parent,
+                                                params)
             if not project_id or project_id < 1:
                 return
             self.UpdateProjects()

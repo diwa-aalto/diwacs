@@ -219,7 +219,7 @@ class DropTarget(wx.PyDropTarget):
                 image = bitmap.ConvertToImage()
                 image_buffer = cStringIO.StringIO()
                 image.SaveStream(image_buffer, wx.BITMAP_TYPE_PNG)
-                msg = 'wx_image;%s' % b64encode(image_buffer.getvalue())
+                msg = 'wx_image;{0}'.format(b64encode(image_buffer.getvalue()))
                 self.parent.SwnpSend(str(node_id), msg)
                 LOGGER.debug('Sent wx_image to %d with length %d',
                              int(node_id), len(msg) - len('wx_image;'))

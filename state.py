@@ -650,7 +650,7 @@ class State(object):
                 self.end_current_session()
             self.current_session_id = session_id
             if self.is_responsive:
-                self.start_current_session()
+                self.start_current_session_thread()
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
         elif session_id == 0 and session_id != self.current_session_id:
@@ -700,9 +700,9 @@ class State(object):
         """ Docstring. """
         LOGGER.debug('Set Responsive')
         diwavars.update_responsive(diwavars.PGM_GROUP)
-        self.start_current_project()
+        self.start_current_project_thread()
         self.is_responsive = True
-        self.start_current_session()
+        self.start_current_session_thread()
 
     def set_observer(self):
         """
@@ -725,7 +725,7 @@ class State(object):
         self.is_responsive = True
         self.swnp.set_responsive('responsive')
 
-    def start_current_project(self):
+    def start_current_project_thread(self):
         """
         Start current project loop.
 
@@ -742,7 +742,7 @@ class State(object):
             self.current_project_thread = threads.CURRENT_PROJECT(self.swnp)
             self.current_project_thread.start()
 
-    def start_current_session(self):
+    def start_current_session_thread(self):
         """
         Start current project loop.
 
@@ -771,7 +771,7 @@ class State(object):
         session = controller.start_new_session(self.current_project_id)
         self.current_session = session
         self.current_session_id = session.id
-        self.start_current_session()
+        self.start_current_session_thread()
         return session.id if session else 0
 
     def start_audio_recorder(self):
