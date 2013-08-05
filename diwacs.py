@@ -645,7 +645,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.overlay.SetText(tmod, tkey)
                 self.overlay.Show()
         except Exception, excp:
-            LOGGER.exception('EXCPT! {0}'.format(excp))
+            LOGGER.exception('EXCPT! {0!s}'.format(excp))
             sys.exit()
 
     def UpdateScreens(self, update):
@@ -661,13 +661,7 @@ class GraphicalUserInterface(GUItemplate):
             return
         self.Freeze()                   # Prevents flickering.
         # self.HideScreens()
-        LOGGER.debug('ScreensOLD: len({0})'.format(len(self.nodes)))
-        for node in self.nodes:
-            LOGGER.debug('<ID="{0}", NAME="{1}" />'.format(node.id, node.name))
         self.nodes = self.diwa_state.swnp.get_screen_list()
-        LOGGER.debug('ScreensNEW: len({0})'.format(len(self.nodes)))
-        for node in self.nodes:
-            LOGGER.debug('<ID="{0}", NAME="{1}" />'.format(node.id, node.name))
         arrows_should_be_enabled = len(self.nodes) > 3
         for arrow in [self.left, self.right]:
             if arrows_should_be_enabled:
@@ -682,18 +676,19 @@ class GraphicalUserInterface(GUItemplate):
             iterated = (i + self.iterator) % len(self.nodes)
             node_screen = self.node_screens[i]
             node_screen.Enable()
+            # TODO: When reloading, remove old registry entry.
             node_screen.ReloadAs(self.nodes[iterated])
         if len(self.nodes) < diwavars.MAX_SCREENS:
             for i in xrange(len(self.nodes), diwavars.MAX_SCREENS):
                 self.node_screens[i].Disable()
+                # TODO: Remove old registry entry.
         for node in self.nodes:
             try:
-                self.diwa_state.worker.add_registry_entry(name=node.name,
-                                                          node_id=node.id)
+                self.diwa_state.worker.add_registry_entry(node.name, node.id)
             except WindowsError:
                 pass
         self.diwa_state.worker.check_responsive()
-        self.Thaw()                         # Pair for freeze()
+        self.Thaw()                     # Pair for freeze()
 
     def OnExit(self, event):
         """

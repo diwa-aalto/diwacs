@@ -662,7 +662,7 @@ class SWNP:
     @staticmethod
     def _on_msg(payload):
         """ On message handlers. """
-        pub.sendMessage('message_received', message=payload)
+        pub.sendMessage('message_received', payload)
 
     def _on_ping(self, payload):
         """ On ping handlers. """
