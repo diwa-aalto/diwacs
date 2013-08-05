@@ -621,12 +621,10 @@ class State(object):
         """
         if not self.current_project:
             return
+        update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity = controller.add_or_update_activity(
-                                                self.current_project_id,
-                                                diwavars.PGM_GROUP,
-                                                self.current_session_id,
-                                                self.activity)
+        self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
+                               self.current_session_id, self.activity)
         self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity))
 
     def on_session_changed(self, desired_state):

@@ -191,7 +191,7 @@ def get_projects_by_company(company_id):
 
     """
     projects = Project.get('all', Project.company_id == company_id)
-    projects.sort(key=str)
+    projects.sort(key=lambda project: str(project).lower())
     return projects
 
 

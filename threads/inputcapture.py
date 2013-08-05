@@ -79,11 +79,14 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                         dif_y = event.Position[1] - self.pos_y
                         self.pos_x = event.Position[0]
                         self.pos_y = event.Position[1]
-                        msg = 'mouse_move;%d,%d' % (dif_x, dif_y)
+                        msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
+                        _logger().debug('Sending: {0}'.format(msg))
                         for id_ in self.parent.selected_nodes:
                             self.swnp(id_, msg)
                 else:
-                    msg = 'mouse_event;%d,%d' % (event.Message, event.Wheel)
+                    msg = 'mouse_event;{0},{1}'.format(event.Message,
+                                                       event.Wheel)
+                    _logger().debug('Sending: {0}'.format(msg))
                     for id_ in self.parent.selected_nodes:
                         self.swnp(id_, msg)
 
@@ -104,7 +107,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
         self.parent = parent
         self.swnp = swnp
         self.hookmanager = None
-        self.windowskeydown = False
+        self.modifierdown = False
         self.mouse_thread = MOUSE_CAPTURE(parent, swnp)
         self.mouse_thread.deamon = True
 
@@ -122,25 +125,31 @@ class INPUT_CAPTURE(DIWA_THREAD):
         Docstring here.
 
         """
-        if self.hookmanager:
-            if hasattr(self.hookmanager, 'keyboard_hook'):
-                self.hookmanager.UnhookKeyboard()
-            if hasattr(self.hookmanager, 'mouse_hook'):
-                self.hookmanager.UnhookMouse()
-        self.mouse_thread.queue.clear()
-        self.reset_mouse_events()
-        self.windowskeydown = False
+        try:
+            if self.hookmanager:
+                if hasattr(self.hookmanager, 'keyboard_hook'):
+                    self.hookmanager.UnhookKeyboard()
+                if hasattr(self.hookmanager, 'mouse_hook'):
+                    self.hookmanager.UnhookMouse()
+            self.mouse_thread.queue.clear()
+            self.reset_mouse_events()
+            self.modifierdown = False
+        except Exception as excp:
+            _logger().exception(str(excp))
 
     def hook(self):
         """
         Docstring here.
 
         """
-        self.mouse_thread.queue.clear()
-        self.reset_mouse_events()
-        self.hookmanager.HookKeyboard()
-        self.hookmanager.HookMouse()
-        self.windowskeydown = False
+        try:
+            self.mouse_thread.queue.clear()
+            self.reset_mouse_events()
+            self.hookmanager.HookKeyboard()
+            self.hookmanager.HookMouse()
+            self.modifierdown = False
+        except Exception as excp:
+            _logger().exception(str(excp))
 
     def reset_mouse_events(self):
         """
@@ -184,29 +193,32 @@ class INPUT_CAPTURE(DIWA_THREAD):
         """
         key = event.KeyID
         if CAPTURE:
-            if key == diwavars.KEY and self.windowskeydown:
+            if key == diwavars.KEY and self.modifierdown:
                 _logger().debug('ESCAPE - CAPTURE')
-                set_capture(False)
-                self.reset_mouse_events()
-                for id_ in self.parent.selected_nodes:
-                    self.swnp(id_, 'key;%d,%d,%d' % (WM_KEYUP,
-                                                     diwavars.KEY_MODIFIER,
-                                                     diwavars.KEY_MODIFIER))
-                    self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
-                del self.parent.selected_nodes[:]
-                self.parent.overlay.Hide()
-                self.unhook()
+                try:
+                    set_capture(False)
+                    self.reset_mouse_events()
+                    for id_ in self.parent.selected_nodes:
+                        self.swnp(id_, 'key;%d,%d,%d' % (WM_KEYUP,
+                                                         diwavars.KEY_MODIFIER,
+                                                         diwavars.KEY_MODIFIER))
+                        self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
+                    del self.parent.selected_nodes[:]
+                    self.parent.overlay.Hide()
+                    self.unhook()
+                except Exception as excp:
+                    _logger().exception(str(excp))
                 return False
             #send key + KeyID
             if key == diwavars.KEY_MODIFIER:
                 if event.Message == WM_KEYDOWN:
-                    self.windowskeydown = True
+                    self.modifierdown = True
                 elif event.Message == WM_KEYUP:
-                    self.windowskeydown = False
+                    self.modifierdown = False
             for id_ in self.parent.selected_nodes:
-                self.swnp(id_, 'key;%d,%d,%d' % (event.Message,
-                                                 event.KeyID,
-                                                 event.ScanCode))
+                msg = 'key;{0},{1},{2}'.format(event.Message, event.KeyID,
+                                               event.ScanCode)
+                self.swnp(id_, msg)
             return False
         return True
 
