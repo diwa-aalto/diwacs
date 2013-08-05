@@ -931,6 +931,7 @@ class UpdateDialog(wx.Dialog):
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            *args, **kwargs)
         self.notice = wx.StaticText(self, label=UpdateDialog.ptext)
+        LOGGER.debug('URL: {0} - {1}'.format(type(url).__name__, str(url)))
         self.link = wx.HyperlinkCtrl(self, label='here.', url=url)
         self.link.Bind(wx.EVT_HYPERLINK, self.UrlHandler)
         self.ok_button = wx.Button(self, -1, 'OK')

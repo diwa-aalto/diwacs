@@ -104,10 +104,10 @@ class CHECK_UPDATE(DIWA_THREAD):
             _logger().exception(logstr, str(excp))
             return
         self.latest_version = tree.findtext('Program_Info/Program_Version')
-        url_p = 'Program_Info/Web_Info/Application_URLs/Primary_Download_URL'
-        url_s = 'Program_Info/Web_Info/Application_URLs/Secondary_Download_URL'
+        url_p = 'Web_Info/Download_URLs/Primary_Download_URL'
+        url_s = 'Web_Info/Download_URLs/Secondary_Download_URL'
         url_primary = tree.findtext(url_p)
         url_secondary = tree.findtext(url_s)
         url = url_primary if url_primary else url_secondary
-        if self.latest_version > diwavars.VERSION:
+        if self.latest_version > diwavars.VERSION and url is not None:
             CallAfter(self.show_dialog, url)

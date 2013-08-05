@@ -41,7 +41,7 @@ def set_blank_cursor(value):
 APPLICATION_NAME = 'DiWaCS'
 
 # current application version
-VERSION = '0.9.3.1'
+VERSION = '0.9.2.1'
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -195,7 +195,7 @@ DEBUG = False
 CAPTURE = False
 
 # The URL of the PAD file. For version checking purposes
-PAD_URL = 'http://diwacs.sourceforge.net/pad_file.xml'
+PAD_URL = 'http://raw.github.com/diwa-aalto/diwacs/master/pad_file.xml'
 
 
 def update_padfile(padurl):
