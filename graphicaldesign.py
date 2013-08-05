@@ -101,7 +101,7 @@ class BlackOverlay(wx.Frame):
         self.SetBackgroundColour('black')
         self.SetTransparent(200)
         self.parent = parent
-        self.SetCursor(diwavars.BLANK_CURSOR)
+        #self.SetCursor(diwavars.BLANK_CURSOR)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost, self)
 
     def OnFocusLost(self, evt):
