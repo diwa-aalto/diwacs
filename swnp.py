@@ -23,7 +23,6 @@ from json import dumps, loads
 import random
 
 # 3rd party imports.
-from sqlalchemy import exc
 from pubsub import pub
 import zmq
 #=========================================================================
@@ -410,7 +409,7 @@ class SWNP:
                         LOGGER.exception('DEPRECATED METHOD USED!!!')
                         # self.sync_handler(message)
                     elif prefix == 'MSG':
-                        pub.sendMessage('message_received', payload)
+                        pub.sendMessage('message_received', message=payload)
                 except Again:
                     # Non-blocking mode was requested and no messages
                     # are available at the moment.
@@ -662,7 +661,7 @@ class SWNP:
     @staticmethod
     def _on_msg(payload):
         """ On message handlers. """
-        pub.sendMessage('message_received', payload)
+        pub.sendMessage('message_received', message=payload)
 
     def _on_ping(self, payload):
         """ On ping handlers. """
