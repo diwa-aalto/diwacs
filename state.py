@@ -422,7 +422,8 @@ class State(object):
         End the current session.
 
         """
-        LOGGER.debug('end_current_session...')
+        log_msg = 'end_current_session({0})...'.format(self.current_session_id)
+        LOGGER.debug(log_msg)
         controller.end_session(self.current_session_id)
         if self.current_session_thread.isAlive():
             self.current_session_thread.stop()

@@ -13,6 +13,7 @@ from sqlalchemy import func
 # Own imports
 import controller.activity
 from models import Activity, Event, Project, Session
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _logger():
@@ -105,6 +106,8 @@ def end_session(session_id):
     :type session: :py:class:`models.Session`
 
     """
+    if session_id < 1:
+        return
     session = Session.get_by_id(session_id)
     session.endtime = func.now()
     session.update()
@@ -122,5 +125,8 @@ def start_new_session(project_id, old_session_id=None):
 
     """
     project = Project.get_by_id(project_id)
-    old_session = Session.get_by_id(old_session_id)
+    try:
+        old_session = Session.get_by_id(old_session_id)
+    except NoResultFound:
+        old_session = None
     return Session(project, old_session)
