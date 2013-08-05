@@ -29,7 +29,7 @@ def _logger():
 
 def add_or_update_activity(project_id, pgm_group, session_id=0, activity_id=0):
     """
-    Add activity to database.
+    Add activity to database or update it if it exists already.
 
     :param project_id: ID of the project Activity is associated with.
     :type project_id: Integer
@@ -87,6 +87,8 @@ def unset_activity(pgm_group):
 
     """
     activities = Activity.get('all', Activity.active == pgm_group)
+    if not activities:
+        return
     for activity in activities:
         activity.active = None
     Activity.update_many(activities)

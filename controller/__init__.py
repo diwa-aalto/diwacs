@@ -7,7 +7,7 @@ Created on 28.6.2013
 # Import common
 from controller.common import (
     get_or_create, set_node_name, set_node_screens, test_connection,
-    delete_record, NODE_NAME, NODE_SCREENS
+    delete_record
 )
 
 # Import activity

@@ -20,7 +20,6 @@ import diwavars
 from models import Company, Project
 import filesystem
 import utils
-from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -540,6 +539,7 @@ class PreferencesDialog(wx.Dialog):
 
         """
         self.config['SCREENS'] = 1 if self.screens_show.GetValue() else 0
+        LOGGER.debug('Screens: {0}'.format(self.config['SCREENS']))
         controller.set_node_screens(int(self.config['SCREENS']))
         self.config['RUN_CMD'] = 1 if self.commands_on.GetValue() else 0
         diwavars.set_run_cmd(self.commands_on.GetValue())
@@ -809,8 +809,8 @@ class ProjectSelectDialog(wx.Dialog):
                 event.Skip()
             return
         if project.password:
-            screens = controller.NODE_SCREENS
-            if not screens or screens <= 0:
+            screens = controller.common.NODE_SCREENS
+            if screens < 1:
                 self.Hide()
                 msg = ('Can not select password protected project if screens'
                        ' configuration is set to hidden (off)')
@@ -819,9 +819,11 @@ class ProjectSelectDialog(wx.Dialog):
                 if event:
                     event.Skip()
                 return
+            # 
             params = {'title': 'Project Authentication',
                       'project_id': project_id}
-            result = show_modal_and_destroy(ErrorDialog, self, params)
+            result = show_modal_and_destroy(ProjectAuthenticationDialog, self,
+                                            params)
             if result != 0:
                 msg = 'Project Authentication Failed'
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})

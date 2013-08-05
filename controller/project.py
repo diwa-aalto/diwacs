@@ -89,14 +89,7 @@ def add_project(data):
     if ('name' not in project_data) or ('name' not in company_data):
         return None
     project_name = project_data['name']
-    _logger().debug('<{0}: {1}>'.format(type(project_name).__name__,
-                                        str(project_name)))
-    _logger().debug('[{0}: {1}]'.format(type(Project.name).__name__,
-                                        str(Project.name)))
-    expression = (Project.name == project_name)
-    _logger().debug('"{0}: {1}"'.format(type(expression).__name__,
-                                        str(expression)))
-    exists = Project.get('exists', expression)
+    exists = Project.get('exists', Project.name == project_name)
     if exists:
         raise ItemAlreadyExistsException('The project exists already!')
     company = Company.get('one', Company.name == company_data['name'])
@@ -116,7 +109,7 @@ def add_project(data):
     if not directory_set:
         return None
     _logger().debug('Adding project: {name}'.format(name=name))
-    project = Project(name=name, company=company, password=password)
+    project = Project(name, '', company, password)
     if directory:
         project.dir = filesystem.create_project_directory(directory)
     else:

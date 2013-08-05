@@ -125,10 +125,11 @@ class ItemAlreadyExistsException(Exception):
     get method instead of constructor.
 
     """
-    def __init__(self):
+    def __init__(self, message):
         msg = ('This item already exists, please use static method "get" '
                'to retrieve the instance instead of class constructor.')
-        super(ItemAlreadyExistsException, self).__init__(self, msg)
+        message = message + '\n' + msg
+        Exception.__init__(self, message)
 
 
 DEFAULT = 'COALESCE(MAX({0}.id),0)+1 FROM {0}'
@@ -227,7 +228,7 @@ class MethodMixin():
                 result = getattr(query, method)()
             if method == 'exists':
                 # The result is a query still...
-                result = database.query(result)
+                result = database.query(result).scalar()
         except (NoResultFound, MultipleResultsFound):
             raise
         except SQLAlchemyError as excp:
