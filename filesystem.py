@@ -37,10 +37,7 @@ def __init_logger():
     LOGGER = getLogger('filesystem')
 
 
-diwavars.add_logger_initializer(__init_logger)
-
-
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Sets the logger level for filesystem logger.
 
@@ -49,6 +46,10 @@ def set_logger_level(level):
 
     """
     LOGGER.setLevel(level)
+
+
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def copy_file_to_project(filepath, project_id):

@@ -56,7 +56,7 @@ def __init_logger():
     LOGGER = getLogger('swnp')
 
 
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Sets the logger level for swnp logger.
 
@@ -68,7 +68,7 @@ def set_logger_level(level):
 
 
 diwavars.add_logger_initializer(__init_logger)
-diwavars.add_logger_level_setter(set_logger_level)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 PREFIX_CHOICES = ['JOIN', 'LEAVE', 'SYNC', 'MSG', 'PING', 'PONG']
