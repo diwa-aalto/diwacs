@@ -84,7 +84,7 @@
 			<Application_XML_File_URL />
 		</Application_URLs>
 		<Download_URLs>
-			<Primary_Download_URL />http://sourceforge.net/projects/diwacs/files/</Primary_Download_URL>
+			<Primary_Download_URL >http://sourceforge.net/projects/diwacs/files/</Primary_Download_URL>
 			<Secondary_Download_URL />
 			<Additional_Download_URL_1 />
 			<Additional_Download_URL_2 />
