@@ -58,8 +58,8 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                              name='ParseMouseEvents')
         self.parent = parent
         self.swnp = swnp
-        self.pos_x = -1
-        self.pos_y = -1
+        self.pos_x = None
+        self.pos_y = None
         self.queue = deque()
 
     def parse_mouse_events(self):
@@ -73,14 +73,14 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                 if event.Injected:
                     continue
                 if event.Message == 0x200:
-                    if self.pos_x < 0 or self.pos_y < 0:
+                    if self.pos_x is None or self.pos_y is None:
                         self.pos_x = event.Position[0]
                         self.pos_y = event.Position[1]
                     else:
                         dif_x = event.Position[0] - self.pos_x
                         dif_y = event.Position[1] - self.pos_y
-                        self.pos_x = event.Position[0]
-                        self.pos_y = event.Position[1]
+                        # self.pos_x = event.Position[0]
+                        # self.pos_y = event.Position[1]
                         msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
                         _logger().debug(msg)
                         for id_ in self.parent.selected_nodes:
@@ -155,8 +155,8 @@ class INPUT_CAPTURE(DIWA_THREAD):
         Docstring here.
 
         """
-        self.mouse_thread.pos_x = -1
-        self.mouse_thread.pos_y = -1
+        self.mouse_thread.pos_x = None
+        self.mouse_thread.pos_y = None
         self.mouse_thread.queue.clear()
 
     def on_mouse_event(self, event):
@@ -217,9 +217,9 @@ class INPUT_CAPTURE(DIWA_THREAD):
                     self.modifierdown = True
                 elif event.Message == WM_KEYUP:
                     self.modifierdown = False
+            msg = 'key;{0},{1},{2}'.format(event.Message, event.KeyID,
+                                           event.ScanCode)
             for id_ in self.parent.selected_nodes:
-                msg = 'key;{0},{1},{2}'.format(event.Message, event.KeyID,
-                                               event.ScanCode)
                 self.swnp.send(str(id_), 'MSG', msg)
             return False
         return True

@@ -559,9 +559,11 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.exception('OnSession exception: {0!s}'.format(excp))
             # TODO: Check all wx.ICON_INFORMATION uses and maybe
             #       create a common dialog for it.
-            params = {'message': 'Session ended!',
-                      'caption': 'Information',
-                      'style': wx.OK | wx.ICON_INFORMATION}
+            params = {
+                'message': 'Session ended!',
+                'caption': 'Information',
+                'style': wx.OK | wx.ICON_INFORMATION
+            }
             show_modal_and_destroy(wx.MessageDialog, self, params)
         else:
             # We want to start a new session!
