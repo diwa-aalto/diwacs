@@ -104,8 +104,8 @@ class CHECK_UPDATE(DIWA_THREAD):
             _logger().exception(logstr, str(excp))
             return
         self.latest_version = tree.findtext('Program_Info/Program_Version')
-        url_p = 'Proram_Info/Web_Info/Application_URLs/Primary_Download_URL'
-        url_s = 'Proram_Info/Web_Info/Application_URLs/Secondary_Download_URL'
+        url_p = 'Program_Info/Web_Info/Application_URLs/Primary_Download_URL'
+        url_s = 'Program_Info/Web_Info/Application_URLs/Secondary_Download_URL'
         url_primary = tree.findtext(url_p)
         url_secondary = tree.findtext(url_s)
         url = url_primary if url_primary else url_secondary

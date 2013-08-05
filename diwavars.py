@@ -195,7 +195,7 @@ DEBUG = False
 CAPTURE = False
 
 # The URL of the PAD file. For version checking purposes
-PAD_URL = ''
+PAD_URL = 'http://diwacs.sourceforge.net/pad_file.xml'
 
 
 def update_padfile(padurl):
