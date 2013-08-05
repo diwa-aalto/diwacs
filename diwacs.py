@@ -661,7 +661,13 @@ class GraphicalUserInterface(GUItemplate):
             return
         self.Freeze()                   # Prevents flickering.
         # self.HideScreens()
+        LOGGER.debug('ScreensOLD: len({0})'.format(len(self.nodes)))
+        for node in self.nodes:
+            LOGGER.debug('<ID="{0}", NAME="{1}" />'.format(node.id, node.name))
         self.nodes = self.diwa_state.swnp.get_screen_list()
+        LOGGER.debug('ScreensNEW: len({0})'.format(len(self.nodes)))
+        for node in self.nodes:
+            LOGGER.debug('<ID="{0}", NAME="{1}" />'.format(node.id, node.name))
         arrows_should_be_enabled = len(self.nodes) > 3
         for arrow in [self.left, self.right]:
             if arrows_should_be_enabled:

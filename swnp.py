@@ -645,6 +645,8 @@ class SWNP:
         if joiner_id != self.id:
             reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
             self.send('SYS', PREFIX_CHOICES[4], reply)
+        if self.find_node(joiner_id) is not None:
+            return
         new_node = Node(joiner_id, joiner_screens, joiner_name, joiner_data)
         self.NODE_LIST.add(new_node)
         self.last_joined = joiner_id
