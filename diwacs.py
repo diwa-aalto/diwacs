@@ -243,7 +243,7 @@ class GraphicalUserInterface(GUItemplate):
             splash_screen.Hide()
             splash_screen.Destroy()
         except:
-            LOGGER.exception("load exception")
+            LOGGER.exception('load exception')
             splash_screen.Hide()
             splash_screen.Destroy()
             self.Destroy()
@@ -302,7 +302,7 @@ class GraphicalUserInterface(GUItemplate):
             if should_update:
                 pub.sendMessage('update_screens', update=True)
         except (ValueError, IOError, OSError):
-            LOGGER.exception('show prefs exception.')
+            LOGGER.exception('Show prefs exception.')
         if event:
             event.Skip()
 
@@ -375,7 +375,7 @@ class GraphicalUserInterface(GUItemplate):
         .. note::
             There should be no need for this as the software should
             always start a new project after the old one ends.
-            But for the mid state to be legimate this is still
+            But for the mid state to be legitimate this is still
             usable.
 
         """

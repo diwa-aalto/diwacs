@@ -826,6 +826,6 @@ class State(object):
 
         """
         try:
-            self.swnp.send(node, 'MSG', message)
+            self.swnp.send(str(node), 'MSG', message)
         except Exception:
             LOGGER.exception('SwnpSend exception %s to %s', message, node)
