@@ -241,7 +241,7 @@ class SWNP:
             self.id = self.ip.split('.')[3]
         else:
             self.id = random.randint(1, 154)
-        self.node = Node(self.id, int(screens), name)
+        self.node = Node(int(self.id), int(screens), name)
 
         # Prevent overflowing slow subscribers
         self.publisher.setsockopt(zmq.LINGER, 0)
@@ -638,7 +638,7 @@ class SWNP:
     def _on_join(self, payload):
         """ On join handlers. """
         payload = payload.split('_')
-        joiner_id = payload[0]
+        joiner_id = int(payload[0])
         joiner_screens = int(payload[2])
         joiner_name = payload[4]
         joiner_data = payload[6]
@@ -708,7 +708,7 @@ class SWNP:
         new_name = payload[4]
         new_data = payload[6]
         target_node = self.find_node(node_id)
-        if target_node:
+        if target_node is not None:
             update_node = False
             if target_node.screens != new_screens:
                 target_node.screens = new_screens
@@ -723,7 +723,8 @@ class SWNP:
                 pub.sendMessage('update_screens', update=True)
             target_node.refresh()
         else:
-            self.NODE_LIST.add(Node(node_id, new_screens, new_name, new_data))
+            node = Node(node_id, new_screens, new_name, new_data)
+            self.NODE_LIST.add(node)
             pub.sendMessage('update_screens', update=True)
 
     def find_node(self, node_id):
