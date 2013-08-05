@@ -219,13 +219,9 @@ class AddProjectDialog(wx.Dialog):
                 self.parent.diwa_state.start_current_project_thread()
                 self.parent.OnProject()
                 LOGGER.debug('Current Project set')
-                params = {
-                    'message': 'Do you want to start a new session?',
-                    'caption': 'Session',
-                    'style': wx.YES_NO | wx.ICON_QUESTION
-                }
-                dlg_result = show_modal_and_destroy(wx.MessageDialog, self,
-                                                    params)
+                params = {'project_id': result}
+                dlg_result = show_modal_and_destroy(ProjectSelectedDialog,
+                                                    self, params)
                 if dlg_result == wx.ID_YES:
                     self.parent.OnSession(None)
         except Exception as excp:
@@ -841,16 +837,15 @@ class ProjectSelectDialog(wx.Dialog):
             except Exception as excp:
                 LOGGER.exception('index_parent_exception: %s', str(excp))
         try:
-            params = {'title': 'Project Selected',
-                      'project_id': project_id}
+            params = {'project_id': project_id}
             result = show_modal_and_destroy(ProjectSelectedDialog, self,
                                             params)
             LOGGER.debug('Project selected result: %s', str(result))
             if result == 2:
                 self.diwa_state.current_session_id = -1
-            self.GetParent().OnProject()
-            self.GetParent().OnSession(None)
-            self.GetParent().Refresh()
+            self.parent.OnProject()
+            self.parent.OnSession(None)
+            self.parent.Refresh()
         except Exception as excp:
             LOGGER.exception('Project Selected Exception: %s', str(excp))
         LOGGER.debug('Asked to start session.')
@@ -881,15 +876,16 @@ class ProjectSelectedDialog(wx.Dialog):
     A dialog for project selection confirmation.
 
     """
-    ptext = 'Project %s has been selected. A new session will now be started.'
+    ptext = ('Project {name} has been selected. A new session will now '
+             'be started.')
 
-    def __init__(self, parent, title, project_id):
-        wx.Dialog.__init__(self, parent, title=title,
+    def __init__(self, parent, project_id):
+        wx.Dialog.__init__(self, parent, title='Project Selected',
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            size=(250, 200))
         try:
-            self.project_name = Project.get_by_id(project_id).name
-            ltext = ProjectSelectedDialog.ptext % self.project_name
+            project_name = Project.get_by_id(project_id).name
+            ltext = ProjectSelectedDialog.ptext.format(name=project_name)
             self.notice = wx.StaticText(self, label=ltext)
             self.check_box = wx.CheckBox(self, -1,
                                          'No, do not start a new session.')
