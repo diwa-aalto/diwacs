@@ -203,7 +203,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
                                                          diwavars.KEY_MODIFIER,
                                                          diwavars.KEY_MODIFIER))
                         self.swnp(id_, 'remote_end;%s' % self.parent.swnp.node.id)
-                    del self.parent.selected_nodes[:]
+                    self.parent.selected_nodes = []
                     self.parent.overlay.Hide()
                     self.unhook()
                 except Exception as excp:

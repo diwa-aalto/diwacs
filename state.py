@@ -175,11 +175,10 @@ class State(object):
         self.current_session_thread = threads.CURRENT_PROJECT(self.swnp)
         self.current_session_thread.deamon = True
         # Other
-        self.activity = None
+        self.activity = controller.get_active_activity(diwavars.PGM_GROUP)
         self.project_observer = None
         self.scan_observer = None
-        activity = controller.get_active_activity(diwavars.PGM_GROUP)
-        self.selected_nodes = activity.id if activity else 0
+        self.selected_nodes = []
         self.current_project_id = 0
         self.current_session_id = 0
         self.controlled = None
@@ -538,7 +537,7 @@ class State(object):
             macro.release_all_keys()
         if self.controlling:
             self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
-            del self.selected_nodes[:]
+            self.selected_nodes = []
             threads.inputcapture.set_capture(False)
             self.capture_thread.unhook()
             self.parent.overlay.Hide()
