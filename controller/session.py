@@ -61,7 +61,7 @@ def get_active_session(pgm_group):
     :rtype: Integer
 
     """
-    activity = controller.activity.get_active_activity(pgm_group)
+    activity = controller.activity_id.get_active_activity(pgm_group)
     return activity.session if activity else None
 
 
@@ -79,9 +79,9 @@ def get_latest_event_id():
 
 def get_session_id_by_activity(activity_id):
     """
-    Get the session ID that this activity is a part of.
+    Get the session ID that this activity_id is a part of.
 
-    :param activity_id: ID of the activity.
+    :param activity_id: ID of the activity_id.
     :type activity_id: Integer
 
     :returns: The project ID.

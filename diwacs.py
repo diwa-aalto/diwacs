@@ -198,9 +198,16 @@ class GraphicalUserInterface(GUItemplate):
         self.list = EventList(self)
         splash_screen = MySplashScreen()
         splash_screen.Show()
-        self.diwa_state = state.State(parent=self)
+        self.diwa_state = None
         self.screen_selected = None
         self.ui_initialized = False
+
+        self.diwa_state = state.State(parent=self)
+        self.InitUICore()
+        self.diwa_state.initialize()
+        pub.sendMessage('update_screens', update=True)
+        if self.diwa_state.config_was_created:
+            self.OnPreferences(None)
 
         # Perform initial testing before actual initialization.
         initial_test = state.initialization_test()
@@ -219,9 +226,6 @@ class GraphicalUserInterface(GUItemplate):
         diwavars.set_blank_cursor(wx.StockCursor(wx.CURSOR_BLANK))
         self.overlay = BlackOverlay((0, 0), wx.DisplaySize(), self, '')
         self.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
-        self.diwa_state.initialize()
-        if self.diwa_state.config_was_created:
-            self.OnPreferences(None)
 
         try:
             self.trayicon = SysTray(self)
@@ -237,7 +241,6 @@ class GraphicalUserInterface(GUItemplate):
             self.icon = wx.Icon(diwavars.TRAY_ICON, wx.BITMAP_TYPE_PNG)
             self.trayicon.SetIcon(self.icon, diwavars.TRAY_TOOLTIP)
             wx.EVT_TASKBAR_LEFT_UP(self.trayicon, self.OnTaskBarActivate)
-            self.InitUICore()
             self.Refresh()
             self.Show(True)
             splash_screen.Hide()
@@ -273,7 +276,6 @@ class GraphicalUserInterface(GUItemplate):
         pub.subscribe(self.UpdateScreens, 'update_screens')
         pub.subscribe(self.diwa_state.message_handler, 'message_received')
         pub.subscribe(self.ConnectionErrorHandler, 'ConnectionErrorHandler')
-        pub.sendMessage('update_screens', update=True)
         self.ui_initialized = True
 
     def OnPreferences(self, event):
@@ -385,7 +387,7 @@ class GraphicalUserInterface(GUItemplate):
     def SetProjectName(self, name):
         """
         Set the project text.
-        For example "No Project OnSelection".
+        For example "No Project Selection".
 
         .. note::
             Requires None explicitly when the purpose is to set default label
@@ -397,7 +399,7 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         if name is None:
-            name = 'No Project OnSelection'
+            name = 'No Project Selection'
         self.pro_label.SetLabel(name)
 
     def SelectProjectDialog(self, event):
@@ -519,11 +521,10 @@ class GraphicalUserInterface(GUItemplate):
         Project selected event handler.
 
         """
-        if self.diwa_state.current_project:
-            # Note: on_project_selected() takes some time.
-            #       try to minimize calls to OnProject.
+        project = self.diwa_state.current_project
+        if project is not None:
             self.diwa_state.on_project_selected()
-            self.SetProjectName(self.diwa_state.current_project.name)
+            self.SetProjectName(project.name)
             self.EnableDirectoryButton()
             self.EnableSessionButton()
         else:

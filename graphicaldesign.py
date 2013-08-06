@@ -188,11 +188,10 @@ class DropTarget(wx.PyDropTarget):
             if paths:
                 filenames = paths
             command = 'open;%s' % str(filenames)
-            self.parent.SwnpSend(str(iterated), command)
+            self.parent.diwa_state.SwnpSend(str(iterated), command)
             self.my_send_dialogs.remove(deltay)
         except Exception as excp:
-            LOGGER.exception('OnData exception: %s - %s',
-                             filenames, str(excp))
+            LOGGER.exception('OnData exception: %s - %s', filenames, str(excp))
 
     def OnData(self, x, y, d):
         """

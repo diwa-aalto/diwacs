@@ -175,7 +175,8 @@ class State(object):
         self.current_session_thread = threads.CURRENT_PROJECT(self.swnp)
         self.current_session_thread.deamon = True
         # Other
-        self.activity = controller.get_active_activity(diwavars.PGM_GROUP)
+        activity = controller.get_active_activity(diwavars.PGM_GROUP)
+        self.activity_id = activity.id if activity else 0
         self.project_observer = None
         self.scan_observer = None
         self.selected_nodes = []
@@ -207,9 +208,9 @@ class State(object):
             self.capture_thread.daemon = True
             self.capture_thread.start()
 
-            if self.activity and not self.is_responsive:
-                pid = controller.get_project_id_by_activity(self.activity)
-                sid = controller.get_session_id_by_activity(self.activity)
+            if self.activity_id and not self.is_responsive:
+                pid = controller.get_project_id_by_activity(self.activity_id)
+                sid = controller.get_session_id_by_activity(self.activity_id)
                 self.set_current_project(pid)
                 self.set_current_session(sid)
                 self.parent.OnProject()
@@ -564,10 +565,10 @@ class State(object):
             filesystem.screen_capture(project_path, self.swnp.node.id)
 
     def _on_current_activity(self, parameters):
-        self.activity = int(parameters)
+        self.activity_id = int(parameters)
         old_project_id = self.current_project_id
-        pid = controller.get_project_id_by_activity(self.activity)
-        sid = controller.get_session_id_by_activity(self.activity)
+        pid = controller.get_project_id_by_activity(self.activity_id)
+        sid = controller.get_session_id_by_activity(self.activity_id)
         if old_project_id != pid:
             self.set_current_project(pid)
         self.set_current_session(sid)
@@ -629,9 +630,9 @@ class State(object):
             return
         update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
-                               self.current_session_id, self.activity)
-        self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity))
+        self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
+                               self.current_session_id, self.activity_id)
+        self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity_id))
 
     def on_session_changed(self, desired_state):
         """
@@ -643,14 +644,14 @@ class State(object):
             session_id = self.start_new_session()
             if session_id < 1:
                 raise SessionChangeException()
-            self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
-                                   session_id, self.activity)
+            self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
+                                   session_id, self.activity_id)
         else:
             self.end_current_session()
-            self.activity = update(self.current_project_id, diwavars.PGM_GROUP,
-                                   0, self.activity)
+            self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
+                                   0, self.activity_id)
         send_session = 'current_session;{0}'.format(self.current_session_id)
-        send_activity = 'current_activity;{0}'.format(self.activity)
+        send_activity = 'current_activity;{0}'.format(self.activity_id)
         self.swnp_send('SYS', send_session)
         self.swnp_send('SYS', send_activity)
 

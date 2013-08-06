@@ -22,6 +22,7 @@ from modelsbase import (ItemAlreadyExistsException, connect_to_database,
 from models import (Action, Activity, Company, File, FileAction, Project,
                     Session)
 import utils
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _logger():
@@ -182,24 +183,25 @@ def get_active_project(pgm_group):
     :rtype: Integer
 
     """
-    activity = controller.activity.get_active_activity(pgm_group)
+    activity = controller.activity_id.get_active_activity(pgm_group)
     return activity.project if activity else 0
 
 
 def get_project_id_by_activity(activity_id):
     """
-    Get the project ID that this activity is a part of.
+    Get the project ID that this activity_id is a part of.
 
-    :param activity_id: ID of the activity.
+    :param activity_id: ID of the activity_id.
     :type activity_id: Integer
 
     :returns: The project ID.
     :rtype: Integer
 
     """
-    if activity_id < 1:
+    try:
+        activity = Activity.get_by_id(activity_id)
+    except NoResultFound:
         return 0
-    activity = Activity.get_by_id(activity_id)
     return activity.project_id if activity else 0
 
 
@@ -212,7 +214,8 @@ def get_projects_by_company(company_id):
 
     """
     projects = Project.get('all', Project.company_id == company_id)
-    projects.sort(key=lambda project: str(project).lower())
+    lower_case_sorter = lambda project: str(project).lower()
+    projects.sort(key=lower_case_sorter)
     return projects
 
 
