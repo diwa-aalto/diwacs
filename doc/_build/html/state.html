@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Models state &mdash; DiWaCS 0.9.3.1 documentation</title>
+    <title>Models state &mdash; DiWaCS 0.9.2.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.1',
+        VERSION:     '0.9.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.2.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="SWNP module" href="swnp.html" />
     <link rel="prev" title="Setup module" href="setup.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="setup.html" title="Setup module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -173,7 +173,13 @@ done in between the __init__ and these calls here.</td>
 <dl class="method">
 <dt id="state.State.on_project_selected">
 <tt class="descname">on_project_selected</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.on_project_selected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Event handler for project selection in the client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.on_session_changed">
+<tt class="descname">on_session_changed</tt><big>(</big><em>desired_state</em><big>)</big><a class="headerlink" href="#state.State.on_session_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for session change in the client.</p>
 </dd></dl>
 
 <dl class="method">
@@ -220,7 +226,7 @@ and observer for image uploads by camera in scan folder.</p>
 <dl class="method">
 <dt id="state.State.set_responsive">
 <tt class="descname">set_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_responsive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Set the current node as responsive.</p>
 </dd></dl>
 
 <dl class="method">
@@ -230,14 +236,14 @@ and observer for image uploads by camera in scan folder.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.start_current_project">
-<tt class="descname">start_current_project</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_project" title="Permalink to this definition">¶</a></dt>
+<dt id="state.State.start_current_project_thread">
+<tt class="descname">start_current_project_thread</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_project_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start current project loop.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.start_current_session">
-<tt class="descname">start_current_session</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_session" title="Permalink to this definition">¶</a></dt>
+<dt id="state.State.start_current_session_thread">
+<tt class="descname">start_current_session_thread</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_session_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start current project loop.</p>
 </dd></dl>
 
@@ -250,7 +256,7 @@ and observer for image uploads by camera in scan folder.</p>
 <dl class="method">
 <dt id="state.State.stop_responsive">
 <tt class="descname">stop_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.stop_responsive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Stop being responsive.</p>
 </dd></dl>
 
 <dl class="method">
@@ -292,7 +298,7 @@ more tests could be added here.</p>
 <dl class="function">
 <dt id="state.load_config">
 <tt class="descclassname">state.</tt><tt class="descname">load_config</tt><big>(</big><big>)</big><a class="headerlink" href="#state.load_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a config file or creates one.</p>
+<dd><p>Loads a config file, creating it if it does not exists.</p>
 </dd></dl>
 
 </div>
@@ -315,6 +321,7 @@ more tests could be added here.</p>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Models state</a></li>
@@ -381,7 +388,7 @@ more tests could be added here.</p>
         <li class="right" >
           <a href="setup.html" title="Setup module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.2.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

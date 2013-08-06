@@ -14,8 +14,8 @@
 
 
 \title{DiWaCS Documentation}
-\date{August 01, 2013}
-\release{0.9.3.1}
+\date{August 06, 2013}
+\release{0.9.2.1}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -167,7 +167,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-08-01 at 10:55.
+Documentation generated on 2013-08-06 at 08:52.
 
 
 \section{Add file module}
@@ -278,7 +278,7 @@ neriksso
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.activity.add_or_update_activity}\pysiglinewithargsret{\code{controller.activity.}\bfcode{add\_or\_update\_activity}}{\emph{project\_id}, \emph{pgm\_group}, \emph{session\_id=0}, \emph{activity\_id=0}}{}
-Add activity to database.
+Add activity to database or update it if it exists already.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -675,7 +675,29 @@ an instance of {\hyperref[models:models.Project]{\code{models.Project}}}
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.project.check_password}\pysiglinewithargsret{\code{controller.project.}\bfcode{check\_password}}{\emph{project\_id}, \emph{password}}{}
-Docstring here.
+Check that the password is correct for accessing a given project.
+\begin{quote}\begin{description}
+\item[{Note }] \leavevmode
+This returns true also if the project does not have password
+specified as the project is public in that case. The password
+provided is ignored in this case.
+
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{project\_id} (\emph{Integer}) -- ID of the project.
+
+\item {} 
+\textbf{password} (\emph{String}) -- Password to check.
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Is the password authorized to access the project.
+
+\item[{Type }] \leavevmode
+Boolean
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -746,7 +768,18 @@ Integer
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.project.get_project_id_by_activity}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_project\_id\_by\_activity}}{\emph{activity\_id}}{}
-Docstring here.
+Get the project ID that this activity is a part of.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{activity\_id} (\emph{Integer}) -- ID of the activity.
+
+\item[{Returns}] \leavevmode
+The project ID.
+
+\item[{Return type}] \leavevmode
+Integer
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -913,7 +946,18 @@ Integer
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.session.get_session_id_by_activity}\pysiglinewithargsret{\code{controller.session.}\bfcode{get\_session\_id\_by\_activity}}{\emph{activity\_id}}{}
-Docstring here.
+Get the session ID that this activity is a part of.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{activity\_id} (\emph{Integer}) -- ID of the activity.
+
+\item[{Returns}] \leavevmode
+The project ID.
+
+\item[{Return type}] \leavevmode
+Integer
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -1261,7 +1305,7 @@ Integer
 \index{ProjectSelectedDialog (class in dialogs)}
 
 \begin{fulllineitems}
-\phantomsection\label{dialogs:dialogs.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+\phantomsection\label{dialogs:dialogs.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{project\_id}}{}
 A dialog for project selection confirmation.
 
 \end{fulllineitems}
@@ -1289,19 +1333,6 @@ Contains the URL which the user can click on.
 \textbf{url} (\emph{String}) -- URL of the update.
 
 \end{itemize}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{set\_logger\_level() (in module dialogs)}
-
-\begin{fulllineitems}
-\phantomsection\label{dialogs:dialogs.set_logger_level}\pysiglinewithargsret{\code{dialogs.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for dialogs logger.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
 
 \end{description}\end{quote}
 
@@ -1435,7 +1466,7 @@ unselected.
 \begin{notice}{note}{Note:}
 There should be no need for this as the software should
 always start a new project after the old one ends.
-But for the mid state to be legimate this is still
+But for the mid state to be legitimate this is still
 usable.
 \end{notice}
 
@@ -1777,19 +1808,6 @@ Remember to disable it from release binaries.
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module diwacs)}
-
-\begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.set_logger_level}\pysiglinewithargsret{\code{diwacs.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Used to set logger level.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- The level desired.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 
 
 \section{DiWaVars module}
@@ -1886,7 +1904,7 @@ Update the PGM group for this node.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_audio}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_audio}}{\emph{audio}}{}
-Docstring here.
+Update the global Audio variable.
 
 \end{fulllineitems}
 
@@ -1894,7 +1912,7 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_camera_vars}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_camera\_vars}}{\emph{url}, \emph{user}, \emph{passwd}}{}
-Docstring here.
+Update the global variables that control the camera settings.
 
 \end{fulllineitems}
 
@@ -1902,7 +1920,7 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_database_vars}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_database\_vars}}{\emph{address=None}, \emph{name=None}, \emph{type\_=None}, \emph{user=None}, \emph{password=None}}{}
-Docstring here.
+Update the global database settings.
 
 \end{fulllineitems}
 
@@ -1936,8 +1954,8 @@ Set the padfile address.
 \index{update\_responsive() (in module diwavars)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwavars:diwavars.update_responsive}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_responsive}}{\emph{resp}}{}
-Docstring here.
+\phantomsection\label{diwavars:diwavars.update_responsive}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_responsive}}{\emph{responsive}}{}
+Update the global responsive setting.
 
 \end{fulllineitems}
 
@@ -2174,19 +2192,6 @@ The path to the file.
 
 \item[{Return type}] \leavevmode
 String
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{set\_logger\_level() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.set_logger_level}\pysiglinewithargsret{\code{filesystem.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for filesystem logger.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
 
 \end{description}\end{quote}
 
@@ -2533,7 +2538,12 @@ macro.py defines a few user input functions.
 
 \begin{fulllineitems}
 \phantomsection\label{macro:macro.GetKeydown}\pysiglinewithargsret{\code{macro.}\bfcode{GetKeydown}}{\emph{code}}{}
-Docstring here.
+Check if the key with keycode is held down.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{code} (\emph{Integer}) -- Keycode of the key.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2829,6 +2839,190 @@ Slides the mouse to point (target\_x, target\_y)
 \end{itemize}
 
 \end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{Modelsbase module}
+\label{modelsbase:module-modelsbase}\label{modelsbase::doc}\label{modelsbase:modelsbase-module}\index{modelsbase (module)}
+Created on 31.6.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{note}] \leavevmode
+Requires \code{sqlalchemy}
+
+\item[{synopsis}] \leavevmode
+Defines and constructs the SQL alchemy Base class.
+
+\end{description}\end{quote}
+\index{ItemAlreadyExistsException}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.ItemAlreadyExistsException}\pysiglinewithargsret{\strong{exception }\code{modelsbase.}\bfcode{ItemAlreadyExistsException}}{\emph{message}}{}
+When the item already exists in the database, you need to use
+get method instead of constructor.
+
+\end{fulllineitems}
+
+\index{MethodMixin (class in modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin}\pysigline{\strong{class }\code{modelsbase.}\bfcode{MethodMixin}}
+A base class for all our DiWa models.
+
+Defines some common methods / use cases of SQLAlchemy.
+\index{delete() (modelsbase.MethodMixin method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.delete}\pysiglinewithargsret{\bfcode{delete}}{}{}
+Delete an object of this class from the database.
+
+\end{fulllineitems}
+
+\index{delete\_many() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.delete_many}\pysiglinewithargsret{\strong{classmethod }\bfcode{delete\_many}}{\emph{instances}}{}
+Delete objects of this class from the database.
+
+\end{fulllineitems}
+
+\index{get() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.get}\pysiglinewithargsret{\strong{classmethod }\bfcode{get}}{\emph{method}, \emph{*filters}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{method} (\emph{String}) -- \begin{description}
+\item[{Valid values are:}] \leavevmode\begin{itemize}
+\item {} 
+all - This returns a list of matching objects.
+
+\item {} 
+count - This returns an integer which represents the count                of matching objects.
+
+\item {} 
+delete - This deletes all the matching objects from the                database.
+
+\item {} 
+exists - This returns boolean informing weather the an                object match was found from the database.
+
+\item {} 
+first - This returns the first matching object.
+
+\item {} 
+last - This returns the last matching object.
+
+\item {} 
+one - This returns the object if it exists and raises an                exception if it doesn't or if there's more than one instance                of the desired object.
+
+\end{itemize}
+
+\end{description}
+
+
+\end{description}\end{quote}
+
+Additional parameters may be specified to filter results.
+
+\end{fulllineitems}
+
+\index{get\_by\_id() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.get_by_id}\pysiglinewithargsret{\strong{classmethod }\bfcode{get\_by\_id}}{\emph{id\_=1}}{}
+Gets the instance of model by ID.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{id} (\emph{Integer}) -- ID of the desired model.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{id\_ordering() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.id_ordering}\pysiglinewithargsret{\strong{classmethod }\bfcode{id\_ordering}}{\emph{instance}}{}
+Key function for id ordering.
+
+\end{fulllineitems}
+
+\index{update() (modelsbase.MethodMixin method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.update}\pysiglinewithargsret{\bfcode{update}}{}{}
+Posts updates to this object into the database.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+Success value.
+
+\item[{Return type}] \leavevmode
+Boolean
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{update\_many() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.update_many}\pysiglinewithargsret{\strong{classmethod }\bfcode{update\_many}}{\emph{instances}}{}
+Posts updates to these objects into the database.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+Success value.
+
+\item[{Return type}] \leavevmode
+Boolean
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{connect\_to\_database() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.connect_to_database}\pysiglinewithargsret{\code{modelsbase.}\bfcode{connect\_to\_database}}{\emph{expire=False}}{}
+Connect to the database and return a Session object.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{expire} (\emph{Boolean}) -- Parameter passed to session maker as expire\_on\_commit.
+
+\item[{Returns}] \leavevmode
+Session.
+
+\item[{Return type}] \leavevmode
+\code{sqlalchemy.orm.session.Session}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{create\_all() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.create_all}\pysiglinewithargsret{\code{modelsbase.}\bfcode{create\_all}}{}{}
+Create tables to the database.
+
+\end{fulllineitems}
+
+\index{update\_database() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.update_database}\pysiglinewithargsret{\code{modelsbase.}\bfcode{update\_database}}{}{}
+Update the database connection engine.
+
+\begin{notice}{note}{Note:}
+This only works when DB\_STRING is completely defined by
+the log reader as otherwise the create\_engine call would
+cause an exception.
+\end{notice}
 
 \end{fulllineitems}
 
@@ -3463,7 +3657,15 @@ FIXME: What the actual?
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.on_project_selected}\pysiglinewithargsret{\bfcode{on\_project\_selected}}{}{}
-Docstring.
+Event handler for project selection in the client.
+
+\end{fulllineitems}
+
+\index{on\_session\_changed() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.on_session_changed}\pysiglinewithargsret{\bfcode{on\_session\_changed}}{\emph{desired\_state}}{}
+Event handler for session change in the client.
 
 \end{fulllineitems}
 
@@ -3514,7 +3716,7 @@ and observer for image uploads by camera in scan folder.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.set_responsive}\pysiglinewithargsret{\bfcode{set\_responsive}}{}{}
-Docstring.
+Set the current node as responsive.
 
 \end{fulllineitems}
 
@@ -3526,18 +3728,18 @@ Starts the audio recorder thread.
 
 \end{fulllineitems}
 
-\index{start\_current\_project() (state.State method)}
+\index{start\_current\_project\_thread() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.start_current_project}\pysiglinewithargsret{\bfcode{start\_current\_project}}{}{}
+\phantomsection\label{state:state.State.start_current_project_thread}\pysiglinewithargsret{\bfcode{start\_current\_project\_thread}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
 
-\index{start\_current\_session() (state.State method)}
+\index{start\_current\_session\_thread() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.start_current_session}\pysiglinewithargsret{\bfcode{start\_current\_session}}{}{}
+\phantomsection\label{state:state.State.start_current_session_thread}\pysiglinewithargsret{\bfcode{start\_current\_session\_thread}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
@@ -3554,7 +3756,7 @@ Start a new session.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.stop_responsive}\pysiglinewithargsret{\bfcode{stop\_responsive}}{}{}
-Docstring.
+Stop being responsive.
 
 \end{fulllineitems}
 
@@ -3606,7 +3808,7 @@ more tests could be added here.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.load_config}\pysiglinewithargsret{\code{state.}\bfcode{load\_config}}{}{}
-Loads a config file or creates one.
+Loads a config file, creating it if it does not exists.
 
 \end{fulllineitems}
 
@@ -4001,19 +4203,6 @@ Routine for checking node list and removing nodes with timeout.
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module swnp)}
-
-\begin{fulllineitems}
-\phantomsection\label{swnp:swnp.set_logger_level}\pysiglinewithargsret{\code{swnp.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for swnp logger.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 
 
 \section{Testing module}
@@ -4112,7 +4301,7 @@ even as we prefer upper case for threading types.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.find_input_device}\pysiglinewithargsret{\bfcode{find\_input\_device}}{}{}
-Find the microphone device.
+Find a microphone device.
 
 \end{fulllineitems}
 
@@ -4130,8 +4319,9 @@ Opens the stream object for microphone.
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Continuously record from the microphone to the buffer.
 
-If the buffer is full, the first frame will be removed and
-the new block appended.
+The size should be limited at diwavars.MAX\_LENGTH constant.
+The implementation keeps only the most recent data in the
+case that there's too much data to store.
 
 \end{fulllineitems}
 
@@ -4147,7 +4337,7 @@ Save the buffer to a file.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
-Stop audio recorder.
+Stop the audio recorder thread.
 
 \end{fulllineitems}
 
@@ -4468,7 +4658,7 @@ Thread for capturing input from mouse/keyboard.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.hook}\pysiglinewithargsret{\bfcode{hook}}{}{}
-Docstring here.
+Add the input hooks to the system.
 
 \end{fulllineitems}
 
@@ -4533,7 +4723,7 @@ WM\_MOUSEHWHEEL = 0x20E
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.reset_mouse_events}\pysiglinewithargsret{\bfcode{reset\_mouse\_events}}{}{}
-Docstring here.
+Clear the mouse event queue.
 
 \end{fulllineitems}
 
@@ -4557,7 +4747,7 @@ Stops the thread.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.unhook}\pysiglinewithargsret{\bfcode{unhook}}{}{}
-Docstring here.
+Remove the input hooks from the system.
 
 \end{fulllineitems}
 
@@ -4568,12 +4758,24 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.MOUSE_CAPTURE}\pysiglinewithargsret{\strong{class }\code{threads.inputcapture.}\bfcode{MOUSE\_CAPTURE}}{\emph{parent}, \emph{swnp}}{}
-Docstring.
+A thread for capturing mouse movements and sending them to remote
+controlled systems.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{parent} ({\hyperref[diwacs:diwacs.GraphicalUserInterface]{\code{diwacs.GraphicalUserInterface}}}) -- The main GUI.
+
+\item {} 
+\textbf{swnp} ({\hyperref[swnp:swnp.SWNP]{\code{swnp.SWNP}}}) -- The network handler.
+
+\end{itemize}
+
+\end{description}\end{quote}
 \index{parse\_mouse\_events() (threads.inputcapture.MOUSE\_CAPTURE method)}
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events}\pysiglinewithargsret{\bfcode{parse\_mouse\_events}}{}{}
-Docstring here.
+Routine that constantly parses mouse events in the queue.
 
 \end{fulllineitems}
 
@@ -4677,7 +4879,7 @@ Adds a node to registry.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.worker.WORKER_THREAD.check_responsive}\pysiglinewithargsret{\bfcode{check\_responsive}}{}{}
-Docstring here.
+Determine the responsive node.
 
 \end{fulllineitems}
 
@@ -4685,7 +4887,12 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.worker.WORKER_THREAD.create_event}\pysiglinewithargsret{\bfcode{create\_event}}{\emph{title}}{}
-Docstring here.
+Create a new event.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{title} (\emph{String}) -- Title of the event.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4844,14 +5051,6 @@ Maps the network share to a letter.
 
 \end{fulllineitems}
 
-\index{check\_project\_password() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.check_project_password}\pysiglinewithargsret{\code{utils.}\bfcode{check\_project\_password}}{\emph{project\_id}, \emph{password}}{}
-Compares the the provided password with the project password.
-
-\end{fulllineitems}
-
 \index{get\_encrypted\_directory\_name() (in module utils)}
 
 \begin{fulllineitems}
@@ -4865,14 +5064,6 @@ Returns the encrypted name for project directory.
 \begin{fulllineitems}
 \phantomsection\label{utils:utils.hash_password}\pysiglinewithargsret{\code{utils.}\bfcode{hash\_password}}{\emph{password}}{}
 Hashes the provided password.
-
-\end{fulllineitems}
-
-\index{set\_logger\_level() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.set_logger_level}\pysiglinewithargsret{\code{utils.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Docstring here.
 
 \end{fulllineitems}
 
@@ -5393,6 +5584,7 @@ Exit the application
 \bigletter{m}
 \item {\texttt{macro}}, \pageref{macro:module-macro}
 \item {\texttt{models}}, \pageref{models:module-models}
+\item {\texttt{modelsbase}}, \pageref{modelsbase:module-modelsbase}
 \indexspace
 \bigletter{s}
 \item {\texttt{send\_file\_to}}, \pageref{send_file:module-send_file_to}

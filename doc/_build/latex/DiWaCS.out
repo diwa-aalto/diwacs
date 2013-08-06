@@ -8,33 +8,34 @@
 \BOOKMARK [1][-]{section.1.7}{Filesystem module}{chapter.1}% 8
 \BOOKMARK [1][-]{section.1.8}{Graphical Design module}{chapter.1}% 9
 \BOOKMARK [1][-]{section.1.9}{Macro module}{chapter.1}% 10
-\BOOKMARK [1][-]{section.1.10}{Models module}{chapter.1}% 11
-\BOOKMARK [1][-]{section.1.11}{Setup module}{chapter.1}% 12
-\BOOKMARK [1][-]{section.1.12}{Models state}{chapter.1}% 13
-\BOOKMARK [1][-]{section.1.13}{SWNP module}{chapter.1}% 14
-\BOOKMARK [1][-]{section.1.14}{Testing module}{chapter.1}% 15
-\BOOKMARK [1][-]{section.1.15}{Threads package}{chapter.1}% 16
-\BOOKMARK [1][-]{section.1.16}{Utils module}{chapter.1}% 17
-\BOOKMARK [0][-]{chapter.2}{Bugs}{}% 18
-\BOOKMARK [0][-]{chapter.3}{Features}{}% 19
-\BOOKMARK [0][-]{chapter.4}{License}{}% 20
-\BOOKMARK [1][-]{section.4.1}{1. Definitions}{chapter.4}% 21
-\BOOKMARK [1][-]{section.4.2}{2. Scope of the rights granted by the Licence}{chapter.4}% 22
-\BOOKMARK [1][-]{section.4.3}{3. Communication of the Source Code}{chapter.4}% 23
-\BOOKMARK [1][-]{section.4.4}{4. Limitations on copyright}{chapter.4}% 24
-\BOOKMARK [1][-]{section.4.5}{5. Obligations of the Licensee}{chapter.4}% 25
-\BOOKMARK [1][-]{section.4.6}{6. Chain of Authorship}{chapter.4}% 26
-\BOOKMARK [1][-]{section.4.7}{7. Disclaimer of Warranty}{chapter.4}% 27
-\BOOKMARK [1][-]{section.4.8}{8. Disclaimer of Liability}{chapter.4}% 28
-\BOOKMARK [1][-]{section.4.9}{9. Additional agreements}{chapter.4}% 29
-\BOOKMARK [1][-]{section.4.10}{10. Acceptance of the Licence}{chapter.4}% 30
-\BOOKMARK [1][-]{section.4.11}{11. Information to the public}{chapter.4}% 31
-\BOOKMARK [1][-]{section.4.12}{12. Termination of the Licence}{chapter.4}% 32
-\BOOKMARK [1][-]{section.4.13}{13. Miscellaneous}{chapter.4}% 33
-\BOOKMARK [1][-]{section.4.14}{14. Jurisdiction}{chapter.4}% 34
-\BOOKMARK [1][-]{section.4.15}{15. Applicable Law}{chapter.4}% 35
-\BOOKMARK [1][-]{section.4.16}{Appendix}{chapter.4}% 36
-\BOOKMARK [0][-]{chapter.5}{User Interface}{}% 37
-\BOOKMARK [0][-]{chapter.6}{Indices and tables}{}% 38
-\BOOKMARK [0][-]{section*.315}{Python Module Index}{}% 39
-\BOOKMARK [0][-]{section*.316}{Index}{}% 40
+\BOOKMARK [1][-]{section.1.10}{Modelsbase module}{chapter.1}% 11
+\BOOKMARK [1][-]{section.1.11}{Models module}{chapter.1}% 12
+\BOOKMARK [1][-]{section.1.12}{Setup module}{chapter.1}% 13
+\BOOKMARK [1][-]{section.1.13}{Models state}{chapter.1}% 14
+\BOOKMARK [1][-]{section.1.14}{SWNP module}{chapter.1}% 15
+\BOOKMARK [1][-]{section.1.15}{Testing module}{chapter.1}% 16
+\BOOKMARK [1][-]{section.1.16}{Threads package}{chapter.1}% 17
+\BOOKMARK [1][-]{section.1.17}{Utils module}{chapter.1}% 18
+\BOOKMARK [0][-]{chapter.2}{Bugs}{}% 19
+\BOOKMARK [0][-]{chapter.3}{Features}{}% 20
+\BOOKMARK [0][-]{chapter.4}{License}{}% 21
+\BOOKMARK [1][-]{section.4.1}{1. Definitions}{chapter.4}% 22
+\BOOKMARK [1][-]{section.4.2}{2. Scope of the rights granted by the Licence}{chapter.4}% 23
+\BOOKMARK [1][-]{section.4.3}{3. Communication of the Source Code}{chapter.4}% 24
+\BOOKMARK [1][-]{section.4.4}{4. Limitations on copyright}{chapter.4}% 25
+\BOOKMARK [1][-]{section.4.5}{5. Obligations of the Licensee}{chapter.4}% 26
+\BOOKMARK [1][-]{section.4.6}{6. Chain of Authorship}{chapter.4}% 27
+\BOOKMARK [1][-]{section.4.7}{7. Disclaimer of Warranty}{chapter.4}% 28
+\BOOKMARK [1][-]{section.4.8}{8. Disclaimer of Liability}{chapter.4}% 29
+\BOOKMARK [1][-]{section.4.9}{9. Additional agreements}{chapter.4}% 30
+\BOOKMARK [1][-]{section.4.10}{10. Acceptance of the Licence}{chapter.4}% 31
+\BOOKMARK [1][-]{section.4.11}{11. Information to the public}{chapter.4}% 32
+\BOOKMARK [1][-]{section.4.12}{12. Termination of the Licence}{chapter.4}% 33
+\BOOKMARK [1][-]{section.4.13}{13. Miscellaneous}{chapter.4}% 34
+\BOOKMARK [1][-]{section.4.14}{14. Jurisdiction}{chapter.4}% 35
+\BOOKMARK [1][-]{section.4.15}{15. Applicable Law}{chapter.4}% 36
+\BOOKMARK [1][-]{section.4.16}{Appendix}{chapter.4}% 37
+\BOOKMARK [0][-]{chapter.5}{User Interface}{}% 38
+\BOOKMARK [0][-]{chapter.6}{Indices and tables}{}% 39
+\BOOKMARK [0][-]{section*.322}{Python Module Index}{}% 40
+\BOOKMARK [0][-]{section*.323}{Index}{}% 41

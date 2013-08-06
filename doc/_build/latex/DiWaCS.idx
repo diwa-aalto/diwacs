@@ -29,28 +29,28 @@
 \indexentry{create\_file\_action() (in module controller.project)|hyperpage}{7}
 \indexentry{edit\_project() (in module controller.project)|hyperpage}{7}
 \indexentry{get\_active\_project() (in module controller.project)|hyperpage}{7}
-\indexentry{get\_project\_id\_by\_activity() (in module controller.project)|hyperpage}{7}
-\indexentry{get\_projects\_by\_company() (in module controller.project)|hyperpage}{7}
-\indexentry{get\_recent\_files() (in module controller.project)|hyperpage}{7}
+\indexentry{get\_project\_id\_by\_activity() (in module controller.project)|hyperpage}{8}
+\indexentry{get\_projects\_by\_company() (in module controller.project)|hyperpage}{8}
+\indexentry{get\_recent\_files() (in module controller.project)|hyperpage}{8}
 \indexentry{init\_sync\_project\_directory() (in module controller.project)|hyperpage}{8}
 \indexentry{is\_project\_file() (in module controller.project)|hyperpage}{8}
 \indexentry{controller.session (module)|hyperpage}{8}
 \indexentry{add\_event() (in module controller.session)|hyperpage}{8}
-\indexentry{end\_session() (in module controller.session)|hyperpage}{8}
-\indexentry{get\_active\_session() (in module controller.session)|hyperpage}{8}
-\indexentry{get\_latest\_event\_id() (in module controller.session)|hyperpage}{8}
+\indexentry{end\_session() (in module controller.session)|hyperpage}{9}
+\indexentry{get\_active\_session() (in module controller.session)|hyperpage}{9}
+\indexentry{get\_latest\_event\_id() (in module controller.session)|hyperpage}{9}
 \indexentry{get\_session\_id\_by\_activity() (in module controller.session)|hyperpage}{9}
 \indexentry{get\_sessions\_by\_project() (in module controller.session)|hyperpage}{9}
 \indexentry{start\_new\_session() (in module controller.session)|hyperpage}{9}
 \indexentry{dialogs (module)|hyperpage}{9}
 \indexentry{AddProjectDialog (class in dialogs)|hyperpage}{9}
 \indexentry{OnAdd() (dialogs.AddProjectDialog method)|hyperpage}{9}
-\indexentry{OnClose() (dialogs.AddProjectDialog method)|hyperpage}{9}
-\indexentry{OnText() (dialogs.AddProjectDialog method)|hyperpage}{9}
-\indexentry{CloseError|hyperpage}{9}
-\indexentry{ConnectionErrorDialog (class in dialogs)|hyperpage}{9}
-\indexentry{DeleteProjectDialog (class in dialogs)|hyperpage}{9}
-\indexentry{OnCancel() (dialogs.DeleteProjectDialog method)|hyperpage}{9}
+\indexentry{OnClose() (dialogs.AddProjectDialog method)|hyperpage}{10}
+\indexentry{OnText() (dialogs.AddProjectDialog method)|hyperpage}{10}
+\indexentry{CloseError|hyperpage}{10}
+\indexentry{ConnectionErrorDialog (class in dialogs)|hyperpage}{10}
+\indexentry{DeleteProjectDialog (class in dialogs)|hyperpage}{10}
+\indexentry{OnCancel() (dialogs.DeleteProjectDialog method)|hyperpage}{10}
 \indexentry{OnOk() (dialogs.DeleteProjectDialog method)|hyperpage}{10}
 \indexentry{ErrorDialog (class in dialogs)|hyperpage}{10}
 \indexentry{PreferencesDialog (class in dialogs)|hyperpage}{10}
@@ -62,19 +62,18 @@
 \indexentry{OnOk() (dialogs.ProjectAuthenticationDialog method)|hyperpage}{10}
 \indexentry{ProjectSelectDialog (class in dialogs)|hyperpage}{10}
 \indexentry{OnCancel() (dialogs.ProjectSelectDialog method)|hyperpage}{10}
-\indexentry{OnProjectAdd() (dialogs.ProjectSelectDialog method)|hyperpage}{10}
-\indexentry{OnProjectDelete() (dialogs.ProjectSelectDialog method)|hyperpage}{10}
-\indexentry{OnProjectEdit() (dialogs.ProjectSelectDialog method)|hyperpage}{10}
-\indexentry{OnProjectSelect() (dialogs.ProjectSelectDialog method)|hyperpage}{10}
+\indexentry{OnProjectAdd() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
+\indexentry{OnProjectDelete() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
+\indexentry{OnProjectEdit() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
+\indexentry{OnProjectSelect() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
 \indexentry{OnSelectionChange() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
 \indexentry{UpdateProjects() (dialogs.ProjectSelectDialog method)|hyperpage}{11}
 \indexentry{ProjectSelectedDialog (class in dialogs)|hyperpage}{11}
 \indexentry{SendProgressBar (class in dialogs)|hyperpage}{11}
 \indexentry{UpdateDialog (class in dialogs)|hyperpage}{11}
-\indexentry{set\_logger\_level() (in module dialogs)|hyperpage}{11}
 \indexentry{show\_modal\_and\_destroy() (in module dialogs)|hyperpage}{11}
-\indexentry{diwacs (module)|hyperpage}{11}
-\indexentry{EventList (class in diwacs)|hyperpage}{11}
+\indexentry{diwacs (module)|hyperpage}{12}
+\indexentry{EventList (class in diwacs)|hyperpage}{12}
 \indexentry{CheckVisibility() (diwacs.EventList method)|hyperpage}{12}
 \indexentry{HideNow() (diwacs.EventList method)|hyperpage}{12}
 \indexentry{OnEnter() (diwacs.EventList method)|hyperpage}{12}
@@ -88,9 +87,9 @@
 \indexentry{EnableDirectoryButton() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
 \indexentry{EnableSessionButton() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
 \indexentry{GetNodeByName() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
-\indexentry{InitUICore() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
-\indexentry{OnAboutBox() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
-\indexentry{OnEvtBtn() (diwacs.GraphicalUserInterface method)|hyperpage}{12}
+\indexentry{InitUICore() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
+\indexentry{OnAboutBox() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
+\indexentry{OnEvtBtn() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
 \indexentry{OnExit() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
 \indexentry{OnIconify() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
 \indexentry{OnInfoBtn() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
@@ -101,17 +100,16 @@
 \indexentry{OnTaskBarActivate() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
 \indexentry{OnTaskBarClose() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
 \indexentry{OnWABtn() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
-\indexentry{OpenProjectDir() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
-\indexentry{PaintSelect() (diwacs.GraphicalUserInterface method)|hyperpage}{13}
+\indexentry{OpenProjectDir() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
+\indexentry{PaintSelect() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{SelectNode() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{SelectProjectDialog() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{SetProjectName() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{Shift() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{UpdateScreens() (diwacs.GraphicalUserInterface method)|hyperpage}{14}
 \indexentry{main() (in module diwacs)|hyperpage}{14}
-\indexentry{set\_logger\_level() (in module diwacs)|hyperpage}{14}
-\indexentry{diwavars (module)|hyperpage}{14}
-\indexentry{add\_logger\_initializer() (in module diwavars)|hyperpage}{14}
+\indexentry{diwavars (module)|hyperpage}{15}
+\indexentry{add\_logger\_initializer() (in module diwavars)|hyperpage}{15}
 \indexentry{add\_logger\_level\_setter() (in module diwavars)|hyperpage}{15}
 \indexentry{set\_blank\_cursor() (in module diwavars)|hyperpage}{15}
 \indexentry{set\_config() (in module diwavars)|hyperpage}{15}
@@ -126,7 +124,7 @@
 \indexentry{update\_padfile() (in module diwavars)|hyperpage}{15}
 \indexentry{update\_responsive() (in module diwavars)|hyperpage}{15}
 \indexentry{update\_storage() (in module diwavars)|hyperpage}{15}
-\indexentry{update\_windows\_version() (in module diwavars)|hyperpage}{15}
+\indexentry{update\_windows\_version() (in module diwavars)|hyperpage}{16}
 \indexentry{filesystem (module)|hyperpage}{16}
 \indexentry{copy\_file\_to\_project() (in module filesystem)|hyperpage}{16}
 \indexentry{copy\_to\_temporary\_directory() (in module filesystem)|hyperpage}{16}
@@ -136,11 +134,10 @@
 \indexentry{get\_file\_extension() (in module filesystem)|hyperpage}{16}
 \indexentry{get\_node\_image() (in module filesystem)|hyperpage}{16}
 \indexentry{is\_subtree() (in module filesystem)|hyperpage}{16}
-\indexentry{open\_file() (in module filesystem)|hyperpage}{16}
-\indexentry{save\_screen() (in module filesystem)|hyperpage}{16}
+\indexentry{open\_file() (in module filesystem)|hyperpage}{17}
+\indexentry{save\_screen() (in module filesystem)|hyperpage}{17}
 \indexentry{screen\_capture() (in module filesystem)|hyperpage}{17}
 \indexentry{search\_file() (in module filesystem)|hyperpage}{17}
-\indexentry{set\_logger\_level() (in module filesystem)|hyperpage}{17}
 \indexentry{test\_storage\_connection() (in module filesystem)|hyperpage}{17}
 \indexentry{graphicaldesign (module)|hyperpage}{17}
 \indexentry{BlackOverlay (class in graphicaldesign)|hyperpage}{17}
@@ -158,7 +155,7 @@
 \indexentry{InitScreens() (graphicaldesign.GUItemplate method)|hyperpage}{18}
 \indexentry{InitUI() (graphicaldesign.GUItemplate method)|hyperpage}{18}
 \indexentry{OnExit() (graphicaldesign.GUItemplate method)|hyperpage}{18}
-\indexentry{SelectNode() (graphicaldesign.GUItemplate method)|hyperpage}{18}
+\indexentry{SelectNode() (graphicaldesign.GUItemplate method)|hyperpage}{19}
 \indexentry{ImageViewer (class in graphicaldesign)|hyperpage}{19}
 \indexentry{MySplashScreen (class in graphicaldesign)|hyperpage}{19}
 \indexentry{NodeScreen (class in graphicaldesign)|hyperpage}{19}
@@ -173,8 +170,8 @@
 \indexentry{HardwareInput (class in macro)|hyperpage}{19}
 \indexentry{Input (class in macro)|hyperpage}{19}
 \indexentry{Input\_I (class in macro)|hyperpage}{19}
-\indexentry{KeyBdInput (class in macro)|hyperpage}{19}
-\indexentry{MacroPoint (class in macro)|hyperpage}{19}
+\indexentry{KeyBdInput (class in macro)|hyperpage}{20}
+\indexentry{MacroPoint (class in macro)|hyperpage}{20}
 \indexentry{MouseInput (class in macro)|hyperpage}{20}
 \indexentry{click() (in module macro)|hyperpage}{20}
 \indexentry{get\_mouse\_position() (in module macro)|hyperpage}{20}
@@ -186,155 +183,166 @@
 \indexentry{middle\_release() (in module macro)|hyperpage}{20}
 \indexentry{move() (in module macro)|hyperpage}{20}
 \indexentry{move\_to() (in module macro)|hyperpage}{20}
-\indexentry{release() (in module macro)|hyperpage}{20}
-\indexentry{release\_all\_keys() (in module macro)|hyperpage}{20}
-\indexentry{right\_click() (in module macro)|hyperpage}{20}
+\indexentry{release() (in module macro)|hyperpage}{21}
+\indexentry{release\_all\_keys() (in module macro)|hyperpage}{21}
+\indexentry{right\_click() (in module macro)|hyperpage}{21}
 \indexentry{right\_hold() (in module macro)|hyperpage}{21}
 \indexentry{right\_release() (in module macro)|hyperpage}{21}
 \indexentry{send\_input() (in module macro)|hyperpage}{21}
 \indexentry{slide() (in module macro)|hyperpage}{21}
 \indexentry{slide\_to() (in module macro)|hyperpage}{21}
-\indexentry{models (module)|hyperpage}{21}
-\indexentry{Action (class in models)|hyperpage}{21}
-\indexentry{Activity (class in models)|hyperpage}{22}
-\indexentry{Company (class in models)|hyperpage}{22}
-\indexentry{Computer (class in models)|hyperpage}{22}
-\indexentry{get\_most\_recent\_by\_mac() (models.Computer class method)|hyperpage}{23}
-\indexentry{time\_ordering() (models.Computer class method)|hyperpage}{23}
-\indexentry{Event (class in models)|hyperpage}{23}
-\indexentry{File (class in models)|hyperpage}{23}
-\indexentry{FileAction (class in models)|hyperpage}{23}
-\indexentry{Project (class in models)|hyperpage}{24}
-\indexentry{Session (class in models)|hyperpage}{25}
-\indexentry{AddUser() (models.Session method)|hyperpage}{25}
-\indexentry{GetLastChecked() (models.Session method)|hyperpage}{25}
-\indexentry{Start() (models.Session method)|hyperpage}{25}
-\indexentry{User (class in models)|hyperpage}{25}
-\indexentry{state (module)|hyperpage}{26}
-\indexentry{State (class in state)|hyperpage}{26}
-\indexentry{destroy() (state.State method)|hyperpage}{26}
-\indexentry{end\_current\_project() (state.State method)|hyperpage}{26}
-\indexentry{end\_current\_session() (state.State method)|hyperpage}{26}
-\indexentry{get\_random\_responsive() (state.State method)|hyperpage}{26}
-\indexentry{handle\_file\_send() (state.State method)|hyperpage}{26}
-\indexentry{initialize() (state.State method)|hyperpage}{27}
-\indexentry{message\_handler() (state.State method)|hyperpage}{27}
-\indexentry{node\_id (state.State attribute)|hyperpage}{27}
-\indexentry{on\_project\_selected() (state.State method)|hyperpage}{27}
-\indexentry{remove\_observer() (state.State method)|hyperpage}{27}
-\indexentry{set\_current\_project() (state.State method)|hyperpage}{27}
-\indexentry{set\_current\_session() (state.State method)|hyperpage}{27}
-\indexentry{set\_observer() (state.State method)|hyperpage}{27}
-\indexentry{set\_responsive() (state.State method)|hyperpage}{27}
-\indexentry{start\_audio\_recorder() (state.State method)|hyperpage}{27}
-\indexentry{start\_current\_project() (state.State method)|hyperpage}{28}
-\indexentry{start\_current\_session() (state.State method)|hyperpage}{28}
-\indexentry{start\_new\_session() (state.State method)|hyperpage}{28}
-\indexentry{stop\_responsive() (state.State method)|hyperpage}{28}
-\indexentry{swnp\_send() (state.State method)|hyperpage}{28}
-\indexentry{create\_config() (in module state)|hyperpage}{28}
-\indexentry{initialization\_test() (in module state)|hyperpage}{28}
-\indexentry{load\_config() (in module state)|hyperpage}{28}
-\indexentry{swnp (module)|hyperpage}{28}
-\indexentry{Message (class in swnp)|hyperpage}{28}
-\indexentry{from\_json() (swnp.Message static method)|hyperpage}{28}
-\indexentry{to\_dict() (swnp.Message static method)|hyperpage}{28}
-\indexentry{Node (class in swnp)|hyperpage}{29}
-\indexentry{get\_age() (swnp.Node method)|hyperpage}{29}
-\indexentry{refresh() (swnp.Node method)|hyperpage}{29}
-\indexentry{SWNP (class in swnp)|hyperpage}{29}
-\indexentry{close() (swnp.SWNP method)|hyperpage}{29}
-\indexentry{do\_ping() (swnp.SWNP method)|hyperpage}{29}
-\indexentry{find\_node() (swnp.SWNP method)|hyperpage}{29}
-\indexentry{get\_buffer() (swnp.SWNP method)|hyperpage}{29}
-\indexentry{get\_list() (swnp.SWNP method)|hyperpage}{29}
-\indexentry{get\_screen\_list() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{ping\_handler() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{ping\_routine() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{send() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{set\_name() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{set\_responsive() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{set\_screens() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{shutdown() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{start\_sub\_routine() (swnp.SWNP static method)|hyperpage}{30}
-\indexentry{sub\_routine() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{sub\_routine\_sys() (swnp.SWNP method)|hyperpage}{30}
-\indexentry{sys\_handler() (swnp.SWNP method)|hyperpage}{31}
-\indexentry{timeout\_routine() (swnp.SWNP method)|hyperpage}{31}
-\indexentry{set\_logger\_level() (in module swnp)|hyperpage}{31}
-\indexentry{testing (module)|hyperpage}{31}
-\indexentry{DiwaTest (class in testing)|hyperpage}{31}
-\indexentry{TestFilesystem (class in testing)|hyperpage}{31}
-\indexentry{test\_searchfile() (testing.TestFilesystem method)|hyperpage}{31}
-\indexentry{TestUtils (class in testing)|hyperpage}{31}
-\indexentry{test\_getpassword() (testing.TestUtils method)|hyperpage}{31}
-\indexentry{test\_iterislast() (testing.TestUtils method)|hyperpage}{31}
-\indexentry{test\_passwordhash() (testing.TestUtils method)|hyperpage}{31}
-\indexentry{threads.audiorecorder (module)|hyperpage}{31}
-\indexentry{AudioRecorder (class in threads.audiorecorder)|hyperpage}{31}
-\indexentry{find\_input\_device() (threads.audiorecorder.AudioRecorder method)|hyperpage}{32}
-\indexentry{open\_mic\_stream() (threads.audiorecorder.AudioRecorder method)|hyperpage}{32}
-\indexentry{run() (threads.audiorecorder.AudioRecorder method)|hyperpage}{32}
-\indexentry{save() (threads.audiorecorder.AudioRecorder method)|hyperpage}{32}
-\indexentry{stop() (threads.audiorecorder.AudioRecorder method)|hyperpage}{32}
-\indexentry{threads.checkupdate (module)|hyperpage}{32}
-\indexentry{CHECK\_UPDATE (class in threads.checkupdate)|hyperpage}{32}
-\indexentry{get\_pad() (threads.checkupdate.CHECK\_UPDATE static method)|hyperpage}{32}
-\indexentry{run() (threads.checkupdate.CHECK\_UPDATE method)|hyperpage}{32}
-\indexentry{show\_dialog() (threads.checkupdate.CHECK\_UPDATE method)|hyperpage}{32}
-\indexentry{threads.common (module)|hyperpage}{32}
-\indexentry{threads.connectionerror (module)|hyperpage}{32}
-\indexentry{CONNECTION\_ERROR\_THREAD (class in threads.connectionerror)|hyperpage}{32}
-\indexentry{run() (threads.connectionerror.CONNECTION\_ERROR\_THREAD method)|hyperpage}{32}
-\indexentry{threads.contextmenu (module)|hyperpage}{33}
-\indexentry{ContextMenuFailure (class in threads.contextmenu)|hyperpage}{33}
-\indexentry{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in threads.contextmenu)|hyperpage}{33}
-\indexentry{run() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{33}
-\indexentry{stop() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{33}
-\indexentry{threads.current (module)|hyperpage}{33}
-\indexentry{CURRENT\_PROJECT (class in threads.current)|hyperpage}{33}
-\indexentry{run() (threads.current.CURRENT\_PROJECT method)|hyperpage}{33}
-\indexentry{CURRENT\_SESSION (class in threads.current)|hyperpage}{33}
-\indexentry{run() (threads.current.CURRENT\_SESSION method)|hyperpage}{33}
-\indexentry{threads.diwathread (module)|hyperpage}{34}
-\indexentry{DIWA\_THREAD (class in threads.diwathread)|hyperpage}{34}
-\indexentry{remove\_self() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{34}
-\indexentry{stop() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{34}
-\indexentry{stop\_all() (threads.diwathread.DIWA\_THREAD static method)|hyperpage}{34}
-\indexentry{stop\_is\_set() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{34}
-\indexentry{TimeoutException|hyperpage}{34}
-\indexentry{threads.inputcapture (module)|hyperpage}{34}
-\indexentry{INPUT\_CAPTURE (class in threads.inputcapture)|hyperpage}{34}
-\indexentry{hook() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{34}
-\indexentry{on\_keyboard\_event() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{34}
-\indexentry{on\_mouse\_event() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{34}
-\indexentry{reset\_mouse\_events() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{35}
-\indexentry{run() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{35}
-\indexentry{stop() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{35}
-\indexentry{unhook() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{35}
-\indexentry{MOUSE\_CAPTURE (class in threads.inputcapture)|hyperpage}{35}
-\indexentry{parse\_mouse\_events() (threads.inputcapture.MOUSE\_CAPTURE method)|hyperpage}{35}
-\indexentry{set\_capture() (in module threads.inputcapture)|hyperpage}{35}
-\indexentry{threads.worker (module)|hyperpage}{35}
-\indexentry{SNAPSHOT\_THREAD (class in threads.worker)|hyperpage}{35}
-\indexentry{run() (threads.worker.SNAPSHOT\_THREAD method)|hyperpage}{35}
-\indexentry{WORKER\_THREAD (class in threads.worker)|hyperpage}{35}
-\indexentry{add\_project\_registry\_entry() (threads.worker.WORKER\_THREAD static method)|hyperpage}{35}
-\indexentry{add\_registry\_entry() (threads.worker.WORKER\_THREAD static method)|hyperpage}{35}
-\indexentry{check\_responsive() (threads.worker.WORKER\_THREAD method)|hyperpage}{36}
-\indexentry{create\_event() (threads.worker.WORKER\_THREAD method)|hyperpage}{36}
-\indexentry{parse\_config() (threads.worker.WORKER\_THREAD method)|hyperpage}{36}
-\indexentry{remove\_all\_registry\_entries() (threads.worker.WORKER\_THREAD static method)|hyperpage}{36}
-\indexentry{run() (threads.worker.WORKER\_THREAD method)|hyperpage}{36}
-\indexentry{utils (module)|hyperpage}{36}
-\indexentry{DottedIPToInt() (in module utils)|hyperpage}{36}
-\indexentry{GetLANMachines() (in module utils)|hyperpage}{36}
-\indexentry{GetLocalIPAddress() (in module utils)|hyperpage}{36}
-\indexentry{GetMacForIp() (in module utils)|hyperpage}{36}
-\indexentry{IntToDottedIP() (in module utils)|hyperpage}{36}
-\indexentry{IterIsLast() (in module utils)|hyperpage}{36}
-\indexentry{MapNetworkShare() (in module utils)|hyperpage}{37}
-\indexentry{check\_project\_password() (in module utils)|hyperpage}{37}
-\indexentry{get\_encrypted\_directory\_name() (in module utils)|hyperpage}{37}
-\indexentry{hash\_password() (in module utils)|hyperpage}{37}
-\indexentry{set\_logger\_level() (in module utils)|hyperpage}{37}
+\indexentry{modelsbase (module)|hyperpage}{21}
+\indexentry{ItemAlreadyExistsException|hyperpage}{21}
+\indexentry{MethodMixin (class in modelsbase)|hyperpage}{22}
+\indexentry{delete() (modelsbase.MethodMixin method)|hyperpage}{22}
+\indexentry{delete\_many() (modelsbase.MethodMixin class method)|hyperpage}{22}
+\indexentry{get() (modelsbase.MethodMixin class method)|hyperpage}{22}
+\indexentry{get\_by\_id() (modelsbase.MethodMixin class method)|hyperpage}{22}
+\indexentry{id\_ordering() (modelsbase.MethodMixin class method)|hyperpage}{22}
+\indexentry{update() (modelsbase.MethodMixin method)|hyperpage}{22}
+\indexentry{update\_many() (modelsbase.MethodMixin class method)|hyperpage}{22}
+\indexentry{connect\_to\_database() (in module modelsbase)|hyperpage}{22}
+\indexentry{create\_all() (in module modelsbase)|hyperpage}{22}
+\indexentry{update\_database() (in module modelsbase)|hyperpage}{23}
+\indexentry{models (module)|hyperpage}{23}
+\indexentry{Action (class in models)|hyperpage}{23}
+\indexentry{Activity (class in models)|hyperpage}{23}
+\indexentry{Company (class in models)|hyperpage}{23}
+\indexentry{Computer (class in models)|hyperpage}{24}
+\indexentry{get\_most\_recent\_by\_mac() (models.Computer class method)|hyperpage}{24}
+\indexentry{time\_ordering() (models.Computer class method)|hyperpage}{24}
+\indexentry{Event (class in models)|hyperpage}{24}
+\indexentry{File (class in models)|hyperpage}{25}
+\indexentry{FileAction (class in models)|hyperpage}{25}
+\indexentry{Project (class in models)|hyperpage}{26}
+\indexentry{Session (class in models)|hyperpage}{26}
+\indexentry{AddUser() (models.Session method)|hyperpage}{27}
+\indexentry{GetLastChecked() (models.Session method)|hyperpage}{27}
+\indexentry{Start() (models.Session method)|hyperpage}{27}
+\indexentry{User (class in models)|hyperpage}{27}
+\indexentry{state (module)|hyperpage}{28}
+\indexentry{State (class in state)|hyperpage}{28}
+\indexentry{destroy() (state.State method)|hyperpage}{28}
+\indexentry{end\_current\_project() (state.State method)|hyperpage}{28}
+\indexentry{end\_current\_session() (state.State method)|hyperpage}{28}
+\indexentry{get\_random\_responsive() (state.State method)|hyperpage}{28}
+\indexentry{handle\_file\_send() (state.State method)|hyperpage}{28}
+\indexentry{initialize() (state.State method)|hyperpage}{28}
+\indexentry{message\_handler() (state.State method)|hyperpage}{28}
+\indexentry{node\_id (state.State attribute)|hyperpage}{28}
+\indexentry{on\_project\_selected() (state.State method)|hyperpage}{29}
+\indexentry{on\_session\_changed() (state.State method)|hyperpage}{29}
+\indexentry{remove\_observer() (state.State method)|hyperpage}{29}
+\indexentry{set\_current\_project() (state.State method)|hyperpage}{29}
+\indexentry{set\_current\_session() (state.State method)|hyperpage}{29}
+\indexentry{set\_observer() (state.State method)|hyperpage}{29}
+\indexentry{set\_responsive() (state.State method)|hyperpage}{29}
+\indexentry{start\_audio\_recorder() (state.State method)|hyperpage}{29}
+\indexentry{start\_current\_project\_thread() (state.State method)|hyperpage}{29}
+\indexentry{start\_current\_session\_thread() (state.State method)|hyperpage}{29}
+\indexentry{start\_new\_session() (state.State method)|hyperpage}{29}
+\indexentry{stop\_responsive() (state.State method)|hyperpage}{29}
+\indexentry{swnp\_send() (state.State method)|hyperpage}{29}
+\indexentry{create\_config() (in module state)|hyperpage}{29}
+\indexentry{initialization\_test() (in module state)|hyperpage}{29}
+\indexentry{load\_config() (in module state)|hyperpage}{29}
+\indexentry{swnp (module)|hyperpage}{30}
+\indexentry{Message (class in swnp)|hyperpage}{30}
+\indexentry{from\_json() (swnp.Message static method)|hyperpage}{30}
+\indexentry{to\_dict() (swnp.Message static method)|hyperpage}{30}
+\indexentry{Node (class in swnp)|hyperpage}{30}
+\indexentry{get\_age() (swnp.Node method)|hyperpage}{30}
+\indexentry{refresh() (swnp.Node method)|hyperpage}{30}
+\indexentry{SWNP (class in swnp)|hyperpage}{30}
+\indexentry{close() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{do\_ping() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{find\_node() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{get\_buffer() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{get\_list() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{get\_screen\_list() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{ping\_handler() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{ping\_routine() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{send() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{set\_name() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{set\_responsive() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{set\_screens() (swnp.SWNP method)|hyperpage}{31}
+\indexentry{shutdown() (swnp.SWNP method)|hyperpage}{32}
+\indexentry{start\_sub\_routine() (swnp.SWNP static method)|hyperpage}{32}
+\indexentry{sub\_routine() (swnp.SWNP method)|hyperpage}{32}
+\indexentry{sub\_routine\_sys() (swnp.SWNP method)|hyperpage}{32}
+\indexentry{sys\_handler() (swnp.SWNP method)|hyperpage}{32}
+\indexentry{timeout\_routine() (swnp.SWNP method)|hyperpage}{32}
+\indexentry{testing (module)|hyperpage}{32}
+\indexentry{DiwaTest (class in testing)|hyperpage}{32}
+\indexentry{TestFilesystem (class in testing)|hyperpage}{32}
+\indexentry{test\_searchfile() (testing.TestFilesystem method)|hyperpage}{32}
+\indexentry{TestUtils (class in testing)|hyperpage}{32}
+\indexentry{test\_getpassword() (testing.TestUtils method)|hyperpage}{32}
+\indexentry{test\_iterislast() (testing.TestUtils method)|hyperpage}{32}
+\indexentry{test\_passwordhash() (testing.TestUtils method)|hyperpage}{33}
+\indexentry{threads.audiorecorder (module)|hyperpage}{33}
+\indexentry{AudioRecorder (class in threads.audiorecorder)|hyperpage}{33}
+\indexentry{find\_input\_device() (threads.audiorecorder.AudioRecorder method)|hyperpage}{33}
+\indexentry{open\_mic\_stream() (threads.audiorecorder.AudioRecorder method)|hyperpage}{33}
+\indexentry{run() (threads.audiorecorder.AudioRecorder method)|hyperpage}{33}
+\indexentry{save() (threads.audiorecorder.AudioRecorder method)|hyperpage}{33}
+\indexentry{stop() (threads.audiorecorder.AudioRecorder method)|hyperpage}{33}
+\indexentry{threads.checkupdate (module)|hyperpage}{33}
+\indexentry{CHECK\_UPDATE (class in threads.checkupdate)|hyperpage}{33}
+\indexentry{get\_pad() (threads.checkupdate.CHECK\_UPDATE static method)|hyperpage}{33}
+\indexentry{run() (threads.checkupdate.CHECK\_UPDATE method)|hyperpage}{33}
+\indexentry{show\_dialog() (threads.checkupdate.CHECK\_UPDATE method)|hyperpage}{33}
+\indexentry{threads.common (module)|hyperpage}{34}
+\indexentry{threads.connectionerror (module)|hyperpage}{34}
+\indexentry{CONNECTION\_ERROR\_THREAD (class in threads.connectionerror)|hyperpage}{34}
+\indexentry{run() (threads.connectionerror.CONNECTION\_ERROR\_THREAD method)|hyperpage}{34}
+\indexentry{threads.contextmenu (module)|hyperpage}{34}
+\indexentry{ContextMenuFailure (class in threads.contextmenu)|hyperpage}{34}
+\indexentry{SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in threads.contextmenu)|hyperpage}{34}
+\indexentry{run() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{34}
+\indexentry{stop() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method)|hyperpage}{34}
+\indexentry{threads.current (module)|hyperpage}{34}
+\indexentry{CURRENT\_PROJECT (class in threads.current)|hyperpage}{34}
+\indexentry{run() (threads.current.CURRENT\_PROJECT method)|hyperpage}{35}
+\indexentry{CURRENT\_SESSION (class in threads.current)|hyperpage}{35}
+\indexentry{run() (threads.current.CURRENT\_SESSION method)|hyperpage}{35}
+\indexentry{threads.diwathread (module)|hyperpage}{35}
+\indexentry{DIWA\_THREAD (class in threads.diwathread)|hyperpage}{35}
+\indexentry{remove\_self() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{35}
+\indexentry{stop() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{35}
+\indexentry{stop\_all() (threads.diwathread.DIWA\_THREAD static method)|hyperpage}{35}
+\indexentry{stop\_is\_set() (threads.diwathread.DIWA\_THREAD method)|hyperpage}{35}
+\indexentry{TimeoutException|hyperpage}{35}
+\indexentry{threads.inputcapture (module)|hyperpage}{35}
+\indexentry{INPUT\_CAPTURE (class in threads.inputcapture)|hyperpage}{35}
+\indexentry{hook() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{on\_keyboard\_event() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{on\_mouse\_event() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{reset\_mouse\_events() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{run() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{stop() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{unhook() (threads.inputcapture.INPUT\_CAPTURE method)|hyperpage}{36}
+\indexentry{MOUSE\_CAPTURE (class in threads.inputcapture)|hyperpage}{36}
+\indexentry{parse\_mouse\_events() (threads.inputcapture.MOUSE\_CAPTURE method)|hyperpage}{36}
+\indexentry{set\_capture() (in module threads.inputcapture)|hyperpage}{36}
+\indexentry{threads.worker (module)|hyperpage}{37}
+\indexentry{SNAPSHOT\_THREAD (class in threads.worker)|hyperpage}{37}
+\indexentry{run() (threads.worker.SNAPSHOT\_THREAD method)|hyperpage}{37}
+\indexentry{WORKER\_THREAD (class in threads.worker)|hyperpage}{37}
+\indexentry{add\_project\_registry\_entry() (threads.worker.WORKER\_THREAD static method)|hyperpage}{37}
+\indexentry{add\_registry\_entry() (threads.worker.WORKER\_THREAD static method)|hyperpage}{37}
+\indexentry{check\_responsive() (threads.worker.WORKER\_THREAD method)|hyperpage}{37}
+\indexentry{create\_event() (threads.worker.WORKER\_THREAD method)|hyperpage}{37}
+\indexentry{parse\_config() (threads.worker.WORKER\_THREAD method)|hyperpage}{37}
+\indexentry{remove\_all\_registry\_entries() (threads.worker.WORKER\_THREAD static method)|hyperpage}{37}
+\indexentry{run() (threads.worker.WORKER\_THREAD method)|hyperpage}{37}
+\indexentry{utils (module)|hyperpage}{37}
+\indexentry{DottedIPToInt() (in module utils)|hyperpage}{37}
+\indexentry{GetLANMachines() (in module utils)|hyperpage}{38}
+\indexentry{GetLocalIPAddress() (in module utils)|hyperpage}{38}
+\indexentry{GetMacForIp() (in module utils)|hyperpage}{38}
+\indexentry{IntToDottedIP() (in module utils)|hyperpage}{38}
+\indexentry{IterIsLast() (in module utils)|hyperpage}{38}
+\indexentry{MapNetworkShare() (in module utils)|hyperpage}{38}
+\indexentry{get\_encrypted\_directory\_name() (in module utils)|hyperpage}{38}
+\indexentry{hash\_password() (in module utils)|hyperpage}{38}
