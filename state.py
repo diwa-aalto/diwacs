@@ -347,7 +347,10 @@ class State(object):
         :type progressdialog: :py:class:`wx.ProgressDialog`
 
         """
-        path = self.current_project.path
+        if self.current_project is not None:
+            path = self.current_project.dir
+        else:
+            path = os.path.join(diwavars.PROJECT_PATH, 'temp')
         src_dst_list = []
         returnvalue = []
         contains_folders = False

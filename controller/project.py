@@ -197,6 +197,8 @@ def get_project_id_by_activity(activity_id):
     :rtype: Integer
 
     """
+    if activity_id < 1:
+        return 0
     activity = Activity.get_by_id(activity_id)
     return activity.project_id if activity else 0
 
