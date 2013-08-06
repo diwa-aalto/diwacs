@@ -27,11 +27,12 @@ import diwavars
 import filesystem
 import graphicaldesign
 import macro
-from modelsbase import REVERSE_ACTIONS
-from models import Project
+from modelsbase import REVERSE_ACTIONS, ItemAlreadyExistsException
+from models import Project, File
 import swnp
 import threads
 import utils
+from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -306,7 +307,12 @@ class State(object):
                     title = 'Sending items... {totalpercent}%% Complete'
                     title, msg = [s.format(**data) for s in (title, msg)]
                     dialog.SetTitle(title)
-                    dialog.Update(data['totalpercent'], msg)
+                    continue_ = dialog.Update(data['totalpercent'], msg)[0]
+                    if not continue_:
+                        # Cancel pressed.
+                        fin.close()
+                        fout.close()
+                        return
                 # End of conditional.
             fin.close()
             fout.close()
@@ -317,6 +323,7 @@ class State(object):
         if do_updates:
             dialog.Update(100, 'file transfer complete')
 
+    # TODO: We need to resolve the copy issue inside project folder.
     def handle_file_send(self, filenames, progressdialog=None):
         """
         Sends a file link to another node.
@@ -348,10 +355,9 @@ class State(object):
         :type progressdialog: :py:class:`wx.ProgressDialog`
 
         """
-        if self.current_project is not None:
-            path = self.current_project.dir
-        else:
-            path = os.path.join(diwavars.PROJECT_PATH, 'temp')
+        project = self.current_project
+        path = (project.dir if project is not None
+                else os.path.join(diwavars.PROJECT_PATH, 'temp'))
         src_dst_list = []
         returnvalue = []
         contains_folders = False
@@ -368,7 +374,7 @@ class State(object):
                 mydirs.append(res)
                 returnvalue.append(res)
                 # os.mkdir(returnvalue)
-                for (currentroot, dirs, files) in os.walk(copyroot, True):
+                for (currentroot, dirs, files) in os.walk(copyroot):
                     relativeroot = ''
                     if len(currentroot) > cidx:
                         relativeroot = currentroot[cidx:]
@@ -407,15 +413,21 @@ class State(object):
         LOGGER.debug('__sendfile_1__')
         if not contains_folders and result == wx.ID_NO:
             # Change project folders to temp folder.
-            tmp = os.path.join(r'\\' + diwavars.STORAGE, 'Projects', 'temp')
+            tmp = os.path.join(diwavars.PROJECT_PATH, 'temp')
             src_dst_list = [(src, dst.replace(path, tmp))
-                             for src, dst in src_dst_list]
+                             for (src, dst) in src_dst_list]
         LOGGER.debug('__sendfile_2__')
         try:
             self._handle_file_copy(src_dst_list, mydirs, progressdialog)
         except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
         LOGGER.debug('__sendfile_3__')
+        for src_dst in src_dst_list:
+            controller.create_file_action(src_dst[1],
+                                          REVERSE_ACTIONS['Created'],
+                                          self.current_session_id,
+                                          self.current_project_id)
+        LOGGER.debug('__sendfile_4__')
         return returnvalue
 
     def end_current_project(self):

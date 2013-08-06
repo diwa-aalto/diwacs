@@ -685,7 +685,6 @@ class SWNP:
             'MSG': SWNP._on_msg,
             'PING': self._on_ping
         }
-        LOGGER.debug('HANDLE: %s', str(msg))
         if msg.prefix in handlers:
             handlers[msg.prefix](msg.payload)
         else:

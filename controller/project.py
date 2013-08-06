@@ -40,26 +40,26 @@ def _logger():
     return controller.common.LOGGER
 
 
-def add_file_to_project(filepath, project_id):
+def add_file_to_project(file_path, project_id):
     """
     Add a file to project. Copies it to the folder and adds a record to
     database.
 
-    :param filepath: A filepath.
-    :type filepath: String
+    :param file_path: A file_path.
+    :type file_path: String
 
     :param project_id: Project id from database.
     :type projecT_id: Integer
 
-    :return: New filepath.
+    :return: New file_path.
     :rtype: String
 
     """
-    if File.get('exists', File.path == filepath):
+    if File.get('exists', File.path == file_path):
         return
     project = Project.get_by_id(project_id)
     try:
-        newpath = filesystem.copy_file_to_project(filepath, project_id)
+        newpath = filesystem.copy_file_to_project(file_path, project_id)
         if newpath:
             File(file_path=newpath, project=project)
         return newpath
@@ -183,7 +183,7 @@ def get_active_project(pgm_group):
     :rtype: Integer
 
     """
-    activity = controller.activity_id.get_active_activity(pgm_group)
+    activity = controller.activity.get_active_activity(pgm_group)
     return activity.project if activity else 0
 
 

@@ -971,4 +971,5 @@ class SendProgressBar(wx.ProgressDialog):
                                    parent=parent, style=pd_style)
         mypos = self.GetPositionTuple()
         self.MoveXY(mypos[0], mypos[1] + ypos)
+        self.Lower()
         self.Hide()

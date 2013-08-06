@@ -123,7 +123,10 @@ class BlackOverlay(wx.Frame):
             button_modifier = 'ALT'
         if not button:
             button = 'ESC'
-        replaces = {'MENU': 'ALT', 'BACK': 'BACKSPACE'}
+        replaces = {
+            'MENU': 'ALT',
+            'BACK': 'BACKSPACE'
+        }
         button_modifier = button_modifier.upper()
         button = button.upper()
         hotkey_table = [button_modifier, button]
@@ -131,7 +134,7 @@ class BlackOverlay(wx.Frame):
             if hotkey in replaces:
                 hotkey_table[index] = replaces[hotkey]
         label_format = 'Press {0} + {1} to end remote control'
-        label_text = label_format.format(*hotkey_table)
+        label_text = label_format.format(hotkey_table[0], hotkey_table[1])
         self.exit_label.SetLabel(label_text)
 
 
@@ -163,10 +166,12 @@ class DropTarget(wx.PyDropTarget):
         :param iterated: The node.
         :type iterated: :py:class:`swnp.Node`
 
-        :param filenames: The filenames to send, can include foldernames too.
+        :param filenames: The filenames to send, can include folder names too.
         :type filenames: List of String
 
         """
+        if not filenames:
+            return
         try:
             deltay = 200
             for dialogy in self.my_send_dialogs:
@@ -176,19 +181,34 @@ class DropTarget(wx.PyDropTarget):
             title = 'Sending items...'
             mydialog = SendProgressBar(self.parent, title, deltay)
             self.parent.Raise()
-            self.parent.Refresh()
-            paths = self.parent.diwa_state.handle_file_send(filenames,
-                                                            mydialog)
+            self.parent.Update()
+            project_items = []
+            paths = []
+            # Separate project files/folders from other stuff.
+            for filename in filenames:
+                if filename.startswith(diwavars.PROJECT_PATH):
+                    project_items.append(filename)
+                else:
+                    paths.append(filename)
+            LOGGER.debug('PFILES: {0}'.\
+                         format(', '.join([f for f in project_items])))
+            LOGGER.debug('NFILES: {0}'.format(', '.join([f for f in paths])))
+            # Process items that are not part of the project.
+            if paths:
+                paths = self.parent.diwa_state.handle_file_send(paths,
+                                                                mydialog)
+            # Union the two lists again.
+            paths.extend(project_items)
+            # Switch the UI state.
             mydialog.Destroy()
             mydialog = None
             self.parent.Show()
             self.parent.Raise()
             self.parent.Update()
-            self.parent.Refresh()
             if paths:
                 filenames = paths
-            command = 'open;%s' % str(filenames)
-            self.parent.diwa_state.SwnpSend(str(iterated), command)
+            command = 'open;{0!s}'.format(filenames)
+            self.parent.diwa_state.swnp_send(str(iterated), command)
             self.my_send_dialogs.remove(deltay)
         except Exception as excp:
             LOGGER.exception('OnData exception: %s - %s', filenames, str(excp))
@@ -586,7 +606,7 @@ class GUItemplate(wx.Frame):
                 sbox.Add(screen)
                 self.screens.Add(sbox, 0, wx.LEFT | wx.RIGHT, border=3)
         except Exception as excp:
-            LOGGER.exception('Init screens exception: %s', str(excp))
+            LOGGER.exception('Init screens exception: {0!s}'.format(excp))
         self.Layout()
         self.Refresh()
         self.init_screens_done = True
@@ -618,8 +638,6 @@ class GUItemplate(wx.Frame):
 
             self.pro_label = wx.TextCtrl(self.panel, -1, 'No Project Selected',
                                          style=wx.TE_READONLY | wx.TE_CENTRE)
-            # self.pro_label = wx.StaticText(self.panel, -1,
-            #                                "No Project Selected")
             self.pro_label.SetBackgroundColour(wx.Colour(2, 235, 255))
             myfont = self.pro_label.Font
             myfont.SetPointSize(myfont.GetPointSize() + 2)

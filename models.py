@@ -382,7 +382,7 @@ class File(MethodMixin, Base):
 
     def __init__(self, file_path, project=None):
         self.path = file_path
-        self.project = project
+        self.project_id = project.id if project is not None else None
         if File.get('exists', File.path == file_path):
             raise ItemAlreadyExistsException('File already exists!')
         File.update(self)
@@ -489,7 +489,7 @@ class FileAction(MethodMixin, Base):
                  user=None):
         self.file = file_
         self.action = action
-        self.session = session
+        self.session_id = session.id if session is not None else None
         self.computer = computer
         self.user = user
         FileAction.update(self)
@@ -556,7 +556,7 @@ class Project(MethodMixin, Base):
 
     def __init__(self, name, directory, company, password):
         self.name = name
-        self.company = company
+        self.company_id = company.id
         self.dir = directory
         self.password = password
         if Project.get('exists', Project.name == name):

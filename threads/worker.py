@@ -116,6 +116,7 @@ class WORKER_THREAD(DIWA_THREAD):
 
         """
         state = self.parent.diwa_state
+        old_responsive = state.responsive
         if not state.responsive and not state.is_responsive:
             nodes = controller.get_active_responsive_nodes(diwavars.PGM_GROUP)
             log_msg = 'Active nodes: ' + ', '.join([str(n) for n in nodes])
@@ -128,8 +129,9 @@ class WORKER_THREAD(DIWA_THREAD):
                 state.responsive = str(nodes[0].wos_id)
                 if state.responsive == state.swnp.node.id:
                     state.set_responsive()
-        log_msg = 'Responsive checked. Current responsive is: {0}'
-        _logger().debug(log_msg.format(state.responsive))
+        if state.responsive != old_responsive:
+            log_msg = 'Responsive checked. Current responsive is: {0}'
+            _logger().debug(log_msg.format(state.responsive))
 
     @staticmethod
     def add_project_registry_entry(reg_type):

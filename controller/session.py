@@ -61,7 +61,7 @@ def get_active_session(pgm_group):
     :rtype: Integer
 
     """
-    activity = controller.activity_id.get_active_activity(pgm_group)
+    activity = controller.activity.get_active_activity(pgm_group)
     return activity.session if activity else None
 
 

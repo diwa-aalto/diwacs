@@ -144,10 +144,11 @@ class EventList(EventListTemplate):
 
         """
         self.Hide()
-        i = self.evtlist.GetNextItem(-1)
-        while i != -1:
-            self.evtlist.SetItemBackgroundColour(i, wx.Colour(255, 255, 255))
-            i = self.evtlist.GetNextItem(i)
+        index = self.evtlist.GetNextItem(-1)
+        colour = wx.Colour(255, 255, 255)
+        while index != -1:
+            self.evtlist.SetItemBackgroundColour(index, colour)
+            index = self.evtlist.GetNextItem(index)
 
     def OnSelection(self, event):
         """
@@ -198,7 +199,6 @@ class GraphicalUserInterface(GUItemplate):
         self.list = EventList(self)
         splash_screen = MySplashScreen()
         splash_screen.Show()
-        self.diwa_state = None
         self.screen_selected = None
         self.ui_initialized = False
 
