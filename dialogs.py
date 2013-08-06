@@ -38,10 +38,7 @@ def __init_logger():
     LOGGER = getLogger('dialogs')
 
 
-diwavars.add_logger_initializer(__init_logger)
-
-
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Sets the logger level for dialogs logger.
 
@@ -50,6 +47,10 @@ def set_logger_level(level):
 
     """
     LOGGER.setLevel(level)
+
+
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def show_modal_and_destroy(class_, parent, params=None):

@@ -63,7 +63,7 @@ if __name__ == '__main__':
         logger_initializer()
 
 
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Used to set logger level.
 

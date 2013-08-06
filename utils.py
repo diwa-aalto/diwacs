@@ -36,7 +36,7 @@ def __init_logger():
     LOGGER = getLogger('utils')
 
 
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Docstring here.
 
@@ -46,7 +46,7 @@ def set_logger_level(level):
 
 
 diwavars.add_logger_initializer(__init_logger)
-diwavars.add_logger_level_setter(set_logger_level)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def get_encrypted_directory_name(name, hashed_password):
