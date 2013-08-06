@@ -18,7 +18,6 @@ from winerror import ERROR_NOT_CONNECTED
 import wmi
 
 # My imports.
-import controller
 import diwavars
 from models import Project
 
@@ -38,7 +37,10 @@ def __init_logger():
 
 def __set_logger_level(level):
     """
-    Docstring here.
+    Sets the logger level for utils logger.
+
+    :param level: Level of logging.
+    :type level: Integer
 
     """
     if LOGGER:
@@ -81,20 +83,6 @@ def hash_password(password):
     result = sha.hexdigest()
     # LOGGER.debug('PASSWD: %s' % result)
     return result
-
-
-def check_project_password(project_id, password):
-    """
-    Compares the the provided password with the project password.
-
-    """
-    try:
-        project_pwd = Project.get_by_id(project_id).password
-        hs = hash_password(password)
-        return project_pwd == hs
-    except Exception as excp:
-        LOGGER.debug('CheckPassword exception: %s' % str(excp))
-        return False
 
 
 def IterIsLast(iterable):

@@ -584,12 +584,15 @@ class ProjectAuthenticationDialog(wx.Dialog):
         self.SetFocus()
 
     def OnOk(self, event):
-        """ Called on OK button press. """
+        """
+        Called on OK button press.
+
+        """
         if event:
             event.Skip(False)
         result = 1
         try:
-            password_checker = utils.check_project_password
+            password_checker = controller.project.check_password
             if password_checker(self.project_id, self.password.GetValue()):
                 result = 0
         except Exception as excp:
