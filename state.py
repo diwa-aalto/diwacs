@@ -28,7 +28,7 @@ import filesystem
 import graphicaldesign
 import macro
 from modelsbase import REVERSE_ACTIONS
-from models import Project, Session
+from models import Project
 import swnp
 import threads
 import utils
@@ -394,6 +394,7 @@ class State(object):
                   'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP |
                             wx.YES_DEFAULT | wx.YES_NO)}
         result = show_modal_and_destroy(wx.MessageDialog, self.parent, params)
+        LOGGER.debug('__sendfile_0__')
         if contains_folders and result == wx.ID_NO:
             params = {'message': ('When dragging folders, you need to add '
                                 'them to project.'),
@@ -402,15 +403,18 @@ class State(object):
                                 wx.STAY_ON_TOP)}
             show_modal_and_destroy(wx.MessageDialog, self.parent, params)
             return []
+        LOGGER.debug('__sendfile_1__')
         if not contains_folders and result == wx.ID_NO:
             # Change project folders to temp folder.
             tmp = os.path.join(r'\\' + diwavars.STORAGE, 'Projects', 'temp')
             src_dst_list = [(src, dst.replace(path, tmp))
                              for src, dst in src_dst_list]
+        LOGGER.debug('__sendfile_2__')
         try:
             self._handle_file_copy(src_dst_list, mydirs, progressdialog)
         except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
+        LOGGER.debug('__sendfile_3__')
         return returnvalue
 
     def end_current_project(self):
