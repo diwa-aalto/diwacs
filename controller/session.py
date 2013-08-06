@@ -79,7 +79,13 @@ def get_latest_event_id():
 
 def get_session_id_by_activity(activity_id):
     """
-    Docstring here.
+    Get the session ID that this activity is a part of.
+
+    :param activity_id: ID of the activity.
+    :type activity_id: Integer
+
+    :returns: The project ID.
+    :rtype: Integer
 
     """
     activity = Activity.get_by_id(activity_id)

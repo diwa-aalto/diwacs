@@ -50,7 +50,14 @@ def set_capture(value):
 
 class MOUSE_CAPTURE(DIWA_THREAD):
     """
-    Docstring.
+    A thread for capturing mouse movements and sending them to remote
+    controlled systems.
+
+    :param parent: The main GUI.
+    :type parent: :py:class:`diwacs.GraphicalUserInterface`
+
+    :param swnp: The network handler.
+    :type swnp: :py:class:`swnp.SWNP`
 
     """
     def __init__(self, parent, swnp):
@@ -64,7 +71,7 @@ class MOUSE_CAPTURE(DIWA_THREAD):
 
     def parse_mouse_events(self):
         """
-        Docstring here.
+        Routine that constantly parses mouse events in the queue.
 
         """
         while not self._stop.is_set():
@@ -123,7 +130,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
 
     def unhook(self):
         """
-        Docstring here.
+        Remove the input hooks from the system.
 
         """
         try:
@@ -139,7 +146,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
 
     def hook(self):
         """
-        Docstring here.
+        Add the input hooks to the system.
 
         """
         try:
@@ -152,7 +159,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
 
     def reset_mouse_events(self):
         """
-        Docstring here.
+        Clear the mouse event queue.
 
         """
         self.mouse_thread.pos_x = None

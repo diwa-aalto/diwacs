@@ -55,13 +55,19 @@ class AudioRecorder(DIWA_THREAD):
         self.buffer = deque(maxlen=diwavars.MAX_LENGTH)
 
     def stop(self):
-        """ Stop audio recorder. """
+        """
+        Stop the audio recorder thread.
+
+        """
         DIWA_THREAD.stop(self)
         sleep(0.2)
         self.stream.close()
 
     def find_input_device(self):
-        """ Find the microphone device. """
+        """
+        Find a microphone device.
+
+        """
         for i in range(self.py_audio.get_device_count()):
             # Internationalization hack...
             # LOGGER.debug("Selecting audio device %s / %s " %
@@ -79,7 +85,10 @@ class AudioRecorder(DIWA_THREAD):
         return None
 
     def open_mic_stream(self):
-        """ Opens the stream object for microphone. """
+        """
+        Opens the stream object for microphone.
+
+        """
         device_index = None
         # uncomment the next line to search for a device.
         # device_index = self.find_input_device()
@@ -97,14 +106,15 @@ class AudioRecorder(DIWA_THREAD):
         """
         Continuously record from the microphone to the buffer.
 
-        If the buffer is full, the first frame will be removed and
-        the new block appended.
+        The size should be limited at diwavars.MAX_LENGTH constant.
+        The implementation keeps only the most recent data in the
+        case that there's too much data to store.
 
         """
         while not self._stop.is_set():
             try:
                 data = self.stream.read(diwavars.INPUT_FRAMES_PER_BLOCK)
-                if len(self.buffer) == self.buffer.maxlen:
+                while len(self.buffer) >= self.buffer.maxlen:
                     element = self.buffer.popleft()
                     del element
                 self.buffer.append(data)
@@ -112,7 +122,10 @@ class AudioRecorder(DIWA_THREAD):
                 _logger().exception('Error recording: %s', str(excp))
 
     def save(self, ide, path):
-        """Save the buffer to a file."""
+        """
+        Save the buffer to a file.
+
+        """
         try:
             date_string = datetime.now().strftime('%d%m%Y%H%M')
             filename = '%d_%s.wav' % (ide, date_string)

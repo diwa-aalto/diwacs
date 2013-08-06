@@ -615,7 +615,7 @@ class State(object):
 
     def on_project_selected(self):
         """
-        Docstring.
+        Event handler for project selection in the client.
 
         """
         if not self.current_project:
@@ -628,7 +628,7 @@ class State(object):
 
     def on_session_changed(self, desired_state):
         """
-        Docstring.
+        Event handler for session change in the client.
 
         """
         update = controller.add_or_update_activity
@@ -719,7 +719,10 @@ class State(object):
             LOGGER.info('Project set to %s (%s)', project_id, project.name)
 
     def set_responsive(self):
-        """ Docstring. """
+        """
+        Set the current node as responsive.
+
+        """
         LOGGER.debug('Set Responsive')
         diwavars.update_responsive(diwavars.PGM_GROUP)
         self.start_current_project_thread()
@@ -805,7 +808,10 @@ class State(object):
             LOGGER.exception(logmsg, str(excp))
 
     def stop_responsive(self):
-        """ Docstring. """
+        """
+        Stop being responsive.
+
+        """
         diwavars.update_responsive(0)
         self.remove_observer()
         self.end_current_project()

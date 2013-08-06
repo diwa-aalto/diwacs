@@ -258,7 +258,7 @@ CAMERA_PASS = ''
 
 def update_camera_vars(url, user, passwd):
     """
-    Docstring here.
+    Update the global variables that control the camera settings.
 
     """
     global CAMERA_URL, CAMERA_USER, CAMERA_PASS
@@ -276,7 +276,7 @@ AUDIO = False
 
 def update_audio(audio):
     """
-    Docstring here.
+    Update the global Audio variable.
 
     """
     global AUDIO
@@ -290,13 +290,13 @@ def update_audio(audio):
 RESPONSIVE = -1
 
 
-def update_responsive(resp):
+def update_responsive(responsive):
     """
-    Docstring here.
+    Update the global responsive setting.
 
     """
     global RESPONSIVE
-    RESPONSIVE = resp
+    RESPONSIVE = responsive
 
 
 # DATABASE CONFIGS
@@ -317,7 +317,7 @@ DB_STRING = ''
 def update_database_vars(address=None, name=None, type_=None, user=None,
                          password=None):
     """
-    Docstring here.
+    Update the global database settings.
 
     """
     global DB_ADDRESS, DB_NAME, DB_TYPE, DB_USER, DB_PASS, DB_STRING

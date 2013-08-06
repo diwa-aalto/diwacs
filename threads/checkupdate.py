@@ -100,8 +100,8 @@ class CHECK_UPDATE(DIWA_THREAD):
             _logger().exception('Update checker exception parsing pad-file')
             return
         except Exception as excp:
-            logstr = 'Update checker exception, generic: %s'
-            _logger().exception(logstr, str(excp))
+            logstr = 'Update checker exception, generic: {exception!s}'
+            _logger().exception(logstr.format(exception=excp))
             return
         self.latest_version = tree.findtext('Program_Info/Program_Version')
         url_p = 'Web_Info/Download_URLs/Primary_Download_URL'

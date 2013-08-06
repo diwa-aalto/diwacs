@@ -195,7 +195,13 @@ SENDKEYS_TABLE = (
 
 
 def GetKeydown(code):
-    """ Docstring here. """
+    """
+    Check if the key with keycode is held down.
+
+    :param code: Keycode of the key.
+    :type code: Integer
+
+    """
     return (win32api.GetKeyState(code) & (1 << 15)) != 0
 
 
@@ -392,7 +398,16 @@ def slide_to(target_x, target_y, speed='normal'):
 
     """
     def close_enough(first_location, second_location):
-        """ Docstring. """
+        """
+        Check if the points are close enough.
+
+        :param first_location: The first point.
+        :type first_location: Tuple of Integers
+
+        :param second_location: The second point.
+        :type second_location: Tuple of Integers
+
+        """
         close_x = abs(first_location[0] - second_location[0]) < 5
         close_y = abs(first_location[1] - second_location[1]) < 5
         return close_x and close_y

@@ -112,7 +112,7 @@ class WORKER_THREAD(DIWA_THREAD):
 
     def check_responsive(self):
         """
-        Docstring here.
+        Determine the responsive node.
 
         """
         state = self.parent.diwa_state
@@ -382,7 +382,10 @@ class WORKER_THREAD(DIWA_THREAD):
 
     def create_event(self, title):
         """
-        Docstring here.
+        Create a new event.
+
+        :param title: Title of the event.
+        :type title: String
 
         """
         project = self.parent.diwa_state.current_project

@@ -13,7 +13,10 @@ import time
 
 
 def get_local_ip_address(target):
-    """ Docstring here. """
+    """
+    Get the local ip address of target.
+
+    """
     ipaddr = ''
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

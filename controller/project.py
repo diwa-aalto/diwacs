@@ -17,12 +17,11 @@ from sqlalchemy.exc import SQLAlchemyError
 # Own imports.
 import controller.activity
 import filesystem
-from modelsbase import ItemAlreadyExistsException
+from modelsbase import (ItemAlreadyExistsException, connect_to_database,
+                        REVERSE_ACTIONS)
 from models import (Action, Activity, Company, File, FileAction, Project,
                     Session)
 import utils
-import models
-import modelsbase
 
 
 def _logger():
@@ -123,7 +122,21 @@ def add_project(data):
 
 def check_password(project_id, password):
     """
-    Docstring here.
+    Check that the password is correct for accessing a given project.
+
+    :note:
+        This returns true also if the project does not have password
+        specified as the project is public in that case. The password
+        provided is ignored in this case.
+
+    :param project_id: ID of the project.
+    :type project_id: Integer
+
+    :param password: Password to check.
+    :type password: String
+
+    :returns: Is the password authorized to access the project.
+    :type: Boolean
 
     """
     project = Project.get_by_id(project_id)
@@ -175,7 +188,13 @@ def get_active_project(pgm_group):
 
 def get_project_id_by_activity(activity_id):
     """
-    Docstring here.
+    Get the project ID that this activity is a part of.
+
+    :param activity_id: ID of the activity.
+    :type activity_id: Integer
+
+    :returns: The project ID.
+    :rtype: Integer
 
     """
     activity = Activity.get_by_id(activity_id)
@@ -216,13 +235,13 @@ def get_recent_files(project_id, max_files_count=None):
     database = None
     result = []
     try:
-        database = modelsbase.connect_to_database()
+        database = connect_to_database()
         my_query = database.query(File.path, FileAction.action_time)
         files = my_query.filter(File.project_id == project_id,
                                 File.id == FileAction.file_id)
         files = files.order_by(sqlalchemy.desc(FileAction.action_time))
         files = files.group_by(File.path)
-        if max_files_count and type(max_files_count) == int:
+        if max_files_count is not None:
             files = files.limit(max_files_count)
         result = files.all()
     except SQLAlchemyError:
@@ -286,7 +305,7 @@ def init_sync_project_directory(project_id):
                     add_file_to_project(filepath, project_id)
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
-            deleted = modelsbase.REVERSE_ACTIONS['Deleted']
+            deleted = REVERSE_ACTIONS['Deleted']
             controller.create_file_action(file_.path, deleted, 0, project_id)
             file_.project_id = None
         File.update_many(project_files)
