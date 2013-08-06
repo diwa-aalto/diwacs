@@ -396,14 +396,14 @@ class WORKER_THREAD(DIWA_THREAD):
                     #       informative pop-up about project and
                     #       session.
         event_id = controller.add_event(session.id, title, '')
-        SNAPSHOT_THREAD(project.path)
+        SNAPSHOT_THREAD(project.dir)
         try:
             self.parent.SwnpSend('SYS', 'screenshot;0')
             if diwavars.AUDIO:
                 log_msg = 'Buffering audio for {0} seconds.'
                 _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))
                 self.parent.status_text.SetLabel('Recording...')
-                parameters = (event_id, project.path)
+                parameters = (event_id, project.dir)
                 CallLater(millis=diwavars.WINDOW_TAIL * 1000,
                           callable=self.parent.audio_recorder.save,
                           args=parameters)

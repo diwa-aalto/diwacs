@@ -781,7 +781,7 @@ class ProjectSelectDialog(wx.Dialog):
         if result_object['delete']:
             if result_object['files']:
                 project = Project.get_by_id(project_id)
-                filesystem.delete_directory(project.path)
+                filesystem.delete_directory(project.dir)
                 project = None
             controller.delete_record(Project, project_id)
             self.UpdateProjects()

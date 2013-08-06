@@ -66,7 +66,7 @@ def copy_file_to_project(filepath, project_id):
     :rtype: String
 
     """
-    project_path = Project.get_by_id(project_id).path
+    project_path = Project.get_by_id(project_id).dir
     file_project_path = search_file(os.path.basename(filepath), project_path)
     if file_project_path:
         return file_project_path

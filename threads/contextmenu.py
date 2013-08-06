@@ -125,7 +125,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
             timer = threading.Timer(diwavars.WINDOW_TAIL * 1000,
                                     self.parent.audio_recorder.save,
                                     ide,
-                                    project.path)
+                                    project.dir)
             timer.start()
             CallAfter(self.parent.status_text.SetLabel, 'Recording...')
         return 'OK'

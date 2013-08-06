@@ -179,7 +179,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
             project = Project.get_by_id(self.project_id)
             source_file = File.get('one', File.project == project,
                                    File.path == source)
-            project_path = os.path.abspath(project.path)
+            project_path = os.path.abspath(project.dir)
             if source_file is not None:
                 # Case 1
                 if target.startswith(project_path):
@@ -220,14 +220,14 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         """
         try:
             project = Project.get_by_id(self.project_id)
-            if not project.path:
+            if not project.dir:
                 return
             file_path = event.src_path
             basename = os.path.basename(file_path)
             log_msg = 'On created at: {path} ({name})'
-            log_msg = log_msg.format(path=project.path, name=basename)
+            log_msg = log_msg.format(path=project.dir, name=basename)
             _logger().debug(log_msg)
-            new_path = os.path.join(project.path, basename)
+            new_path = os.path.join(project.dir, basename)
             try:
                 # Let's build the directory path to the file.
                 path_parts = os.path.dirname(file_path)

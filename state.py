@@ -556,7 +556,7 @@ class State(object):
     def _on_screenshot(self, parameters):  # @UnusedVariable
         if self.swnp.node.screens > 0:
             LOGGER.info('Taking a screenshot.')
-            project_path = self.current_project.path
+            project_path = self.current_project.dir
             filesystem.screen_capture(project_path, self.swnp.node.id)
 
     def _on_current_activity(self, parameters):

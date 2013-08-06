@@ -337,7 +337,7 @@ def is_project_file(filename, project_id):
     project = Project.get_by_id(project_id)
     if File.get('exists', File.path == fileabs, File.project_id == project_id):
         return True
-    file_project_path = filesystem.search_file(filebase, project.path)
+    file_project_path = filesystem.search_file(filebase, project.dir)
     if file_project_path:
         try:
             file_ = File(file_project_path, project)
