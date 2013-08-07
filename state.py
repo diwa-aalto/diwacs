@@ -27,12 +27,11 @@ import diwavars
 import filesystem
 import graphicaldesign
 import macro
-from modelsbase import REVERSE_ACTIONS, ItemAlreadyExistsException
-from models import Project, File
+from modelsbase import REVERSE_ACTIONS
+from models import Project
 import swnp
 import threads
 import utils
-from sqlalchemy.exc import SQLAlchemyError
 
 
 LOGGER = None
@@ -214,7 +213,7 @@ class State(object):
                 sid = controller.get_session_id_by_activity(self.activity_id)
                 self.set_current_project(pid)
                 self.set_current_session(sid)
-                self.parent.OnProject()
+                self.parent.OnProjectChanged()
         except Exception as excp:
             LOGGER.exception('State.initialize exception: {0!s}'.format(excp))
             raise
@@ -597,19 +596,21 @@ class State(object):
     def _on_current_activity(self, parameters):
         self.activity_id = int(parameters)
         old_project_id = self.current_project_id
+        old_session_id = self.current_session_id
         pid = controller.get_project_id_by_activity(self.activity_id)
         sid = controller.get_session_id_by_activity(self.activity_id)
         if old_project_id != pid:
             self.set_current_project(pid)
-        self.set_current_session(sid)
+        if old_session_id != sid:
+            self.set_current_session(sid)
         if old_project_id != pid:
-            self.parent.OnProject()
+            self.parent.OnProjectChanged()
 
     def _on_current_project(self, parameters):
         project_id = int(parameters)
         if project_id != self.current_project_id:
             self.set_current_project(project_id)
-            self.parent.OnProject()
+            self.parent.OnProjectChanged()
 
     def _on_current_session(self, parameters):
         session_id = int(parameters)
@@ -713,10 +714,10 @@ class State(object):
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
         elif session_id == 0 and session_id != self.current_session_id:
-            print 'Current Session 0'
             self.current_session = None
             self.current_session_id = 0
             self.end_current_session()
+            self.parent.DisableSessionButton()
             LOGGER.info('Session ended')
 
     def set_current_project(self, project_id):

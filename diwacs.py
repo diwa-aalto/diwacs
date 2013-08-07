@@ -516,7 +516,7 @@ class GraphicalUserInterface(GUItemplate):
             self.iterator = limit_int(0, new_iterator, len(self.nodes) - 3)
             pub.sendMessage('update_screens', update=True)
 
-    def OnProject(self):
+    def OnProjectChanged(self):
         """
         Project selected event handler.
 
@@ -735,7 +735,7 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.debug('Application closing...')
                 utils.MapNetworkShare('W:')
                 diwavars.update_responsive(0)
-                sleep(1)
+                sleep(0.5)
                 self.diwa_state.destroy()
                 LOGGER.debug('GraphicalUserInterface closing...')
                 self.Destroy()

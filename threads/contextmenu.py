@@ -200,7 +200,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
 
         """
 
-        _logger().debug('CMFH INITIALIZED------------------------------')
+        _logger().debug('CMFH INITIALIZED')
         handlers = {
             'send_to': self.__on_send_to,
             'add_to_project': self.__on_add_to_project,
@@ -216,19 +216,19 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
-                _logger().debug('CMFH got message: %s', message)
+                # _logger().debug('CMFH got message: %s', message)
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
                     self.socket.send(handlers[cmd](id_, path))
                 else:
                     self.socket.send('ERROR')
-                    _logger().info('CMFH: Unknown command: %s', cmd)
+                    _logger().debug('CMFH: Unknown command "{0}"'.format(cmd))
             except zmq.Again:
                 pass
             except (zmq.ZMQError, zmq.ContextTerminated, SystemExit) as excp:
                 # context terminated
                 _logger().exception('CMFH exception: {0!s}'.format(excp))
             except Exception as excp:
-                _logger().exception('Exception in CMFH: %s', str(excp))
+                log_msg = 'Generic Exception in CMFH: {0!s}'
+                _logger().exception(log_msg.fromat(excp))
                 self.socket.send('ERROR')
-        _logger().debug('CMFH DESTROYED------------------------------')
