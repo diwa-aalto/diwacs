@@ -463,15 +463,16 @@ class SWNP:
                     msg_hook = Message.from_json
                     msg_obj = loads(contents, object_hook=msg_hook)
                     receiver = 0
+                    LOGGER.debug('{0!s}'.format(contents))
                     try:
                         receiver = int(msg_obj.payload)
+                        msg_for_self = (receiver == self.node.id)
+                        if msg_obj.prefix == 'LEAVE' and msg_for_self:
+                            sleep(0.1)
+                            self.online = False
+                            break
                     except ValueError:
-                        continue
-                    msg_for_self = (receiver == self.node.id)
-                    if msg_obj.prefix == 'LEAVE' and msg_for_self:
-                        sleep(0.1)
-                        self.online = False
-                        break
+                        pass
                     self.sys_handler(msg_obj)
                 except Again:
                     # Non-blocking mode was requested and no messages
