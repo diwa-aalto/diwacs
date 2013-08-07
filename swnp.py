@@ -360,20 +360,25 @@ class SWNP:
             LOGGER.exception('Ping routine exception: %s', str(excp))
         previous_success = False
         LOGGER.debug('Ping routine started.')
-        while not self.ping_stop.isSet():
+        # Ping every 100th step and sleep for PING_RATE / 100...
+        step = 0
+        while self.online and not self.ping_stop.isSet():
             # Read envelope with address
-            try:
-                self.do_ping()
-                self.node.refresh()
-                if comp:
-                    comp.screens = self.node.screens
-                    success = controller.refresh_computer(comp)
-                    if not success and previous_success:
-                        error_handler.queue.append(CloseError)
-                    previous_success = success
-                sleep(PING_RATE)
-            except Exception as excp:
-                LOGGER.exception('Ping_routine exception: %s', str(excp))
+            step += 1
+            if step == 100:
+                try:
+                    self.do_ping()
+                    self.node.refresh()
+                    if comp:
+                        comp.screens = self.node.screens
+                        success = controller.refresh_computer(comp)
+                        if not success and previous_success:
+                            error_handler.queue.append(CloseError)
+                        previous_success = success
+                    sleep(PING_RATE / 100.0)
+                except Exception as excp:
+                    LOGGER.exception('Ping_routine exception: %s', str(excp))
+            step = step % 100
         LOGGER.debug('Ping routine closed.')
         error_handler.stop()
 
@@ -399,10 +404,10 @@ class SWNP:
                 try:
                     (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     message = loads(contents, object_hook=Message.from_json)
-                    (tag, prefix, payload) = (message.tag, message.prefix,
-                                              message.payload)
+                    (prefix, payload) = (message.prefix, message.payload)
                     if payload == self.id and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
+                        sleep(0.1)
                         self.online = False
                         break
                     elif prefix == 'SYNC':
@@ -460,12 +465,13 @@ class SWNP:
                     try:
                         receiver = int(msg_obj.payload)
                     except ValueError:
-                        pass
-                    msg_for_self = (receiver == self.id)
-                    self.sys_handler(msg_obj)
+                        continue
+                    msg_for_self = (receiver == self.node.id)
                     if msg_obj.prefix == 'LEAVE' and msg_for_self:
+                        sleep(0.1)
                         self.online = False
                         break
+                    self.sys_handler(msg_obj)
                 except Again:
                     # Non-blocking mode was requested and no messages
                     # are available at the moment or there was a parse
@@ -539,10 +545,10 @@ class SWNP:
         while (alive() or alive_sys()) and i < limit:
             # System sub routine thread.
             if alive_sys():
-                self.send('SYS', 'LEAVE', self.id)
+                self.send('SYS', 'LEAVE', str(self.id))
             # Sub routine thread.
             if alive():
-                self.send(str(self.id), 'LEAVE', self.id)
+                self.send(str(self.id), 'LEAVE', str(self.id))
             sleep(0.5)
             i += 1
         self.online = False
@@ -676,6 +682,7 @@ class SWNP:
     @staticmethod
     def _on_msg(payload):
         """ On message handlers. """
+        LOGGER.debug('OnMSG {0!s}'.format(payload))
         pub.sendMessage('message_received', message=payload)
 
     def _on_ping(self, payload):
@@ -684,7 +691,7 @@ class SWNP:
 
     def _on_default(self, payload):
         """ On unrecognized command handlers. """
-        pass
+        LOGGER.debug('OnDefault: {0!s}'.format(payload))
 
     def sys_handler(self, msg):
         """
