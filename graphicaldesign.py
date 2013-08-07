@@ -611,6 +611,7 @@ class GUItemplate(wx.Frame):
                 drop_target = DropTarget(screen, self, i)
                 screen.SetDropTarget(drop_target)
                 screen.Disable()
+                screen.Show()
                 self.filedrops.insert(i, drop_target)
                 sbox.Add(screen)
                 self.screens.Add(sbox, 0, wx.LEFT | wx.RIGHT, border=3)
@@ -742,7 +743,8 @@ class GUItemplate(wx.Frame):
         self.right.shadowPenClr = self.panel.GetBackgroundColour()
         self.right.highlightPenClr = self.panel.GetBackgroundColour()
         self.right.faceDnClr = self.panel.GetBackgroundColour()
-        xflags = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT
+        xflags = (wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT |
+                  wx.RESERVE_SPACE_EVEN_IF_HIDDEN)
         self.left.Disable()
         self.right.Disable()
         screenSizer.Add(self.left, 0, xflags, 2)
