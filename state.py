@@ -213,7 +213,7 @@ class State(object):
                 sid = controller.get_session_id_by_activity(self.activity_id)
                 self.set_current_project(pid)
                 self.set_current_session(sid)
-                self.parent.OnProject()
+                self.parent.OnProjectChanged()
         except Exception as excp:
             LOGGER.exception('State.initialize exception: {0!s}'.format(excp))
             raise
@@ -604,21 +604,18 @@ class State(object):
         if old_session_id != sid:
             self.set_current_session(sid)
         if old_project_id != pid:
-            self.parent.OnProject()
-        if old_session_id != sid:
-            self.parent.OnSession(None)
+            self.parent.OnProjectChanged()
 
     def _on_current_project(self, parameters):
         project_id = int(parameters)
         if project_id != self.current_project_id:
             self.set_current_project(project_id)
-            self.parent.OnProject()
+            self.parent.OnProjectChanged()
 
     def _on_current_session(self, parameters):
         session_id = int(parameters)
         if session_id != self.current_session_id:
             self.set_current_session(session_id)
-            self.parent.OnSession(None)
 
     def message_handler(self, message):
         """
@@ -717,10 +714,10 @@ class State(object):
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
         elif session_id == 0 and session_id != self.current_session_id:
-            print 'Current Session 0'
             self.current_session = None
             self.current_session_id = 0
             self.end_current_session()
+            self.parent.DisableSessionButton()
             LOGGER.info('Session ended')
 
     def set_current_project(self, project_id):

@@ -516,7 +516,7 @@ class GraphicalUserInterface(GUItemplate):
             self.iterator = limit_int(0, new_iterator, len(self.nodes) - 3)
             pub.sendMessage('update_screens', update=True)
 
-    def OnProject(self):
+    def OnProjectChanged(self):
         """
         Project selected event handler.
 

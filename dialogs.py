@@ -218,7 +218,7 @@ class AddProjectDialog(wx.Dialog):
             if result != self.parent.diwa_state.current_project_id:
                 self.parent.diwa_state.set_current_project(project.id)
                 self.parent.diwa_state.start_current_project_thread()
-                self.parent.OnProject()
+                self.parent.OnProjectChanged()
                 LOGGER.debug('Current Project set')
                 params = {'project_id': result}
                 dlg_result = show_modal_and_destroy(ProjectSelectedDialog,
@@ -850,7 +850,7 @@ class ProjectSelectDialog(wx.Dialog):
             LOGGER.debug('Project selected result: %s', str(result))
             if result == 2:
                 self.diwa_state.current_session_id = -1
-            self.parent.OnProject()
+            self.parent.OnProjectChanged()
             self.parent.OnSession(None)
             self.parent.Refresh()
         except Exception as excp:
