@@ -192,6 +192,10 @@ class GraphicalUserInterface(GUItemplate):
         super(GraphicalUserInterface, self).__init__(parent=None,
             title=diwavars.TRAY_TOOLTIP, size=diwavars.FRAME_SIZE,
             style=wx.FRAME_NO_TASKBAR)
+
+        # UI can not be shown yet.
+        self.Hide()
+        self.Freeze()
         NodeScreen.update_bitmaps()
 
         # List for choices
@@ -208,6 +212,10 @@ class GraphicalUserInterface(GUItemplate):
         pub.sendMessage('update_screens', update=True)
         if self.diwa_state.config_was_created:
             self.OnPreferences(None)
+
+        # UI can be shown now.
+        self.Thaw()
+        self.Show()
 
         # Perform initial testing before actual initialization.
         initial_test = state.initialization_test()
@@ -526,7 +534,7 @@ class GraphicalUserInterface(GUItemplate):
             self.diwa_state.on_project_selected()
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
-            self.EnableSessionButton()
+            # self.EnableSessionButton()
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
@@ -660,14 +668,11 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         update = update  # Intentionally left unused.
-        LOGGER.debug('UpdateScreens():')
         if not self.init_screens_done:
             return
         self.Freeze()                   # Prevents flickering.
         # self.HideScreens()
         self.nodes = self.diwa_state.swnp.get_screen_list()
-        nodelist = ', '.join([str(n) for n in self.nodes])
-        LOGGER.debug('UpdateScreens nodes: {0}'.format(nodelist))
         arrows_should_be_enabled = len(self.nodes) > 3
         for arrow in [self.left, self.right]:
             if arrows_should_be_enabled:

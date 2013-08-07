@@ -357,7 +357,7 @@ class MySplashScreen(wx.SplashScreen):
         bitmap = wx.Image(name=os.path.join('data', 'splashscreen.png'))
         bitmap = bitmap.ConvertToBitmap()
         splash_style = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_NO_TIMEOUT
-        splash_duration = 1000  # milliseconds
+        splash_duration = 800  # milliseconds
         wx.SplashScreen.__init__(self, bitmap, splash_style, splash_duration,
                                  parent)
 
