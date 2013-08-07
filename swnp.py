@@ -365,7 +365,8 @@ class SWNP:
         while self.online and not self.ping_stop.isSet():
             # Read envelope with address
             step += 1
-            if step == 100:
+            if step == 50:
+                LOGGER.debug('PING...')
                 try:
                     self.do_ping()
                     self.node.refresh()
@@ -375,10 +376,10 @@ class SWNP:
                         if not success and previous_success:
                             error_handler.queue.append(CloseError)
                         previous_success = success
-                    sleep(PING_RATE / 100.0)
                 except Exception as excp:
                     LOGGER.exception('Ping_routine exception: %s', str(excp))
-            step = step % 100
+            step = step % 50
+            sleep(PING_RATE / 50.0)
         LOGGER.debug('Ping routine closed.')
         error_handler.stop()
 
