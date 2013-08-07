@@ -533,7 +533,7 @@ class SWNP:
 
         """
         i = 0
-        limit = 6
+        limit = 4
         alive = self.sub_thread.isAlive
         alive_sys = self.sub_thread_sys.isAlive
         while (alive() or alive_sys()) and i < limit:
@@ -545,6 +545,7 @@ class SWNP:
                 self.send(str(self.id), 'LEAVE', self.id)
             sleep(0.5)
             i += 1
+        self.online = False
         LOGGER.debug('Closing publishers...')
         self.publisher.close()
         self.publisher_loopback.close()
