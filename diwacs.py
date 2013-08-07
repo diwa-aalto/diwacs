@@ -735,7 +735,7 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.debug('Application closing...')
                 utils.MapNetworkShare('W:')
                 diwavars.update_responsive(0)
-                sleep(4)
+                sleep(1)
                 self.diwa_state.destroy()
                 LOGGER.debug('GraphicalUserInterface closing...')
                 self.Destroy()

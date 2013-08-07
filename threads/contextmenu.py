@@ -79,14 +79,14 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         try:
             stop_socket = self.context.socket(zmq.REQ)
             stop_socket.setsockopt(zmq.LINGER, 0)
-            stop_socket.setsockopt(zmq.RCVTIMEO, 1000)
+            stop_socket.setsockopt(zmq.RCVTIMEO, 200)
             stop_socket.connect('tcp://127.0.0.1:5555')
-            self._stop.set()
             try:
-                stop_socket.send('exit;0;0', flags=zmq.NOBLOCK)
+                stop_socket.send('exit;0;0')
                 stop_socket.recv()
             except zmq.ZMQError:
                 pass
+            self._stop.set()
             stop_socket.close()
             self.socket.close()
         except Exception as excp:
@@ -170,10 +170,11 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         id_ = id_
         param = param
         if self.parent.swnp.node.screens > 0:
-            project_id = self.parent.diwa_state.current_project_id
-            path = controller.get_project_path(project_id)
+            project = self.parent.diwa_state.current_project
+            if project is None:
+                return 'OK'
             node_id = self.parent.swnp.node.id
-            filesystem.screen_capture(path, node_id)
+            filesystem.screen_capture(project.dir, node_id)
         return 'OK'
 
     def __on_exit(self, id_, param):
@@ -212,7 +213,6 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
             'exit': self.__on_exit,
             'command': SEND_FILE_CONTEX_MENU_HANDLER.__on_command
         }
-
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
@@ -225,12 +225,9 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                     _logger().info('CMFH: Unknown command: %s', cmd)
             except zmq.Again:
                 pass
-            except zmq.ZMQError as zerr:
-                # context terminated so quit silently
-                if zerr.strerror == 'Context was terminated':
-                    break
-                else:
-                    _logger().exception('CMFH exception: %s', zerr.strerror)
+            except (zmq.ZMQError, zmq.ContextTerminated, SystemExit) as excp:
+                # context terminated
+                _logger().exception('CMFH exception: {0!s}'.format(excp))
             except Exception as excp:
                 _logger().exception('Exception in CMFH: %s', str(excp))
                 self.socket.send('ERROR')
