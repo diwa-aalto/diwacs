@@ -463,7 +463,6 @@ class SWNP:
                     msg_hook = Message.from_json
                     msg_obj = loads(contents, object_hook=msg_hook)
                     receiver = 0
-                    LOGGER.debug('{0!s}'.format(contents))
                     try:
                         receiver = int(msg_obj.payload)
                         msg_for_self = (receiver == self.node.id)
@@ -551,7 +550,7 @@ class SWNP:
             # Sub routine thread.
             if alive():
                 self.send(str(self.id), 'LEAVE', str(self.id))
-            sleep(0.5)
+            sleep(0.25)
             i += 1
         self.online = False
         LOGGER.debug('Closing publishers...')
@@ -575,7 +574,7 @@ class SWNP:
         LOGGER.debug('Beginning close of SWNP')
         self.ping_stop.set()
         self.timeout_stop.set()
-        LOGGER.debug('closing threads')
+        LOGGER.debug('Closing threads')
         try:
             self.shutdown()
         except Exception as excp:
@@ -669,7 +668,6 @@ class SWNP:
 
     def _on_leave(self, payload):
         """ On leave handlers. """
-        LOGGER.debug('Node leaving: {0}'.format(payload))
         try:
             node_id = int(payload)
         except ValueError:
@@ -677,14 +675,11 @@ class SWNP:
         node = self.find_node(node_id)
         if node:
             self.NODE_LIST.discard(node)
-        nodelist = ', '.join([str(n) for n in self.NODE_LIST])
-        LOGGER.debug('Nodes left: {0}'.format(nodelist))
         pub.sendMessage('update_screens', update=True)
 
     @staticmethod
     def _on_msg(payload):
         """ On message handlers. """
-        LOGGER.debug('OnMSG {0!s}'.format(payload))
         pub.sendMessage('message_received', message=payload)
 
     def _on_ping(self, payload):
@@ -693,7 +688,7 @@ class SWNP:
 
     def _on_default(self, payload):
         """ On unrecognized command handlers. """
-        LOGGER.debug('OnDefault: {0!s}'.format(payload))
+        pass
 
     def sys_handler(self, msg):
         """
@@ -709,7 +704,7 @@ class SWNP:
             'MSG': SWNP._on_msg,
             'PING': self._on_ping
         }
-        LOGGER.debug('SWNP: {0!s}'.format(msg))
+        # LOGGER.debug('SWNP: {0!s}'.format(msg))
         if msg.prefix in handlers:
             handlers[msg.prefix](msg.payload)
         else:
