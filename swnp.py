@@ -430,42 +430,6 @@ class SWNP:
             sub = None
         LOGGER.debug('Sub closed')
 
-    def set_name(self, name):
-        """
-        Sets the name for the instance.
-
-        :param name: New name of the instance.
-        :type name: String
-
-        """
-        self.node.name = name
-        controller.refresh_computer_by_wos_id(self.node.id, new_name=name)
-
-    def set_screens(self, screens):
-        """
-        Sets the number of screens for the instance.
-
-        :param screens: New number of screens.
-        :type screens: Integer
-
-        """
-        self.node.screens = screens
-        controller.refresh_computer_by_wos_id(self.node.id,
-                                              new_screens=screens)
-
-    def set_responsive(self, responsive):
-        """
-        Sets the responsive flag for the instance.
-
-        :param responsive: New number of screens.
-        :type responsive: Integer
-
-        """
-        self.node.data = responsive
-        new_responsive = diwavars.PGM_GROUP if responsive else 0
-        controller.refresh_computer_by_wos_id(self.node.id,
-                                              new_responsive=new_responsive)
-
     def sub_routine_sys(self, sub_urls):
         """
         Subscriber routine for the node ID.
@@ -527,17 +491,57 @@ class SWNP:
             sub = None
         LOGGER.debug('Sys sub closed')
 
+    def set_name(self, name):
+        """
+        Sets the name for the instance.
+
+        :param name: New name of the instance.
+        :type name: String
+
+        """
+        self.node.name = name
+        controller.refresh_computer_by_wos_id(self.node.id, new_name=name)
+
+    def set_screens(self, screens):
+        """
+        Sets the number of screens for the instance.
+
+        :param screens: New number of screens.
+        :type screens: Integer
+
+        """
+        self.node.screens = screens
+        controller.refresh_computer_by_wos_id(self.node.id,
+                                              new_screens=screens)
+
+    def set_responsive(self, responsive):
+        """
+        Sets the responsive flag for the instance.
+
+        :param responsive: New number of screens.
+        :type responsive: Integer
+
+        """
+        self.node.data = responsive
+        new_responsive = diwavars.PGM_GROUP if responsive else 0
+        controller.refresh_computer_by_wos_id(self.node.id,
+                                              new_responsive=new_responsive)
+
     def shutdown(self):
         """
         Shuts down all connections, no exit.
 
         """
+        # Inform other users.
+        for node in self.NODE_LIST:
+            if node.id != self.node.id:
+                self.send(str(node.id), 'LEAVE', str(self.id))
         i = 0
         limit = 6
         alive = self.sub_thread.isAlive
         alive_sys = self.sub_thread_sys.isAlive
         while (alive() or alive_sys()) and i < limit:
-            # System sub routine thread & Other users.
+            # System sub routine thread.
             if alive_sys():
                 self.send('SYS', 'LEAVE', self.id)
             # Sub routine thread.
@@ -661,7 +665,11 @@ class SWNP:
     def _on_leave(self, payload):
         """ On leave handlers. """
         LOGGER.debug('Node leaving: {0}'.format(payload))
-        node = self.find_node(payload)
+        try:
+            node_id = int(payload)
+        except ValueError:
+            return
+        node = self.find_node(node_id)
         if node:
             self.NODE_LIST.discard(node)
         nodelist = ', '.join([str(n) for n in self.NODE_LIST])
