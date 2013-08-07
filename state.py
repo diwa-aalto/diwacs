@@ -277,49 +277,54 @@ class State(object):
         first_transaction = True
         lastupdate = datetime.now()
         for i, (src, dst) in enumerate(src_dst_list):
-            curlen = os.path.getsize(src)
-            curcopied = 0
-            fin = open(src, 'rb')
-            fout = open(dst, 'wb')
-            while curcopied < curlen:
-                cstr = fin.read(min(State.DEF_BUFFER, curlen - curcopied))
-                fout.write(cstr)
-                curcopied += len(cstr)
-                condition = do_updates and (
-                    first_transaction or
-                    (datetime.now() - lastupdate).total_seconds() > 1.0 or
-                    curcopied == curlen
-                )
-                if condition:
-                    lastupdate = datetime.now()
-                    first_transaction = False
-                    data = {
-                        'filename': os.path.basename(src),
-                        'filepercent': int(100.0 * curcopied / curlen),
-                        'totalpercent': int(100.0 *
-                                            (total_copied + curcopied) /
-                                            total_len),
-                        'file': i + 1,
-                        'filecount': filecount
-                    }
-                    msg = ('{filename} {filepercent}%% complete (file {file} '
-                           'out of {filecount}')
-                    title = 'Sending items... {totalpercent}%% Complete'
-                    title, msg = [s.format(**data) for s in (title, msg)]
-                    dialog.SetTitle(title)
-                    continue_ = dialog.Update(data['totalpercent'], msg)[0]
-                    if not continue_:
-                        # Cancel pressed.
-                        fin.close()
-                        fout.close()
-                        return
+            try:
+                curlen = os.path.getsize(src)
+                curcopied = 0
+                fin = open(src, 'rb')
+                fout = open(dst, 'wb')
+                while curcopied < curlen:
+                    cstr = fin.read(min(State.DEF_BUFFER, curlen - curcopied))
+                    fout.write(cstr)
+                    curcopied += len(cstr)
+                    condition = do_updates and (
+                        first_transaction or
+                        (datetime.now() - lastupdate).total_seconds() > 1.0 or
+                        curcopied == curlen
+                    )
+                    if condition:
+                        lastupdate = datetime.now()
+                        first_transaction = False
+                        data = {
+                            'filename': os.path.basename(src),
+                            'filepercent': int(100.0 * curcopied / curlen),
+                            'totalpercent': int(100.0 *
+                                                (total_copied + curcopied) /
+                                                total_len),
+                            'file': i + 1,
+                            'filecount': filecount
+                        }
+                        msg = ('{filename} {filepercent}%% complete '
+                               '(file {file} out of {filecount}')
+                        title = 'Sending items... {totalpercent}%% Complete'
+                        title, msg = [s.format(**data) for s in (title, msg)]
+                        dialog.SetTitle(title)
+                        continue_ = dialog.Update(data['totalpercent'], msg)[0]
+                        if not continue_:
+                            # Cancel pressed.
+                            return
                 # End of conditional.
-            fin.close()
-            fout.close()
-            shutil.copystat(src, dst)
-            total_copied += curlen
-            self.parent.Update()
-            first_transaction = True
+                shutil.copystat(src, dst)
+            except IOError as excp:
+                log_msg = 'Exception copying file: {0} - {1!s}'
+                LOGGER.exception(log_msg.format(src, excp))
+            finally:
+                first_transaction = True
+                total_copied += curlen
+                if fin and hasattr(fin, 'close'):
+                    fin.close()
+                if fout and hasattr(fout, 'close'):
+                    fout.close()
+                self.parent.Update()
         if do_updates:
             dialog.Update(100, 'file transfer complete')
 
@@ -358,6 +363,7 @@ class State(object):
         project = self.current_project
         path = (project.dir if project is not None
                 else os.path.join(diwavars.PROJECT_PATH, 'temp'))
+        project_id = project.id if project is not None else 0
         src_dst_list = []
         returnvalue = []
         contains_folders = False
@@ -400,7 +406,11 @@ class State(object):
                   'caption': 'Add to project?',
                   'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP |
                             wx.YES_DEFAULT | wx.YES_NO)}
-        result = show_modal_and_destroy(wx.MessageDialog, self.parent, params)
+        if project is None:
+            result = wx.ID_NO
+        else:
+            result = show_modal_and_destroy(wx.MessageDialog, self.parent,
+                                            params)
         LOGGER.debug('__sendfile_0__')
         if contains_folders and result == wx.ID_NO:
             params = {'message': ('When dragging folders, you need to add '
@@ -408,6 +418,13 @@ class State(object):
                       'caption': 'Denied action',
                       'style': (wx.ICON_WARNING | wx.OK | wx.OK_DEFAULT |
                                 wx.STAY_ON_TOP)}
+            if project is None:
+                params['message'] = (params['message'] + '\n'
+                                     'You also have no project selected '
+                                     'so it is currently not possible for '
+                                     'you to drag-and-drop a folder.\n'
+                                     'Please select a project to enable this '
+                                     'functionality.')
             show_modal_and_destroy(wx.MessageDialog, self.parent, params)
             return []
         LOGGER.debug('__sendfile_1__')
@@ -422,11 +439,12 @@ class State(object):
         except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
         LOGGER.debug('__sendfile_3__')
-        for src_dst in src_dst_list:
-            controller.create_file_action(src_dst[1],
-                                          REVERSE_ACTIONS['Created'],
-                                          self.current_session_id,
-                                          self.current_project_id)
+        if result == wx.ID_YES:
+            for src_dst in src_dst_list:
+                controller.create_file_action(src_dst[1],
+                                              REVERSE_ACTIONS['Created'],
+                                              self.current_session_id,
+                                              project_id)
         LOGGER.debug('__sendfile_4__')
         return returnvalue
 
@@ -623,7 +641,6 @@ class State(object):
             'current_project': self._on_current_project,
             'current_session': self._on_current_session
         }
-        LOGGER.debug('ZMQ PUBSUB Message: ' + message)
         try:
             cmd, parameters = message.split(';', 1)
             if cmd in message_routine:

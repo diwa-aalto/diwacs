@@ -55,11 +55,17 @@ def add_file_to_project(file_path, project_id):
     :rtype: String
 
     """
+    if not file_path:
+        return ''
+    file_path = os.path.abspath(file_path)
     if File.get('exists', File.path == file_path):
-        return
+        return ''
     project = Project.get_by_id(project_id)
     try:
-        newpath = filesystem.copy_file_to_project(file_path, project_id)
+        if not file_path.startswith(project.dir):
+            newpath = file_path
+        else:
+            newpath = filesystem.copy_file_to_project(file_path, project_id)
         if newpath:
             File(file_path=newpath, project=project)
         return newpath
@@ -165,8 +171,9 @@ def create_file_action(path, action_id, session_id, project_id):
     """
     project_file = is_project_file(path, project_id)
     project_file = project_file if project_file else path
+    args = (File.path == project_file, File.project_id == project_id)
     kwargs = {'path': project_file, 'project_id': project_id}
-    file_object = controller.common.get_or_create(File, **kwargs)
+    file_object = controller.common.get_or_create(File, *args, **kwargs)
     action_object = Action.get_by_id(action_id)
     session_object = Session.get_by_id(session_id) if session_id > 0 else None
     return FileAction(file_object, action_object, session_object)

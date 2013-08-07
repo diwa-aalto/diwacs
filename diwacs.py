@@ -683,6 +683,7 @@ class GraphicalUserInterface(GUItemplate):
             node_screen.ReloadAs(self.nodes[iterated])
         if len(self.nodes) < diwavars.MAX_SCREENS:
             for i in xrange(len(self.nodes), diwavars.MAX_SCREENS):
+                self.node_screens[i].EmptyScreen()
                 self.node_screens[i].Disable()
                 # TODO: Remove old registry entry.
         for node in self.nodes:

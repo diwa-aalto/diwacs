@@ -15,9 +15,9 @@ import os
 # Third party imports.
 import wx
 import wx.lib.buttons as buttons
-import filesystem
 from urlparse import urlparse
-import threading
+from sqlalchemy.exc import SQLAlchemyError
+from modelsbase import ItemAlreadyExistsException
 try:
     from agw import ultimatelistctrl as ULC  # @UnusedImport
 except ImportError:
@@ -26,6 +26,9 @@ except ImportError:
 # Own imports.
 from dialogs import ConnectionErrorDialog, SendProgressBar
 import diwavars
+import filesystem
+from models import File
+import threading
 
 
 LOGGER = None
@@ -182,12 +185,22 @@ class DropTarget(wx.PyDropTarget):
             mydialog = SendProgressBar(self.parent, title, deltay)
             self.parent.Raise()
             self.parent.Update()
+            project = self.parent.diwa_state.current_project
             project_items = []
             paths = []
+            if not project:
+                paths.extend(filenames)
+                filenames = []
             # Separate project files/folders from other stuff.
             for filename in filenames:
+                filename = os.path.abspath(filename)
                 if filename.startswith(diwavars.PROJECT_PATH):
                     project_items.append(filename)
+                    if not File.get('exists', File.path == filename):
+                        try:
+                            File(filename, project.id)
+                        except (SQLAlchemyError, ItemAlreadyExistsException):
+                            pass
                 else:
                     paths.append(filename)
             LOGGER.debug('PFILES: {0}'.\
@@ -228,45 +241,40 @@ class DropTarget(wx.PyDropTarget):
         """
         if not self.GetData():
             return d
-        data_type = self.dataobject.GetReceivedFormat().GetType()
-        difference = self.id_iterator + self.parent.iterator
-        node_id = self.parent.nodes[difference].id
-        if data_type == wx.DF_BITMAP:
-            LOGGER.debug('Input was BITMAP!')
-            try:
+        try:
+            data_type = self.dataobject.GetReceivedFormat().GetType()
+            difference = self.id_iterator + self.parent.iterator
+            node_id = self.parent.nodes[difference].id
+            if data_type == wx.DF_BITMAP:
                 bitmap = self.bmpdo.GetBitmap()
                 image = bitmap.ConvertToImage()
                 image_buffer = cStringIO.StringIO()
                 image.SaveStream(image_buffer, wx.BITMAP_TYPE_PNG)
-                msg = 'wx_image;{0}'.format(b64encode(image_buffer.getvalue()))
-                self.parent.SwnpSend(str(node_id), msg)
+                image_data = image_buffer.getvalue()
+                msg = 'wx_image;{0}'.format(b64encode(image_data))
+                self.parent.diwa_state.swnp_send(str(node_id), msg)
                 LOGGER.debug('Sent wx_image to %d with length %d',
                              int(node_id), len(msg) - len('wx_image;'))
                 image_buffer.close()
-            except IOError as excp:
-                LOGGER.debug('IOError while sending wx_image: %s',
-                             str(excp))
-        if data_type in [wx.DF_UNICODETEXT, wx.DF_TEXT]:
-            text = self.textdo.GetText()
-            LOGGER.debug('DF_TEXT received: %s', str(text))
-            parsed = urlparse(text)
-            if parsed.scheme == 'http' or parsed.scheme == 'https':
-                msg = 'url;' + text
-                self.parent.SwnpSend(str(node_id), msg)
-        elif data_type == wx.DF_FILENAME:
-            LOGGER.debug('File(s) received.')
-            try:
+            if data_type in [wx.DF_UNICODETEXT, wx.DF_TEXT]:
+                text = self.textdo.GetText()
+                parsed = urlparse(text)
+                if parsed.scheme == 'http' or parsed.scheme == 'https':
+                    msg = 'url;' + text
+                    self.parent.diwa_state.swnp_send(str(node_id), msg)
+            elif data_type == wx.DF_FILENAME:
                 filenames = self.filedo.GetFilenames()
                 data_target = self._OnFileProcedure
                 data_thread = threading.Thread(target=data_target,
                                                name='on_data',
                                                args=[node_id, filenames])
                 data_thread.run()
-            except (ValueError, IOError, OSError) as excp:
-                LOGGER.exception('CreateSendThread: %s', str(excp))
-        else:
-            LOGGER.debug('Unknown filedrop format: %s', str(data_type))
-        return d  # you must return this
+            else:
+                LOGGER.debug('Unknown filedrop format: %s', str(data_type))
+        except (ValueError, IOError, OSError) as excp:
+            LOGGER.exception('Error while sending items: {0!s}'.format(excp))
+        finally:
+            return d  # you must return this
 
 
 class EventListTemplate(wx.Frame):
@@ -446,7 +454,7 @@ class NodeScreen(wx.StaticBitmap):
     def __init__(self, node, parent):
         wx.StaticBitmap.__init__(self, parent)
         self.node = None
-        self.ReloadAs(node)
+        self.EmptyScreen()
 
     def EmptyScreen(self):
         """ Make this screen EmptyScreen. """
@@ -459,10 +467,11 @@ class NodeScreen(wx.StaticBitmap):
         if not node:
             self.EmptyScreen()
             return
-        if self.node and self.node == node:
+        if self.node is not None and self.node.id == node.id:
             self.node = node
             tooltip = wx.ToolTip(self.node.name)
             self.SetToolTip(tooltip)
+            self.Show()
             return
         self.node = node
         bitmap = NodeScreen.DEFAULT_BITMAP

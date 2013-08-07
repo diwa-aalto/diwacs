@@ -108,26 +108,28 @@ def delete_record(record_model, id_number):
         return False
 
 
-def get_or_create(model, **kwargs):
+def get_or_create(model, *filters, **initializers):
     """
     Fetches or creates a instance.
 
-    :param database: a related database.
-    :type database: :class:`sqlalchemy.orm.session.Session`
-
     :param model: The model of which an instance is wanted.
     :type model: :py:class:`sqlalchemy.ext.declarative.declarative_base`
+
+    Filters are given after model and represent the query conditions for get.
+
+    Initializers are given after filters and are keyword arguments used for
+    initializing a new object.
 
     :returns: An object of the desired model.
 
     :throws: :py:class:`sqlalchemy.exc.SQLAlchemyException`
 
     """
-    candidates = model.get('all', **kwargs)
+    candidates = model.get('all', *filters)
     candidates.sort(key=model.id_ordering)
     if candidates:
         return candidates.pop()
-    return model(**kwargs)
+    return model(**initializers)
 
 
 def test_connection():
