@@ -660,11 +660,14 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         update = update  # Intentionally left unused.
+        LOGGER.debug('UpdateScreens():')
         if not self.init_screens_done:
             return
         self.Freeze()                   # Prevents flickering.
         # self.HideScreens()
         self.nodes = self.diwa_state.swnp.get_screen_list()
+        nodelist = ', '.join([str(n) for n in self.nodes])
+        LOGGER.debug('UpdateScreens nodes: {0}'.format(nodelist))
         arrows_should_be_enabled = len(self.nodes) > 3
         for arrow in [self.left, self.right]:
             if arrows_should_be_enabled:

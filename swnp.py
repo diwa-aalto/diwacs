@@ -533,9 +533,16 @@ class SWNP:
 
         """
         i = 0
-        limit = 5
-        while self.sub_thread.isAlive() and i < limit:
-            self.send(self.id, PREFIX_CHOICES[1], self.id)
+        limit = 6
+        alive = self.sub_thread.isAlive
+        alive_sys = self.sub_thread_sys.isAlive
+        while (alive() or alive_sys()) and i < limit:
+            # System sub routine thread & Other users.
+            if alive_sys():
+                self.send('SYS', 'LEAVE', self.id)
+            # Sub routine thread.
+            if alive():
+                self.send(str(self.id), 'LEAVE', self.id)
             sleep(0.5)
             i += 1
         LOGGER.debug('Closing publishers...')
@@ -653,9 +660,12 @@ class SWNP:
 
     def _on_leave(self, payload):
         """ On leave handlers. """
+        LOGGER.debug('Node leaving: {0}'.format(payload))
         node = self.find_node(payload)
         if node:
             self.NODE_LIST.discard(node)
+        nodelist = ', '.join([str(n) for n in self.NODE_LIST])
+        LOGGER.debug('Nodes left: {0}'.format(nodelist))
         pub.sendMessage('update_screens', update=True)
 
     @staticmethod
@@ -685,6 +695,7 @@ class SWNP:
             'MSG': SWNP._on_msg,
             'PING': self._on_ping
         }
+        LOGGER.debug('SWNP: {0!s}'.format(msg))
         if msg.prefix in handlers:
             handlers[msg.prefix](msg.payload)
         else:

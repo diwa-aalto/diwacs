@@ -453,7 +453,7 @@ class NodeScreen(wx.StaticBitmap):
 
     def __init__(self, node, parent):
         wx.StaticBitmap.__init__(self, parent)
-        self.node = None
+        self.node = node
         self.EmptyScreen()
 
     def EmptyScreen(self):

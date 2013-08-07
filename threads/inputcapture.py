@@ -89,7 +89,6 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                         # self.pos_x = event.Position[0]
                         # self.pos_y = event.Position[1]
                         msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
-                        _logger().debug(msg)
                         for id_ in self.parent.selected_nodes:
                             self.swnp.send(str(id_), 'MSG', msg)
                 else:
