@@ -366,7 +366,6 @@ class SWNP:
             # Read envelope with address
             step += 1
             if step == 50:
-                LOGGER.debug('PING...')
                 try:
                     self.do_ping()
                     self.node.refresh()

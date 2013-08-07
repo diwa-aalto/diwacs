@@ -535,6 +535,7 @@ class GraphicalUserInterface(GUItemplate):
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
             # self.EnableSessionButton()
+            self.sesbtn.Enable(True)
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
@@ -554,11 +555,24 @@ class GraphicalUserInterface(GUItemplate):
         """
         session_id = self.diwa_state.current_session_id
         project_id = self.diwa_state.current_project_id
-        if project_id <= 0:
+        if project_id < 1:
             # We should not ever get here as the button should be disabled!
             params = {'message': 'No project selected.'}
             show_modal_and_destroy(ErrorDialog, self, params)
-        elif session_id > 0:
+        elif session_id < 1:
+            # We want to start a new session!
+            try:
+                self.diwa_state.on_session_changed(True)
+                self.EnableSessionButton()
+                session_id = self.diwa_state.current_session_id
+                LOGGER.info('Session started: {0}'.format(session_id))
+            except SessionChangeException:
+                params = {'message': 'Failed to start a new session!'}
+                LOGGER.exception('Session change failed...')
+                show_modal_and_destroy(ErrorDialog, self, params)
+            except Exception as excp:
+                LOGGER.exception('OnSession exception: %s', str(excp))
+        else:
             # We want to end our session!
             try:
                 self.diwa_state.on_session_changed(False)
@@ -574,18 +588,6 @@ class GraphicalUserInterface(GUItemplate):
                 'style': wx.OK | wx.ICON_INFORMATION
             }
             show_modal_and_destroy(wx.MessageDialog, self, params)
-        else:
-            # We want to start a new session!
-            try:
-                self.diwa_state.on_session_changed(True)
-                self.EnableSessionButton()
-                LOGGER.info('Session started: {0}'.format(session_id))
-            except SessionChangeException:
-                params = {'message': 'Failed to start a new session!'}
-                LOGGER.exception(params['message'])
-                show_modal_and_destroy(ErrorDialog, self, params)
-            except Exception as excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
         self.panel.SetFocus()
         self.Update()
         if event:
