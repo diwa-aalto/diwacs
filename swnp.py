@@ -240,6 +240,7 @@ class SWNP:
         else:
             self.id = random.randint(1, 154)
         self.node = Node(int(self.id), int(screens), name)
+        self.online = True
 
         # Prevent overflowing slow subscribers
         self.publisher.setsockopt(zmq.LINGER, 0)
@@ -393,17 +394,16 @@ class SWNP:
             subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
             subscribers[i].connect(sub_url)
         LOGGER.debug('Listener Active!')
-        swnp_online = True
-        while swnp_online:
+        while self.online:
             for s in subscribers:
                 try:
-                    [address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     message = loads(contents, object_hook=Message.from_json)
                     (tag, prefix, payload) = (message.tag, message.prefix,
                                               message.payload)
                     if payload == self.id and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
-                        swnp_online = True
+                        self.online = False
                         break
                     elif prefix == 'SYNC':
                         LOGGER.exception('DEPRECATED METHOD USED!!!')
@@ -419,7 +419,7 @@ class SWNP:
                                  str(excp))
                 except (SystemExit, ContextTerminated, ZMQError):
                     LOGGER.debug('Exit sub routine')
-                    swnp_online = False
+                    self.online = False
                     break
                 except Exception as excp:
                     LOGGER.exception('SWNP EXCEPTION: %s', str(excp))
@@ -449,12 +449,11 @@ class SWNP:
             sub.connect(sub_url)
             subscribers.append(sub)
         LOGGER.debug('SYS-listener active')
-        swnp_online = True
-        while swnp_online:
+        while self.online:
             # Read envelope with address.
             for s in subscribers:
                 try:
-                    [address, contents] = s.recv_multipart(zmq.NOBLOCK)
+                    (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     msg_hook = Message.from_json
                     msg_obj = loads(contents, object_hook=msg_hook)
                     receiver = 0
@@ -465,7 +464,7 @@ class SWNP:
                     msg_for_self = (receiver == self.id)
                     self.sys_handler(msg_obj)
                     if msg_obj.prefix == 'LEAVE' and msg_for_self:
-                        swnp_online = True
+                        self.online = False
                         break
                 except Again:
                     # Non-blocking mode was requested and no messages
@@ -478,12 +477,12 @@ class SWNP:
                     # context associated with the specified
                     # socket was terminated or the app is closing.
                     LOGGER.exception('SYS-EXCPT: %s', str(excp))
-                    swnp_online = False
+                    self.online = False
                     break
                 except Exception as excp:
                     LOGGER.info('SWNP MSG: %s', str(contents))
                     LOGGER.exception('SWNP_SYS EXCEPTION: %s', str(excp))
-                    swnp_online = False
+                    self.online = False
                     break
         LOGGER.debug('Closing sys sub')
         while len(subscribers):
@@ -534,7 +533,7 @@ class SWNP:
 
         """
         i = 0
-        limit = 6
+        limit = 4
         alive = self.sub_thread.isAlive
         alive_sys = self.sub_thread_sys.isAlive
         while (alive() or alive_sys()) and i < limit:
@@ -546,6 +545,7 @@ class SWNP:
                 self.send(str(self.id), 'LEAVE', self.id)
             sleep(0.5)
             i += 1
+        self.online = False
         LOGGER.debug('Closing publishers...')
         self.publisher.close()
         self.publisher_loopback.close()
