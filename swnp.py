@@ -227,7 +227,6 @@ class SWNP:
         #Create context
         self.context = context if context else zmq.Context()
         self.context.setsockopt(zmq.LINGER, 0)  # Set default linger value.
-        self.terminating = False
 
         #Create publisher
         self.publisher = self.context.socket(zmq.PUB)
@@ -394,7 +393,8 @@ class SWNP:
             subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
             subscribers[i].connect(sub_url)
         LOGGER.debug('Listener Active!')
-        while not self.terminating:
+        swnp_online = True
+        while swnp_online:
             for s in subscribers:
                 try:
                     [address, contents] = s.recv_multipart(zmq.NOBLOCK)
@@ -403,7 +403,7 @@ class SWNP:
                                               message.payload)
                     if payload == self.id and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
-                        self.terminating = True
+                        swnp_online = True
                         break
                     elif prefix == 'SYNC':
                         LOGGER.exception('DEPRECATED METHOD USED!!!')
@@ -418,8 +418,8 @@ class SWNP:
                     LOGGER.debug('ValueError: %s - %s', str(contents),
                                  str(excp))
                 except (SystemExit, ContextTerminated, ZMQError):
-                    self.terminating = True
                     LOGGER.debug('Exit sub routine')
+                    swnp_online = False
                     break
                 except Exception as excp:
                     LOGGER.exception('SWNP EXCEPTION: %s', str(excp))
@@ -449,7 +449,8 @@ class SWNP:
             sub.connect(sub_url)
             subscribers.append(sub)
         LOGGER.debug('SYS-listener active')
-        while not self.terminating:
+        swnp_online = True
+        while swnp_online:
             # Read envelope with address.
             for s in subscribers:
                 try:
@@ -464,7 +465,7 @@ class SWNP:
                     msg_for_self = (receiver == self.id)
                     self.sys_handler(msg_obj)
                     if msg_obj.prefix == 'LEAVE' and msg_for_self:
-                        self.terminating = True
+                        swnp_online = True
                         break
                 except Again:
                     # Non-blocking mode was requested and no messages
@@ -476,13 +477,13 @@ class SWNP:
                 except (SystemExit, ContextTerminated):
                     # context associated with the specified
                     # socket was terminated or the app is closing.
-                    self.terminating = True
                     LOGGER.exception('SYS-EXCPT: %s', str(excp))
+                    swnp_online = False
                     break
                 except Exception as excp:
                     LOGGER.info('SWNP MSG: %s', str(contents))
                     LOGGER.exception('SWNP_SYS EXCEPTION: %s', str(excp))
-                    self.terminating = True
+                    swnp_online = False
                     break
         LOGGER.debug('Closing sys sub')
         while len(subscribers):
@@ -532,10 +533,6 @@ class SWNP:
         Shuts down all connections, no exit.
 
         """
-        # Inform other users.
-        for node in self.NODE_LIST:
-            if node.id != self.node.id:
-                self.send(str(node.id), 'LEAVE', str(self.id))
         i = 0
         limit = 6
         alive = self.sub_thread.isAlive
