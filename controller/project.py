@@ -171,7 +171,7 @@ def create_file_action(path, action_id, session_id, project_id):
     """
     project_file = is_project_file(path, project_id)
     project_file = project_file if project_file else path
-    args = (File.path == project_file, File.project_id == project_id)
+    args = (File.path == project_file,File.project_id == project_id,)
     kwargs = {'path': project_file, 'project_id': project_id}
     file_object = controller.common.get_or_create(File, *args, **kwargs)
     action_object = Action.get_by_id(action_id)

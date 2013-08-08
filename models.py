@@ -380,10 +380,10 @@ class File(MethodMixin, Base):
 
     project = relationship('Project', backref=backref('files', order_by=id))
 
-    def __init__(self, file_path, project=None):
-        self.path = file_path
-        self.project_id = project.id if project is not None else None
-        if File.get('exists', File.path == file_path):
+    def __init__(self, path, project_id=None):
+        self.path = path
+        self.project_id = project_id if project_id else None
+        if File.get('exists', File.path == path):
             raise ItemAlreadyExistsException('File already exists!')
         File.update(self)
 
