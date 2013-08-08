@@ -124,7 +124,7 @@ class AddProjectDialog(wx.Dialog):
         dir_label_text = 'Project Folder Name (optional):'
         password_label_text = 'Project Password (optional):'
 
-        # If there is already an project on way.
+        # If there is already an project_id on way.
         if project_id:
             self.project_id = project_id
             add_label = 'Save'
@@ -154,11 +154,11 @@ class AddProjectDialog(wx.Dialog):
         hbox.Add(ok_button)
         hbox.Add(close_button, flag=wx.LEFT, border=5)
 
-        # The project handling.
+        # The project_id handling.
         if self.project_id:
-            project = Project.get_by_id(project_id)
-            self.name.SetValue(project.name)
-            self.dir.SetValue(project.dir)
+            project_id = Project.get_by_id(project_id)
+            self.name.SetValue(project_id.name)
+            self.dir.SetValue(project_id.dir)
 
         # Finalize the layout.
         vbox.Add(hbox, flag=wx.ALIGN_CENTER, border=0)
@@ -316,15 +316,15 @@ class DeleteProjectDialog(wx.Dialog):
         self.project = Project.get_by_id(project_id)
         if not self.project:
             self.Destroy()
-            msg = 'The project does not seem to exist anymore.'
+            msg = 'The project_id does not seem to exist anymore.'
             show_modal_and_destroy(ErrorDialog, parent, {'message': msg})
             return
 
-        label_text = ('You are about to delete project %s permanently.'
+        label_text = ('You are about to delete project_id %s permanently.'
                       ' Are you really sure?') % self.project.name
         self.notice = wx.StaticText(self, label=label_text)
-        yes_text = 'Yes, delete the project.'
-        files_text = 'Also delete all saved project files.'
+        yes_text = 'Yes, delete the project_id.'
+        files_text = 'Also delete all saved project_id files.'
         self.yes_delete = wx.CheckBox(self, wx.ID_ANY, yes_text)
         self.files_delete = wx.CheckBox(self, wx.ID_ANY, files_text)
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
@@ -847,6 +847,8 @@ class ProjectSelectDialog(wx.Dialog):
             LOGGER.debug('Project selected result: %s', str(result))
             self.parent.OnProjectChanged()
             self.parent.diwa_state.on_session_changed(result == 1)
+            if result == 1:
+                self.parent.EnableSessionButton()
             self.parent.Refresh()
         except Exception as excp:
             LOGGER.exception('Project Selected Exception: %s', str(excp))
