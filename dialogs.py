@@ -847,6 +847,8 @@ class ProjectSelectDialog(wx.Dialog):
             LOGGER.debug('Project selected result: %s', str(result))
             self.parent.OnProjectChanged()
             self.parent.diwa_state.on_session_changed(result == 1)
+            if result == 1:
+                self.parent.EnableSessionButton()
             self.parent.Refresh()
         except Exception as excp:
             LOGGER.exception('Project Selected Exception: %s', str(excp))
