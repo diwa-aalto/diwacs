@@ -824,7 +824,6 @@ class ProjectSelectDialog(wx.Dialog):
                 if event:
                     event.Skip()
                 return
-            # 
             params = {'title': 'Project Authentication',
                       'project_id': project_id}
             result = show_modal_and_destroy(ProjectAuthenticationDialog, self,
@@ -837,8 +836,6 @@ class ProjectSelectDialog(wx.Dialog):
                 return
         LOGGER.debug('Project selected')
         if project_id != self.diwa_state.current_project_id:
-            LOGGER.debug('project_id != '
-                         'self.diwa_state.current_project_id')
             try:
                 self.diwa_state.set_current_project(project_id)
             except Exception as excp:
@@ -848,10 +845,8 @@ class ProjectSelectDialog(wx.Dialog):
             result = show_modal_and_destroy(ProjectSelectedDialog, self,
                                             params)
             LOGGER.debug('Project selected result: %s', str(result))
-            if result == 2:
-                self.diwa_state.current_session_id = -1
             self.parent.OnProjectChanged()
-            self.parent.OnSession(None)
+            self.parent.diwa_state.on_session_changed(result == 1)
             self.parent.Refresh()
         except Exception as excp:
             LOGGER.exception('Project Selected Exception: %s', str(excp))

@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
 from random import Random
+from time import sleep
 import shutil
 import webbrowser
 
@@ -660,8 +661,10 @@ class State(object):
             return
         update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
-                               self.current_session_id, self.activity_id)
+        if self.responsive:
+            self.activity_id = update(self.current_project_id,
+                                      diwavars.PGM_GROUP,
+                                      0, self.activity_id)
         self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity_id))
 
     def on_session_changed(self, desired_state):
@@ -674,14 +677,21 @@ class State(object):
             session_id = self.start_new_session()
             if session_id < 1:
                 raise SessionChangeException()
-            self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
-                                   session_id, self.activity_id)
+            LOGGER.debug('Started session: {0}'.format(session_id))
+            self.set_current_session(session_id)
+            if self.responsive:
+                self.activity_id = update(self.current_project_id,
+                                          diwavars.PGM_GROUP,
+                                          session_id, self.activity_id)
         else:
             self.end_current_session()
-            self.activity_id = update(self.current_project_id, diwavars.PGM_GROUP,
-                                   0, self.activity_id)
+            if self.responsive:
+                self.activity_id = update(self.current_project_id,
+                                          diwavars.PGM_GROUP,
+                                          0, self.activity_id)
         send_session = 'current_session;{0}'.format(self.current_session_id)
         send_activity = 'current_activity;{0}'.format(self.activity_id)
+        LOGGER.debug(send_session + '  ' + send_activity)
         self.swnp_send('SYS', send_session)
         self.swnp_send('SYS', send_activity)
 
@@ -833,9 +843,9 @@ class State(object):
         #:TODO: When should previous session be passed?
         session = controller.start_new_session(self.current_project_id)
         self.current_session = session
-        self.current_session_id = session.id
+        self.current_session_id = session.id if session is not None else 0
         self.start_current_session_thread()
-        return session.id if session else 0
+        return self.current_session_id
 
     def start_audio_recorder(self):
         """ Starts the audio recorder thread. """

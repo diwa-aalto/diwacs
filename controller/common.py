@@ -95,8 +95,10 @@ def delete_record(record_model, id_number):
     try:
         instance = record_model.get_by_id(id_number)
         if isinstance(instance, Project):
-            Session.get('delete', Session.project_id == id_number)
-            Activity.get('delete', Activity.project_id == id_number)
+            activities = Session.get('all', Activity.project_id == id_number)
+            sessions = Session.get('all', Session.project_id == id_number)
+            Activity.delete_many(activities)
+            Session.delete_many(sessions)
         instance.delete()
         return True
     except SQLAlchemyError:
