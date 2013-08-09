@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
 from random import Random
-from time import sleep
 import shutil
 import webbrowser
 
