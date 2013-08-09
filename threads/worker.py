@@ -124,12 +124,17 @@ class WORKER_THREAD(DIWA_THREAD):
             if not nodes:
                 if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
                     state.set_responsive()
+                    state.responsive = str(state.swnp.node.id)
                     _logger().debug('Setting self as responsive')
+
             else:
                 state.responsive = str(nodes[0].wos_id)
                 if state.responsive == state.swnp.node.id:
                     state.set_responsive()
         if state.responsive != old_responsive:
+            if str(state.responsive) == str(state.swnp.node.id) and \
+                                    not state.is_responsive:
+                state.set_responsive()
             log_msg = 'Responsive checked. Current responsive is: {0}'
             _logger().debug(log_msg.format(state.responsive))
 
@@ -303,7 +308,7 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_pgm_group(value):
         """ Short stub setter. """
-        diwavars.update_PGM_group(value)
+        diwavars.update_PGM_group(eval(value))
 
     @staticmethod
     def __on_audio(parent, value):
