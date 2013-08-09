@@ -169,13 +169,10 @@ def create_file_action(path, action_id, session_id, project_id):
     :type project_id: Integer
 
     """
-    project_file = is_project_file(path, project_id)
-    if isinstance(project_file, basestring):
-        path = project_file if project_file else path
     args = (File.path == path,)
-    if project_file:
-        args = args + (File.project_id == project_id,)
     kwargs = {'path': path, 'project_id': project_id}
+    if is_project_file(path, project_id):
+        args = args + (File.project_id == project_id,)
     file_object = controller.common.get_or_create(File, *args, **kwargs)
     action_object = Action.get_by_id(action_id)
     session_object = Session.get_by_id(session_id) if session_id > 0 else None
@@ -321,7 +318,11 @@ def init_sync_project_directory(project_id):
         # project_files now only contains the files that have been deleted!
         for file_ in project_files:
             deleted = REVERSE_ACTIONS['Deleted']
-            controller.create_file_action(file_.path, deleted, 0, project_id)
+            try:
+                controller.create_file_action(file_.path, deleted, 0,
+                                              project_id)
+            except Exception as excp:
+                _logger().exception('{0!s}'.format(excp))
             file_.project_id = None
         File.update_many(project_files)
     except OSError as excp:
@@ -353,8 +354,8 @@ def is_project_file(filename, project_id):
     file_project_path = filesystem.search_file(filebase, project.dir)
     if file_project_path:
         try:
-            file_ = File(file_project_path, project)
-            return file_.path
+            File(file_project_path, project)
+            return True
         except (ItemAlreadyExistsException, SQLAlchemyError):
             pass
-    return ''
+    return False
