@@ -755,7 +755,7 @@ class SWNP:
 
         """
         result_node = None
-        for node in self.NODE_LIST:
-            if node.id == node_id:
-                result_node = node
+        nodes_gen = (x for x in self.NODE_LIST if x.id == node_id)
+        for node in nodes_gen:
+            result_node = node
         return result_node
