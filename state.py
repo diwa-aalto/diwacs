@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
 from random import Random
-from time import sleep
 import shutil
 import webbrowser
 
@@ -661,10 +660,11 @@ class State(object):
             return
         update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        if self.responsive:
+        if self.is_responsive:
             self.activity_id = update(self.current_project_id,
                                       diwavars.PGM_GROUP,
                                       0, self.activity_id)
+
         self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity_id))
 
     def on_session_changed(self, desired_state):
@@ -679,13 +679,13 @@ class State(object):
                 raise SessionChangeException()
             LOGGER.debug('Started session: {0}'.format(session_id))
             self.set_current_session(session_id)
-            if self.responsive:
+            if self.is_responsive:
                 self.activity_id = update(self.current_project_id,
                                           diwavars.PGM_GROUP,
                                           session_id, self.activity_id)
         else:
             self.end_current_session()
-            if self.responsive:
+            if self.is_responsive:
                 self.activity_id = update(self.current_project_id,
                                           diwavars.PGM_GROUP,
                                           0, self.activity_id)

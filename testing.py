@@ -10,7 +10,6 @@ import unittest
 
 
 # Own imports
-import controller
 import filesystem
 import utils
 from models import Project

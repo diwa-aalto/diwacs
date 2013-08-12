@@ -19,7 +19,6 @@ import wmi
 
 # My imports.
 import diwavars
-from models import Project
 
 
 LOGGER = None
