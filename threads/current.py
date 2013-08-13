@@ -60,9 +60,9 @@ class CURRENT_PROJECT(DIWA_THREAD):
             if iteration >= 5:
                 iteration = 0
                 ipgm = diwavars.PGM_GROUP
-                project = controller.get_active_project(ipgm)
-                if project:
-                    self.swnp('SYS', 'current_project;{0}'.format(project.id))
+                project_id = controller.get_active_project(ipgm)
+                if project_id:
+                    self.swnp('SYS', 'current_project;{0}'.format(project_id))
             sleep(1)
 
 
@@ -95,7 +95,7 @@ class CURRENT_SESSION(DIWA_THREAD):
             iteration += 1
             if iteration >= 5:
                 ipgm = diwavars.PGM_GROUP
-                session = controller.get_active_session(ipgm)
-                if session:
-                    self.swnp('SYS', 'current_session;{0}'.format(session.id))
+                session_id = controller.get_active_session(ipgm)
+                if session_id:
+                    self.swnp('SYS', 'current_session;{0}'.format(session_id))
             sleep(1)

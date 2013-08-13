@@ -160,7 +160,7 @@ class State(object):
                 error_handler=self.error_th
             )
         except Exception as excp:
-            LOGGER.exception('loading config exception: %s', str(excp))
+            LOGGER.exception('loading config exception: {0!s}'.format(excp))
         self.initialized = False
         self.cmfh = None
         self.capture_thread = None

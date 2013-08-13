@@ -272,10 +272,11 @@ class SWNP:
 
         #heartbeat
         self.ping_stop = threading.Event()
-        self.ping_thread = threading.Thread(target=self.ping_routine,
-                                            name='Ping thread',
-                                            args=(error_handler,)
-                                            )
+        self.ping_thread = threading.Thread(
+            target=self.ping_routine,
+            name='Ping thread',
+            args=(error_handler,)
+        )
         self.ping_thread.daemon = True
         self.ping_thread.start()
         self.timeout_stop = threading.Event()
@@ -479,14 +480,14 @@ class SWNP:
                     # error.
                     pass
                 except ValueError as excp:
-                    LOGGER.exception('ValueError: %s', str(excp))
-                    txt = 'Unpacking: \n{0}'
+                    LOGGER.exception('ValueError!: %s', str(excp))
+                    txt = '{1}{2}Unpacking: \n{0}{2}{1}'
                     xts = '\n'.join([str(p) for p in pack])
-                    LOGGER.exception(txt.format(xts))
+                    LOGGER.exception(txt.format(xts, '-' * 10, '\n' * 5))
                 except (SystemExit, ContextTerminated):
                     # context associated with the specified
                     # socket was terminated or the app is closing.
-                    LOGGER.exception('SYS-EXCPT: %s', str(excp))
+                    LOGGER.exception('SYS-EXCPT: {0!s}'.format(excp))
                     self.online = False
                     break
                 except Exception as excp:
@@ -611,9 +612,11 @@ class SWNP:
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
             try:
-                my_message = dumps(msg, default=Message.to_dict)
+                my_message = [msg.tag, dumps(msg, default=Message.to_dict)]
                 if msg.prefix != 'PING':
                     self.publisher_loopback.send_multipart(my_message)
+                if msg.tag == 'SYS':
+                    LOGGER.debug('MSG: ' + str(my_message))
                 self.publisher.send_multipart(my_message)
             except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))

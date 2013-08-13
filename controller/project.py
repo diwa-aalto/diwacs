@@ -191,7 +191,7 @@ def get_active_project(pgm_group):
 
     """
     activity = controller.activity.get_active_activity(pgm_group)
-    return activity.project if activity else 0
+    return activity.project_id if activity else 0
 
 
 def get_project_id_by_activity(activity_id):
