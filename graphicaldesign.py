@@ -182,9 +182,6 @@ class DropTarget(wx.PyDropTarget):
             deltay += 20
             self.my_send_dialogs.append(deltay)
             title = 'Sending items...'
-            mydialog = SendProgressBar(self.parent, title, deltay)
-            self.parent.Raise()
-            self.parent.Update()
             project = self.parent.diwa_state.current_project
             project_items = []
             paths = []
@@ -208,13 +205,17 @@ class DropTarget(wx.PyDropTarget):
             LOGGER.debug('NFILES: {0}'.format(', '.join([f for f in paths])))
             # Process items that are not part of the project.
             if paths:
-                paths = self.parent.diwa_state.handle_file_send(paths,
-                                                                mydialog)
+                params = {
+                    'class': SendProgressBar,
+                    'kwargs': {
+                        'parent': self.parent,
+                        'title': title,
+                        'ypos': deltay
+                    }
+                }
+                paths = self.parent.diwa_state.handle_file_send(paths, params)
             # Union the two lists again.
             paths.extend(project_items)
-            # Switch the UI state.
-            mydialog.Destroy()
-            mydialog = None
             self.parent.Show()
             self.parent.Raise()
             self.parent.Update()

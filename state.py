@@ -240,10 +240,10 @@ class State(object):
         LOGGER.debug('Closing extra threads')
         threads.DIWA_THREAD.stop_all()
 
-    def _handle_file_copy(self, src_dst_list, dirs, dialog):
+    def _handle_file_copy(self, src_dst_list, dirs, dialog_parameters=None):
         """
         Mass copy files while giving optional output on the progress
-        through a dialog.
+        through a dialog_parameters.
 
         :param src_dst_list: A list of (Source, Target) filepaths.
         :type src_dst_list: A list of Tuples of Strings.
@@ -251,8 +251,8 @@ class State(object):
         :param dirs: All the directories to be created before copying.
         :type dirs: A list of strings.
 
-        :param dialog: The progress dialog.
-        :type dialog: :py:class:`wx.ProgressDialog`
+        :param dialog_parameters: The progress dialog_parameters.
+        :type dialog_parameters: :py:class:`dict`
 
         """
         total_len = 0
@@ -260,14 +260,15 @@ class State(object):
         filecount = len(src_dst_list)
         for item in src_dst_list:
             total_len += os.path.getsize(item[0])
-        do_updates = False
-        if (dialog is not None and (total_len >= State.DEF_SIZE or
-                                    filecount >= State.DEF_FILES)):
+        dialog = None
+        if ((dialog_parameters is not None) and
+                (total_len >= State.DEF_SIZE or filecount >= State.DEF_FILES)):
             LOGGER.debug('PROGRESS VISIBLE!')
             self.parent.Hide()
+            class_ = dialog_parameters['class']
+            kwargs = dialog_parameters['kwargs']
+            dialog = class_(**kwargs)
             dialog.Show()
-            dialog.Raise()
-            do_updates = True
         for directory in dirs:
             try:
                 os.mkdir(directory)
@@ -285,7 +286,7 @@ class State(object):
                     cstr = fin.read(min(State.DEF_BUFFER, curlen - curcopied))
                     fout.write(cstr)
                     curcopied += len(cstr)
-                    condition = do_updates and (
+                    condition = (dialog is not None) and (
                         first_transaction or
                         (datetime.now() - lastupdate).total_seconds() > 1.0 or
                         curcopied == curlen
@@ -324,11 +325,11 @@ class State(object):
                 if fout and hasattr(fout, 'close'):
                     fout.close()
                 self.parent.Update()
-        if do_updates:
-            dialog.Update(100, 'file transfer complete')
+        if dialog is not None:
+            dialog.Destroy()
 
     # TODO: We need to resolve the copy issue inside project folder.
-    def handle_file_send(self, filenames, progressdialog=None):
+    def handle_file_send(self, filenames, dialog_parameters=None):
         """
         Sends a file link to another node.
 
@@ -336,11 +337,11 @@ class State(object):
         the users wishes to add the items to project before beginning the copy
         routine.
 
-        The copy routine first creates all the needed subfolders and then sums
+        The copy routine first creates all the needed sub-folders and then sums
         up all the file sizes to be copied. Then it will update the dialog
         in the beginning/end of every file transaction and whenever there's
         been more than 1 second from the last update dialog update. Assuming
-        the progressdialog parameter has been given.
+        the dialog_parameters parameter has been given.
 
         The progress dialog, if supplied, is updated as follows:
             - If there's less than DEF_FILES (**40**) files the dialog \
@@ -355,8 +356,10 @@ class State(object):
         :param filenames: All the files/folders to be copied.
         :type filenames: List of String
 
-        :param progressdialog: The progress dialog to update (optional).
-        :type progressdialog: :py:class:`wx.ProgressDialog`
+        :param dialog_parameters:
+            The progress dialog to create by show_modal_and_destroy,
+            initialization parameters in a dictionary.
+        :type dialog_parameters: :py:class:`dict`
 
         """
         project = self.current_project
@@ -378,7 +381,7 @@ class State(object):
                 LOGGER.debug('Project target: %s', res)
                 mydirs.append(res)
                 returnvalue.append(res)
-                # os.mkdir(returnvalue)
+
                 for (currentroot, dirs, files) in os.walk(copyroot):
                     relativeroot = ''
                     if len(currentroot) > cidx:
@@ -401,10 +404,13 @@ class State(object):
                 path_ = os.path.join(path, os.path.basename(filename))
                 returnvalue.append(path_)
                 src_dst_list.append((filename, path_))
-        params = {'message': 'Add the dragged objects to project?',
-                  'caption': 'Add to project?',
-                  'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP |
-                            wx.YES_DEFAULT | wx.YES_NO)}
+        params = {
+            'message': 'Add the dragged objects to project?',
+            'caption': 'Add to project?',
+            'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP | wx.YES_DEFAULT |
+                      wx.YES_NO)
+        }
+
         if project is None:
             result = wx.ID_NO
         else:
@@ -434,7 +440,7 @@ class State(object):
                              for (src, dst) in src_dst_list]
         LOGGER.debug('__sendfile_2__')
         try:
-            self._handle_file_copy(src_dst_list, mydirs, progressdialog)
+            self._handle_file_copy(src_dst_list, mydirs, dialog_parameters)
         except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
         LOGGER.debug('__sendfile_3__')

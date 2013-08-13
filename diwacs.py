@@ -79,7 +79,6 @@ class EventList(EventListTemplate):
     A Frame which displays the possible event titles and handles the event
     creation.
 
-
     """
     def __init__(self, parent, *args, **kwargs):
         EventListTemplate.__init__(self, parent, *args, **kwargs)

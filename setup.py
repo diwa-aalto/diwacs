@@ -22,8 +22,8 @@ try:
         import modulefinder
     import win32com
     for p in win32com.__path__[1:]:
-        modulefinder.AddPackagePath("win32com", p)
-    for extra in ["win32com.shell"]:
+        modulefinder.AddPackagePath('win32com', p)
+    for extra in ['win32com.shell']:
         __import__(extra)
         m = sys.modules[extra]
         for p in m.__path__[1:]:

@@ -230,5 +230,5 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                 _logger().exception('CMFH exception: {0!s}'.format(excp))
             except Exception as excp:
                 log_msg = 'Generic Exception in CMFH: {0!s}'
-                _logger().exception(log_msg.fromat(excp))
+                _logger().exception(log_msg.format(excp))
                 self.socket.send('ERROR')
