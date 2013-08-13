@@ -379,7 +379,7 @@ class WORKER_THREAD(DIWA_THREAD):
             'RESPONSIVE': WORKER_THREAD.__on_responsive
         }
         for key, value in config_object.items():
-            _logger().debug('(' + key + '=' + value + ')')
+            _logger().debug('(' + key + ' = ' + value + ')')
             if key in handler:
                 handler[key](value)
             elif key == 'AUDIO':
@@ -405,7 +405,7 @@ class WORKER_THREAD(DIWA_THREAD):
         event_id = controller.add_event(session.id, title, '')
         SNAPSHOT_THREAD(project.dir)
         try:
-            self.parent.swnp_send('SYS', 'screenshot;0')
+            self.parent.diwa_state.swnp_send('SYS', 'screenshot;0')
             if diwavars.AUDIO:
                 log_msg = 'Buffering audio for {0} seconds.'
                 _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))

@@ -615,8 +615,6 @@ class SWNP:
                 my_message = [msg.tag, dumps(msg, default=Message.to_dict)]
                 if msg.prefix != 'PING':
                     self.publisher_loopback.send_multipart(my_message)
-                if msg.tag == 'SYS':
-                    LOGGER.debug('MSG: ' + str(my_message))
                 self.publisher.send_multipart(my_message)
             except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))

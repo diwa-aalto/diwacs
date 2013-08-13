@@ -97,18 +97,23 @@ class EventList(EventListTemplate):
         :type event: :py:class:`wx.Event`
 
         """
+        LOGGER.debug('EventList.OnEnter()')
         label = self.custom_event.GetValue()
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
         if not self.parent.diwa_state.is_responsive:
-            self.parent.SwnpSend(self.parent.diwa_state.responsive,
-                                 'event;' + label)
+            LOGGER.debug('EventList.OnEnter(-NOT RESPONSIVE-)')
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
+                                             'event;{0}'.format(label))
         elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+            LOGGER.debug('EventList.OnEnter(CALL AFTER)')
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         self.custom_event.SetValue('')
         wx.CallLater(1000, self.HideNow)
+        LOGGER.debug('EventList.OnEnter(endish)')
         if event:
             event.Skip()
+        LOGGER.debug('EventList.OnEnter(end)')
 
     def OnText(self, event):
         """
@@ -157,16 +162,17 @@ class EventList(EventListTemplate):
         i = self.evtlist.GetNextSelected(-1)
         self.evtlist.SetItemBackgroundColour(i, wx.Colour(45, 137, 255))
         label = self.evtlist.GetItemText(i)
-        LOGGER.debug('Custom event %s responsive is %s', str(label),
-                     str(self.parent.responsive))
+        LOGGER.debug('Custom event {0!s} responsive is {1!s}'.\
+                     format(label, self.parent.diwa_state.responsive))
         self.evtlist.Select(i, False)
         self.selection_made += 1
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
-        if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, 'event;%s' % label)
-        elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+        if not self.parent.diwa_state.is_responsive:
+            self.parent.diwa_sate.swnp_send(self.parent.responsive,
+                                            'event;{0}'.format(label))
+        elif (project is not None) and (session is not None):
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         wx.CallLater(1000, self.HideNow)
         if event:
             event.Skip()

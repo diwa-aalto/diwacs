@@ -46,8 +46,7 @@ def add_event(session_id, title, description):
     :rtype: Integer
 
     """
-    session = Session.get_by_id(session_id)
-    return Event(session, title, description).id
+    return Event(session_id, title, description).id
 
 
 def get_active_session(pgm_group):

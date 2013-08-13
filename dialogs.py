@@ -202,7 +202,8 @@ class AddProjectDialog(wx.Dialog):
                 'company': company_data
             }
             project = controller.add_project(data)
-            LOGGER.info('Created Project: %s (id=%d)', project.name,
+            LOGGER.info('Created Project: %s (id=%d)',
+                        project.name,
                         project.id)
             result = project.id
         except Exception as excp:

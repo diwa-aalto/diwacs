@@ -376,7 +376,7 @@ def screen_capture(path, node_id):
             pass
         event_id = controller.get_latest_event_id()
         stringform = datetime.datetime.now().strftime('%d%m%Y%H%M%S')
-        nameform = str(event_id) + '_' + node_id + '_' + stringform + '.png'
+        nameform = '{0}_{1}_{2}.png'.format(event_id, node_id, stringform)
         filepath = os.path.join(filepath, nameform)
         grab.save(filepath, format='PNG')
     except (IOError, OSError) as excp:
