@@ -458,7 +458,8 @@ class SWNP:
             # Read envelope with address.
             for s in subscribers:
                 try:
-                    (address, contents) = s.recv_multipart(zmq.NOBLOCK)
+                    pack = s.recv_multipart(zmq.NOBLOCK)
+                    (address, contents) = pack
                     msg_hook = Message.from_json
                     msg_obj = loads(contents, object_hook=msg_hook)
                     receiver = 0
@@ -479,6 +480,9 @@ class SWNP:
                     pass
                 except ValueError as excp:
                     LOGGER.exception('ValueError: %s', str(excp))
+                    txt = 'Unpacking: \n{0}'
+                    xts = '\n'.join([str(p) for p in pack])
+                    LOGGER.exception(txt.format(xts))
                 except (SystemExit, ContextTerminated):
                     # context associated with the specified
                     # socket was terminated or the app is closing.
@@ -607,10 +611,10 @@ class SWNP:
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
             try:
-                myMess = [msg.tag, dumps(msg, default=Message.to_dict)]
+                my_message = dumps(msg, default=Message.to_dict)
                 if msg.prefix != 'PING':
-                    self.publisher_loopback.send_multipart(myMess)
-                self.publisher.send_multipart(myMess)
+                    self.publisher_loopback.send_multipart(my_message)
+                self.publisher.send_multipart(my_message)
             except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))
 

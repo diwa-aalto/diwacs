@@ -216,7 +216,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
-                # _logger().debug('CMFH got message: %s', message)
+                _logger().debug('CMFH got message: %s', message)
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
                     self.socket.send(handlers[cmd](id_, path))

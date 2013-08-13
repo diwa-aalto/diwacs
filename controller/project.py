@@ -67,7 +67,7 @@ def add_file_to_project(file_path, project_id):
         else:
             newpath = filesystem.copy_file_to_project(file_path, project_id)
         if newpath:
-            File(file_path=newpath, project=project)
+            File(newpath, project_id)
         return newpath
     except SQLAlchemyError as excp:
         log_msg = 'Add file to {project!s} exception: {exception!s}'
@@ -348,13 +348,14 @@ def is_project_file(filename, project_id):
     """
     filebase = os.path.basename(filename)
     fileabs = os.path.abspath(filename)
-    project = Project.get_by_id(project_id)
     if File.get('exists', File.path == fileabs, File.project_id == project_id):
         return True
+    project = Project.get_by_id(project_id)
     file_project_path = filesystem.search_file(filebase, project.dir)
+    project = None
     if file_project_path:
         try:
-            File(file_project_path, project)
+            File(file_project_path, project_id)
             return True
         except (ItemAlreadyExistsException, SQLAlchemyError):
             pass
