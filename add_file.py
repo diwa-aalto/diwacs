@@ -39,7 +39,7 @@ def main():
         socket.setsockopt(zmq.LINGER, 5000)
         #: Uses interprocess ZeroMQ socket to inform diwacs of the operation.
         socket.connect('tcp://127.0.0.1:5555')
-        command = 'add_to_project;0;' + str(filepath)
+        command = u'add_to_project;0;' + unicode(filepath)
         socket.send(command)
         socket.close()
         return 0

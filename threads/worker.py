@@ -185,8 +185,8 @@ class WORKER_THREAD(DIWA_THREAD):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    regpath = os.path.join(os.getcwd(), 'send_file_to.exe ' +
-                                           str(node_id) + ' \"%1\"')
+                    regpath = os.path.join(os.getcwd(), u'send_file_to.exe ' +
+                                           unicode(node_id) + u' \"%1\"')
                     SetValueEx(rkey, '', 0, REG_SZ, regpath)
             if rkey:
                 CloseKey(rkey)

@@ -97,7 +97,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Send to handler. """
         try:
             fpath = str([self.handle_file(param)])
-            self.send_file(str(id_, 'open;' + fpath))
+            self.send_file(unicode(id_, 'open;' + fpath))
         except Exception as excp:
             _logger().exception('File send exception: {0!s}'.format(excp))
         return 'OK'
@@ -173,7 +173,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
             project = self.parent.diwa_state.current_project
             if project is None:
                 return 'OK'
-            node_id = self.parent.swnp.node.id
+            node_id = self.parent.diwa_state.swnp.node.id
             filesystem.screen_capture(project.dir, node_id)
         return 'OK'
 

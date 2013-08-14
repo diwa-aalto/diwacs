@@ -109,7 +109,7 @@ def create_project_directory(dir_name):
     :type dir_name: String
 
     """
-    project_dir = os.path.join(diwavars.PROJECT_PATH, str(dir_name))
+    project_dir = os.path.join(diwavars.PROJECT_PATH, unicode(dir_name))
     try:
         if not os.path.exists(project_dir):
             os.makedirs(project_dir)
