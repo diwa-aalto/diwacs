@@ -44,7 +44,7 @@ class AudioRecorder(DIWA_THREAD):
     even as we prefer upper case for threading types.
 
     :param parent: Parent of the thread.
-    :type parent: :py:class:`threading.Thread`
+    :type parent: :py:class:`diwacs.GraphicalUserInterface`
 
     """
     def __init__(self, parent):
@@ -60,7 +60,7 @@ class AudioRecorder(DIWA_THREAD):
 
         """
         DIWA_THREAD.stop(self)
-        sleep(0.2)
+        sleep(0.1)
         self.stream.close()
 
     def find_input_device(self):
@@ -141,7 +141,6 @@ class AudioRecorder(DIWA_THREAD):
             wave_file.setframerate(diwavars.RATE)
             wave_file.writeframes(b''.join(self.buffer))
             wave_file.close()
-            CallAfter(self.parent.parent.ClearStatusText)
         except:
             _logger().exception('audio save exception')
-            CallAfter(self.parent.parent.ClearStatusText)
+        CallAfter(self.parent.ClearStatusText)

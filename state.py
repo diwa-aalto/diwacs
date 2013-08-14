@@ -7,13 +7,17 @@ Created on 4.7.2013
 # Standard imports.
 from ast import literal_eval
 from base64 import b64decode
+from cPickle import dumps, loads
 import cStringIO
 from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
+import pywintypes
 from random import Random
 import shutil
+from time import sleep
 import webbrowser
+import win32clipboard
 
 # 3rd party imports.
 import configobj
@@ -123,19 +127,21 @@ class State(object):
     DEF_SIZE = 2 * 1024 * 1024
     DEF_FILES = 40
     DEF_BUFFER = 1024 * 1024
+    DEF_20MB = 20 * 1024 * 1024
 
     def __init__(self, parent):
         diwavars.update_windows_version()
         self.parent = parent
         self.audio_recorder = None
         try:
-            self.audio_recorder = threads.AudioRecorder(self)
+            self.audio_recorder = threads.AudioRecorder(self.parent)
             self.audio_recorder.daemon = True
         except Exception as excp:
             LOGGER.exception('Audio recorder exception: %s', str(excp))
         self.exited = False
         self.responsive = ''
         self.is_responsive = False
+        self.clipboard_list = None
         self.screen_selected = None
         self.error_th = threads.CONNECTION_ERROR_THREAD(self.parent)
         self.random = Random()
@@ -576,8 +582,72 @@ class State(object):
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
 
+    @staticmethod
+    def _try_open_clipboard(trycount, sleepamount):
+        tries = 0
+        while tries < trycount:
+            try:
+                win32clipboard.OpenClipboard()
+                return True
+            except pywintypes.error as excp:
+                if excp[0] == 5:
+                    sleep(sleepamount)
+                    tries += 1
+        return False
+
+    @staticmathod
+    def _get_clipboard_content():
+        """
+        Returns the clipboard content list.
+        list of tuples (format, data).
+
+        """
+        result = []
+        if not State._try_open_clipboard(10, 0.01):
+            return result
+        dataformat = win32clipboard.EnumClipboardFormats(0)
+        while dataformat > 0:
+            item = (dataformat, win32clipboard.GetClipboardData(dataformat))
+            result.append(item)
+            dataformat = win32clipboard.EnumClipboardFormats(dataformat)
+        win32clipboard.CloseClipboard()
+        return result
+
+    @staticmethod
+    def _set_clipboard_content(contents):
+        if not State._try_open_clipboard(10, 0.01):
+            return False
+        for item in contents:
+            win32clipboard.SetClipboardData(*item)
+        win32clipboard.CloseClipboard()
+        return True
+
     def _on_clipboard_sync(self, parameters):
-        pass
+        """
+        parameters:
+        PUSH_{...}        - request to push data into clipboard
+        POP_ID            - request to pop data from clipboard
+        FIN_{...}         - response of pop data.
+
+        """
+        if parameters.startswith('PUSH_'):
+            pass
+        elif parameters.startswith('POP_'):
+            requester_id = parameters.split('_')[1]
+            current_content = State._get_clipboard_content()
+            State._set_clipboard_content(self.clipboard_list)
+            pickled = dumps(current_content, protocol=1) # Binary
+            if len(pickled) > State.DEF_20MB:
+                # TODO: Error dialog?
+                return
+            # TODO: TODO: TODO:
+            msg = 'clipboard_sync;'
+            self.swnp_send(requester_id, message)
+        elif parameters.startswith('FIN_'):
+            pass
+        else:
+            # Unknown clipboard function.
+            pass
 
     def _on_remote_end(self, parameters):  # @UnusedVariable
         # if self.controlled:

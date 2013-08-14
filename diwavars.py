@@ -338,3 +338,7 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
             return
         DB_STRING = __myformat % (DB_TYPE, db_driver, DB_USER, DB_PASS,
                                   DB_ADDRESS, DB_NAME)
+
+def update_variable(name, value):
+    # TODO: do.
+    eval('name = value')
