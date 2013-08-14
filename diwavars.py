@@ -8,7 +8,7 @@ import pyaudio
 import os
 import re
 import sys
-from win32con import VK_LWIN, VK_ESCAPE
+from win32con import VK_LWIN, VK_LMENU
 
 
 # A placeholder for default system cursor
@@ -147,10 +147,10 @@ def set_run_cmd(value):
 
 
 KEY_MODIFIER = VK_LWIN
-KEY = VK_ESCAPE
+KEY = VK_LMENU
 
 
-def update_keys(modifier=VK_LWIN, key=VK_ESCAPE):
+def update_keys(modifier=VK_LWIN, key=VK_LMENU):
     """
     Update the key combination to stop remote controlling.
 

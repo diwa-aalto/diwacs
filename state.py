@@ -571,13 +571,16 @@ class State(object):
             self.worker.create_event(parameters)
 
     def _on_remote_start(self, parameters):
-        macro.release_all_keys()
+        # macro.release_all_keys()
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
 
+    def _on_clipboard_sync(self, parameters):
+        pass
+
     def _on_remote_end(self, parameters):  # @UnusedVariable
-        if self.controlled:
-            macro.release_all_keys()
+        # if self.controlled:
+        #     macro.release_all_keys()
         if self.controlling:
             self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
             self.selected_nodes = []
@@ -642,6 +645,7 @@ class State(object):
             'event': self._on_event,
             'remote_start': self._on_remote_start,
             'remote_end': self._on_remote_end,
+            'clipboard_sync': self._on_clipboard_sync,
             'set': self._on_set,
             'screenshot': self._on_screenshot,
             'current_activity': self._on_current_activity,
@@ -681,7 +685,7 @@ class State(object):
         if desired_state:
             session_id = self.start_new_session()
             if session_id < 1:
-                raise SessionChangeException()
+                raise SessionChangeException('Failed to start a new session')
             LOGGER.debug('Started session: {0}'.format(session_id))
             self.set_current_session(session_id)
             self.activity_id = update(self.current_project_id,
