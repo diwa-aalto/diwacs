@@ -82,6 +82,7 @@ class EventList(EventListTemplate):
     """
     def __init__(self, parent, *args, **kwargs):
         EventListTemplate.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
         self.evtlist.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelection)
         self.evtlist.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnSelection)
         self.custom_event.Bind(wx.EVT_SET_FOCUS, self.OnText)
@@ -169,7 +170,7 @@ class EventList(EventListTemplate):
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
         if not self.parent.diwa_state.is_responsive:
-            self.parent.diwa_sate.swnp_send(self.parent.responsive,
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
                                             'event;{0}'.format(label))
         elif (project is not None) and (session is not None):
             wx.CallAfter(self.parent.diwa_state.worker.create_event, label)

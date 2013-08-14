@@ -114,7 +114,7 @@ class Activity(MethodMixin, Base):
 
     project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
 
-    active = Column(Boolean, nullable=False, default=True)
+    active = Column(SmallInteger, nullable=False, default=True)
 
     session = relationship('Session',
                            backref=backref('activities', order_by=id))
