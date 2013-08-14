@@ -340,13 +340,12 @@ class SWNP:
         Send a PING message to the network.
 
         """
+        msg = '{id}_SCREENS_{node.screens}_NAME_{node.name}_DATA_{node.data}'
+        msg = msg.format(id=self.id, node=self.node)
         try:
-            msg_format = '%s_SCREENS_%d_NAME_%s_DATA_%s'
-            msg = msg_format % (self.id, int(self.node.screens),
-                                self.node.name, self.node.data)
             self.send('SYS', PREFIX_CHOICES[4], msg)
         except ZMQError as excp:
-            LOGGER.exception('do_ping exception: %s', str(excp))
+            LOGGER.exception('do_ping exception: {0!s}'.format(excp))
 
     def ping_routine(self, error_handler):
         """
@@ -358,7 +357,7 @@ class SWNP:
         try:
             comp = controller.add_computer(self.node.name, self.ip, self.id)
         except Exception as excp:
-            LOGGER.exception('Ping routine exception: %s', str(excp))
+            LOGGER.exception('Ping routine exception: {0!s}'.format(excp))
         previous_success = False
         LOGGER.debug('Ping routine started.')
         # Ping every 100th step and sleep for PING_RATE / 100...
@@ -377,7 +376,8 @@ class SWNP:
                             error_handler.queue.append(CloseError)
                         previous_success = success
                 except Exception as excp:
-                    LOGGER.exception('Ping_routine exception: %s', str(excp))
+                    log_msg = 'Ping_routine exception: {0!s}'
+                    LOGGER.exception(log_msg.format(excp))
             step = step % 50
             sleep(PING_RATE / 50.0)
         LOGGER.debug('Ping routine closed.')
@@ -406,7 +406,7 @@ class SWNP:
                     (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     message = loads(contents, object_hook=Message.from_json)
                     (prefix, payload) = (message.prefix, message.payload)
-                    if payload == self.id and prefix == 'LEAVE':
+                    if payload == str(self.id) and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
                         sleep(0.1)
                         self.online = False
@@ -654,15 +654,19 @@ class SWNP:
         return [node for node in self.get_list() if node.screens > 0]
 
     def _on_join(self, payload):
-        """ On join handlers. """
+        """
+        On join handlers.
+
+        """
         payload = payload.split('_')
         joiner_id = int(payload[0])
         joiner_screens = int(payload[2])
         joiner_name = payload[4]
         joiner_data = payload[6]
         if joiner_id != self.id:
-            reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
-            self.send('SYS', PREFIX_CHOICES[4], reply)
+            self.do_ping()
+            # reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
+            # self.send('SYS', PREFIX_CHOICES[4], reply)
         if self.find_node(joiner_id) is not None:
             return
         new_node = Node(joiner_id, joiner_screens, joiner_name, joiner_data)
@@ -671,7 +675,10 @@ class SWNP:
         pub.sendMessage('update_screens', update=True)
 
     def _on_leave(self, payload):
-        """ On leave handlers. """
+        """
+        On leave handlers.
+
+        """
         try:
             node_id = int(payload)
         except ValueError:
