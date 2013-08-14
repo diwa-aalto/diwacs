@@ -136,6 +136,7 @@ class State(object):
         try:
             self.audio_recorder = threads.AudioRecorder(self.parent)
             self.audio_recorder.daemon = True
+            self.start_audio_recorder()
         except Exception as excp:
             LOGGER.exception('Audio recorder exception: %s', str(excp))
         self.exited = False
