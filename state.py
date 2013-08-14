@@ -127,6 +127,7 @@ class State(object):
     def __init__(self, parent):
         diwavars.update_windows_version()
         self.parent = parent
+        self.audio_recorder = None
         try:
             self.audio_recorder = threads.AudioRecorder(self)
             self.audio_recorder.daemon = True

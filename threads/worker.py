@@ -317,8 +317,6 @@ class WORKER_THREAD(DIWA_THREAD):
         value = eval(value)
         if value:
             diwavars.update_audio(value)
-            _logger().debug('Starting audio recorder')
-            parent.diwa_state.start_audio_recorder()
 
     @staticmethod
     def __on_logger_level(value):
@@ -406,14 +404,14 @@ class WORKER_THREAD(DIWA_THREAD):
         SNAPSHOT_THREAD(project.dir)
         try:
             self.parent.diwa_state.swnp_send('SYS', 'screenshot;0')
-            if diwavars.AUDIO:
+            if diwavars.AUDIO and self.parent.diwa_state.audio_recorder:
                 log_msg = 'Buffering audio for {0} seconds.'
                 _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))
                 self.parent.status_text.SetLabel('Recording...')
                 parameters = (event_id, project.dir)
-                CallLater(millis=diwavars.WINDOW_TAIL * 1000,
-                          callable=self.parent.audio_recorder.save,
-                          args=parameters)
+                CallLater(diwavars.WINDOW_TAIL * 1000,
+                          self.parent.diwa_state.audio_recorder.save,
+                          *parameters)
         except:
             _logger().exception('Create Event exception.')
 
