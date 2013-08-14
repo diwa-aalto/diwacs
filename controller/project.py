@@ -221,7 +221,7 @@ def get_projects_by_company(company_id):
 
     """
     projects = Project.get('all', Project.company_id == company_id)
-    lower_case_sorter = lambda project: str(project).lower()
+    lower_case_sorter = lambda project: unicode(project).lower()
     projects.sort(key=lower_case_sorter)
     return projects
 

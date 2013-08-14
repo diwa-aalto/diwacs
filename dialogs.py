@@ -881,8 +881,8 @@ class ProjectSelectedDialog(wx.Dialog):
     A dialog for project selection confirmation.
 
     """
-    ptext = ('Project {name} has been selected. A new session will now '
-             'be started.')
+    ptext = (u'Project {name} has been selected. A new session will now '
+             u'be started.')
 
     def __init__(self, parent, project_id):
         wx.Dialog.__init__(self, parent, title='Project Selected',

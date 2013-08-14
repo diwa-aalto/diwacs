@@ -190,7 +190,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         # Yes 'format' not in path is really great security
         # feature...
         id_ = id_
-        if diwavars.RUN_CMD and 'format' not in param:
+        if int(diwavars.RUN_CMD) == 1 and 'format' not in param:
             os.system(param)
         return 'OK'
 

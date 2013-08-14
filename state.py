@@ -752,8 +752,8 @@ class State(object):
         elif project and self.current_project_id != project_id:
             self.current_project_id = project_id
             self.current_project = project
-            extra = ' (responsive)' if self.is_responsive else ''
-            log_msg = 'Project "{name}" selected{extra}'
+            extra = u' (responsive)' if self.is_responsive else u''
+            log_msg = u'Project "{name}" selected{extra}'
             log_msg = log_msg.format(name=project.name, extra=extra)
             LOGGER.info(log_msg)
             self.worker.remove_all_registry_entries()
@@ -768,7 +768,7 @@ class State(object):
                     log_msg = 'self.set_observer() raised: {exception!s}'
                     log_msg = log_msg.format(exception=excp)
                     LOGGER.exception(log_msg)
-            LOGGER.info('Project set to %s (%s)', project_id, project.name)
+            LOGGER.info(u'Project set to %s (%s)', project_id, project.name)
 
     def set_responsive(self):
         """
