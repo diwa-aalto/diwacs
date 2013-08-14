@@ -218,6 +218,8 @@ class SWNP:
 
     def __init__(self, pgm_group, screens=0, name=None, node_id=None,
                  context=None, error_handler=None):
+        LOGGER.debug("ZMQ version: {0} PYZMQ version: {1}".format(
+                                    zmq.zmq_version(), zmq.pyzmq_version()))
         # Check pgm_group
         if not pgm_group:
             pgm_group = 1

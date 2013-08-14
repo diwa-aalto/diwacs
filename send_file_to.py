@@ -38,7 +38,7 @@ def main():
             socket = context.socket(zmq.REQ)
             socket.setsockopt(zmq.LINGER, 5000)
             socket.connect("tcp://127.0.0.1:5555")
-            command = 'send_to;' + str(node_id) + ';' + str(filepath)
+            command = u'send_to;' + unicode(node_id) + ';' + unicode(filepath)
             socket.send(command)
             socket.close()
             return 0
