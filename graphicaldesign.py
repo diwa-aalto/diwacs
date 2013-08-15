@@ -412,15 +412,15 @@ class SysTray(wx.TaskBarIcon):
         Start a thread to show the notification.
 
         :param title: Title to diplay in the balloon.
-        :type title: String
+        :type title: Unicode
 
         :param message: Message to display in the balloong (max 255 chars).
-        :type message: String
+        :type message: Unicode
 
         """
         args = [title, message]
         notify_thread = threading.Thread(target=self._show_notification,
-                                         name="Notification", args=args)
+                                         name='Notification', args=args)
         notify_thread.run()
 
     def _show_notification(self, title, message):
@@ -815,6 +815,7 @@ class GUItemplate(wx.Frame):
                                 style=wx.ALIGN_CENTRE)
         version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
+        # TODO: Status box.
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         vbox.Add(screenSizer, 0)
         self.SetSizer(vbox)

@@ -339,6 +339,22 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
         DB_STRING = __myformat % (DB_TYPE, db_driver, DB_USER, DB_PASS,
                                   DB_ADDRESS, DB_NAME)
 
+STATUS_BOX_VALUE = 0
+STATUS_BOX_CALLBACK = None
+
+
+def register_status_box_callback(func):
+    global STATUS_BOX_CALLBACK
+    STATUS_BOX_CALLBACK = func
+
+
+def update_status_box(value):
+    global STATUS_BOX_VALUE
+    STATUS_BOX_VALUE = value
+    if STATUS_BOX_CALLBACK is not None:
+        STATUS_BOX_CALLBACK(value)
+
+
 def update_variable(name, value):
     # TODO: do.
     eval('name = value')

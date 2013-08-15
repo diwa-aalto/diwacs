@@ -21,6 +21,7 @@ import threading
 import os
 import models
 import modelsbase
+from base64 import b64decode
 
 
 def _logger():
@@ -152,10 +153,11 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Chat message handler. """
         id_ = id_
         try:
-            (user, msg) = param.split(':', 1)
+            param = b64decode(param).decode('utf-8')
+            (user, msg) = param.split(u':', 1)
             self.parent.trayicon.ShowNotification(user, msg)
         except Exception as excp:
-            _logger().exception('CHATMSG_EXCEPTION: %s', str(excp))
+            _logger().exception('CHATMSG_EXCEPTION: {0!s}'.format(excp))
         return 'OK'
 
     @staticmethod

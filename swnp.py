@@ -45,7 +45,6 @@ from zmq.error import Again, ContextTerminated, ZMQError
 
 LOGGER = None
 
-
 def __init_logger():
     """
     Used to initialize the logger, when running from diwacs.py
@@ -342,12 +341,14 @@ class SWNP:
         Send a PING message to the network.
 
         """
+        LOGGER.debug('DOPING1')
         msg = '{id}_SCREENS_{node.screens}_NAME_{node.name}_DATA_{node.data}'
         msg = msg.format(id=self.id, node=self.node)
         try:
             self.send('SYS', PREFIX_CHOICES[4], msg)
         except ZMQError as excp:
             LOGGER.exception('do_ping exception: {0!s}'.format(excp))
+        LOGGER.debug('DOPING2')
 
     def ping_routine(self, error_handler):
         """
@@ -462,9 +463,10 @@ class SWNP:
             for s in subscribers:
                 try:
                     pack = s.recv_multipart(zmq.NOBLOCK)
+                    if len(pack) != 2:
+                        LOGGER.debug('LEN != 2')
                     (address, contents) = pack
-                    msg_hook = Message.from_json
-                    msg_obj = loads(contents, object_hook=msg_hook)
+                    msg_obj = loads(contents, object_hook=Message.from_json)
                     receiver = 0
                     try:
                         receiver = int(msg_obj.payload)
@@ -697,7 +699,11 @@ class SWNP:
 
     def _on_ping(self, payload):
         """ On ping handlers. """
-        self.ping_handler(payload)
+        LOGGER.debug('PING: {0!s}'.format(payload))
+        try:
+            self.ping_handler(payload)
+        except Exception as excp:
+            LOGGER.exception('PING EXCEPTION: {0}'.format(excp))
 
     def _on_default(self, payload):
         """ On unrecognized command handlers. """

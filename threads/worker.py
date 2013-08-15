@@ -5,11 +5,12 @@ Created on 27.6.2013
 
 """
 # Standard imports.
-import urllib2
+from ast import literal_eval
 import base64
 from logging import getLevelName
 from datetime import datetime
 import os
+import urllib2
 from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
                      CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
 
@@ -274,12 +275,12 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_screens(value):
         """ Short stub setter. """
-        controller.set_node_screens(value)
+        controller.set_node_screens(literal_eval(value))
 
     @staticmethod
     def __on_run_cmd(value):
         """ Short stub setter. """
-        diwavars.set_run_cmd(value)
+        diwavars.set_run_cmd(literal_eval(value))
 
     @staticmethod
     def __on_remote_keys(value):
@@ -308,13 +309,13 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_pgm_group(value):
         """ Short stub setter. """
-        diwavars.update_PGM_group(eval(value))
+        diwavars.update_PGM_group(literal_eval(value))
 
     @staticmethod
     def __on_audio(parent, value):
         """ Short stub setter. """
-        _logger().debug('AUDIO in config: %s', str(value))
-        value = eval(value)
+        _logger().debug('AUDIO in config: {0!s}'.format(value))
+        value = literal_eval(value)
         if value:
             diwavars.update_audio(value)
 
@@ -342,15 +343,22 @@ class WORKER_THREAD(DIWA_THREAD):
 
     @staticmethod
     def __on_pad_url(value):
-        """ Short stub setter. """
-        diwavars.update_padfile(value)
+        """
+        Short stub setter.
+
+        """
+        diwavars.update_padfile(str(value))
         WORKER_THREAD._version_checker = CHECK_UPDATE()
         WORKER_THREAD._version_checker.start()
 
     @staticmethod
     def __on_responsive(value):
         """ Short stub setter. """
-        diwavars.update_responsive(eval(value))
+        diwavars.update_responsive(literal_eval(value))
+
+    @staticmethod
+    def __on_status_box(value):
+        diwavars.update_status_box(literal_eval(value))
 
     def parse_config(self, config_object):
         """
@@ -374,7 +382,8 @@ class WORKER_THREAD(DIWA_THREAD):
             'CAMERA_USER': WORKER_THREAD.__on_camera_user,
             'CAMERA_PASS': WORKER_THREAD.__on_camera_pass,
             'PAD_URL': WORKER_THREAD.__on_pad_url,
-            'RESPONSIVE': WORKER_THREAD.__on_responsive
+            'RESPONSIVE': WORKER_THREAD.__on_responsive,
+            'STATUS_BOX': WORKER_THREAD.__on_status_box
         }
         for key, value in config_object.items():
             _logger().debug('(' + key + ' = ' + value + ')')
