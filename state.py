@@ -608,23 +608,41 @@ class State(object):
         result = []
         if not State._try_open_clipboard(10, 0.01):
             return result
-        dataformat = win32clipboard.EnumClipboardFormats(0)
-        while dataformat > 0:
-            item = (dataformat, win32clipboard.GetClipboardData(dataformat))
-            result.append(item)
-            dataformat = win32clipboard.EnumClipboardFormats(dataformat)
-        win32clipboard.CloseClipboard()
+        my_enum = win32clipboard.EnumClipboardFormats
+        get_data = win32clipboard.GetClipboardData
+        try:
+            dataformat = my_enum(0)
+            while dataformat > 0:
+                try:
+                    item = (dataformat, get_data(dataformat))
+                    result.append(item)
+                except Exception:
+                    pass
+                finally:
+                    dataformat = my_enum(dataformat)
+        except Exception:
+            pass
+        finally:
+            win32clipboard.CloseClipboard()
         return result
 
     @staticmethod
     def _set_clipboard_content(contents):
         if not State._try_open_clipboard(10, 0.01):
             return False
-        win32clipboard.EmptyClipboard()
-        for item in contents:
-            win32clipboard.SetClipboardData(*item)
-        win32clipboard.CloseClipboard()
-        return True
+        answer = True
+        try:
+            win32clipboard.EmptyClipboard()
+            for item in reversed(contents):
+                try:
+                    win32clipboard.SetClipboardData(*item)
+                except Exception:
+                    answer = False
+        except Exception:
+            pass
+        finally:
+            win32clipboard.CloseClipboard()
+        return answer
 
     def _on_clipboard_sync(self, parameters):
         """

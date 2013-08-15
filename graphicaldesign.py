@@ -811,11 +811,15 @@ class GUItemplate(wx.Frame):
         self.infobtn.faceDnClr = wx.Colour(45, 137, 255)
         self.infobtn.SetToolTip(wx.ToolTip('Info'))
         msg = ' '.join(['DiWaCS', diwavars.VERSION])
-        version = wx.StaticText(self.banner_panel, -1, msg, pos=(5, 35),
+        version = wx.StaticText(self.banner_panel, wx.ID_ANY, msg, pos=(5, 35),
                                 style=wx.ALIGN_CENTRE)
         version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
         # TODO: Status box.
+        self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
+                                      pos=(diwavars.FRAME_SIZE[0] - 140, 5),
+                                      size=(135, 40),
+                                      style=wx.TE_MULTILINE)
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         vbox.Add(screenSizer, 0)
         self.SetSizer(vbox)
