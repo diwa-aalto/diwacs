@@ -655,8 +655,10 @@ class GraphicalUserInterface(GUItemplate):
                 # Start remote
                 threads.inputcapture.set_capture(True)
                 self.diwa_state.capture_thread.hook()
-                sender(node.id,
-                       'remote_start;{0}'.format(node_manager.node.id))
+                msg = 'remote_start;{0}'.format(node_manager.node.id)
+                sender(node.id, msg)
+                # Sync clipboard.
+                self.diwa_state.send_push_clipboard(node.id)
                 self.selected_nodes.append(node.id)
                 self.Refresh()
                 tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)

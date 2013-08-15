@@ -206,13 +206,15 @@ class INPUT_CAPTURE(DIWA_THREAD):
                     self.unhook()
                     self.parent.overlay.Hide()
                     self.reset_mouse_events()
+                    self_id = self.swnp.node.id
                     for id_ in self.parent.selected_nodes:
                         msg = 'key;{0},{1},{2}'.format(WM_KEYUP,
                                                        diwavars.KEY_MODIFIER,
                                                        diwavars.KEY_MODIFIER)
-                        end = 'remote_end;{0}'.format(self.swnp.node.id)
+                        end = 'remote_end;{0}'.format(self_id)
                         self.swnp.send(str(id_), 'MSG', msg)
                         self.swnp.send(str(id_), 'MSG', end)
+                        self.parent.diwa_state.send_pop_clipboard(id_)
                     self.parent.selected_nodes = []
                 except Exception as excp:
                     _logger().exception(str(excp))

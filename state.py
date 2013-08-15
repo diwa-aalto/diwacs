@@ -6,7 +6,7 @@ Created on 4.7.2013
 """
 # Standard imports.
 from ast import literal_eval
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from cPickle import dumps, loads
 import cStringIO
 from datetime import datetime, timedelta
@@ -14,6 +14,7 @@ from logging import config, getLogger
 import os
 import pywintypes
 from random import Random
+from hashlib import sha512
 import shutil
 from time import sleep
 import webbrowser
@@ -512,6 +513,7 @@ class State(object):
                       0x205: 0x0010, 0x207: 0x0020, 0x208: 0x0040,
                       0x20A: 0x0800, 0x20E: 0x1000}
 
+
     @staticmethod
     def _on_mouse_event(parameters):
         target, wheel = [int(i) for i in parameters.split(',')]
@@ -596,7 +598,7 @@ class State(object):
                     tries += 1
         return False
 
-    @staticmathod
+    @staticmethod
     def _get_clipboard_content():
         """
         Returns the clipboard content list.
@@ -618,6 +620,7 @@ class State(object):
     def _set_clipboard_content(contents):
         if not State._try_open_clipboard(10, 0.01):
             return False
+        win32clipboard.EmptyClipboard()
         for item in contents:
             win32clipboard.SetClipboardData(*item)
         win32clipboard.CloseClipboard()
@@ -631,24 +634,41 @@ class State(object):
         FIN_{...}         - response of pop data.
 
         """
-        if parameters.startswith('PUSH_'):
-            pass
-        elif parameters.startswith('POP_'):
-            requester_id = parameters.split('_')[1]
-            current_content = State._get_clipboard_content()
-            State._set_clipboard_content(self.clipboard_list)
-            pickled = dumps(current_content, protocol=1) # Binary
-            if len(pickled) > State.DEF_20MB:
-                # TODO: Error dialog?
-                return
-            # TODO: TODO: TODO:
-            msg = 'clipboard_sync;'
-            self.swnp_send(requester_id, message)
-        elif parameters.startswith('FIN_'):
-            pass
-        else:
-            # Unknown clipboard function.
-            pass
+        try:
+            if parameters.startswith('PUSH_'):
+                self.clipboard_list = State._get_clipboard_content()
+                data = parameters.split('_', 1)[1]
+                data = b64decode(data)
+                myhasher = sha512()
+                myhasher.update(data)
+                self.received_clipboard_hash = myhasher.hexdigest()
+                data = loads(data)
+                State._set_clipboard_content(data)
+            elif parameters.startswith('POP_'):
+                requester_id = parameters.split('_', 1)[1]
+                current_content = State._get_clipboard_content()
+                State._set_clipboard_content(self.clipboard_list)
+                pickled = dumps(current_content, 1) # Binary
+                if len(pickled) > State.DEF_20MB:
+                    # TODO: Error dialog?
+                    return
+                myhasher = sha512()
+                myhasher.update(pickled)
+                myhash = myhasher.hexdigest()
+                if myhash != self.received_clipboard_hash:
+                    # Sync with remote controller.
+                    msg = 'clipboard_sync;FIN_{0}'.format(b64encode(pickled))
+                    self.swnp_send(requester_id, msg)
+            elif parameters.startswith('FIN_'):
+                data = parameters.split('_', 1)[1]
+                data = b64decode(data)
+                data = loads(data)
+                result = State._set_clipboard_content(data)
+            else:
+                # Unknown clipboard function.
+                pass
+        except Exception as excp:
+            LOGGER.exception('CLIPBOARD_SYNC_EXCEPTION: {0}'.format(excp))
 
     def _on_remote_end(self, parameters):  # @UnusedVariable
         # if self.controlled:
@@ -732,6 +752,17 @@ class State(object):
             log_msg = 'Exception in MessageHandler: {exception!s}'
             log_msg = log_msg.format(exception=excp)
             LOGGER.exception(log_msg)
+
+    def send_push_clipboard(self, target_node_id):
+        clipboard_data = State._get_clipboard_content()
+        clipboard_data = dumps(clipboard_data, 1)
+        clipboard_data = b64encode(clipboard_data)
+        msg = 'clipboard_sync;PUSH_{0}'.format(clipboard_data)
+        self.swnp_send(str(target_node_id), msg)
+
+    def send_pop_clipboard(self, target_node_id):
+        msg = 'clipboard_sync;POP_{0}'.format(self.swnp.node.id)
+        self.swnp_send(str(target_node_id), msg)
 
     def on_project_selected(self):
         """

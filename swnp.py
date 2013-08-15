@@ -223,8 +223,8 @@ class SWNP:
         # Check pgm_group
         if not pgm_group:
             pgm_group = 1
-        pgm_ip = '239.128.128.%d:5555' % pgm_group
-        LOGGER.debug('PGM IP %s', pgm_ip)
+        pgm_ip = '239.128.128.{0}:5555'.format(pgm_group)
+        LOGGER.debug('PGM IP {0}'.format(pgm_ip))
 
         #Create context
         self.context = context if context else zmq.Context()
