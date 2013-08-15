@@ -18,6 +18,7 @@ import wx.lib.buttons as buttons
 from urlparse import urlparse
 from sqlalchemy.exc import SQLAlchemyError
 from modelsbase import ItemAlreadyExistsException
+from wx._controls import TE_READONLY
 try:
     from agw import ultimatelistctrl as ULC  # @UnusedImport
 except ImportError:
@@ -774,8 +775,8 @@ class GUItemplate(wx.Frame):
         self.diwawabtn = buttons.GenBitmapButton(self.banner_panel, wx.ID_ANY,
                                                  icon('diwawa'),
                                                  style=wx.NO_BORDER,
-                                                 pos=(90, 4),
-                                                 size=(118, 30))
+                                                 pos=(95, 4),
+                                                 size=(81, 32))
         self.diwawabtn.focusClr = wx.Colour(45, 137, 255)
         self.diwawabtn.shadowPenClr = wx.Colour(45, 137, 255)
         self.diwawabtn.highlightPenClr = wx.Colour(45, 137, 255)
@@ -784,18 +785,18 @@ class GUItemplate(wx.Frame):
         self.diwambbtn = buttons.GenBitmapButton(self.banner_panel, wx.ID_ANY,
                                                  self.GetProgramIcon('diwamb'),
                                                  style=wx.BORDER_NONE,
-                                                 pos=(203, 4), size=(113, 32))
+                                                 pos=(185, 4), size=(99, 33))
         self.diwambbtn.SetBackgroundColour(wx.Colour(45, 137, 255))
         self.diwambbtn.focusClr = wx.Colour(45, 137, 255)
         self.diwambbtn.shadowPenClr = wx.Colour(45, 137, 255)
         self.diwambbtn.highlightPenClr = wx.Colour(45, 137, 255)
         self.diwambbtn.faceDnClr = wx.Colour(45, 137, 255)
         self.diwambbtn.SetToolTip(wx.ToolTip('Meeting Browser'))
-        self.status_text = wx.StaticText(self.banner_panel, -1, '',
-                                         pos=(diwavars.FRAME_SIZE[0] - 220, 0))
+        #self.status_text = wx.StaticText(self.banner_panel, -1, '',
+        #                                 pos=(diwavars.FRAME_SIZE[0] - 220, 0))
         self.banner = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
                                       bitmap=self.GetProgramIcon('balls'),
-                                      pos=(diwavars.FRAME_SIZE[0] - 250, 0))
+                                      pos=(diwavars.FRAME_SIZE[0] - 295, 0))
         # self.statusbg = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
         #                          bitmap=self.GetProgramIcon('statusbg'),
         #                          pos=(diwavars.FRAME_SIZE[0] - 150, 0),
@@ -817,9 +818,9 @@ class GUItemplate(wx.Frame):
                                 wx.FONTWEIGHT_LIGHT))
         # TODO: Status box.
         self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
-                                      pos=(diwavars.FRAME_SIZE[0] - 140, 5),
-                                      size=(135, 40),
-                                      style=wx.TE_MULTILINE)
+                                      pos=(diwavars.FRAME_SIZE[0] - 185, 5),
+                                      size=(180, 40),
+                                      style=wx.TE_MULTILINE | TE_READONLY)
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         vbox.Add(screenSizer, 0)
         self.SetSizer(vbox)
