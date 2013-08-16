@@ -358,6 +358,7 @@ class WORKER_THREAD(DIWA_THREAD):
 
     @staticmethod
     def __on_status_box(value):
+        _logger().debug('Status box: {0}'.format(literal_eval(value)))
         diwavars.update_status_box(literal_eval(value))
 
     def parse_config(self, config_object):

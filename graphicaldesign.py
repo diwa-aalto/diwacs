@@ -821,6 +821,10 @@ class GUItemplate(wx.Frame):
                                       pos=(diwavars.FRAME_SIZE[0] - 185, 5),
                                       size=(180, 40),
                                       style=wx.TE_MULTILINE | TE_READONLY)
+        if not diwavars.STATUS_BOX_VALUE:
+            self.status_box.Hide()
+        diwavars.register_status_box_callback(self._OnStatusBoxCallback,
+                                              self._OnStatusBoxPrint)
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         vbox.Add(screenSizer, 0)
         self.SetSizer(vbox)
@@ -828,6 +832,17 @@ class GUItemplate(wx.Frame):
         self.AlignCenterTop()
         self.Show()
         self.Refresh()
+
+    def _OnStatusBoxCallback(self, value):
+        if value:
+            self.status_box.Show()
+        else:
+            self.status_box.Hide()
+
+    def _OnStatusBoxPrint(self, value):
+        if len(self.status_box.GetValue()):
+            self.status_box.AppendText('\r\n')
+        self.status_box.AppendText(value)
 
     def OnExit(self, event):
         """

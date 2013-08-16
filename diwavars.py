@@ -341,11 +341,13 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
 
 STATUS_BOX_VALUE = 0
 STATUS_BOX_CALLBACK = None
+STATUS_BOX_PRINT_CALLBACK = None
 
 
-def register_status_box_callback(func):
-    global STATUS_BOX_CALLBACK
-    STATUS_BOX_CALLBACK = func
+def register_status_box_callback(state_func, print_func):
+    global STATUS_BOX_CALLBACK, STATUS_BOX_PRINT_CALLBACK
+    STATUS_BOX_CALLBACK = state_func
+    STATUS_BOX_PRINT_CALLBACK = print_func
 
 
 def update_status_box(value):
@@ -353,6 +355,11 @@ def update_status_box(value):
     STATUS_BOX_VALUE = value
     if STATUS_BOX_CALLBACK is not None:
         STATUS_BOX_CALLBACK(value)
+
+
+def print_to_status_box(line):
+    if STATUS_BOX_PRINT_CALLBACK is not None:
+        STATUS_BOX_PRINT_CALLBACK(line)
 
 
 def update_variable(name, value):

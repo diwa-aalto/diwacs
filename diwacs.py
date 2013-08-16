@@ -571,7 +571,9 @@ class GraphicalUserInterface(GUItemplate):
                 self.diwa_state.on_session_changed(True)
                 self.EnableSessionButton()
                 session_id = self.diwa_state.current_session_id
-                LOGGER.info('Session started: {0}'.format(session_id))
+                msg = 'Session started: {0}'.format(session_id)
+                LOGGER.info(msg)
+                diwavars.print_to_status_box(msg)
             except SessionChangeException:
                 params = {'message': 'Failed to start a new session!'}
                 LOGGER.exception('Session change failed...')
@@ -584,6 +586,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.diwa_state.on_session_changed(False)
                 self.DisableSessionButton()
                 LOGGER.info('Session ended.')
+                diwavars.print_to_status_box('Session ended.')
             except Exception as excp:
                 LOGGER.exception('OnSession exception: {0!s}'.format(excp))
             # TODO: Check all wx.ICON_INFORMATION uses and maybe
@@ -665,7 +668,7 @@ class GraphicalUserInterface(GUItemplate):
                 tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
                 self.overlay.SetText(tmod, tkey)
                 self.overlay.Show()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('EXCPT! {0!s}'.format(excp))
             sys.exit()
 
