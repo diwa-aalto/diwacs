@@ -280,7 +280,7 @@ class GraphicalUserInterface(GUItemplate):
         self.setbtn.Bind(wx.EVT_BUTTON, self.OnPreferences)
         self.hidebtn.Bind(wx.EVT_BUTTON, self.OnTaskBarActivate)
         self.closebtn.Bind(wx.EVT_BUTTON, self.OnExit)
-        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEvtBtn)
+        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEventButton)
         self.logo.Bind(wx.EVT_LEFT_DOWN, self.OnAboutBox)
         self.diwawabtn.Bind(wx.EVT_BUTTON, self.OnWABtn)
         self.diwambbtn.Bind(wx.EVT_BUTTON, self.OnMBBtn)
@@ -485,7 +485,7 @@ class GraphicalUserInterface(GUItemplate):
                 return node.id
         return None
 
-    def OnEvtBtn(self, event):
+    def OnEventButton(self, event):
         """
         Event Button handler.
 

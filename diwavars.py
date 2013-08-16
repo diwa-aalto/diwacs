@@ -9,6 +9,7 @@ import os
 import re
 import sys
 from win32con import VK_LWIN, VK_LMENU
+from ast import literal_eval
 
 
 # A placeholder for default system cursor
@@ -230,8 +231,9 @@ def update_windows_version():
 
     """
     global WINDOWS_MAJOR, WINDOWS_MINOR
-    WINDOWS_MAJOR = sys.getwindowsversion().major
-    WINDOWS_MINOR = sys.getwindowsversion().minor
+    major, minor = sys.getwindowsversion()
+    WINDOWS_MAJOR = major
+    WINDOWS_MINOR = minor
 
 
 update_windows_version()
@@ -364,4 +366,5 @@ def print_to_status_box(line):
 
 def update_variable(name, value):
     # TODO: do.
-    eval('name = value')
+    if name in globals():
+        globals()[name] = literal_eval(value)
