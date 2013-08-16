@@ -10,6 +10,7 @@ Created on 8.5.2012
 
 # Critical imports
 import sys
+from ast import literal_eval
 import diwavars
 import datetime
 from models import Project
@@ -309,12 +310,15 @@ class GraphicalUserInterface(GUItemplate):
             node_manager = self.diwa_state.swnp
             screens = int(diwavars.CONFIG['SCREENS'])
             name = diwavars.CONFIG['NAME']
+            status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
             if node_manager.node.screens != screens:
                 node_manager.set_screens(screens)
                 should_update = True
             if node_manager.node.name != name:
                 node_manager.set_name(name)
                 should_update = True
+            if status_box != diwavars.STATUS_BOX_VALUE:
+                diwavars.update_status_box(status_box)
             if should_update:
                 pub.sendMessage('update_screens', update=True)
         except (ValueError, IOError, OSError):
@@ -358,6 +362,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Enable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
         self.evtbtn.SetFocus()
 
     def DisableSessionButton(self):
@@ -373,6 +379,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Disable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
 
     def EnableDirectoryButton(self):
         """
@@ -382,6 +390,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         self.dirbtn.Enable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def DisableDirectoryButton(self):
         """
@@ -397,6 +406,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         self.dirbtn.Disable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def SetProjectName(self, name):
         """
@@ -536,17 +546,21 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project = self.diwa_state.current_project
+        session = self.diwa_state.current_session
         if project is not None:
             self.diwa_state.on_project_selected()
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
-            # self.EnableSessionButton()
             self.sesbtn.Enable(True)
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
+        if session is not None:
+            self.EnableSessionButton()
+        else:
             self.DisableSessionButton()
         self.Refresh()
+        self.Update()
 
     def OnSession(self, event):
         """

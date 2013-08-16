@@ -231,9 +231,9 @@ def update_windows_version():
 
     """
     global WINDOWS_MAJOR, WINDOWS_MINOR
-    major, minor = sys.getwindowsversion()
-    WINDOWS_MAJOR = major
-    WINDOWS_MINOR = minor
+    version = sys.getwindowsversion()
+    WINDOWS_MAJOR = version.major
+    WINDOWS_MINOR = version.minor
 
 
 update_windows_version()
