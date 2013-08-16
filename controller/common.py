@@ -97,6 +97,12 @@ def delete_record(record_model, id_number):
         if isinstance(instance, Project):
             activities = Session.get('all', Activity.project_id == id_number)
             sessions = Session.get('all', Session.project_id == id_number)
+            msg = 'Deleting sessions:'
+            for session in sessions:
+                msg = msg + '\r\n' + str(session) + (' PID {0}'.\
+                                                     format(session.project_id)
+                                                     )
+            _logger().debug(msg)
             Activity.delete_many(activities)
             Session.delete_many(sessions)
         instance.delete()

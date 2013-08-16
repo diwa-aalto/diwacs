@@ -18,6 +18,7 @@ from sqlalchemy.sql import func
 
 # Internal imports.
 from modelsbase import Base, MethodMixin, DEFAULT, ItemAlreadyExistsException
+import modelsbase
 
 ProjectMembers = Table('projectmembers', Base.metadata,
     Column('Project', Integer, ForeignKey('project.id')),
@@ -113,7 +114,7 @@ class Activity(MethodMixin, Base):
 
     project_id = Column(Integer, ForeignKey('project.id'), nullable=False)
 
-    active = Column(Boolean, nullable=False, default=True)
+    active = Column(SmallInteger, nullable=False, default=True)
 
     session = relationship('Session',
                            backref=backref('activities', order_by=id))
@@ -303,23 +304,23 @@ class Event(MethodMixin, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the event, used as primary key in database table.
 
         * :py:attr:`title`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Title of the event (Max 40 characters).
 
         * :py:attr:`desc`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - More in-depth description of the event (Max 500 characters).
 
         * :py:attr:`time`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
+        (:py:class:`sqlalchemy.schema.Column(DateTime)`)\
         - Time the event took place.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the session this event belongs to.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -341,12 +342,16 @@ class Event(MethodMixin, Base):
 
     session = relationship('Session', backref=backref('events', order_by=id))
 
-    def __init__(self, session, title='', description=''):
-        self.title = title
-        self.desc = description
-        self.session = session
-        Event.update(self)
-
+    def __init__(self, session_id, title='', description=''):
+        try:
+            modelsbase.LOGGER.debug('EVT({0}, {1}, {2})'.\
+                                    format(session_id, title, description))
+            self.title = title
+            self.desc = description
+            self.session_id = session_id
+            Event.update(self)
+        except Exception as excp:
+            modelsbase.LOGGER.exception('EVT_EXCPT: {0!s}'.format(excp))
 
 class File(MethodMixin, Base):
     """
@@ -354,15 +359,15 @@ class File(MethodMixin, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the file, used as primary key in database table.
 
         * :py:attr:`path`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Path of the file on DiWa (max 255 chars).
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the project this file belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -398,7 +403,7 @@ class FileAction(MethodMixin, Base):
     Fields:
 
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the FileAction, used as primary key in the database table.
 
         * :py:attr:`file_id`\
@@ -409,32 +414,32 @@ class FileAction(MethodMixin, Base):
         - The file this FileAction affects.
 
         * :py:attr:`action_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the action affecting the file.
 
         * :py:attr:`action` (:py:class:`sqlalchemy.orm.relationship)`)\
         - Action affecting the file.
 
         * :py:attr:`action_time`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
+        (:py:class:`sqlalchemy.schema.Column(DateTime)`)\
         - Time the action took place on.
 
         * :py:attr:`user_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the user performing the action.
 
         * :py:attr:`user` (:py:class:`sqlalchemy.orm.relationship`)\
         - User peforming the action.
 
         * :py:attr:`computer_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the computer user performed the action on.
 
         * :py:attr:`computer` (:py:class:`sqlalchemy.orm.relationship`)\
         - Computer user performed the action on.
 
         * :py:attr:`session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the session user performed the action in.
 
         * :py:attr:`session` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -501,26 +506,26 @@ class Project(MethodMixin, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of project, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of the project (Max 50 characters).
 
         * :py:attr:`company_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the company that owns the project.
 
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\
         - The company that owns the project.
 
         * :py:attr:`dir`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Directory path for the project files (Max 255 characters).
 
         * :py:attr:`password`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Password for the project (Max 40 characters).
 
         * :py:attr:`members` (:py:class:`sqlalchemy.orm.relationship`)\
@@ -573,30 +578,30 @@ class Session(MethodMixin, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of session, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of session (Max 50 characters).
 
         * :py:attr:`project_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the project the session belongs to.
 
         * :py:attr:`project` (:py:class:`sqlalchemy.orm.relationship`)\
         - The project the session belongs to.
 
         * :py:attr:`starttime`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
+        (:py:class:`sqlalchemy.schema.Column(DateTime)`)\
         - Time the session began, defaults to `now()`.
 
         * :py:attr:`endtime`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.DateTime)`)\
+        (:py:class:`sqlalchemy.schema.Column(DateTime)`)\
         - The time session ended.
 
         * :py:attr:`previous_session_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the previous session.
 
         * :py:attr:`previous_session`\
@@ -684,27 +689,27 @@ class User(MethodMixin, Base):
 
     Fields:
         * :py:attr:`id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - ID of the user, used as primary key in database table.
 
         * :py:attr:`name`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Name of the user (Max 50 characters).
 
         * :py:attr:`email`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Email address of the user (Max 100 characters).
 
         * :py:attr:`title`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Title of the user in the company (Max 50 characters).
 
         * :py:attr:`department`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.String)`)\
+        (:py:class:`sqlalchemy.schema.Column(String)`)\
         - Department of the user in the company (Max 100 characters).
 
         * :py:attr:`company_id`\
-        (:py:class:`sqlalchemy.schema.Column(sqlalchemy.types.Integer)`)\
+        (:py:class:`sqlalchemy.schema.Column(Integer)`)\
         - Company id of the employing company.
 
         * :py:attr:`company` (:py:class:`sqlalchemy.orm.relationship`)\

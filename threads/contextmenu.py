@@ -21,6 +21,7 @@ import threading
 import os
 import models
 import modelsbase
+from base64 import b64decode
 
 
 def _logger():
@@ -97,7 +98,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Send to handler. """
         try:
             fpath = str([self.handle_file(param)])
-            self.send_file(str(id_, 'open;' + fpath))
+            self.send_file(unicode(id_, 'open;' + fpath))
         except Exception as excp:
             _logger().exception('File send exception: {0!s}'.format(excp))
         return 'OK'
@@ -152,10 +153,11 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Chat message handler. """
         id_ = id_
         try:
-            (user, msg) = param.split(':', 1)
+            param = b64decode(param).decode('utf-8')
+            (user, msg) = param.split(u':', 1)
             self.parent.trayicon.ShowNotification(user, msg)
         except Exception as excp:
-            _logger().exception('CHATMSG_EXCEPTION: %s', str(excp))
+            _logger().exception('CHATMSG_EXCEPTION: {0!s}'.format(excp))
         return 'OK'
 
     @staticmethod
@@ -173,7 +175,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
             project = self.parent.diwa_state.current_project
             if project is None:
                 return 'OK'
-            node_id = self.parent.swnp.node.id
+            node_id = self.parent.diwa_state.swnp.node.id
             filesystem.screen_capture(project.dir, node_id)
         return 'OK'
 
@@ -190,7 +192,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         # Yes 'format' not in path is really great security
         # feature...
         id_ = id_
-        if diwavars.RUN_CMD and 'format' not in param:
+        if int(diwavars.RUN_CMD) == 1 and 'format' not in param:
             os.system(param)
         return 'OK'
 
@@ -216,7 +218,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
-                # _logger().debug('CMFH got message: %s', message)
+                _logger().debug('CMFH got message: %s', message)
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
                     self.socket.send(handlers[cmd](id_, path))
@@ -230,5 +232,5 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                 _logger().exception('CMFH exception: {0!s}'.format(excp))
             except Exception as excp:
                 log_msg = 'Generic Exception in CMFH: {0!s}'
-                _logger().exception(log_msg.fromat(excp))
+                _logger().exception(log_msg.format(excp))
                 self.socket.send('ERROR')

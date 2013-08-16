@@ -93,7 +93,7 @@ def main():
         ip_address = get_local_ip_address('www.google.fi')
         #print ip_address
         sock.bind('epgm://' + ip_address + ';239.128.128.2:5555')
-        command = 'open;' + str(filepath)
+        command = u'open;' + unicode(filepath)
         msg = Message(target, 'MSG', command)
         #print msg
         sock.send_multipart([msg.TAG,

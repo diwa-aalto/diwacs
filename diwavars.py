@@ -8,7 +8,8 @@ import pyaudio
 import os
 import re
 import sys
-from win32con import VK_LWIN, VK_ESCAPE
+from win32con import VK_LWIN, VK_LMENU
+from ast import literal_eval
 
 
 # A placeholder for default system cursor
@@ -147,10 +148,10 @@ def set_run_cmd(value):
 
 
 KEY_MODIFIER = VK_LWIN
-KEY = VK_ESCAPE
+KEY = VK_LMENU
 
 
-def update_keys(modifier=VK_LWIN, key=VK_ESCAPE):
+def update_keys(modifier=VK_LWIN, key=VK_LMENU):
     """
     Update the key combination to stop remote controlling.
 
@@ -230,8 +231,9 @@ def update_windows_version():
 
     """
     global WINDOWS_MAJOR, WINDOWS_MINOR
-    WINDOWS_MAJOR = sys.getwindowsversion().major
-    WINDOWS_MINOR = sys.getwindowsversion().minor
+    version = sys.getwindowsversion()
+    WINDOWS_MAJOR = version.major
+    WINDOWS_MINOR = version.minor
 
 
 update_windows_version()
@@ -338,3 +340,31 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
             return
         DB_STRING = __myformat % (DB_TYPE, db_driver, DB_USER, DB_PASS,
                                   DB_ADDRESS, DB_NAME)
+
+STATUS_BOX_VALUE = 0
+STATUS_BOX_CALLBACK = None
+STATUS_BOX_PRINT_CALLBACK = None
+
+
+def register_status_box_callback(state_func, print_func):
+    global STATUS_BOX_CALLBACK, STATUS_BOX_PRINT_CALLBACK
+    STATUS_BOX_CALLBACK = state_func
+    STATUS_BOX_PRINT_CALLBACK = print_func
+
+
+def update_status_box(value):
+    global STATUS_BOX_VALUE
+    STATUS_BOX_VALUE = value
+    if STATUS_BOX_CALLBACK is not None:
+        STATUS_BOX_CALLBACK(value)
+
+
+def print_to_status_box(line):
+    if STATUS_BOX_PRINT_CALLBACK is not None:
+        STATUS_BOX_PRINT_CALLBACK(line)
+
+
+def update_variable(name, value):
+    # TODO: do.
+    if name in globals():
+        globals()[name] = literal_eval(value)

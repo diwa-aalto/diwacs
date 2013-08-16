@@ -46,8 +46,7 @@ def add_event(session_id, title, description):
     :rtype: Integer
 
     """
-    session = Session.get_by_id(session_id)
-    return Event(session, title, description).id
+    return Event(session_id, title, description).id
 
 
 def get_active_session(pgm_group):
@@ -62,7 +61,7 @@ def get_active_session(pgm_group):
 
     """
     activity = controller.activity.get_active_activity(pgm_group)
-    return activity.session if activity else None
+    return activity.session_id if activity else 0
 
 
 def get_latest_event_id():

@@ -45,7 +45,6 @@ from zmq.error import Again, ContextTerminated, ZMQError
 
 LOGGER = None
 
-
 def __init_logger():
     """
     Used to initialize the logger, when running from diwacs.py
@@ -218,11 +217,13 @@ class SWNP:
 
     def __init__(self, pgm_group, screens=0, name=None, node_id=None,
                  context=None, error_handler=None):
+        LOGGER.debug("ZMQ version: {0} PYZMQ version: {1}".format(
+                                    zmq.zmq_version(), zmq.pyzmq_version()))
         # Check pgm_group
         if not pgm_group:
             pgm_group = 1
-        pgm_ip = '239.128.128.%d:5555' % pgm_group
-        LOGGER.debug('PGM IP %s', pgm_ip)
+        pgm_ip = '239.128.128.{0}:5555'.format(pgm_group)
+        LOGGER.debug('PGM IP {0}'.format(pgm_ip))
 
         #Create context
         self.context = context if context else zmq.Context()
@@ -272,10 +273,11 @@ class SWNP:
 
         #heartbeat
         self.ping_stop = threading.Event()
-        self.ping_thread = threading.Thread(target=self.ping_routine,
-                                            name='Ping thread',
-                                            args=(error_handler,)
-                                            )
+        self.ping_thread = threading.Thread(
+            target=self.ping_routine,
+            name='Ping thread',
+            args=(error_handler,)
+        )
         self.ping_thread.daemon = True
         self.ping_thread.start()
         self.timeout_stop = threading.Event()
@@ -339,13 +341,12 @@ class SWNP:
         Send a PING message to the network.
 
         """
+        msg = '{id}_SCREENS_{node.screens}_NAME_{node.name}_DATA_{node.data}'
+        msg = msg.format(id=self.id, node=self.node)
         try:
-            msg_format = '%s_SCREENS_%d_NAME_%s_DATA_%s'
-            msg = msg_format % (self.id, int(self.node.screens),
-                                self.node.name, self.node.data)
             self.send('SYS', PREFIX_CHOICES[4], msg)
         except ZMQError as excp:
-            LOGGER.exception('do_ping exception: %s', str(excp))
+            LOGGER.exception('do_ping exception: {0!s}'.format(excp))
 
     def ping_routine(self, error_handler):
         """
@@ -357,7 +358,7 @@ class SWNP:
         try:
             comp = controller.add_computer(self.node.name, self.ip, self.id)
         except Exception as excp:
-            LOGGER.exception('Ping routine exception: %s', str(excp))
+            LOGGER.exception('Ping routine exception: {0!s}'.format(excp))
         previous_success = False
         LOGGER.debug('Ping routine started.')
         # Ping every 100th step and sleep for PING_RATE / 100...
@@ -376,7 +377,8 @@ class SWNP:
                             error_handler.queue.append(CloseError)
                         previous_success = success
                 except Exception as excp:
-                    LOGGER.exception('Ping_routine exception: %s', str(excp))
+                    log_msg = 'Ping_routine exception: {0!s}'
+                    LOGGER.exception(log_msg.format(excp))
             step = step % 50
             sleep(PING_RATE / 50.0)
         LOGGER.debug('Ping routine closed.')
@@ -405,7 +407,7 @@ class SWNP:
                     (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     message = loads(contents, object_hook=Message.from_json)
                     (prefix, payload) = (message.prefix, message.payload)
-                    if payload == self.id and prefix == 'LEAVE':
+                    if payload == str(self.id) and prefix == 'LEAVE':
                         LOGGER.debug('LEAVE msg catched')
                         sleep(0.1)
                         self.online = False
@@ -458,9 +460,11 @@ class SWNP:
             # Read envelope with address.
             for s in subscribers:
                 try:
-                    (address, contents) = s.recv_multipart(zmq.NOBLOCK)
-                    msg_hook = Message.from_json
-                    msg_obj = loads(contents, object_hook=msg_hook)
+                    pack = s.recv_multipart(zmq.NOBLOCK)
+                    if len(pack) != 2:
+                        LOGGER.debug('LEN != 2')
+                    (address, contents) = pack
+                    msg_obj = loads(contents, object_hook=Message.from_json)
                     receiver = 0
                     try:
                         receiver = int(msg_obj.payload)
@@ -478,11 +482,14 @@ class SWNP:
                     # error.
                     pass
                 except ValueError as excp:
-                    LOGGER.exception('ValueError: %s', str(excp))
+                    LOGGER.exception('ValueError!: %s', str(excp))
+                    txt = '{1}{2}Unpacking: \n{0}{2}{1}'
+                    xts = '\n'.join([str(p) for p in pack])
+                    LOGGER.exception(txt.format(xts, '-' * 10, '\n' * 5))
                 except (SystemExit, ContextTerminated):
                     # context associated with the specified
                     # socket was terminated or the app is closing.
-                    LOGGER.exception('SYS-EXCPT: %s', str(excp))
+                    LOGGER.exception('SYS-EXCPT: {0!s}'.format(excp))
                     self.online = False
                     break
                 except Exception as excp:
@@ -607,10 +614,10 @@ class SWNP:
         if tag and prefix and message:
             msg = Message(tag, prefix, message)
             try:
-                myMess = [msg.tag, dumps(msg, default=Message.to_dict)]
+                my_message = [msg.tag, dumps(msg, default=Message.to_dict)]
                 if msg.prefix != 'PING':
-                    self.publisher_loopback.send_multipart(myMess)
-                self.publisher.send_multipart(myMess)
+                    self.publisher_loopback.send_multipart(my_message)
+                self.publisher.send_multipart(my_message)
             except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))
 
@@ -649,15 +656,19 @@ class SWNP:
         return [node for node in self.get_list() if node.screens > 0]
 
     def _on_join(self, payload):
-        """ On join handlers. """
+        """
+        On join handlers.
+
+        """
         payload = payload.split('_')
         joiner_id = int(payload[0])
         joiner_screens = int(payload[2])
         joiner_name = payload[4]
         joiner_data = payload[6]
         if joiner_id != self.id:
-            reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
-            self.send('SYS', PREFIX_CHOICES[4], reply)
+            self.do_ping()
+            # reply = '%s_SCREENS_%d' % (self.id, int(self.node.screens))
+            # self.send('SYS', PREFIX_CHOICES[4], reply)
         if self.find_node(joiner_id) is not None:
             return
         new_node = Node(joiner_id, joiner_screens, joiner_name, joiner_data)
@@ -666,7 +677,10 @@ class SWNP:
         pub.sendMessage('update_screens', update=True)
 
     def _on_leave(self, payload):
-        """ On leave handlers. """
+        """
+        On leave handlers.
+
+        """
         try:
             node_id = int(payload)
         except ValueError:
@@ -683,7 +697,10 @@ class SWNP:
 
     def _on_ping(self, payload):
         """ On ping handlers. """
-        self.ping_handler(payload)
+        try:
+            self.ping_handler(payload)
+        except Exception as excp:
+            LOGGER.exception('PING EXCEPTION: {0}'.format(excp))
 
     def _on_default(self, payload):
         """ On unrecognized command handlers. """
@@ -755,7 +772,7 @@ class SWNP:
 
         """
         result_node = None
-        for node in self.NODE_LIST:
-            if node.id == node_id:
-                result_node = node
+        nodes_gen = (x for x in self.NODE_LIST if x.id == node_id)
+        for node in nodes_gen:
+            result_node = node
         return result_node

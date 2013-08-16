@@ -18,6 +18,7 @@ import wx.lib.buttons as buttons
 from urlparse import urlparse
 from sqlalchemy.exc import SQLAlchemyError
 from modelsbase import ItemAlreadyExistsException
+from wx._controls import TE_READONLY
 try:
     from agw import ultimatelistctrl as ULC  # @UnusedImport
 except ImportError:
@@ -182,9 +183,6 @@ class DropTarget(wx.PyDropTarget):
             deltay += 20
             self.my_send_dialogs.append(deltay)
             title = 'Sending items...'
-            mydialog = SendProgressBar(self.parent, title, deltay)
-            self.parent.Raise()
-            self.parent.Update()
             project = self.parent.diwa_state.current_project
             project_items = []
             paths = []
@@ -208,13 +206,17 @@ class DropTarget(wx.PyDropTarget):
             LOGGER.debug('NFILES: {0}'.format(', '.join([f for f in paths])))
             # Process items that are not part of the project.
             if paths:
-                paths = self.parent.diwa_state.handle_file_send(paths,
-                                                                mydialog)
+                params = {
+                    'class': SendProgressBar,
+                    'kwargs': {
+                        'parent': self.parent,
+                        'title': title,
+                        'ypos': deltay
+                    }
+                }
+                paths = self.parent.diwa_state.handle_file_send(paths, params)
             # Union the two lists again.
             paths.extend(project_items)
-            # Switch the UI state.
-            mydialog.Destroy()
-            mydialog = None
             self.parent.Show()
             self.parent.Raise()
             self.parent.Update()
@@ -411,15 +413,15 @@ class SysTray(wx.TaskBarIcon):
         Start a thread to show the notification.
 
         :param title: Title to diplay in the balloon.
-        :type title: String
+        :type title: Unicode
 
         :param message: Message to display in the balloong (max 255 chars).
-        :type message: String
+        :type message: Unicode
 
         """
         args = [title, message]
         notify_thread = threading.Thread(target=self._show_notification,
-                                         name="Notification", args=args)
+                                         name='Notification', args=args)
         notify_thread.run()
 
     def _show_notification(self, title, message):
@@ -773,8 +775,8 @@ class GUItemplate(wx.Frame):
         self.diwawabtn = buttons.GenBitmapButton(self.banner_panel, wx.ID_ANY,
                                                  icon('diwawa'),
                                                  style=wx.NO_BORDER,
-                                                 pos=(90, 4),
-                                                 size=(118, 30))
+                                                 pos=(95, 4),
+                                                 size=(81, 32))
         self.diwawabtn.focusClr = wx.Colour(45, 137, 255)
         self.diwawabtn.shadowPenClr = wx.Colour(45, 137, 255)
         self.diwawabtn.highlightPenClr = wx.Colour(45, 137, 255)
@@ -783,18 +785,18 @@ class GUItemplate(wx.Frame):
         self.diwambbtn = buttons.GenBitmapButton(self.banner_panel, wx.ID_ANY,
                                                  self.GetProgramIcon('diwamb'),
                                                  style=wx.BORDER_NONE,
-                                                 pos=(203, 4), size=(113, 32))
+                                                 pos=(185, 4), size=(99, 33))
         self.diwambbtn.SetBackgroundColour(wx.Colour(45, 137, 255))
         self.diwambbtn.focusClr = wx.Colour(45, 137, 255)
         self.diwambbtn.shadowPenClr = wx.Colour(45, 137, 255)
         self.diwambbtn.highlightPenClr = wx.Colour(45, 137, 255)
         self.diwambbtn.faceDnClr = wx.Colour(45, 137, 255)
         self.diwambbtn.SetToolTip(wx.ToolTip('Meeting Browser'))
-        self.status_text = wx.StaticText(self.banner_panel, -1, '',
-                                         pos=(diwavars.FRAME_SIZE[0] - 220, 0))
+        #self.status_text = wx.StaticText(self.banner_panel, -1, '',
+        #                                 pos=(diwavars.FRAME_SIZE[0] - 220, 0))
         self.banner = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
                                       bitmap=self.GetProgramIcon('balls'),
-                                      pos=(diwavars.FRAME_SIZE[0] - 250, 0))
+                                      pos=(diwavars.FRAME_SIZE[0] - 295, 0))
         # self.statusbg = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
         #                          bitmap=self.GetProgramIcon('statusbg'),
         #                          pos=(diwavars.FRAME_SIZE[0] - 150, 0),
@@ -810,10 +812,19 @@ class GUItemplate(wx.Frame):
         self.infobtn.faceDnClr = wx.Colour(45, 137, 255)
         self.infobtn.SetToolTip(wx.ToolTip('Info'))
         msg = ' '.join(['DiWaCS', diwavars.VERSION])
-        version = wx.StaticText(self.banner_panel, -1, msg, pos=(5, 35),
+        version = wx.StaticText(self.banner_panel, wx.ID_ANY, msg, pos=(5, 35),
                                 style=wx.ALIGN_CENTRE)
         version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
+        # TODO: Status box.
+        self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
+                                      pos=(diwavars.FRAME_SIZE[0] - 185, 5),
+                                      size=(180, 40),
+                                      style=wx.TE_MULTILINE | TE_READONLY)
+        if not diwavars.STATUS_BOX_VALUE:
+            self.status_box.Hide()
+        diwavars.register_status_box_callback(self._OnStatusBoxCallback,
+                                              self._OnStatusBoxPrint)
         screenSizer.Add(self.evtbtn, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 30)
         vbox.Add(screenSizer, 0)
         self.SetSizer(vbox)
@@ -821,6 +832,17 @@ class GUItemplate(wx.Frame):
         self.AlignCenterTop()
         self.Show()
         self.Refresh()
+
+    def _OnStatusBoxCallback(self, value):
+        if value:
+            self.status_box.Show()
+        else:
+            self.status_box.Hide()
+
+    def _OnStatusBoxPrint(self, value):
+        if len(self.status_box.GetValue()):
+            self.status_box.AppendText('\r\n')
+        self.status_box.AppendText(value)
 
     def OnExit(self, event):
         """

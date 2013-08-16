@@ -10,6 +10,7 @@ Created on 8.5.2012
 
 # Critical imports
 import sys
+from ast import literal_eval
 import diwavars
 import datetime
 from models import Project
@@ -79,10 +80,10 @@ class EventList(EventListTemplate):
     A Frame which displays the possible event titles and handles the event
     creation.
 
-
     """
     def __init__(self, parent, *args, **kwargs):
         EventListTemplate.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
         self.evtlist.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelection)
         self.evtlist.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnSelection)
         self.custom_event.Bind(wx.EVT_SET_FOCUS, self.OnText)
@@ -98,18 +99,23 @@ class EventList(EventListTemplate):
         :type event: :py:class:`wx.Event`
 
         """
+        LOGGER.debug('EventList.OnEnter()')
         label = self.custom_event.GetValue()
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
         if not self.parent.diwa_state.is_responsive:
-            self.parent.SwnpSend(self.parent.diwa_state.responsive,
-                                 'event;' + label)
+            LOGGER.debug('EventList.OnEnter(-NOT RESPONSIVE-)')
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
+                                             'event;{0}'.format(label))
         elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+            LOGGER.debug('EventList.OnEnter(CALL AFTER)')
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         self.custom_event.SetValue('')
         wx.CallLater(1000, self.HideNow)
+        LOGGER.debug('EventList.OnEnter(endish)')
         if event:
             event.Skip()
+        LOGGER.debug('EventList.OnEnter(end)')
 
     def OnText(self, event):
         """
@@ -158,16 +164,17 @@ class EventList(EventListTemplate):
         i = self.evtlist.GetNextSelected(-1)
         self.evtlist.SetItemBackgroundColour(i, wx.Colour(45, 137, 255))
         label = self.evtlist.GetItemText(i)
-        LOGGER.debug('Custom event %s responsive is %s', str(label),
-                     str(self.parent.responsive))
+        LOGGER.debug('Custom event {0!s} responsive is {1!s}'.\
+                     format(label, self.parent.diwa_state.responsive))
         self.evtlist.Select(i, False)
         self.selection_made += 1
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
-        if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, 'event;%s' % label)
-        elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+        if not self.parent.diwa_state.is_responsive:
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
+                                            'event;{0}'.format(label))
+        elif (project is not None) and (session is not None):
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         wx.CallLater(1000, self.HideNow)
         if event:
             event.Skip()
@@ -274,7 +281,7 @@ class GraphicalUserInterface(GUItemplate):
         self.setbtn.Bind(wx.EVT_BUTTON, self.OnPreferences)
         self.hidebtn.Bind(wx.EVT_BUTTON, self.OnTaskBarActivate)
         self.closebtn.Bind(wx.EVT_BUTTON, self.OnExit)
-        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEvtBtn)
+        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEventButton)
         self.logo.Bind(wx.EVT_LEFT_DOWN, self.OnAboutBox)
         self.diwawabtn.Bind(wx.EVT_BUTTON, self.OnWABtn)
         self.diwambbtn.Bind(wx.EVT_BUTTON, self.OnMBBtn)
@@ -303,12 +310,15 @@ class GraphicalUserInterface(GUItemplate):
             node_manager = self.diwa_state.swnp
             screens = int(diwavars.CONFIG['SCREENS'])
             name = diwavars.CONFIG['NAME']
+            status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
             if node_manager.node.screens != screens:
                 node_manager.set_screens(screens)
                 should_update = True
             if node_manager.node.name != name:
                 node_manager.set_name(name)
                 should_update = True
+            if status_box != diwavars.STATUS_BOX_VALUE:
+                diwavars.update_status_box(status_box)
             if should_update:
                 pub.sendMessage('update_screens', update=True)
         except (ValueError, IOError, OSError):
@@ -352,6 +362,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Enable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
         self.evtbtn.SetFocus()
 
     def DisableSessionButton(self):
@@ -367,6 +379,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Disable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
 
     def EnableDirectoryButton(self):
         """
@@ -376,6 +390,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         self.dirbtn.Enable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def DisableDirectoryButton(self):
         """
@@ -391,6 +406,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         self.dirbtn.Disable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def SetProjectName(self, name):
         """
@@ -479,7 +495,7 @@ class GraphicalUserInterface(GUItemplate):
                 return node.id
         return None
 
-    def OnEvtBtn(self, event):
+    def OnEventButton(self, event):
         """
         Event Button handler.
 
@@ -530,17 +546,21 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project = self.diwa_state.current_project
+        session = self.diwa_state.current_session
         if project is not None:
             self.diwa_state.on_project_selected()
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
-            # self.EnableSessionButton()
             self.sesbtn.Enable(True)
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
+        if session is not None:
+            self.EnableSessionButton()
+        else:
             self.DisableSessionButton()
         self.Refresh()
+        self.Update()
 
     def OnSession(self, event):
         """
@@ -565,7 +585,9 @@ class GraphicalUserInterface(GUItemplate):
                 self.diwa_state.on_session_changed(True)
                 self.EnableSessionButton()
                 session_id = self.diwa_state.current_session_id
-                LOGGER.info('Session started: {0}'.format(session_id))
+                msg = 'Session started: {0}'.format(session_id)
+                LOGGER.info(msg)
+                diwavars.print_to_status_box(msg)
             except SessionChangeException:
                 params = {'message': 'Failed to start a new session!'}
                 LOGGER.exception('Session change failed...')
@@ -578,6 +600,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.diwa_state.on_session_changed(False)
                 self.DisableSessionButton()
                 LOGGER.info('Session ended.')
+                diwavars.print_to_status_box('Session ended.')
             except Exception as excp:
                 LOGGER.exception('OnSession exception: {0!s}'.format(excp))
             # TODO: Check all wx.ICON_INFORMATION uses and maybe
@@ -649,15 +672,17 @@ class GraphicalUserInterface(GUItemplate):
                 # Start remote
                 threads.inputcapture.set_capture(True)
                 self.diwa_state.capture_thread.hook()
-                sender(node.id,
-                       'remote_start;{0}'.format(node_manager.node.id))
+                msg = 'remote_start;{0}'.format(node_manager.node.id)
+                sender(node.id, msg)
+                # Sync clipboard.
+                self.diwa_state.send_push_clipboard(node.id)
                 self.selected_nodes.append(node.id)
                 self.Refresh()
                 tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
                 tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
                 self.overlay.SetText(tmod, tkey)
                 self.overlay.Show()
-        except Exception, excp:
+        except Exception as excp:
             LOGGER.exception('EXCPT! {0!s}'.format(excp))
             sys.exit()
 

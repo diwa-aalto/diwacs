@@ -6,14 +6,19 @@ Created on 4.7.2013
 """
 # Standard imports.
 from ast import literal_eval
-from base64 import b64decode
+from base64 import b64decode, b64encode
+from cPickle import dumps, loads
 import cStringIO
 from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
+import pywintypes
 from random import Random
+from hashlib import sha512
 import shutil
+from time import sleep
 import webbrowser
+import win32clipboard
 
 # 3rd party imports.
 import configobj
@@ -123,18 +128,22 @@ class State(object):
     DEF_SIZE = 2 * 1024 * 1024
     DEF_FILES = 40
     DEF_BUFFER = 1024 * 1024
+    DEF_20MB = 20 * 1024 * 1024
 
     def __init__(self, parent):
         diwavars.update_windows_version()
         self.parent = parent
+        self.audio_recorder = None
         try:
-            self.audio_recorder = threads.AudioRecorder(self)
+            self.audio_recorder = threads.AudioRecorder(self.parent)
             self.audio_recorder.daemon = True
+            self.start_audio_recorder()
         except Exception as excp:
             LOGGER.exception('Audio recorder exception: %s', str(excp))
         self.exited = False
         self.responsive = ''
         self.is_responsive = False
+        self.clipboard_list = None
         self.screen_selected = None
         self.error_th = threads.CONNECTION_ERROR_THREAD(self.parent)
         self.random = Random()
@@ -160,7 +169,7 @@ class State(object):
                 error_handler=self.error_th
             )
         except Exception as excp:
-            LOGGER.exception('loading config exception: %s', str(excp))
+            LOGGER.exception('loading config exception: {0!s}'.format(excp))
         self.initialized = False
         self.cmfh = None
         self.capture_thread = None
@@ -240,10 +249,10 @@ class State(object):
         LOGGER.debug('Closing extra threads')
         threads.DIWA_THREAD.stop_all()
 
-    def _handle_file_copy(self, src_dst_list, dirs, dialog):
+    def _handle_file_copy(self, src_dst_list, dirs, dialog_parameters=None):
         """
         Mass copy files while giving optional output on the progress
-        through a dialog.
+        through a dialog_parameters.
 
         :param src_dst_list: A list of (Source, Target) filepaths.
         :type src_dst_list: A list of Tuples of Strings.
@@ -251,8 +260,8 @@ class State(object):
         :param dirs: All the directories to be created before copying.
         :type dirs: A list of strings.
 
-        :param dialog: The progress dialog.
-        :type dialog: :py:class:`wx.ProgressDialog`
+        :param dialog_parameters: The progress dialog_parameters.
+        :type dialog_parameters: :py:class:`dict`
 
         """
         total_len = 0
@@ -260,14 +269,15 @@ class State(object):
         filecount = len(src_dst_list)
         for item in src_dst_list:
             total_len += os.path.getsize(item[0])
-        do_updates = False
-        if (dialog is not None and (total_len >= State.DEF_SIZE or
-                                    filecount >= State.DEF_FILES)):
+        dialog = None
+        if ((dialog_parameters is not None) and
+                (total_len >= State.DEF_SIZE or filecount >= State.DEF_FILES)):
             LOGGER.debug('PROGRESS VISIBLE!')
             self.parent.Hide()
+            class_ = dialog_parameters['class']
+            kwargs = dialog_parameters['kwargs']
+            dialog = class_(**kwargs)
             dialog.Show()
-            dialog.Raise()
-            do_updates = True
         for directory in dirs:
             try:
                 os.mkdir(directory)
@@ -285,7 +295,7 @@ class State(object):
                     cstr = fin.read(min(State.DEF_BUFFER, curlen - curcopied))
                     fout.write(cstr)
                     curcopied += len(cstr)
-                    condition = do_updates and (
+                    condition = (dialog is not None) and (
                         first_transaction or
                         (datetime.now() - lastupdate).total_seconds() > 1.0 or
                         curcopied == curlen
@@ -324,11 +334,11 @@ class State(object):
                 if fout and hasattr(fout, 'close'):
                     fout.close()
                 self.parent.Update()
-        if do_updates:
-            dialog.Update(100, 'file transfer complete')
+        if dialog is not None:
+            dialog.Destroy()
 
     # TODO: We need to resolve the copy issue inside project folder.
-    def handle_file_send(self, filenames, progressdialog=None):
+    def handle_file_send(self, filenames, dialog_parameters=None):
         """
         Sends a file link to another node.
 
@@ -336,11 +346,11 @@ class State(object):
         the users wishes to add the items to project before beginning the copy
         routine.
 
-        The copy routine first creates all the needed subfolders and then sums
+        The copy routine first creates all the needed sub-folders and then sums
         up all the file sizes to be copied. Then it will update the dialog
         in the beginning/end of every file transaction and whenever there's
         been more than 1 second from the last update dialog update. Assuming
-        the progressdialog parameter has been given.
+        the dialog_parameters parameter has been given.
 
         The progress dialog, if supplied, is updated as follows:
             - If there's less than DEF_FILES (**40**) files the dialog \
@@ -355,8 +365,10 @@ class State(object):
         :param filenames: All the files/folders to be copied.
         :type filenames: List of String
 
-        :param progressdialog: The progress dialog to update (optional).
-        :type progressdialog: :py:class:`wx.ProgressDialog`
+        :param dialog_parameters:
+            The progress dialog to create by show_modal_and_destroy,
+            initialization parameters in a dictionary.
+        :type dialog_parameters: :py:class:`dict`
 
         """
         project = self.current_project
@@ -378,7 +390,7 @@ class State(object):
                 LOGGER.debug('Project target: %s', res)
                 mydirs.append(res)
                 returnvalue.append(res)
-                # os.mkdir(returnvalue)
+
                 for (currentroot, dirs, files) in os.walk(copyroot):
                     relativeroot = ''
                     if len(currentroot) > cidx:
@@ -401,10 +413,13 @@ class State(object):
                 path_ = os.path.join(path, os.path.basename(filename))
                 returnvalue.append(path_)
                 src_dst_list.append((filename, path_))
-        params = {'message': 'Add the dragged objects to project?',
-                  'caption': 'Add to project?',
-                  'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP |
-                            wx.YES_DEFAULT | wx.YES_NO)}
+        params = {
+            'message': 'Add the dragged objects to project?',
+            'caption': 'Add to project?',
+            'style': (wx.ICON_QUESTION | wx.STAY_ON_TOP | wx.YES_DEFAULT |
+                      wx.YES_NO)
+        }
+
         if project is None:
             result = wx.ID_NO
         else:
@@ -434,7 +449,7 @@ class State(object):
                              for (src, dst) in src_dst_list]
         LOGGER.debug('__sendfile_2__')
         try:
-            self._handle_file_copy(src_dst_list, mydirs, progressdialog)
+            self._handle_file_copy(src_dst_list, mydirs, dialog_parameters)
         except IOError as excp:
             LOGGER.exception('MYCOPY: %s', str(excp))
         LOGGER.debug('__sendfile_3__')
@@ -497,6 +512,7 @@ class State(object):
     TARGET_TO_FLAG = {0x201: 0x0002, 0x202: 0x0004, 0x204: 0x0008,
                       0x205: 0x0010, 0x207: 0x0020, 0x208: 0x0040,
                       0x20A: 0x0800, 0x20E: 0x1000}
+
 
     @staticmethod
     def _on_mouse_event(parameters):
@@ -565,13 +581,116 @@ class State(object):
             self.worker.create_event(parameters)
 
     def _on_remote_start(self, parameters):
-        macro.release_all_keys()
+        # macro.release_all_keys()
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
 
+    @staticmethod
+    def _try_open_clipboard(trycount, sleepamount):
+        tries = 0
+        while tries < trycount:
+            try:
+                win32clipboard.OpenClipboard()
+                return True
+            except pywintypes.error as excp:
+                if excp[0] == 5:
+                    sleep(sleepamount)
+                    tries += 1
+        return False
+
+    @staticmethod
+    def _get_clipboard_content():
+        """
+        Returns the clipboard content list.
+        list of tuples (format, data).
+
+        """
+        result = []
+        if not State._try_open_clipboard(10, 0.01):
+            return result
+        my_enum = win32clipboard.EnumClipboardFormats
+        get_data = win32clipboard.GetClipboardData
+        try:
+            dataformat = my_enum(0)
+            while dataformat > 0:
+                try:
+                    item = (dataformat, get_data(dataformat))
+                    result.append(item)
+                except Exception:
+                    pass
+                finally:
+                    dataformat = my_enum(dataformat)
+        except Exception:
+            pass
+        finally:
+            win32clipboard.CloseClipboard()
+        return result
+
+    @staticmethod
+    def _set_clipboard_content(contents):
+        if not State._try_open_clipboard(10, 0.01):
+            return False
+        answer = True
+        try:
+            win32clipboard.EmptyClipboard()
+            for item in reversed(contents):
+                try:
+                    win32clipboard.SetClipboardData(*item)
+                except Exception:
+                    answer = False
+        except Exception:
+            pass
+        finally:
+            win32clipboard.CloseClipboard()
+        return answer
+
+    def _on_clipboard_sync(self, parameters):
+        """
+        parameters:
+        PUSH_{...}        - request to push data into clipboard
+        POP_ID            - request to pop data from clipboard
+        FIN_{...}         - response of pop data.
+
+        """
+        try:
+            if parameters.startswith('PUSH_'):
+                self.clipboard_list = State._get_clipboard_content()
+                data = parameters.split('_', 1)[1]
+                data = b64decode(data)
+                myhasher = sha512()
+                myhasher.update(data)
+                self.received_clipboard_hash = myhasher.hexdigest()
+                data = loads(data)
+                State._set_clipboard_content(data)
+            elif parameters.startswith('POP_'):
+                requester_id = parameters.split('_', 1)[1]
+                current_content = State._get_clipboard_content()
+                State._set_clipboard_content(self.clipboard_list)
+                pickled = dumps(current_content, 1) # Binary
+                if len(pickled) > State.DEF_20MB:
+                    # TODO: Error dialog?
+                    return
+                myhasher = sha512()
+                myhasher.update(pickled)
+                myhash = myhasher.hexdigest()
+                if myhash != self.received_clipboard_hash:
+                    # Sync with remote controller.
+                    msg = 'clipboard_sync;FIN_{0}'.format(b64encode(pickled))
+                    self.swnp_send(requester_id, msg)
+            elif parameters.startswith('FIN_'):
+                data = parameters.split('_', 1)[1]
+                data = b64decode(data)
+                data = loads(data)
+                result = State._set_clipboard_content(data)
+            else:
+                # Unknown clipboard function.
+                pass
+        except Exception as excp:
+            LOGGER.exception('CLIPBOARD_SYNC_EXCEPTION: {0}'.format(excp))
+
     def _on_remote_end(self, parameters):  # @UnusedVariable
-        if self.controlled:
-            macro.release_all_keys()
+        # if self.controlled:
+        #     macro.release_all_keys()
         if self.controlling:
             self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
             self.selected_nodes = []
@@ -636,6 +755,7 @@ class State(object):
             'event': self._on_event,
             'remote_start': self._on_remote_start,
             'remote_end': self._on_remote_end,
+            'clipboard_sync': self._on_clipboard_sync,
             'set': self._on_set,
             'screenshot': self._on_screenshot,
             'current_activity': self._on_current_activity,
@@ -651,6 +771,17 @@ class State(object):
             log_msg = log_msg.format(exception=excp)
             LOGGER.exception(log_msg)
 
+    def send_push_clipboard(self, target_node_id):
+        clipboard_data = State._get_clipboard_content()
+        clipboard_data = dumps(clipboard_data, 1)
+        clipboard_data = b64encode(clipboard_data)
+        msg = 'clipboard_sync;PUSH_{0}'.format(clipboard_data)
+        self.swnp_send(str(target_node_id), msg)
+
+    def send_pop_clipboard(self, target_node_id):
+        msg = 'clipboard_sync;POP_{0}'.format(self.swnp.node.id)
+        self.swnp_send(str(target_node_id), msg)
+
     def on_project_selected(self):
         """
         Event handler for project selection in the client.
@@ -660,10 +791,9 @@ class State(object):
             return
         update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        if self.is_responsive:
-            self.activity_id = update(self.current_project_id,
-                                      diwavars.PGM_GROUP,
-                                      0, self.activity_id)
+        self.activity_id = update(self.current_project_id,
+                                  diwavars.PGM_GROUP,
+                                  0, self.activity_id)
 
         self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity_id))
 
@@ -676,13 +806,12 @@ class State(object):
         if desired_state:
             session_id = self.start_new_session()
             if session_id < 1:
-                raise SessionChangeException()
+                raise SessionChangeException('Failed to start a new session')
             LOGGER.debug('Started session: {0}'.format(session_id))
             self.set_current_session(session_id)
-            if self.is_responsive:
-                self.activity_id = update(self.current_project_id,
-                                          diwavars.PGM_GROUP,
-                                          session_id, self.activity_id)
+            self.activity_id = update(self.current_project_id,
+                                      diwavars.PGM_GROUP,
+                                      session_id, self.activity_id)
         else:
             self.end_current_session()
             if self.is_responsive:
@@ -748,8 +877,8 @@ class State(object):
         elif project and self.current_project_id != project_id:
             self.current_project_id = project_id
             self.current_project = project
-            extra = ' (responsive)' if self.is_responsive else ''
-            log_msg = 'Project "{name}" selected{extra}'
+            extra = u' (responsive)' if self.is_responsive else u''
+            log_msg = u'Project "{name}" selected{extra}'
             log_msg = log_msg.format(name=project.name, extra=extra)
             LOGGER.info(log_msg)
             self.worker.remove_all_registry_entries()
@@ -764,7 +893,7 @@ class State(object):
                     log_msg = 'self.set_observer() raised: {exception!s}'
                     log_msg = log_msg.format(exception=excp)
                     LOGGER.exception(log_msg)
-            LOGGER.info('Project set to %s (%s)', project_id, project.name)
+            LOGGER.info(u'Project set to %s (%s)', project_id, project.name)
 
     def set_responsive(self):
         """
@@ -879,4 +1008,4 @@ class State(object):
         try:
             self.swnp.send(str(node), 'MSG', message)
         except Exception:
-            LOGGER.exception('SwnpSend exception %s to %s', message, node)
+            LOGGER.exception('swnp_send exception %s to %s', message, node)

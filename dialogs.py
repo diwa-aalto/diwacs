@@ -202,7 +202,8 @@ class AddProjectDialog(wx.Dialog):
                 'company': company_data
             }
             project = controller.add_project(data)
-            LOGGER.info('Created Project: %s (id=%d)', project.name,
+            LOGGER.info('Created Project: %s (id=%d)',
+                        project.name,
                         project.id)
             result = project.id
         except Exception as excp:
@@ -328,12 +329,12 @@ class DeleteProjectDialog(wx.Dialog):
         self.yes_delete = wx.CheckBox(self, wx.ID_ANY, yes_text)
         self.files_delete = wx.CheckBox(self, wx.ID_ANY, files_text)
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
-        self.check_box = wx.Button(self, wx.ID_ANY, 'Cancel')
-        self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk, self)
-        self.check_box.Bind(wx.EVT_BUTTON, self.OnCancel, self)
+        self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
+        self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
+        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         button_sizer.Add(self.ok_button, 0)
-        button_sizer.Add(self.check_box, 0)
+        button_sizer.Add(self.cancel_button, 0)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notice, 0, wx.ALL, 5)
         sizer.Add(self.yes_delete, 0, wx.ALL, 5)
@@ -347,7 +348,8 @@ class DeleteProjectDialog(wx.Dialog):
         Event handler for pressing OK button.
 
         """
-        event.Skip(False)
+        if event:
+            event.Skip(False)
         ret = 0
         if self.yes_delete.GetValue():
             ret += 1
@@ -360,7 +362,8 @@ class DeleteProjectDialog(wx.Dialog):
         Event handler for pressing Cancel button.
 
         """
-        event.Skip(False)
+        if event:
+            event.Skip(False)
         self.EndModal(0)
 
 
@@ -635,7 +638,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.edit_button = wx.Button(self, wx.ID_ANY, 'Modify...')
         self.delete_button = wx.Button(self, wx.ID_ANY, 'Delete...')
         self.select_button = wx.Button(self, wx.ID_ANY, 'Select')
-        self.check_box = wx.Button(self, wx.ID_ANY, 'Cancel')
+        self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
 
         self.add_button.Bind(wx.EVT_BUTTON, self.OnProjectAdd)
         self.edit_button.Bind(wx.EVT_BUTTON, self.OnProjectEdit)
@@ -644,7 +647,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.delete_button.Disable()
         self.select_button.Bind(wx.EVT_BUTTON, self.OnProjectSelect)
         self.select_button.Disable()
-        self.check_box.Bind(wx.EVT_BUTTON, self.OnCancel)
+        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
 
         # Layout
         main_sizer_h = wx.BoxSizer(wx.HORIZONTAL)
@@ -656,7 +659,7 @@ class ProjectSelectDialog(wx.Dialog):
         button_sizer.Add(self.edit_button)
         button_sizer.Add(self.delete_button)
         selection_sizer.Add(self.select_button)
-        selection_sizer.Add(self.check_box)
+        selection_sizer.Add(self.cancel_button)
         main_sizer_h.Add(button_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
         main_sizer_v.Add(main_sizer_h, 1, wx.EXPAND)
         main_sizer_v.Add(selection_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
@@ -776,7 +779,8 @@ class ProjectSelectDialog(wx.Dialog):
         params = {'title': 'Delete Project',
                   'project_id': project_id}
         result = show_modal_and_destroy(DeleteProjectDialog, self, params)
-        result_object = {'delete': result & 1 > 0, 'files': result & 2 > 0}
+        result_object = {'delete': (result & 1) > 0,
+                         'files': (result & 2) > 0}
         LOGGER.debug('OnProjectDelete result: ' + str(result_object))
         if result_object['delete']:
             if result_object['files']:
@@ -880,8 +884,8 @@ class ProjectSelectedDialog(wx.Dialog):
     A dialog for project selection confirmation.
 
     """
-    ptext = ('Project {name} has been selected. A new session will now '
-             'be started.')
+    ptext = (u'Project {name} has been selected. A new session will now '
+             u'be started.')
 
     def __init__(self, parent, project_id):
         wx.Dialog.__init__(self, parent, title='Project Selected',
@@ -891,13 +895,13 @@ class ProjectSelectedDialog(wx.Dialog):
             project_name = Project.get_by_id(project_id).name
             ltext = ProjectSelectedDialog.ptext.format(name=project_name)
             self.notice = wx.StaticText(self, label=ltext)
-            self.check_box = wx.CheckBox(self, -1,
+            self.cancel_button = wx.CheckBox(self, -1,
                                          'No, do not start a new session.')
             self.ok_button = wx.Button(self, -1, 'OK')
             self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
             self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.check_box, 0, wx.ALL, 5)
+            self.sizer.Add(self.cancel_button, 0, wx.ALL, 5)
             self.sizer.Add(self.ok_button, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
@@ -908,7 +912,7 @@ class ProjectSelectedDialog(wx.Dialog):
 
     def OnOk(self, event):
         event.Skip()
-        self.EndModal(2 if self.check_box.GetValue() else 1)
+        self.EndModal(2 if self.cancel_button.GetValue() else 1)
 
 
 class UpdateDialog(wx.Dialog):
@@ -968,5 +972,3 @@ class SendProgressBar(wx.ProgressDialog):
                                    parent=parent, style=pd_style)
         mypos = self.GetPositionTuple()
         self.MoveXY(mypos[0], mypos[1] + ypos)
-        self.Lower()
-        self.Hide()
