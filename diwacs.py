@@ -612,6 +612,7 @@ class GraphicalUserInterface(GUItemplate):
             }
             show_modal_and_destroy(wx.MessageDialog, self, params)
         self.panel.SetFocus()
+        self.Refresh()
         self.Update()
         if event:
             event.Skip()
@@ -738,11 +739,13 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         if event and isinstance(event, threads.ContextMenuFailure):
-            error_text = ('Socket binding error. You might have multiple '
-                          'instances of the software running.\n'
-                          'Please wait for them to terminate or use the '
-                          'task manager to force all of them to quit.\n\n'
-                          'Press OK to start waiting...')
+            error_text = (
+                'Socket binding error. You might have multiple instances of '
+                'the software running.\n'
+                'Please wait for them to terminate or use the task manager '
+                'to force all of them to quit.\n\n'
+                'Press OK to start waiting...'
+            )
             params = {'message': error_text}
             show_modal_and_destroy(ErrorDialog, self, params)
         if not self.exited:
@@ -759,7 +762,7 @@ class GraphicalUserInterface(GUItemplate):
                     self.diwa_state.remove_observer()
                 last_computer = controller.last_active_computer()
                 if not event == 'conn_err' and last_computer:
-                    LOGGER.debug('On exit self is last active comp.')
+                    LOGGER.debug('On exit self is last active computer.')
                     controller.unset_activity(diwavars.PGM_GROUP)
                     session_id = self.diwa_state.current_session_id
                     if session_id:
@@ -777,7 +780,7 @@ class GraphicalUserInterface(GUItemplate):
                 raise   # Raise without parameter rises the original exception.
                         # This also preseves the original traceback.
             except Exception as excp:
-                LOGGER.exception('Exception in Close: %s', str(excp))
+                LOGGER.exception('Exception in Close: {0!s}'.format(excp))
                 for thread in threading.enumerate():
                     LOGGER.debug(thread.getName())
                 self.Destroy()
@@ -787,8 +790,8 @@ class GraphicalUserInterface(GUItemplate):
         """
         About dialog.
 
-        :param e: GraphicalUserInterface Event.
-        :type e: Event
+        :param event: GraphicalUserInterface Event.
+        :type event: Event
 
         """
         description = (diwavars.APPLICATION_NAME +
