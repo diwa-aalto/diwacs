@@ -62,7 +62,7 @@ def add_file_to_project(file_path, project_id):
         return ''
     project = Project.get_by_id(project_id)
     try:
-        if not file_path.startswith(project.dir):
+        if file_path.startswith(project.dir):
             newpath = file_path
         else:
             newpath = filesystem.copy_file_to_project(file_path, project_id)
