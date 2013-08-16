@@ -127,7 +127,7 @@ class AudioRecorder(DIWA_THREAD):
 
         """
         try:
-            _logger().debug('Save called')
+            _logger().debug('Saving audio buffer')
             date_string = datetime.now().strftime('%d%m%Y%H%M')
             filename = '%d_%s.wav' % (ide, date_string)
             filepath = os.path.join(path, 'Audio')
@@ -143,4 +143,6 @@ class AudioRecorder(DIWA_THREAD):
             wave_file.close()
         except:
             _logger().exception('audio save exception')
-        CallAfter(self.parent.ClearStatusText)
+        #CallAfter(self.parent.ClearStatusText)
+        self.parent.diwa_state.remove_from_swnp_data('audio')
+        CallAfter(self.parent.UpdateScreens(update=True))

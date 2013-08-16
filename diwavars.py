@@ -56,6 +56,15 @@ DEFAULT_SCREEN = os.path.join('data', 'SCREEN.png')
 # Empty screen icon filename
 NO_SCREEN = os.path.join('data', 'noscreen.png')
 
+# Green dot icon filename
+GREEN_DOT = os.path.join('data', 'square_green.png')
+
+# Yellow dot icon filename
+YELLOW_DOT = os.path.join('data', 'square_yellow.png')
+
+# Red dot icon filename
+RED_DOT = os.path.join('data', 'square_red.png')
+
 # Splash screen
 SPLASH_SCREEN = os.path.join('data', 'splashscreen.png')
 
