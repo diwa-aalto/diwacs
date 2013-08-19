@@ -192,9 +192,6 @@ PASSWORD_ITERATIONS = 101
 # If debug mode is enable or not
 DEBUG = False
 
-# IS the input of the running computer being captured
-CAPTURE = False
-
 # The URL of the PAD file. For version checking purposes
 PAD_URL = 'http://raw.github.com/diwa-aalto/diwacs/master/pad_file.xml'
 
@@ -363,6 +360,8 @@ def print_to_status_box(line):
     if STATUS_BOX_PRINT_CALLBACK is not None:
         STATUS_BOX_PRINT_CALLBACK(line)
 
+SCREEN_X = False
+SCREEN_Y = False
 
 def update_variable(name, value):
     # TODO: do.

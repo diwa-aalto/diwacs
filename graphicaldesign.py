@@ -105,8 +105,21 @@ class BlackOverlay(wx.Frame):
         self.SetBackgroundColour('black')
         self.SetTransparent(200)
         self.parent = parent
-        self.SetCursor(diwavars.BLANK_CURSOR)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost, self)
+        self.aleft = wx.StaticBox(self, wx.ID_ANY, pos=(50, 300),
+                                  size=(50, 50))
+        self.aright = wx.StaticBox(self, wx.ID_ANY, pos=(350, 300),
+                                   size=(50, 50))
+        self.aup = wx.StaticBox(self, wx.ID_ANY, pos=(200, 200),
+                                size=(50, 50))
+        self.adown = wx.StaticBox(self, wx.ID_ANY, pos=(200, 400),
+                                  size=(50, 50))
+        self.aleft.BackgroundColour = 'Red'
+        self.aright.BackgroundColour = 'Red'
+        self.aup.BackgroundColour = 'Red'
+        self.adown.BackgroundColour = 'Red'
+        # self.SetCursor(diwavars.BLANK_CURSOR)
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
 
     def OnFocusLost(self, evt):
         """
@@ -140,6 +153,20 @@ class BlackOverlay(wx.Frame):
         label_format = 'Press {0} + {1} to end remote control'
         label_text = label_format.format(hotkey_table[0], hotkey_table[1])
         self.exit_label.SetLabel(label_text)
+
+    def OnPaint(self, evt):
+        LOGGER.debug('Paint({0}, {1})'.format(diwavars.SCREEN_X,
+                                              diwavars.SCREEN_Y))
+        if diwavars.SCREEN_X:
+            dc = wx.ScreenDC()
+            w, h = dc.GetSizeTuple()
+            for i in xrange(10):
+                dc.BeginDrawing()
+                dc.Brush = wx.Brush('Red')
+                pt = (diwavars.SCREEN_X, diwavars.SCREEN_Y)
+                dc.DrawLine(pt[0], 0, pt[0], h)
+                dc.DrawLine(0, pt[1], w, pt[1])
+                dc.EndDrawing()
 
 
 class DropTarget(wx.PyDropTarget):

@@ -83,14 +83,37 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                     if self.pos_x is None or self.pos_y is None:
                         self.pos_x = event.Position[0]
                         self.pos_y = event.Position[1]
+                        diwavars.update_variable('SCREEN_X', str(self.pos_x))
+                        diwavars.update_variable('SCREEN_Y', str(self.pos_y))
                     else:
                         dif_x = event.Position[0] - self.pos_x
                         dif_y = event.Position[1] - self.pos_y
                         # self.pos_x = event.Position[0]
                         # self.pos_y = event.Position[1]
                         msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
-                        for id_ in self.parent.selected_nodes:
-                            self.swnp.send(str(id_), 'MSG', msg)
+                        if dif_x > 0:
+                            self.parent.overlay.aleft.Hide()
+                            self.parent.overlay.aright.Show()
+                        elif dif_x < 0:
+                            self.parent.overlay.aleft.Show()
+                            self.parent.overlay.aright.Hide()
+                        else:
+                            self.parent.overlay.aleft.Hide()
+                            self.parent.overlay.aright.Hide()
+                        if dif_y > 0:
+                            self.parent.overlay.adown.Show()
+                            self.parent.overlay.aup.Hide()
+                        elif dif_y < 0:
+                            self.parent.overlay.adown.Hide()
+                            self.parent.overlay.aup.Show()
+                        else:
+                            self.parent.overlay.adown.Hide()
+                            self.parent.overlay.aup.Hide()
+                        if dif_x or dif_y:
+                            # diwavars.print_to_status_box('{0},{1}'.\
+                            #                             format(dif_x, dif_y))
+                            for id_ in self.parent.selected_nodes:
+                                self.swnp.send(str(id_), 'MSG', msg)
                 else:
                     msg = 'mouse_event;{0},{1}'.format(event.Message,
                                                        event.Wheel)
