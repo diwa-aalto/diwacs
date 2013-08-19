@@ -472,6 +472,8 @@ class NodeScreen(wx.StaticBitmap):
 
     def EmptyScreen(self):
         """ Make this screen EmptyScreen. """
+        for dot in [self.rdot, self.ydot, self.gdot]:
+            dot.Hide()
         self.node = None
         self.SetBitmap(NodeScreen.EMPTY_BITMAP)
         self.SetToolTip(None)
