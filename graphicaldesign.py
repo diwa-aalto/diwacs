@@ -105,21 +105,8 @@ class BlackOverlay(wx.Frame):
         self.SetBackgroundColour('black')
         self.SetTransparent(200)
         self.parent = parent
-        self.aleft = wx.StaticBox(self, wx.ID_ANY, pos=(50, 300),
-                                  size=(50, 50))
-        self.aright = wx.StaticBox(self, wx.ID_ANY, pos=(350, 300),
-                                   size=(50, 50))
-        self.aup = wx.StaticBox(self, wx.ID_ANY, pos=(200, 200),
-                                size=(50, 50))
-        self.adown = wx.StaticBox(self, wx.ID_ANY, pos=(200, 400),
-                                  size=(50, 50))
-        self.aleft.BackgroundColour = 'Red'
-        self.aright.BackgroundColour = 'Red'
-        self.aup.BackgroundColour = 'Red'
-        self.adown.BackgroundColour = 'Red'
-        # self.SetCursor(diwavars.BLANK_CURSOR)
+        self.SetCursor(diwavars.BLANK_CURSOR)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
 
     def OnFocusLost(self, evt):
         """
@@ -153,20 +140,6 @@ class BlackOverlay(wx.Frame):
         label_format = 'Press {0} + {1} to end remote control'
         label_text = label_format.format(hotkey_table[0], hotkey_table[1])
         self.exit_label.SetLabel(label_text)
-
-    def OnPaint(self, evt):
-        LOGGER.debug('Paint({0}, {1})'.format(diwavars.SCREEN_X,
-                                              diwavars.SCREEN_Y))
-        if diwavars.SCREEN_X:
-            dc = wx.ScreenDC()
-            w, h = dc.GetSizeTuple()
-            for i in xrange(10):
-                dc.BeginDrawing()
-                dc.Brush = wx.Brush('Red')
-                pt = (diwavars.SCREEN_X, diwavars.SCREEN_Y)
-                dc.DrawLine(pt[0], 0, pt[0], h)
-                dc.DrawLine(0, pt[1], w, pt[1])
-                dc.EndDrawing()
 
 
 class DropTarget(wx.PyDropTarget):
@@ -525,8 +498,11 @@ class NodeScreen(wx.StaticBitmap):
         self.Refresh()
 
     def SetNodeVars(self):
-        """ Sets NodeScreens variables. """
-        LOGGER.debug('Node data {0}'.format(self.node.data))
+        """
+        Sets NodeScreens variables.
+
+        """
+        # LOGGER.debug('Node data {0}'.format(self.node.data))
         if 'controlled' in self.node.data:
             self.ydot.Show()
             self.gdot.Hide()
@@ -867,7 +843,7 @@ class GUItemplate(wx.Frame):
         msg = ' '.join(['DiWaCS', diwavars.VERSION])
         version = wx.StaticText(self.banner_panel, wx.ID_ANY, msg, pos=(5, 35),
                                 style=wx.ALIGN_CENTRE)
-        version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+        version.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
         # TODO: Status box.
         self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
