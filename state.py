@@ -789,8 +789,7 @@ class State(object):
         self.set_swnp_data(data)
 
     def remove_from_swnp_data(self, old_data):
-        data = self.get_swnp_data().replace(old_data, '').replace('::',
-                                                                       ':')
+        data = self.get_swnp_data().replace(old_data, '').replace('::', ':')
         self.set_swnp_data(data)
 
     def send_push_clipboard(self, target_node_id):

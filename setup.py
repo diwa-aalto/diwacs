@@ -53,7 +53,8 @@ if x:
 options_py2exe_typelibs = [('{565783C6-CB41-11D1-8B02-00600806D9B6}', 0, 1, 2)]
 options_py2exe_includes = ['pymysql', 'PIL', 'pathtools', 'migrate', 'wmi',
                            'migrate.changeset.databases.mysql', 'pyodbc',
-                           'pg8000']
+                           'pg8000', 'urllib2', 'pydoc_data', 'numpy']
+options_py2exe_excludes = ['tcl', 'Tkinter', 'Tkconstants', 'doctest']
 options_py2exe_packages = ['pubsub', 'zmq', 'configobj', 'migrate', 'lxml',
                            'pyaudio', 'wave', 'wxversion', 'cffi', 'pycparser',
                            'sqlalchemy']
@@ -66,6 +67,7 @@ options_py2exe = {
                   'optimize': 2,
                   'compressed': True,
                   'includes': options_py2exe_includes,
+                  'excludes': options_py2exe_excludes,
                   'packages': options_py2exe_packages,
                   'dist_dir': 'dist',
                   'dll_excludes': options_py2exe_dll_excludes
