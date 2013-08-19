@@ -584,7 +584,7 @@ class State(object):
         # macro.release_all_keys()
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
-
+        self.append_swnp_data('controlled')
     @staticmethod
     def _try_open_clipboard(trycount, sleepamount):
         tries = 0
@@ -699,6 +699,7 @@ class State(object):
             self.parent.overlay.Hide()
         self.controlled = False
         self.controlling = False
+        self.remove_from_swnp_data('controlled')
 
     def _on_set(self, parameters):
         if parameters == 'responsive':
@@ -770,6 +771,25 @@ class State(object):
             log_msg = 'Exception in MessageHandler: {exception!s}'
             log_msg = log_msg.format(exception=excp)
             LOGGER.exception(log_msg)
+
+    def set_swnp_data(self, data):
+        self.swnp.node.data = data
+        self.parent.UpdateScreens(update=True)
+
+    def get_swnp_data(self):
+        return self.swnp.node.data
+
+    def append_swnp_data(self, new_data):
+        data = self.get_swnp_data()
+        if len(data):
+            data += ':'
+        data += new_data
+        self.set_swnp_data(data)
+
+    def remove_from_swnp_data(self, old_data):
+        data = self.get_swnp_data().replace(old_data, '').replace('::',
+                                                                       ':')
+        self.set_swnp_data(data)
 
     def send_push_clipboard(self, target_node_id):
         clipboard_data = State._get_clipboard_content()
