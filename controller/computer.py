@@ -13,7 +13,7 @@ from sqlalchemy import text, func
 
 # Own imports.
 import diwavars
-from models import Computer, Session
+from models import Computer
 import utils
 
 
@@ -53,12 +53,14 @@ def add_computer(name, pc_ip, wos_id):
     pythoncom.CoInitializeEx(setting)  # pylint: disable=E1101
     pc_mac = utils.GetMacForIp(pc_ip)
     ip_int = utils.DottedIPToInt(pc_ip)
+    pgm_group = diwavars.PGM_GROUP
     # Try finding computer by MAC address.
     if pc_mac:
         computer = Computer.get_most_recent_by_mac(pc_mac)
         if computer:
             computer.name = name
             computer.ip = ip_int
+            computer.pgm_group = pgm_group
             computer.wos_id = wos_id
             computer.update()
             return computer
@@ -67,12 +69,13 @@ def add_computer(name, pc_ip, wos_id):
     if computer:
         computer.ip = ip_int
         computer.mac = pc_mac
+        computer.pgm_group = pgm_group
         computer.wos_id = wos_id
         computer.update()
         return computer
     # Create new...
     computer = Computer(name, ip_int, pc_mac, controller.common.NODE_SCREENS,
-                        False, wos_id)
+                        0, pgm_group, wos_id)
     return computer
 
 
@@ -91,7 +94,8 @@ def get_active_computers(timeout, *filters):
     """
     difference_unit = text('second')
     age_filter = func.timestampdiff(difference_unit, Computer.time, func.now())
-    filters = (age_filter < timeout,) + filters
+    filters = (age_filter < timeout,
+               Computer.pgm_group == diwavars.PGM_GROUP) + filters
     return Computer.get('all', *filters)
 
 
@@ -116,7 +120,7 @@ def last_active_computer():
     :rtype: Boolean
 
     """
-    return len(get_active_computers(10)) < 2
+    return len(get_active_computers(3)) < 2
 
 
 def refresh_computer(computer):
@@ -131,6 +135,7 @@ def refresh_computer(computer):
     computer.responsive = diwavars.RESPONSIVE
     computer.name = controller.common.NODE_NAME
     computer.screens = controller.common.NODE_SCREENS
+    computer.pgm_group = diwavars.PGM_GROUP
     computer.update()
 
 
