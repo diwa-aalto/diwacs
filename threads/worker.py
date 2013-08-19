@@ -417,7 +417,9 @@ class WORKER_THREAD(DIWA_THREAD):
             if diwavars.AUDIO and self.parent.diwa_state.audio_recorder:
                 log_msg = 'Buffering audio for {0} seconds.'
                 _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))
-                self.parent.status_text.SetLabel('Recording...')
+                #self.parent.status_text.SetLabel('Recording...')
+                self.parent.diwa_state.append_swnp_data('audio')
+                self.parent.UpdateScreens(update=True)
                 parameters = (event_id, project.dir)
                 CallLater(diwavars.WINDOW_TAIL * 1000,
                           self.parent.diwa_state.audio_recorder.save,

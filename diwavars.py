@@ -56,6 +56,15 @@ DEFAULT_SCREEN = os.path.join('data', 'SCREEN.png')
 # Empty screen icon filename
 NO_SCREEN = os.path.join('data', 'noscreen.png')
 
+# Green dot icon filename
+GREEN_DOT = os.path.join('data', 'square_green.png')
+
+# Yellow dot icon filename
+YELLOW_DOT = os.path.join('data', 'square_yellow.png')
+
+# Red dot icon filename
+RED_DOT = os.path.join('data', 'square_red.png')
+
 # Splash screen
 SPLASH_SCREEN = os.path.join('data', 'splashscreen.png')
 
@@ -191,9 +200,6 @@ PASSWORD_ITERATIONS = 101
 
 # If debug mode is enable or not
 DEBUG = False
-
-# IS the input of the running computer being captured
-CAPTURE = False
 
 # The URL of the PAD file. For version checking purposes
 PAD_URL = 'http://raw.github.com/diwa-aalto/diwacs/master/pad_file.xml'
@@ -362,7 +368,6 @@ def update_status_box(value):
 def print_to_status_box(line):
     if STATUS_BOX_PRINT_CALLBACK is not None:
         STATUS_BOX_PRINT_CALLBACK(line)
-
 
 def update_variable(name, value):
     # TODO: do.

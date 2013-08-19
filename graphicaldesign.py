@@ -106,7 +106,7 @@ class BlackOverlay(wx.Frame):
         self.SetTransparent(200)
         self.parent = parent
         self.SetCursor(diwavars.BLANK_CURSOR)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost, self)
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
 
     def OnFocusLost(self, evt):
         """
@@ -456,6 +456,18 @@ class NodeScreen(wx.StaticBitmap):
     def __init__(self, node, parent):
         wx.StaticBitmap.__init__(self, parent)
         self.node = node
+        self.gdot = wx.StaticBitmap(self, bitmap=wx.Bitmap(diwavars.GREEN_DOT,
+                                            wx.BITMAP_TYPE_PNG),
+                                            pos=(88, 61))
+        self.gdot.Hide()
+        self.ydot = wx.StaticBitmap(self, bitmap=wx.Bitmap(diwavars.YELLOW_DOT,
+                                            wx.BITMAP_TYPE_PNG),
+                                            pos=(98, 61))
+        self.ydot.Hide()
+        self.rdot = wx.StaticBitmap(self, bitmap=wx.Bitmap(diwavars.RED_DOT,
+                                            wx.BITMAP_TYPE_PNG),
+                                            pos=(108, 61))
+        self.rdot.Hide()
         self.EmptyScreen()
 
     def EmptyScreen(self):
@@ -471,8 +483,7 @@ class NodeScreen(wx.StaticBitmap):
             return
         if self.node is not None and self.node.id == node.id:
             self.node = node
-            tooltip = wx.ToolTip(self.node.name)
-            self.SetToolTip(tooltip)
+            self.SetNodeVars()
             self.Show()
             return
         self.node = node
@@ -483,9 +494,27 @@ class NodeScreen(wx.StaticBitmap):
         except IOError:
             pass
         self.SetBitmap(bitmap)
+        self.SetNodeVars()
+        self.Refresh()
+
+    def SetNodeVars(self):
+        """
+        Sets NodeScreens variables.
+
+        """
+        # LOGGER.debug('Node data {0}'.format(self.node.data))
+        if 'controlled' in self.node.data:
+            self.ydot.Show()
+            self.gdot.Hide()
+        else:
+            self.ydot.Hide()
+            self.gdot.Show()
+        if 'audio' in self.node.data:
+            self.rdot.Show()
+        else:
+            self.rdot.Hide()
         tooltip = wx.ToolTip(self.node.name)
         self.SetToolTip(tooltip)
-        self.Refresh()
 
 
 class GUItemplate(wx.Frame):
@@ -814,7 +843,7 @@ class GUItemplate(wx.Frame):
         msg = ' '.join(['DiWaCS', diwavars.VERSION])
         version = wx.StaticText(self.banner_panel, wx.ID_ANY, msg, pos=(5, 35),
                                 style=wx.ALIGN_CENTRE)
-        version.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+        version.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
         # TODO: Status box.
         self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,

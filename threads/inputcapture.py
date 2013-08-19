@@ -14,6 +14,7 @@ import pythoncom
 
 # Own imports.
 import diwavars
+import macro
 import threads.common
 from threads.diwathread import DIWA_THREAD
 
@@ -81,16 +82,16 @@ class MOUSE_CAPTURE(DIWA_THREAD):
                     continue
                 if event.Message == 0x200:
                     if self.pos_x is None or self.pos_y is None:
-                        self.pos_x = event.Position[0]
-                        self.pos_y = event.Position[1]
+                        position = macro.get_mouse_position()
+                        self.pos_x = position[0]
+                        self.pos_y = position[1]
                     else:
                         dif_x = event.Position[0] - self.pos_x
                         dif_y = event.Position[1] - self.pos_y
-                        # self.pos_x = event.Position[0]
-                        # self.pos_y = event.Position[1]
                         msg = 'mouse_move;{0},{1}'.format(dif_x, dif_y)
-                        for id_ in self.parent.selected_nodes:
-                            self.swnp.send(str(id_), 'MSG', msg)
+                        if dif_x or dif_y:
+                            for id_ in self.parent.selected_nodes:
+                                self.swnp.send(str(id_), 'MSG', msg)
                 else:
                     msg = 'mouse_event;{0},{1}'.format(event.Message,
                                                        event.Wheel)
@@ -116,7 +117,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
         self.hookmanager = None
         self.modifierdown = False
         self.mouse_thread = MOUSE_CAPTURE(parent, swnp)
-        self.mouse_thread.deamon = True
+        self.mouse_thread.daemon = True
 
     def stop(self):
         """

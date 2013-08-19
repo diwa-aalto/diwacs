@@ -24,23 +24,6 @@ class TestUtils(unittest.TestCase):
     def tearDown(self):
         unittest.TestCase.tearDown(self)
 
-    def test_passwordhash(self):
-        """Test the password hash generation."""
-        example_password = 'The quick brown fox jumps over the lazy dog'
-        expected_hash = '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12'
-        myhash = utils.hash_password(example_password)
-        self.assertEquals(myhash, expected_hash)
-
-    def test_getpassword(self):
-        """Test get_project_password function."""
-        correct_password = 'test'
-        project_id = 84
-        expected_prehash = str(project_id) + correct_password
-        expected_hash = utils.hash_password(expected_prehash)
-        project = Project.get_by_id(project_id)
-        myhash = project.password
-        self.assertEquals(myhash, expected_hash)
-
     def test_iterislast(self):
         """Test IterIsLast function."""
         test_iterator = [5, 7, 9, 22]
