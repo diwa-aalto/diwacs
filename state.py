@@ -33,7 +33,7 @@ import filesystem
 import graphicaldesign
 import macro
 from modelsbase import REVERSE_ACTIONS
-from models import Project
+from models import Project, Session
 import swnp
 import threads
 import utils
@@ -184,6 +184,8 @@ class State(object):
         self.current_session_thread = threads.CURRENT_PROJECT(self.swnp)
         self.current_session_thread.deamon = True
         # Other
+        if not controller.get_active_computers(60):
+            controller.unset_activity(diwavars.PGM_GROUP)
         activity = controller.get_active_activity(diwavars.PGM_GROUP)
         self.activity_id = activity.id if activity else 0
         self.project_observer = None
@@ -217,7 +219,7 @@ class State(object):
             self.capture_thread.daemon = True
             self.capture_thread.start()
 
-            if self.activity_id and not self.is_responsive:
+            if self.activity_id:
                 pid = controller.get_project_id_by_activity(self.activity_id)
                 sid = controller.get_session_id_by_activity(self.activity_id)
                 self.set_current_project(pid)
@@ -811,11 +813,15 @@ class State(object):
             return
         update = controller.add_or_update_activity
         controller.init_sync_project_directory(self.current_project_id)
-        self.activity_id = update(self.current_project_id,
-                                  diwavars.PGM_GROUP,
-                                  0, self.activity_id)
-
-        self.swnp_send('SYS', 'current_activity;{0}'.format(self.activity_id))
+        active_project_id = controller.get_active_project(diwavars.PGM_GROUP)
+        active_session_id = controller.get_active_session(diwavars.PGM_GROUP)
+        if not (self.current_project_id == active_project_id
+                            and self.current_session_id == active_session_id):
+            self.activity_id = update(self.current_project_id,
+                                      diwavars.PGM_GROUP,
+                                      0, self.activity_id)
+            self.swnp_send('SYS', 'current_activity;{0}'.format(
+                                                            self.activity_id))
 
     def on_session_changed(self, desired_state):
         """
@@ -868,6 +874,7 @@ class State(object):
                 controller.end_session(self.current_session_id)
                 self.end_current_session()
             self.current_session_id = session_id
+            self.current_session = Session.get_by_id(session_id)
             if self.is_responsive:
                 self.start_current_session_thread()
             self.parent.EnableSessionButton()

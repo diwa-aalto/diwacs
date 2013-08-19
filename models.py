@@ -238,18 +238,21 @@ class Computer(MethodMixin, Base):
 
     responsive = Column(SmallInteger, nullable=True)
 
+    pgm_group = Column(SmallInteger, nullable=False, default=0)
+
     wos_id = Column(Integer, nullable=True)
 
     user_id = Column(Integer, ForeignKey('user.id'))
 
     user = relationship('User', backref=backref('computers', order_by=id))
 
-    def __init__(self, name, ip, mac, screens, responsive, wos_id):
+    def __init__(self, name, ip, mac, screens, responsive, pgm_group, wos_id):
         self.name = name
         self.ip = ip
         self.mac = mac
         self.screens = screens
         self.responsive = responsive
+        self.pgm_group = pgm_group
         self.wos_id = wos_id
         if Action.get('exists', Computer.mac == mac):
             raise ItemAlreadyExistsException('Computer already exists!')
