@@ -750,7 +750,7 @@ class SWNP:
             if target_node.name != new_name:
                 target_node.name = new_name
                 update_node = True
-            if target_node.data == new_data:
+            if target_node.data != new_data:
                 target_node.data = new_data
                 update_node = True
             if update_node:
