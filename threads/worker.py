@@ -16,7 +16,7 @@ from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
 
 # Third party imports.
 import pyHook
-from wx import CallLater
+from wx import CallLater, CallAfter
 
 # Own imports.
 import controller
@@ -395,6 +395,11 @@ class WORKER_THREAD(DIWA_THREAD):
             else:
                 globals()[key] = eval(value)
 
+    def __save_audio(self, parameters):
+        CallLater(diwavars.WINDOW_TAIL * 1000,
+                          self.parent.diwa_state.audio_recorder.save,
+                          *parameters)
+
     def create_event(self, title):
         """
         Create a new event.
@@ -421,11 +426,10 @@ class WORKER_THREAD(DIWA_THREAD):
                 self.parent.diwa_state.append_swnp_data('audio')
                 self.parent.UpdateScreens(update=True)
                 parameters = (event_id, project.dir)
-                CallLater(diwavars.WINDOW_TAIL * 1000,
-                          self.parent.diwa_state.audio_recorder.save,
-                          *parameters)
+                CallAfter(self.__save_audio, parameters)
         except:
             _logger().exception('Create Event exception.')
+            self.parent.diwa_state.remove_from_swnp_data('audio')
 
     def run(self):
         """Run the worker thread."""
