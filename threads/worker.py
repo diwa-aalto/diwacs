@@ -72,14 +72,14 @@ class SNAPSHOT_THREAD(DIWA_THREAD):
         except OSError:
             pass
         request = urllib2.Request(diwavars.CAMERA_URL)
-        base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
-                                                      diwavars.CAMERA_PASS))
-        request.add_header('Authorization', 'Basic %s' % base64string.strip())
+        data = (diwavars.CAMERA_USER, diwavars.CAMERA_PASS)
+        base64string = base64.encodestring('{0}:{1}'.format(*data)).strip()
+        request.add_header('Authorization', 'Basic {0}'.format(base64string))
         event_id = controller.get_latest_event_id()
         try:
-            data = urllib2.urlopen(request, timeout=60).read()
+            data = urllib2.urlopen(request, timeout=45).read()
             datestring = datetime.now().strftime('%d%m%Y%H%M%S')
-            name = str(event_id) + '_' + datestring + '.jpg'
+            name = '{0}_{1}.jpg'.format(event_id, datestring)
             _logger().debug('snapshot filename: {0}'.format(name))
             with open(os.path.join(filepath, name), 'wb') as output:
                 output.write(data)
@@ -133,8 +133,8 @@ class WORKER_THREAD(DIWA_THREAD):
                 if state.responsive == state.swnp.node.id:
                     state.set_responsive()
         if state.responsive != old_responsive:
-            if str(state.responsive) == str(state.swnp.node.id) and \
-                                    not state.is_responsive:
+            if (str(state.responsive) == str(state.swnp.node.id) and
+                    not state.is_responsive):
                 state.set_responsive()
             log_msg = 'Responsive checked. Current responsive is: {0}'
             _logger().debug(log_msg.format(state.responsive))
@@ -161,7 +161,8 @@ class WORKER_THREAD(DIWA_THREAD):
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
                     mypath = os.path.join(os.getcwd(), 'add_file.exe ')
-                    SetValueEx(rkey, '', 0, REG_SZ, mypath + ' \"%1\"')
+                    rpath = '{0} "%1"'.format(mypath)
+                    SetValueEx(rkey, '', 0, REG_SZ, rpath)
             CloseKey(rkey)
 
     @staticmethod
@@ -177,7 +178,7 @@ class WORKER_THREAD(DIWA_THREAD):
 
         """
         keys = ['Software', 'Classes', '*', 'shell',
-                'DiWaCS: Open in %s' % name, 'command']
+                'DiWaCS: Open in {0}'.format(name), 'command']
         key = ''
         for k, islast in IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -186,8 +187,8 @@ class WORKER_THREAD(DIWA_THREAD):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    regpath = os.path.join(os.getcwd(), u'send_file_to.exe ' +
-                                           unicode(node_id) + u' \"%1\"')
+                    rpath = u'send_file_to.exe {0} "%1"'.format(node_id)
+                    regpath = os.path.join(os.getcwdu(), rpath)
                     SetValueEx(rkey, '', 0, REG_SZ, regpath)
             if rkey:
                 CloseKey(rkey)
@@ -226,8 +227,8 @@ class WORKER_THREAD(DIWA_THREAD):
                 except WindowsError:
                     break
         except Exception as excp:
-            excp_string = 'Exception in remove_all_registry_entries: %s'
-            _logger().exception(excp_string, str(excp))
+            excp_string = 'Exception in remove_all_registry_entries: {0!s}'
+            _logger().exception(excp_string.format(excp))
         if main_key:
             CloseKey(main_key)
 
@@ -302,7 +303,7 @@ class WORKER_THREAD(DIWA_THREAD):
         vk_mod = pyHook.HookConstants.VKeyToID(value[0])
         vk_key = pyHook.HookConstants.VKeyToID(value[1])
         if (vk_mod == 0) or (vk_key == 0):
-            _logger().exception('INVALID KEYCODES: %s, %s', value[0], value[1])
+            _logger().exception('INVALID KEYCODES: {0}, {1}'.format(*value))
             return
         diwavars.update_keys(vk_mod, vk_key)
 
@@ -397,8 +398,8 @@ class WORKER_THREAD(DIWA_THREAD):
 
     def __save_audio(self, parameters):
         CallLater(diwavars.WINDOW_TAIL * 1000,
-                          self.parent.diwa_state.audio_recorder.save,
-                          *parameters)
+                  self.parent.diwa_state.audio_recorder.save,
+                  *parameters)
 
     def create_event(self, title):
         """

@@ -125,10 +125,10 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         if project is None:
             return 'OK'
         if self.parent.diwa_state.is_responsive and diwavars.AUDIO:
-            ide = controller.get_latest_event_id()
+            event_id = controller.get_latest_event_id()
             timer = threading.Timer(diwavars.WINDOW_TAIL * 1000,
                                     self.parent.audio_recorder.save,
-                                    ide,
+                                    event_id,
                                     project.dir)
             timer.start()
             CallAfter(self.parent.status_text.SetLabel, 'Recording...')
@@ -218,7 +218,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         while not self._stop.isSet():
             try:
                 message = self.socket.recv(zmq.NOBLOCK)
-                _logger().debug('CMFH got message: %s', message)
+                _logger().debug('CMFH got message: {0!s}'.format(message))
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
                     self.socket.send(handlers[cmd](id_, path))
