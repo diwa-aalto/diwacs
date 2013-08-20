@@ -83,7 +83,7 @@ def show_modal_and_destroy(class_, parent, params=None):
             dialog = class_(parent)
         result = dialog.ShowModal()
     except Exception as excp:
-        LOGGER.exception('Exception in %s: %s', str(class_), str(excp))
+        LOGGER.exception('Exception in {0!s}: {1!s}'.format(class_, excp))
     finally:
         try:
             if hasattr(dialog, 'Destroy'):
@@ -112,10 +112,15 @@ class AddProjectDialog(wx.Dialog):
         self.project_id = 0
         self.parent = parent
 
-        LOGGER.debug('AddProjectDebug:\n'
-                     'AddProjectDialog(self, parent=%(parent)s, '
-                     'title=%(title)s, style=%(style)d, size=%(size)s)',
-                     locals())
+        to_print = {
+            'parent': parent,
+            'title': title,
+            'project_id': project_id
+        }
+        msg = ['AddProjectDebug:\n']
+        for key in to_print:
+            msg.append('{0}={1}'.format(key, to_print[key]))
+        LOGGER.debug(''.join(msg))
 
         # Static definitions of common strings.
         add_label = 'Create'
@@ -202,12 +207,10 @@ class AddProjectDialog(wx.Dialog):
                 'company': company_data
             }
             project = controller.add_project(data)
-            LOGGER.info('Created Project: %s (id=%d)',
-                        project.name,
-                        project.id)
+            LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
             result = project.id
         except Exception as excp:
-            LOGGER.exception('Error in add project: %s', str(excp))
+            LOGGER.exception('Error in add project: {0!s}'.format(excp))
             self.EndModal(0)
             return
 
@@ -279,30 +282,36 @@ class ConnectionErrorDialog(wx.ProgressDialog):
     attempts made by the software.
 
     """
-    stat_text = ('Reconnecting... DiWaCS will shutdown in %s seconds if ' +
+    stat_text = ('Reconnecting... DiWaCS will shutdown in {0} seconds if '
                  'no connection is made.')
     imax = 80
 
     def __init__(self, parent):
         self.parent = parent
         wx.ProgressDialog.__init__(self, 'Connection Error',
-                                   ConnectionErrorDialog.stat_text % str(20),
+                                   ConnectionErrorDialog.stat_text.format(20),
                                    maximum=ConnectionErrorDialog.imax,
                                    parent=self.parent,
                                    style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
 
     def GetResult(self):
-        keep_going = True
+        success = False
         count = 0
-        while keep_going and count < ConnectionErrorDialog.imax:
+        while not success and count < ConnectionErrorDialog.imax:
             count += 1
             wx.MilliSleep(250)
-            keep_going = not (filesystem.test_storage_connection() and
-                             controller.test_connection())
+            tests = [filesystem.test_storage_connection(),
+                     controller.test_connection()]
+            success = True
+            for test in tests:
+                if not test:
+                    success = False
+                    break
             if count % 4 == 0:
-                seconds = str((ConnectionErrorDialog.imax - count) / 4)
-                self.Update(count, ConnectionErrorDialog.stat_text % seconds)
-        return keep_going
+                seconds = (ConnectionErrorDialog.imax - count) / 4
+                notice = ConnectionErrorDialog.stat_text.format(seconds)
+                self.Update(count, notice)
+        return not success
 
 
 class DeleteProjectDialog(wx.Dialog):
@@ -321,8 +330,9 @@ class DeleteProjectDialog(wx.Dialog):
             show_modal_and_destroy(ErrorDialog, parent, {'message': msg})
             return
 
-        label_text = ('You are about to delete project %s permanently.'
-                      ' Are you really sure?') % self.project.name
+        label_text = ('You are about to delete project "{0}" permanently. '
+                      ' Are you really sure?')
+        label_text = label_text.format(self.project.name)
         self.notice = wx.StaticText(self, label=label_text)
         yes_text = 'Yes, delete the project.'
         files_text = 'Also delete all saved project files.'
@@ -570,9 +580,9 @@ class ProjectAuthenticationDialog(wx.Dialog):
         self.parent = parent
         self.project_id = project_id
         self.project = Project.get_by_id(project_id)
-        labeltext = ('Please enter password for Project %s' %
-                     self.project.name)
-        self.notice = wx.StaticText(self, label=labeltext)
+        label_text = 'Please enter password for Project {0}'
+        label_text = label_text.format(self.project.name)
+        self.notice = wx.StaticText(self, label=label_text)
         passwd_style = wx.TE_PASSWORD | wx.TE_PROCESS_ENTER
         self.password = wx.TextCtrl(self, -1, '', style=passwd_style)
         self.ok_button = wx.Button(self, -1, 'OK')
@@ -599,7 +609,7 @@ class ProjectAuthenticationDialog(wx.Dialog):
             if password_checker(self.project_id, self.password.GetValue()):
                 result = 0
         except Exception as excp:
-            LOGGER.exception('OnOk EXception: %s', str(excp))
+            LOGGER.exception('OnOk Exception: {0!s}'.format(excp))
             self.EndModal(1)
         self.EndModal(result)
 
@@ -715,7 +725,7 @@ class ProjectSelectDialog(wx.Dialog):
             if not project_id or project_id < 1:
                 return
             self.UpdateProjects()
-            LOGGER.debug('Added project: %d', project_id)
+            LOGGER.debug('Added project: {0}'.format(project_id))
             if project_id not in self.project_index:
                 msg = ('The project was not updated to database for some '
                        'reason!')
@@ -743,8 +753,10 @@ class ProjectSelectDialog(wx.Dialog):
         try:
             select_index = self.project_list.GetSelection()
             project_id = self.project_index[select_index]
-            params = {'title': 'Modify a Project',
-                      'project_id': project_id}
+            params = {
+                'title': 'Modify a Project',
+                'project_id': project_id
+            }
             show_modal_and_destroy(AddProjectDialog, self, params)
             self.UpdateProjects()
             if project_id:
@@ -776,12 +788,16 @@ class ProjectSelectDialog(wx.Dialog):
             msg = 'You cannot delete currently active project.'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             return
-        params = {'title': 'Delete Project',
-                  'project_id': project_id}
+        params = {
+            'title': 'Delete Project',
+            'project_id': project_id
+        }
         result = show_modal_and_destroy(DeleteProjectDialog, self, params)
-        result_object = {'delete': (result & 1) > 0,
-                         'files': (result & 2) > 0}
-        LOGGER.debug('OnProjectDelete result: ' + str(result_object))
+        result_object = {
+            'delete': (result & 1) > 0,
+            'files': (result & 2) > 0
+        }
+        LOGGER.debug('OnProjectDelete result: {0}'.format(result_object))
         if result_object['delete']:
             if result_object['files']:
                 project = Project.get_by_id(project_id)
@@ -821,15 +837,17 @@ class ProjectSelectDialog(wx.Dialog):
             screens = controller.common.NODE_SCREENS
             if screens < 1:
                 self.Hide()
-                msg = ('Can not select password protected project if screens'
-                       ' configuration is set to hidden (off)')
+                msg = ('Can not select password protected project if screens '
+                       'configuration is set to hidden (off)')
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})
                 self.Show()
                 if event:
                     event.Skip()
                 return
-            params = {'title': 'Project Authentication',
-                      'project_id': project_id}
+            params = {
+                'title': 'Project Authentication',
+                'project_id': project_id
+            }
             result = show_modal_and_destroy(ProjectAuthenticationDialog, self,
                                             params)
             if result != 0:
@@ -843,19 +861,19 @@ class ProjectSelectDialog(wx.Dialog):
             try:
                 self.diwa_state.set_current_project(project_id)
             except Exception as excp:
-                LOGGER.exception('index_parent_exception: %s', str(excp))
+                LOGGER.exception('index_parent_exception: {0!s}'.format(excp))
         try:
             params = {'project_id': project_id}
             result = show_modal_and_destroy(ProjectSelectedDialog, self,
                                             params)
-            LOGGER.debug('Project selected result: %s', str(result))
+            LOGGER.debug('Project selected result: {0!s}'.format(result))
             self.parent.OnProjectChanged()
             self.parent.diwa_state.on_session_changed(result == 1)
             if result == 1:
                 self.parent.EnableSessionButton()
             self.parent.Refresh()
         except Exception as excp:
-            LOGGER.exception('Project Selected Exception: %s', str(excp))
+            LOGGER.exception('Project Selected Exception: {0!s}'.format(excp))
         LOGGER.debug('Asked to start session.')
         self.EndModal(0)
 
@@ -907,7 +925,7 @@ class ProjectSelectedDialog(wx.Dialog):
             self.sizer.Fit(self)
             self.SetFocus()
         except Exception as excp:
-            LOGGER.exception('Dialog exception: %s', str(excp))
+            LOGGER.exception('Dialog exception: {0!s}'.format(excp))
             self.EndModal(0)
 
     def OnOk(self, event):
@@ -932,7 +950,7 @@ class UpdateDialog(wx.Dialog):
 
     def __init__(self, title, url, *args, **kwargs):
         wx.Dialog.__init__(self, wx.GetApp().GetTopWindow(),
-                           title='Version %s is available' % title,
+                           title='Version {0} is available'.format(title),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            *args, **kwargs)
         self.notice = wx.StaticText(self, label=UpdateDialog.ptext)
