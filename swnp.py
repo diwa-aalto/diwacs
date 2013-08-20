@@ -155,7 +155,7 @@ class Message(object):
         if prefix in PREFIX_CHOICES:
             self.prefix = prefix
         else:
-            raise TypeError('Invalid message type: %s' % prefix)
+            raise TypeError('Invalid message type: {0}'.format(prefix))
         self.payload = payload
 
     @staticmethod
