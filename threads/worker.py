@@ -397,6 +397,7 @@ class WORKER_THREAD(DIWA_THREAD):
                 globals()[key] = eval(value)
 
     def __save_audio(self, parameters):
+        """ Calls AudioRecorder.save after WINDOW_TAIL seconds"""
         CallLater(diwavars.WINDOW_TAIL * 1000,
                   self.parent.diwa_state.audio_recorder.save,
                   *parameters)
