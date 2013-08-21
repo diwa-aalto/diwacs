@@ -375,9 +375,11 @@ class State(object):
 
         """
         project = self.current_project
-        path = (project.dir if project is not None
-                else os.path.join(diwavars.PROJECT_PATH, 'temp'))
-        project_id = project.id if project is not None else 0
+        tpath = os.path.join(diwavars.PROJECT_PATH, 'temp')
+        project_id = 0
+        if project is not None:
+            tpath = project.dir
+            project_id = project.id
         src_dst_list = []
         returnvalue = []
         contains_folders = False
@@ -389,8 +391,7 @@ class State(object):
                 contains_folders = True
                 copyroot = filename
                 cidx = len(copyroot) + 1
-                res = os.path.join(path, os.path.basename(filename))
-                LOGGER.debug('Project target: %s', res)
+                res = os.path.join(tpath, os.path.basename(filename))
                 mydirs.append(res)
                 returnvalue.append(res)
 
@@ -398,22 +399,20 @@ class State(object):
                     relativeroot = ''
                     if len(currentroot) > cidx:
                         relativeroot = currentroot[cidx:]
-                    targetroot = os.path.join(path, os.path.basename(filename),
+                    targetroot = os.path.join(tpath, os.path.basename(filename),
                                               relativeroot)
-                    LOGGER.debug('PTROOT: %s', targetroot)
                     for directory in dirs:
                         temp_path = os.path.join(targetroot, directory)
                         if not os.path.exists(temp_path):
                             mydirs.append(temp_path)
                             # os.makedirs(temp_path)
-                            LOGGER.debug('CreatePath: %s', temp_path)
                     for fname in files:
                         t_source = os.path.join(currentroot, fname)
                         t_destination = os.path.join(targetroot, fname)
                         item = (t_source, t_destination)
                         src_dst_list.append(item)
             else:
-                path_ = os.path.join(path, os.path.basename(filename))
+                path_ = os.path.join(tpath, os.path.basename(filename))
                 returnvalue.append(path_)
                 src_dst_list.append((filename, path_))
         params = {
@@ -428,7 +427,6 @@ class State(object):
         else:
             result = show_modal_and_destroy(wx.MessageDialog, self.parent,
                                             params)
-        LOGGER.debug('__sendfile_0__')
         if contains_folders and result == wx.ID_NO:
             params = {'message': ('When dragging folders, you need to add '
                                 'them to project.'),
@@ -444,25 +442,29 @@ class State(object):
                                      'functionality.')
             show_modal_and_destroy(wx.MessageDialog, self.parent, params)
             return []
-        LOGGER.debug('__sendfile_1__')
         if not contains_folders and result == wx.ID_NO:
             # Change project folders to temp folder.
             tmp = os.path.join(diwavars.PROJECT_PATH, 'temp')
-            src_dst_list = [(src, dst.replace(path, tmp))
-                             for (src, dst) in src_dst_list]
-        LOGGER.debug('__sendfile_2__')
+            for i, src_dst in enumerate(src_dst_list):
+                src, dst = src_dst
+                dst = dst.replace(tpath, tmp)
+                src_dst_list[i] = (src, dst)
+            for i, directory in enumerate(mydirs):
+                mydirs[i] = directory.replace(tpath, tmp)
+            for i, item in enumerate(returnvalue):
+                returnvalue[i] = item.replace(tpath, tmp)
+            #src_dst_list = [(src, dst.replace(tpath, tmp))
+            #                 for (src, dst) in src_dst_list]
         try:
             self._handle_file_copy(src_dst_list, mydirs, dialog_parameters)
         except IOError as excp:
-            LOGGER.exception('MYCOPY: %s', str(excp))
-        LOGGER.debug('__sendfile_3__')
+            LOGGER.exception('MYCOPY: {0!s}'.format(excp))
         if result == wx.ID_YES:
             for src_dst in src_dst_list:
                 controller.create_file_action(src_dst[1],
                                               REVERSE_ACTIONS['Created'],
                                               self.current_session_id,
                                               project_id)
-        LOGGER.debug('__sendfile_4__')
         return returnvalue
 
     def end_current_project(self):
@@ -552,6 +554,7 @@ class State(object):
         for filename in target:
             log_msg = 'Opening file: {basename}'
             LOGGER.info(log_msg.format(basename=os.path.basename(filename)))
+            LOGGER.debug(log_msg.format(basename=filename))
             if os.path.exists(filename):
                 if self.current_session:
                     action_id = REVERSE_ACTIONS['Opened']
@@ -588,6 +591,7 @@ class State(object):
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
         self.append_swnp_data('controlled')
+
     @staticmethod
     def _try_open_clipboard(trycount, sleepamount):
         tries = 0

@@ -190,6 +190,7 @@ class DropTarget(wx.PyDropTarget):
                 paths.extend(filenames)
                 filenames = []
             # Separate project files/folders from other stuff.
+            #: TODO: CHECK PROJECT EXISTANCE!!!
             for filename in filenames:
                 filename = os.path.abspath(filename)
                 if filename.startswith(diwavars.PROJECT_PATH):
@@ -201,9 +202,6 @@ class DropTarget(wx.PyDropTarget):
                             pass
                 else:
                     paths.append(filename)
-            LOGGER.debug('PFILES: {0}'.\
-                         format(', '.join([f for f in project_items])))
-            LOGGER.debug('NFILES: {0}'.format(', '.join([f for f in paths])))
             # Process items that are not part of the project.
             if paths:
                 params = {
@@ -576,7 +574,7 @@ class GUItemplate(wx.Frame):
         self.logo = None
         self.diwawabtn = None
         self.diwambbtn = None
-        self.status_text = ''
+        self.status_text = None
         self.banner = None
         self.infobtn = None
 

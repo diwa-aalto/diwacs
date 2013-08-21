@@ -369,7 +369,7 @@ def print_to_status_box(line):
     if STATUS_BOX_PRINT_CALLBACK is not None:
         STATUS_BOX_PRINT_CALLBACK(line)
 
+
 def update_variable(name, value):
-    # TODO: do.
     if name in globals():
         globals()[name] = literal_eval(value)
