@@ -52,6 +52,10 @@ LOGGER = None
 if __name__ == '__main__':
     # Load up the loggers for every module.
     global LOGGER
+    try:
+        os.makedirs(diwavars.CONFIG_PATH)
+    except:
+        pass
     logging.config.fileConfig('logging.conf')
     LOGGER = logging.getLogger('diwacs')
     for logger_initializer in diwavars.LOGGER_INITIALIZER_LIST:

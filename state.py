@@ -140,7 +140,7 @@ class State(object):
             self.audio_recorder.daemon = True
             self.start_audio_recorder()
         except Exception as excp:
-            LOGGER.exception('Audio recorder exception: %s', str(excp))
+            LOGGER.exception('Audio recorder exception: {0!s}'.format(excp))
         self.exited = False
         self.responsive = ''
         self.is_responsive = False
