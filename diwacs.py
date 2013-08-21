@@ -14,8 +14,6 @@ from state import SessionChangeException
 
 if __name__ == '__main__':
     diwavars.set_running()
-    sys.stdout = open(r'data\stdout.log', 'w')
-    sys.stderr = open(r'data\stderr.log', 'w')
 
 # Standard imports.
 import cProfile

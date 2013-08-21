@@ -78,7 +78,7 @@ FRAME_SIZE = (585, 170)
 MAX_SCREENS = 3
 
 # Path of the config file. Users home directory/.wos
-CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.wos', 'config.ini')
+CONFIG_PATH = os.path.expanduser(r'~\.diwacs\config.ini')
 
 # A placeholder for configobj
 CONFIG = None

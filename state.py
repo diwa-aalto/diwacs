@@ -101,8 +101,8 @@ def create_config():
     """
     try:
         os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
-    except OSError:
-        pass
+    except OSError as excp:
+        LOGGER.exception('CreateConfig: {0!s}'.format(excp))
     shutil.copy('config.ini', diwavars.CONFIG_PATH)
 
 
