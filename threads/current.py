@@ -62,7 +62,7 @@ class CURRENT_PROJECT(DIWA_THREAD):
                 ipgm = diwavars.PGM_GROUP
                 project_id = controller.get_active_project(ipgm)
                 if project_id:
-                    self.swnp.send('SYS',
+                    self.swnp.send('SYS', 'MSG',
                                    'current_project;{0}'.format(project_id))
             sleep(1)
 
@@ -98,6 +98,6 @@ class CURRENT_SESSION(DIWA_THREAD):
                 ipgm = diwavars.PGM_GROUP
                 session_id = controller.get_active_session(ipgm)
                 if session_id:
-                    self.swnp.send('SYS',
+                    self.swnp.send('SYS', 'MSG',
                                    'current_session;{0}'.format(session_id))
             sleep(1)
