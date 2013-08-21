@@ -419,12 +419,11 @@ class PreferencesDialog(wx.Dialog):
         self.screens_hidden = wx.RadioButton(self, wx.ID_ANY,
                                              'Off (recommended)',
                                              style=wx.RB_GROUP)
-        self.screens_show = wx.RadioButton(self, wx.ID_ANY,
-                                           'On (not recommended)')
-        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On (recommended)',
+        self.screens_show = wx.RadioButton(self, wx.ID_ANY, 'On')
+        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On',
                                           style=wx.RB_GROUP)
         self.commands_off = wx.RadioButton(self, wx.ID_ANY,
-                                           'Off (not recommended')
+                                           'Off  (recommended)')
         self.name_value = wx.TextCtrl(self, wx.ID_ANY, '')
 
         # Tooltips.
