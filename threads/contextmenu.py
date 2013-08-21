@@ -97,8 +97,9 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
     def __on_send_to(self, id_, param):
         """ Send to handler. """
         try:
-            fpath = str([self.handle_file(param)])
-            self.send_file(unicode(id_, 'open;' + fpath))
+            param = param.decode('utf-8')
+            fpath = unicode([self.handle_file(param)])
+            self.send_file(unicode(id_, 'open;' + fpath.encode('utf-8')))
         except Exception as excp:
             _logger().exception('File send exception: {0!s}'.format(excp))
         return 'OK'
@@ -137,7 +138,12 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
     def __on_open(self, id_, param):
         """ Open handler. """
         id_ = id_
-        target = eval(param)
+        _logger().debug('Received: ' + param)
+        param = param.decode('utf-8')
+        _logger().debug(u'OPEN FILE: {0}'.format(param))
+        target = literal_eval(param)
+        for tar in target:
+            _logger().debug(u'Target: {0}'.format(tar))
         project_id = self.parent.diwa_state.current_project_id
         session_id = self.parent.diwa_state.current_session_id
         if not session_id:
@@ -221,6 +227,8 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                 _logger().debug('CMFH got message: {0!s}'.format(message))
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
+                    if cmd == 'open':
+                        _logger().debug('OPEEEEEEEEEEEN:')
                     self.socket.send(handlers[cmd](id_, path))
                 else:
                     self.socket.send('ERROR')

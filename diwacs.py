@@ -4,10 +4,6 @@ Created on 8.5.2012
 :author: neriksso
 
 """
-#:TODO: Consider replacing "formatstring % (args, ...)" with
-#       "formatstring.format(args)"
-
-
 # Critical imports
 import sys
 from ast import literal_eval
@@ -18,8 +14,6 @@ from state import SessionChangeException
 
 if __name__ == '__main__':
     diwavars.set_running()
-    sys.stdout = open(r'data\stdout.log', 'w')
-    sys.stderr = open(r'data\stderr.log', 'w')
 
 # Standard imports.
 import cProfile
@@ -58,6 +52,10 @@ LOGGER = None
 if __name__ == '__main__':
     # Load up the loggers for every module.
     global LOGGER
+    try:
+        os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
+    except:
+        pass
     logging.config.fileConfig('logging.conf')
     LOGGER = logging.getLogger('diwacs')
     for logger_initializer in diwavars.LOGGER_INITIALIZER_LIST:
@@ -593,7 +591,7 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.exception('Session change failed...')
                 show_modal_and_destroy(ErrorDialog, self, params)
             except Exception as excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
+                LOGGER.exception('OnSession exception: {0!s}'.format(excp))
         else:
             # We want to end our session!
             try:
@@ -906,7 +904,7 @@ def main(profile):
         window = GraphicalUserInterface()
         app.MainLoop()
     except Exception as excp:
-        LOGGER.exception('GENERIC EXCEPTION: %s', str(excp))
+        LOGGER.exception('GENERIC EXCEPTION: {0!s}'.format(excp))
     finally:
         if window:
             window = None
@@ -929,12 +927,12 @@ def main(profile):
             rindex = suffix.rfind('.')
             if rindex > 0:
                 suffix = suffix[:rindex]
-            log_path = r'data\diwacs_profile_%s.log' % suffix
+            log_path = r'data\diwacs_profile_{0}.log'.format(suffix)
             with open(log_path, 'w') as ofile:
                 ofile.write('PROFILE DATA:\n\n')
                 ofile.write(sval)
         except (ValueError, IOError, OSError) as excp:
-            LOGGER.exception('PROFILING EXCEPTION: %s', str(excp))
+            LOGGER.exception('PROFILING EXCEPTION: {0!s}'.format(excp))
         LOGGER.info('...PROFILING PRINT END')
 
 

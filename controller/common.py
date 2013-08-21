@@ -8,11 +8,6 @@ Created on 28.6.2013
 import sys
 import diwavars
 
-
-if diwavars.CURRENTLY_RUNNING:
-    sys.stdout = open(r'data\controller_stdout.log', 'w')
-    sys.stderr = open(r'data\controller_stderr.log', 'w')
-
 # System imports.
 import logging
 

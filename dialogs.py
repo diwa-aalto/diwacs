@@ -419,12 +419,11 @@ class PreferencesDialog(wx.Dialog):
         self.screens_hidden = wx.RadioButton(self, wx.ID_ANY,
                                              'Off (recommended)',
                                              style=wx.RB_GROUP)
-        self.screens_show = wx.RadioButton(self, wx.ID_ANY,
-                                           'On (not recommended)')
-        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On (recommended)',
+        self.screens_show = wx.RadioButton(self, wx.ID_ANY, 'On')
+        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On',
                                           style=wx.RB_GROUP)
         self.commands_off = wx.RadioButton(self, wx.ID_ANY,
-                                           'Off (not recommended')
+                                           'Off  (recommended)')
         self.name_value = wx.TextCtrl(self, wx.ID_ANY, '')
 
         # Tooltips.
@@ -945,8 +944,8 @@ class UpdateDialog(wx.Dialog):
     :type url: String
 
     """
-    ptext = ('An application update is available for %s at' %
-             diwavars.APPLICATION_NAME)
+    ptext = ('An application update is available for {0} at'.\
+             format(diwavars.APPLICATION_NAME))
 
     def __init__(self, title, url, *args, **kwargs):
         wx.Dialog.__init__(self, wx.GetApp().GetTopWindow(),

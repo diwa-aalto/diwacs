@@ -200,7 +200,7 @@ def get_current_wallpaper(win):
             if (wallpaper_path) and len(wallpaper_path):
                 wallpaper = wallpaper_path
     except (ValueError, IOError, OSError) as excp:
-        LOGGER.exception('get_current_wallpaper exception: %s', str(excp))
+        LOGGER.exception('get_current_wallpaper exception: {0!s}'.format(excp))
     if key is not None:
         CloseKey(key)
     return wallpaper
@@ -295,7 +295,7 @@ def open_file(filepath):
     :type filepath: String
 
     """
-    LOGGER.debug('%s Opening file %s', os.name, filepath)
+    LOGGER.debug('{0} opening file {1}'.format(os.name, filepath))
     try:
         if os.path.exists(filepath):
             try:
@@ -304,7 +304,7 @@ def open_file(filepath):
                 subprocess.call(('start', filepath), shell=True)
     except OSError as excp:
         # Subprocess.call failed!
-        LOGGER.exception('Open file exception: %s', str(excp))
+        LOGGER.exception('Open file exception: {0!s}'.format(excp))
 
 
 def save_screen(filepath):
@@ -352,7 +352,7 @@ def save_screen(filepath):
         frame_mask.paste(cropped_image, box=img_pos)
         frame_mask.save(filepath, format='PNG')
     except (IOError, OSError) as excp:
-        LOGGER.exception('save_screen Exception: %s', str(excp))
+        LOGGER.exception('save_screen Exception: {0!s}'.format(excp))
 
 
 def screen_capture(path, node_id):
@@ -380,7 +380,7 @@ def screen_capture(path, node_id):
         filepath = os.path.join(filepath, nameform)
         grab.save(filepath, format='PNG')
     except (IOError, OSError) as excp:
-        LOGGER.exception('screen_capture exception:%s', str(excp))
+        LOGGER.exception('screen_capture exception: {0!s}'.format(excp))
 
 
 def search_file(filename, search_path, case_sensitive=True):

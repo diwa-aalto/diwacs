@@ -37,65 +37,108 @@ from distutils.core import setup
 import py2exe  # @UnusedImport
 from glob import glob
 
-vspath = 'C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\redist\\'\
-         'x86\\Microsoft.VC90.CRT'
-postgrepath = 'C:\\Program Files (x86)\\PostgreSQL\\9.2\\lib'
-#ocipath = r'C:\Program Files (x86)\OracleInstantClient'
-sys.path.append(vspath)
-sys.path.append(postgrepath)
-#sys.path.append(ocipath)
-mydata_content = [r'data\icon.ico']
-x = glob(r'data\*.png')
-if x:
-    for t in x:
-        mydata_content.append(t)
 
-options_py2exe_typelibs = [('{565783C6-CB41-11D1-8B02-00600806D9B6}', 0, 1, 2)]
-options_py2exe_includes = ['pymysql', 'PIL', 'pathtools', 'migrate', 'wmi',
-                           'migrate.changeset.databases.mysql', 'pyodbc',
-                           'pg8000', 'urllib2', 'pydoc_data', 'numpy']
-options_py2exe_excludes = ['tcl', 'Tkinter', 'Tkconstants', 'doctest']
-options_py2exe_packages = ['pubsub', 'zmq', 'configobj', 'migrate', 'lxml',
-                           'pyaudio', 'wave', 'wxversion', 'cffi', 'pycparser',
-                           'sqlalchemy']
-options_py2exe_dll_excludes = ['libzmq.dll', 'libpq.dll', 'MPR.dll',
-                               'IPHLPAPI.dll', 'OCI.dll']
+# --------------------------- EDIT BEGIN ------------------------------- #
 
-options_py2exe = {
-                  'typelibs': options_py2exe_typelibs,
-                  'bundle_files': 1,
-                  'optimize': 2,
-                  'compressed': True,
-                  'includes': options_py2exe_includes,
-                  'excludes': options_py2exe_excludes,
-                  'packages': options_py2exe_packages,
-                  'dist_dir': 'dist',
-                  'dll_excludes': options_py2exe_dll_excludes
-                  }
+VISUAL_STUDIO_PATH = (r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC'
+                      r'\redist\x86\Microsoft.VC90.CRT')
 
-options = {'py2exe': options_py2exe}
+POSTGRESQL_PATH = r'C:\Program Files (x86)\PostgreSQL\9.2\lib'
+
+OCI_PATH = r'C:\Program Files (x86)\OracleInstantClient'
 
 
-window_diwacs = {
-                 'script': 'diwacs.py',
-                 'dest_base': 'DiwaCS',
-                 'icon_resources': [(0, r'data\icon.ico')]
-                 }
-window_addfile = {'script': 'add_file.py'}
-window_sendfile = {'script': 'send_file_to.py'}
-window_manage = {'script': 'manage.py'}
+MY_ICON = r'data\icon.ico'
 
-windows = [window_diwacs, window_addfile, window_sendfile, window_manage]
+TYPELIBS = [
+    ('{565783C6-CB41-11D1-8B02-00600806D9B6}', 0, 1, 2)
+]
+
+INCLUDES = [
+    'pymysql', 'PIL', 'pathtools', 'migrate', 'wmi',
+    'migrate.changeset.databases.mysql', 'pyodbc', 'pg8000', 'urllib2',
+    'pydoc_data', 'numpy'
+]
+
+EXCLUDES = [
+    'tcl', 'Tkinter', 'Tkconstants', 'doctest'
+]
+
+PACKAGES = [
+    'pubsub', 'zmq', 'configobj', 'migrate', 'lxml', 'pyaudio', 'wave',
+    'wxversion', 'cffi', 'pycparser', 'sqlalchemy'
+]
+
+DLL_EXCLUDES = [
+    'libzmq.dll', 'libpq.dll', 'MPR.dll', 'IPHLPAPI.dll', 'OCI.dll'
+]
+
+DATA_INCLUDES = [
+    r'C:\Python27\Lib\site-packages\zmq\libzmq.dll', 'logging.conf',
+    'config.ini'
+]
+
+DATA_ICONS = ('icons', glob(r'icons\*.*'))
+DATA_FILETYPE_ICONS = ('icons/filetypes', glob(r'icons\filetypes\*.*'))
+
+# ---------------------------- EDIT END -------------------------------- #
 
 
-templist = [r'C:\Python27\Lib\site-packages\zmq\libzmq.dll', 'logging.conf',
-            'config.ini']
+def main():
+    sys.path.append(VISUAL_STUDIO_PATH)
+    sys.path.append(POSTGRESQL_PATH)
+    #sys.path.append(ocipath)
+    mydata_content = [MY_ICON]
+    x = glob(r'data\*.png')
+    if x:
+        for t in x:
+            mydata_content.append(t)
 
-data_files = []
-data_files.append(('icons', glob(r'icons\*.*')))
-data_files.append(('icons/filetypes', glob(r'icons\filetypes\*.*')))
-data_files.append(('data', mydata_content))
-data_files.append(('.', templist))
+    options_py2exe = {
+        'typelibs': TYPELIBS,
+        'bundle_files': 1,
+        'optimize': 2,
+        'compressed': True,
+        'includes': INCLUDES,
+        'excludes': EXCLUDES,
+        'packages': PACKAGES,
+        'dist_dir': 'dist',
+        'dll_excludes': DLL_EXCLUDES
+    }
 
-setup(name="DiwaCS", options=options, windows=windows, data_files=data_files,
-      zipfile='Diwa.lib')
+    window_diwacs = {
+        'script': 'diwacs.py',
+        'dest_base': 'DiwaCS',
+        'icon_resources': [(0, MY_ICON)]
+    }
+    window_addfile = {'script': 'add_file.py'}
+    window_sendfile = {'script': 'send_file_to.py'}
+    window_manage = {'script': 'manage.py'}
+    windows = [window_diwacs, window_addfile, window_sendfile, window_manage]
+
+    data_files = [
+        ('.', DATA_INCLUDES),
+        ('data', mydata_content),
+        DATA_ICONS,
+        DATA_FILETYPE_ICONS
+    ]
+    options = {'py2exe': options_py2exe}
+
+    setup_params = {
+        'name': 'DiWaCS',
+        'options': options,
+        'windows': windows,
+        'data_files': data_files,
+        'zipfile': 'Diwa.lib'
+    }
+
+    setup(**setup_params)
+    return 0
+
+if __name__ == '__main__':
+    value = 1
+    try:
+        value = main()
+    except:
+        pass
+    sys.exit(value)

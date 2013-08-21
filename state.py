@@ -101,8 +101,8 @@ def create_config():
     """
     try:
         os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
-    except OSError:
-        pass
+    except OSError as excp:
+        LOGGER.exception('CreateConfig: {0!s}'.format(excp))
     shutil.copy('config.ini', diwavars.CONFIG_PATH)
 
 
@@ -140,7 +140,7 @@ class State(object):
             self.audio_recorder.daemon = True
             self.start_audio_recorder()
         except Exception as excp:
-            LOGGER.exception('Audio recorder exception: %s', str(excp))
+            LOGGER.exception('Audio recorder exception: {0!s}'.format(excp))
         self.exited = False
         self.responsive = ''
         self.is_responsive = False

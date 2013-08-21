@@ -69,7 +69,7 @@ RED_DOT = os.path.join('data', 'square_red.png')
 SPLASH_SCREEN = os.path.join('data', 'splashscreen.png')
 
 # The tooltip shown on systray hover
-TRAY_TOOLTIP = '%s %s' % (APPLICATION_NAME, VERSION)
+TRAY_TOOLTIP = '{0} {1}'.format(APPLICATION_NAME, VERSION)
 
 # The size of the main frame
 FRAME_SIZE = (585, 170)
@@ -78,7 +78,7 @@ FRAME_SIZE = (585, 170)
 MAX_SCREENS = 3
 
 # Path of the config file. Users home directory/.wos
-CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.wos', "config.ini")
+CONFIG_PATH = os.path.expanduser(r'~\.diwacs\config.ini')
 
 # A placeholder for configobj
 CONFIG = None
@@ -329,7 +329,7 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
 
     """
     global DB_ADDRESS, DB_NAME, DB_TYPE, DB_USER, DB_PASS, DB_STRING
-    __myformat = '%s+%s://%s:%s@%s/%s?charset=utf8&use_unicode=1'
+    __myformat = '{0}+{1}://{2}:{3}@{4}/{5}?charset=utf8&use_unicode=1'
     if address:
         DB_ADDRESS = address
     if name:
@@ -344,8 +344,8 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
         db_driver = DB_DRIVER[DB_TYPE] if DB_TYPE in DB_DRIVER else ''
         if not db_driver:
             return
-        DB_STRING = __myformat % (DB_TYPE, db_driver, DB_USER, DB_PASS,
-                                  DB_ADDRESS, DB_NAME)
+        DB_STRING = __myformat.format(DB_TYPE, db_driver, DB_USER, DB_PASS,
+                                      DB_ADDRESS, DB_NAME)
 
 STATUS_BOX_VALUE = 0
 STATUS_BOX_CALLBACK = None

@@ -8,12 +8,6 @@ Created on 30.4.2012
 import sys
 import diwavars
 
-
-if diwavars.CURRENTLY_RUNNING:
-    sys.stdout = open(r'data\swnp_stdout.log', 'w')
-    sys.stderr = open(r'data\swnp_stderr.log', 'w')
-
-
 # Standard imports.
 from datetime import datetime, timedelta
 from logging import config, getLogger
@@ -99,13 +93,13 @@ class Node(object):
 
     @property
     def data(self):
-        LOGGER.debug('NODE<id={0}> DATA: {1}'.format(self.id, self._data))
+        # LOGGER.debug('NODE<id={0}> DATA: {1}'.format(self.id, self._data))
         return self._data
 
     @data.setter
     def data(self, value):
-        msg = 'NODE<id={0}> OLD_DATA: {1!s}; NEW_DATA: {2!s}'
-        LOGGER.debug(msg.format(self.id, self._data, value))
+        # msg = 'NODE<id={0}> OLD_DATA: {1!s}; NEW_DATA: {2!s}'
+        # LOGGER.debug(msg.format(self.id, self._data, value))
         self._data = value
 
     def refresh(self):
