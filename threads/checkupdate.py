@@ -53,7 +53,7 @@ class CHECK_UPDATE(DIWA_THREAD):
 
         """
         url = diwavars.PAD_URL
-        _logger().debug('CHECK_UPDATE called with pad-url: %s', url)
+        _logger().debug('CHECK_UPDATE called with pad-url: {0}'.format(url))
         result = None
         try:
             result = urllib2.urlopen(url)
@@ -75,7 +75,7 @@ class CHECK_UPDATE(DIWA_THREAD):
             dlg.ShowModal()
             dlg.Destroy()
         except Exception as excp:
-            _logger().exception('Update Dialog Exception: %s', str(excp))
+            _logger().exception('Update Dialog Exception: {0!s}'.format(excp))
 
     def run(self):
         """

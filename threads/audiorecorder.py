@@ -119,9 +119,9 @@ class AudioRecorder(DIWA_THREAD):
                     del element
                 self.buffer.append(data)
             except IOError as excp:
-                _logger().exception('Error recording: %s', str(excp))
+                _logger().exception('Error recording: {0!s}'.format(excp))
 
-    def save(self, ide, path):
+    def save(self, event_id, path):
         """
         Save the buffer to a file.
 
@@ -129,7 +129,7 @@ class AudioRecorder(DIWA_THREAD):
         try:
             _logger().debug('Saving audio buffer')
             date_string = datetime.now().strftime('%d%m%Y%H%M')
-            filename = '%d_%s.wav' % (ide, date_string)
+            filename = '{0}_{1}.wav'.format(event_id, date_string)
             filepath = os.path.join(path, 'Audio')
             if not os.path.exists(filepath):
                 os.makedirs(filepath)

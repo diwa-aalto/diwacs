@@ -42,7 +42,8 @@ import utils
 from dialogs import CloseError
 from zmq.error import Again, ContextTerminated, ZMQError
 
-
+SENT = []
+RECV = []
 LOGGER = None
 
 def __init_logger():
@@ -75,7 +76,7 @@ TIMEOUT = 10
 PING_RATE = 3
 
 
-class Node():
+class Node(object):
     """
     A class representation of a node in the network.
 
@@ -93,8 +94,19 @@ class Node():
         self.id = node_id
         self.screens = int(screens)
         self.name = name or ''
-        self.data = data or ''
+        self._data = data or ''
         self.timestamp = datetime.now()
+
+    @property
+    def data(self):
+        LOGGER.debug('NODE<id={0}> DATA: {1}'.format(self.id, self._data))
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        msg = 'NODE<id={0}> OLD_DATA: {1!s}; NEW_DATA: {2!s}'
+        LOGGER.debug(msg.format(self.id, self._data, value))
+        self._data = value
 
     def refresh(self):
         """
@@ -109,7 +121,7 @@ class Node():
 
     def __str__(self):
         return "%s: %s with %s screens data %s" % (self.id, self.name,
-                                                   self.screens, self.data)
+                                                   self.screens, self._data)
 
     def __repr__(self):
         return self.__str__()
@@ -121,7 +133,7 @@ class Node():
         return cmp(self.id, other.id)
 
 
-class Message():
+class Message(object):
     """
     A class representation of a Message.
 
@@ -143,9 +155,10 @@ class Message():
         if prefix in PREFIX_CHOICES:
             self.prefix = prefix
         else:
-            raise TypeError('Invalid message type: %s' % prefix)
+            raise TypeError('Invalid message type: {0}'.format(prefix))
         self.payload = payload
 
+    @staticmethod
     def to_dict(msg):
         """
         Return a message in a dict.
@@ -158,8 +171,8 @@ class Message():
 
         """
         return {'TAG': msg.tag, 'PREFIX': msg.prefix, 'PAYLOAD': msg.payload}
-    to_dict = staticmethod(to_dict)
 
+    @staticmethod
     def from_json(json_dict):
         """
         Return a message from json.
@@ -174,7 +187,6 @@ class Message():
         return Message(json_dict['TAG'].encode('utf-8'),
                        json_dict['PREFIX'].encode('utf-8'),
                        json_dict['PAYLOAD'].encode('utf-8'))
-    from_json = staticmethod(from_json)
 
     def __str__(self):
         return '_'.join([self.tag, self.prefix, self.payload])
@@ -183,7 +195,7 @@ class Message():
         return '_'.join([self.tag, self.prefix, self.payload])
 
 
-class SWNP:
+class SWNP(object):
     """
     The main class of swnp.
 
@@ -264,7 +276,7 @@ class SWNP:
                                                      'Sub sys thread', targs)
         LOGGER.debug('Bound listeners on: %s', str(self.tladdr))
 
-        join_str = '{id}_SCREENS_{screens}_NAME_{name}_DATA_{data}'
+        join_str = '{id}_SCREENS_{screens}_NAME_{name}_DATA_{_data}'
         join_str = join_str.format(**self.node.__dict__)
         self.send('SYS', PREFIX_CHOICES[0], join_str)
         self.last_joined = self.id
@@ -343,6 +355,9 @@ class SWNP:
         """
         msg = '{id}_SCREENS_{node.screens}_NAME_{node.name}_DATA_{node.data}'
         msg = msg.format(id=self.id, node=self.node)
+        if msg not in SENT:
+            SENT.append(msg)
+            LOGGER.debug('PING: ' + msg)
         try:
             self.send('SYS', PREFIX_CHOICES[4], msg)
         except ZMQError as excp:
@@ -698,6 +713,9 @@ class SWNP:
     def _on_ping(self, payload):
         """ On ping handlers. """
         try:
+            if payload not in RECV:
+                RECV.append(payload)
+                LOGGER.debug('RECV-PING: ' + payload)
             self.ping_handler(payload)
         except Exception as excp:
             LOGGER.exception('PING EXCEPTION: {0}'.format(excp))
@@ -750,7 +768,7 @@ class SWNP:
             if target_node.name != new_name:
                 target_node.name = new_name
                 update_node = True
-            if target_node.data == new_data:
+            if target_node.data != new_data:
                 target_node.data = new_data
                 update_node = True
             if update_node:

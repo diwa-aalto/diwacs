@@ -51,7 +51,7 @@ class DIWA_THREAD(threading.Thread):
             is_me = diwa_thread == threading.current_thread()
             is_alive = diwa_thread.isAlive()
             if is_alive and not is_me:
-                _logger().debug('KillAll: %s', diwa_thread.getName())
+                _logger().debug('KillAll: {0}'.format(diwa_thread.getName()))
                 diwa_thread.stop()
 
     def remove_self(self):

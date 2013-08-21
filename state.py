@@ -19,6 +19,7 @@ import shutil
 from time import sleep
 import webbrowser
 import win32clipboard
+import re
 
 # 3rd party imports.
 import configobj
@@ -775,22 +776,39 @@ class State(object):
             LOGGER.exception(log_msg)
 
     def set_swnp_data(self, data):
+        """ Set data value for :class:`swnp.Node`
+
+        :param data: New data value
+        :type data: String
+
+        """
         self.swnp.node.data = data
         self.parent.UpdateScreens(update=True)
 
     def get_swnp_data(self):
+        """ Returns the data value for :class:`swnp.Node`"""
         return self.swnp.node.data
 
     def append_swnp_data(self, new_data):
+        """ Append data to current data value for :class:`swnp.Node`
+
+        :param new_data: Value to be added
+        :type new_data: String
+
+        """
         data = self.get_swnp_data()
-        if len(data):
-            data += ':'
-        data += new_data
-        self.set_swnp_data(data)
+        if new_data not in data:
+            data += new_data if not len else ':' + new_data
+            self.set_swnp_data(data)
 
     def remove_from_swnp_data(self, old_data):
-        data = self.get_swnp_data().replace(old_data, '').replace('::',
-                                                                       ':')
+        """ Removes data value from current data value for :class:`swnp.Node`
+
+        :param old_data: Old data value
+        :type old_data: String
+
+        """
+        data = re.sub(':?{0}'.format(old_data), '', self.get_swnp_data())
         self.set_swnp_data(data)
 
     def send_push_clipboard(self, target_node_id):
