@@ -593,7 +593,7 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.exception('Session change failed...')
                 show_modal_and_destroy(ErrorDialog, self, params)
             except Exception as excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
+                LOGGER.exception('OnSession exception: {0!s}'.format(excp))
         else:
             # We want to end our session!
             try:
@@ -906,7 +906,7 @@ def main(profile):
         window = GraphicalUserInterface()
         app.MainLoop()
     except Exception as excp:
-        LOGGER.exception('GENERIC EXCEPTION: %s', str(excp))
+        LOGGER.exception('GENERIC EXCEPTION: {0!s}'.format(excp))
     finally:
         if window:
             window = None
@@ -929,12 +929,12 @@ def main(profile):
             rindex = suffix.rfind('.')
             if rindex > 0:
                 suffix = suffix[:rindex]
-            log_path = r'data\diwacs_profile_%s.log' % suffix
+            log_path = r'data\diwacs_profile_{0}.log'.format(suffix)
             with open(log_path, 'w') as ofile:
                 ofile.write('PROFILE DATA:\n\n')
                 ofile.write(sval)
         except (ValueError, IOError, OSError) as excp:
-            LOGGER.exception('PROFILING EXCEPTION: %s', str(excp))
+            LOGGER.exception('PROFILING EXCEPTION: {0!s}'.format(excp))
         LOGGER.info('...PROFILING PRINT END')
 
 

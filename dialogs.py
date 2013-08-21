@@ -945,8 +945,8 @@ class UpdateDialog(wx.Dialog):
     :type url: String
 
     """
-    ptext = ('An application update is available for %s at' %
-             diwavars.APPLICATION_NAME)
+    ptext = ('An application update is available for {0} at'.\
+             format(diwavars.APPLICATION_NAME))
 
     def __init__(self, title, url, *args, **kwargs):
         wx.Dialog.__init__(self, wx.GetApp().GetTopWindow(),
