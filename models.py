@@ -11,8 +11,8 @@ Created on 23.5.2012
 from datetime import datetime
 
 # Third party imports.
-from sqlalchemy import (ForeignKey, Column, Table, text,
-                        Integer, SmallInteger, DateTime, Boolean, String)
+from sqlalchemy import (ForeignKey, Column, Table, text, Integer,
+                        SmallInteger, DateTime, String)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 
@@ -538,10 +538,14 @@ class Project(MethodMixin, Base):
     :param name: Name of the project.
     :type name: :py:class:`String`
 
+    :param directory: The location of project on disc.
+    :type directory: :py:class:`String`
+
     :param company: The owner of the project.
     :type company: :py:class:`models.Company`
 
-    :TODO: document `directory` and `password` parameters.
+    :param password: The project password.
+    :type password: :py:class:`String`
 
     """
     __tablename__ = 'project'

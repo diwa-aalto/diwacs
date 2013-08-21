@@ -275,8 +275,7 @@ class DropTarget(wx.PyDropTarget):
                              format(data_type))
         except (ValueError, IOError, OSError) as excp:
             LOGGER.exception('Error while sending items: {0!s}'.format(excp))
-        finally:
-            return d  # you must return this
+        return d  # you must return this
 
 
 class EventListTemplate(wx.Frame):
@@ -842,7 +841,6 @@ class GUItemplate(wx.Frame):
                                 style=wx.ALIGN_CENTRE)
         version.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
                                 wx.FONTWEIGHT_LIGHT))
-        # TODO: Status box.
         self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
                                       pos=(diwavars.FRAME_SIZE[0] - 185, 5),
                                       size=(180, 40),

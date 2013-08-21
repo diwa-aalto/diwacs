@@ -139,6 +139,6 @@ if __name__ == '__main__':
     value = 1
     try:
         value = main()
-    except:
+    except Exception:
         pass
     sys.exit(value)

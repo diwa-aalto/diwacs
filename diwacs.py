@@ -54,7 +54,7 @@ if __name__ == '__main__':
     global LOGGER
     try:
         os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
-    except:
+    except Exception:
         pass
     logging.config.fileConfig('logging.conf')
     LOGGER = logging.getLogger('diwacs')
@@ -258,8 +258,8 @@ class GraphicalUserInterface(GUItemplate):
             self.Show(True)
             splash_screen.Hide()
             splash_screen.Destroy()
-        except:
-            LOGGER.exception('load exception')
+        except Exception as excp:
+            LOGGER.exception('load exception: {0!s}'.format(excp))
             splash_screen.Hide()
             splash_screen.Destroy()
             self.Destroy()
@@ -442,10 +442,7 @@ class GraphicalUserInterface(GUItemplate):
             msg = 'Cannot change project during session.'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             return
-        try:
-            show_modal_and_destroy(ProjectSelectDialog, self)
-        except:
-            LOGGER.exception('ShowSelectProjectDialog exception.')
+        show_modal_and_destroy(ProjectSelectDialog, self)
         if event:
             event.Skip()
 

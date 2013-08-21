@@ -761,8 +761,8 @@ class ProjectSelectDialog(wx.Dialog):
                 if project_id in self.project_index:
                     select_index = self.project_index.index(project_id)
                 self.project_list.SetSelection(select_index)
-        except:
-            LOGGER.exception('Edit event exception')
+        except Exception as excp:
+            LOGGER.exception('Edit event exception: {0!s}'.format(excp))
         if event:
             event.Skip()
 
