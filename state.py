@@ -145,6 +145,7 @@ class State(object):
         self.responsive = ''
         self.is_responsive = False
         self.clipboard_list = None
+        self.received_clipboard_hash = ''
         self.screen_selected = None
         self.error_th = threads.CONNECTION_ERROR_THREAD(self.parent)
         self.random = Random()
@@ -160,13 +161,10 @@ class State(object):
             self.worker.parse_config(diwavars.CONFIG)
             screens = int(diwavars.CONFIG['SCREENS'])
             name = diwavars.CONFIG['NAME']
-            #:FIXME: What the actual?
-            node_id = 'observer' if self.is_responsive else ''
             self.swnp = swnp.SWNP(
                 pgm_group=int(diwavars.PGM_GROUP),
                 screens=screens,
                 name=name,
-                node_id=node_id,
                 error_handler=self.error_th
             )
         except Exception as excp:
@@ -399,7 +397,8 @@ class State(object):
                     relativeroot = ''
                     if len(currentroot) > cidx:
                         relativeroot = currentroot[cidx:]
-                    targetroot = os.path.join(tpath, os.path.basename(filename),
+                    targetroot = os.path.join(tpath,
+                                              os.path.basename(filename),
                                               relativeroot)
                     for directory in dirs:
                         temp_path = os.path.join(targetroot, directory)
@@ -517,7 +516,6 @@ class State(object):
     TARGET_TO_FLAG = {0x201: 0x0002, 0x202: 0x0004, 0x204: 0x0008,
                       0x205: 0x0010, 0x207: 0x0020, 0x208: 0x0040,
                       0x20A: 0x0800, 0x20E: 0x1000}
-
 
     @staticmethod
     def _on_mouse_event(parameters):
@@ -673,7 +671,7 @@ class State(object):
                 requester_id = parameters.split('_', 1)[1]
                 current_content = State._get_clipboard_content()
                 State._set_clipboard_content(self.clipboard_list)
-                pickled = dumps(current_content, 1) # Binary
+                pickled = dumps(current_content, 1)  # Binary
                 if len(pickled) > State.DEF_20MB:
                     # TODO: Error dialog?
                     return

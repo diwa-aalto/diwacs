@@ -86,9 +86,8 @@ def show_modal_and_destroy(class_, parent, params=None):
         LOGGER.exception('Exception in {0!s}: {1!s}'.format(class_, excp))
     finally:
         try:
-            if hasattr(dialog, 'Destroy'):
-                dialog.Destroy()
-        except Exception:
+            dialog.Destroy()
+        except (NameError, AttributeError):
             pass
     dialog = None
     return result

@@ -356,6 +356,7 @@ class Event(MethodMixin, Base):
         except Exception as excp:
             modelsbase.LOGGER.exception('EVT_EXCPT: {0!s}'.format(excp))
 
+
 class File(MethodMixin, Base):
     """
     A class representation of a file.

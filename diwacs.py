@@ -306,9 +306,15 @@ class GraphicalUserInterface(GUItemplate):
             # your own screen if need be.
             should_update = False
             node_manager = self.diwa_state.swnp
-            screens = int(diwavars.CONFIG['SCREENS'])
-            name = diwavars.CONFIG['NAME']
-            status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
+            screens = 0
+            if 'SCREENS' in diwavars.CONFIG:
+                screens = int(diwavars.CONFIG['SCREENS'])
+            name = 'DEFAULT_NAME'
+            if 'NAME' in diwavars.CONFIG:
+                name = diwavars.CONFIG['NAME']
+            status_box = False
+            if 'STATUS_BOX' in diwavars.CONFIG:
+                status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
             if node_manager.node.screens != screens:
                 node_manager.set_screens(screens)
                 should_update = True
@@ -655,21 +661,28 @@ class GraphicalUserInterface(GUItemplate):
             return
         node_manager = self.diwa_state.swnp
         sender = self.diwa_state.swnp_send
-        try:
-            if node.id == node_manager.node.id:
+        if node.id == node_manager.node.id:
+            try:
                 if self.diwa_state.controlled:
                     sender(node_manager.node.id, 'remote_end;now')
                     sender(str(self.diwa_state.controlled), 'remote_end;now')
                 return
-            if node.id in self.selected_nodes:
+            except (IOError, OSError) as excp:
+                LOGGER.exception('EXCPT! {0!s}'.format(excp))
+        if node.id in self.selected_nodes:
+            threads.inputcapture.set_capture(False)
+            try:
                 # End Remote
                 self.selected_nodes.remove(node.id)
-                threads.inputcapture.set_capture(False)
                 self.diwa_state.capture_thread.unhook()
+            except (IOError, OSError) as excp:
+                LOGGER.exception('EXCPT! {0!s}'.format(excp))
+            finally:
                 self.overlay.Hide()
-            else:
+        else:
+            threads.inputcapture.set_capture(True)
+            try:
                 # Start remote
-                threads.inputcapture.set_capture(True)
                 self.diwa_state.capture_thread.hook()
                 msg = 'remote_start;{0}'.format(node_manager.node.id)
                 sender(node.id, msg)
@@ -681,9 +694,8 @@ class GraphicalUserInterface(GUItemplate):
                 tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
                 self.overlay.SetText(tmod, tkey)
                 self.overlay.Show()
-        except Exception as excp:
-            LOGGER.exception('EXCPT! {0!s}'.format(excp))
-            sys.exit()
+            except (IOError, OSError) as excp:
+                LOGGER.exception('EXCPT! {0!s}'.format(excp))
 
     def UpdateScreens(self, update):
         """

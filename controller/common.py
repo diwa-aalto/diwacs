@@ -97,7 +97,7 @@ def delete_record(record_model, id_number):
                 msg = msg + '\r\n' + str(session) + (' PID {0}'.\
                                                      format(session.project_id)
                                                      )
-            _logger().debug(msg)
+            LOGGER.debug(msg)
             Activity.delete_many(activities)
             Session.delete_many(sessions)
         instance.delete()

@@ -207,9 +207,6 @@ class SWNP(object):
     :param name: The name of the instance.
     :type name: String
 
-    :param node_id: ID of the current instance.
-    :type node_id: Integer
-
     :param context: ZeroMQ context to use.
     :type context: :py:class:`zmq.Context`
 
@@ -221,8 +218,8 @@ class SWNP(object):
     MSG_BUFFER = []
     SYS_BUFFER = []
 
-    def __init__(self, pgm_group, screens=0, name=None, node_id=None,
-                 context=None, error_handler=None):
+    def __init__(self, pgm_group, screens=0, name=None, context=None,
+                 error_handler=None):
         LOGGER.debug("ZMQ version: {0} PYZMQ version: {1}".format(
                                     zmq.zmq_version(), zmq.pyzmq_version()))
         # Check pgm_group
@@ -240,9 +237,7 @@ class SWNP(object):
         self.publisher_loopback = self.context.socket(zmq.PUB)
         self.ip = utils.GetLocalIPAddress(diwavars.STORAGE)
         LOGGER.info('Own IP: %s', self.ip)
-        if node_id:
-            self.id = node_id
-        elif self.ip:
+        if self.ip:
             self.id = self.ip.split('.')[3]
         else:
             self.id = random.randint(1, 154)

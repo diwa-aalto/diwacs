@@ -567,6 +567,7 @@ class GUItemplate(wx.Frame):
         self.setbtn = None
         self.hidebtn = None
         self.closebtn = None
+        self.status_box = None
         self.left = None
         self.right = None
         self.evtbtn = None
@@ -823,15 +824,9 @@ class GUItemplate(wx.Frame):
         self.diwambbtn.highlightPenClr = wx.Colour(45, 137, 255)
         self.diwambbtn.faceDnClr = wx.Colour(45, 137, 255)
         self.diwambbtn.SetToolTip(wx.ToolTip('Meeting Browser'))
-        #self.status_text = wx.StaticText(self.banner_panel, -1, '',
-        #                                 pos=(diwavars.FRAME_SIZE[0] - 220, 0))
         self.banner = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
                                       bitmap=self.GetProgramIcon('balls'),
                                       pos=(diwavars.FRAME_SIZE[0] - 295, 0))
-        # self.statusbg = wx.StaticBitmap(self.banner_panel, id=wx.ID_ANY,
-        #                          bitmap=self.GetProgramIcon('statusbg'),
-        #                          pos=(diwavars.FRAME_SIZE[0] - 150, 0),
-        #                          size=(150,50))
         self.infobtn = buttons.GenBitmapButton(self.banner, wx.ID_ANY,
                                                icon('info'),
                                                style=wx.BORDER_NONE,

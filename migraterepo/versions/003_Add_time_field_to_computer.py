@@ -1,10 +1,12 @@
 from sqlalchemy import *
 from migrate import *
 from sqlalchemy.dialects import mysql
+
 meta = MetaData()
 
 table = Table('computer', meta)
-col = Column('time',mysql.DATETIME)
+col = Column('time', mysql.DATETIME)
+
 
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine; bind
