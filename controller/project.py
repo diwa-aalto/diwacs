@@ -236,7 +236,7 @@ def edit_project(project_id, row):
     :param row: The new project information.
     :type row: A dictionary
 
-    """
+    """  # TODO: Not called...
     project = Project.get_by_id(project_id)
     needs_to_update = False
     for key in row:

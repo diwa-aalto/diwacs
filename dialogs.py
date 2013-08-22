@@ -231,7 +231,7 @@ class AddProjectDialog(wx.Dialog):
                 params = {'project_id': result}
                 dlg_result = show_modal_and_destroy(ProjectSelectedDialog,
                                                     self, params)
-                if dlg_result == wx.ID_YES:
+                if dlg_result == wx.ID_NO:
                     self.parent.OnSession(None)
         except Exception as excp:
             log_msg = 'Exception in Project creation: {0!s}'
@@ -854,6 +854,8 @@ class ProjectSelectDialog(wx.Dialog):
             'project_id': project_id
         }
         result = show_modal_and_destroy(DeleteProjectDialog, self, params)
+        if not result:
+            return
         result_object = {
             'delete': (result & 1) > 0,
             'files': (result & 2) > 0
@@ -929,8 +931,8 @@ class ProjectSelectDialog(wx.Dialog):
                                             params)
             LOGGER.debug('Project selected result: {0!s}'.format(result))
             self.parent.OnProjectChanged()
-            self.parent.diwa_state.on_session_changed(result == 1)
-            if result == 1:
+            self.parent.diwa_state.on_session_changed(result == wx.ID_NO)
+            if result == wx.ID_NO:
                 self.parent.EnableSessionButton()
             self.parent.Refresh()
         except Exception as excp:
@@ -974,7 +976,7 @@ class ProjectSelectedDialog(wx.Dialog):
             project_name = Project.get_by_id(project_id).name
             ltext = ProjectSelectedDialog.ptext.format(name=project_name)
             self.notice = wx.StaticText(self, label=ltext)
-            self.cancel_button = wx.CheckBox(self, -1,
+            self.no_session = wx.CheckBox(self, -1,
                                          'No, do not start a new session.')
             self.ok_button = wx.Button(self, -1, 'OK')
             self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
@@ -991,7 +993,7 @@ class ProjectSelectedDialog(wx.Dialog):
 
     def OnOk(self, event):
         event.Skip()
-        self.EndModal(2 if self.cancel_button.GetValue() else 1)
+        self.EndModal(wx.ID_YES if self.no_session.GetValue() else wx.ID_NO)
 
 
 class UpdateDialog(wx.Dialog):

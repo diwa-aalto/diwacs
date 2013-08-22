@@ -191,7 +191,7 @@ def add_computer_to_session(session, name, pc_ip, wos_id):
     :note:
         This is not currently used so consider removing it.
 
-    """
+    """  # TODO: Fix and add usage.
     computer = add_computer(name, pc_ip, wos_id)
     session.computers.append(computer)
     session.update()

@@ -206,7 +206,7 @@ class GraphicalUserInterface(GUItemplate):
         profiles = ChooseDiwaProfileDialog.ListDatabaseProfiles()
         if len(profiles):
             diag = ChooseDiwaProfileDialog(None, profiles)
-            if diag.ShowModal(): # If non-zero return value, we should exit
+            if diag.ShowModal():  # If non-zero return value, we should exit
                 LOGGER.info('Application closed!')
                 self.Destroy()
                 wx.GetApp().ExitMainLoop()
@@ -331,7 +331,7 @@ class GraphicalUserInterface(GUItemplate):
                 should_update = True
             if should_update:
                 pub.sendMessage('update_screens', update=True)
-        except (ValueError, IOError, OSError): #TODO: More?
+        except (ValueError, IOError, OSError):  # TODO: More?
             LOGGER.exception('Show prefs exception.')
         if event:
             event.Skip()
@@ -358,7 +358,7 @@ class GraphicalUserInterface(GUItemplate):
         else:
             log_msg = 'Failed explorer: {file_path}'
             log_msg = log_msg.format(file_path=file_path)
-            LOGGER.exception(log_msg) #FIXME
+            LOGGER.exception(log_msg)  # FIXME
             params = {'message': 'Could not open directory.'}
             show_modal_and_destroy(ErrorDialog, self, params)
         if event:
@@ -436,7 +436,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         if name is None:
             name = 'No Project Selection'
-        self.pro_label.SetLabel(name)
+        self.pro_label.SetLabel('Project: {0}'.format(name))
 
     def SelectProjectDialog(self, event):
         """
@@ -486,23 +486,6 @@ class GraphicalUserInterface(GUItemplate):
         webbrowser.open('http://' + diwavars.STORAGE + '/help/')
         if event:
             event.Skip()
-
-    def GetNodeByName(self, name):
-        """
-        From current session nodes, select a node with this name
-        or return None.
-
-        :param name: Name of the desired node.
-        :type name: String
-
-        :returns: The desired node if one exists.
-        :rtype: :py:class:`swnp.Node`
-
-        """
-        for node in self.nodes:
-            if node.name == name:
-                return node.id
-        return None
 
     def OnEventButton(self, event):
         """
@@ -625,30 +608,6 @@ class GraphicalUserInterface(GUItemplate):
         self.Update()
         if event:
             event.Skip()
-
-    def PaintSelect(self, evt):
-        """
-        Paints the selection of a node.
-
-        .. note:: For future use.
-
-        :param evt: GraphicalUserInterface Event
-        :type evt: Event
-
-        """
-        device_context = wx.ClientDC(self.panel)
-        device_context.Clear()
-        if self.screen_selected == evt.GetId():
-            self.screen_selected = None
-        else:
-            self.screen_selected = self.iterator + evt.GetId()
-            device_context.BeginDrawing()
-            pen = wx.Pen('#4c4c4c', 3, wx.SOLID)
-            device_context.SetPen(pen)
-            (x_1, y_1) = (66 + self.screen_selected * (6 + 128), 110)
-            (x_2, y_2) = (98 + self.screen_selected * (6 + 128), 110)
-            device_context.DrawLine(x_1, y_1, x_2, y_2)
-            device_context.EndDrawing()
 
     def SelectNode(self, event):
         """
