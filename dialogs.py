@@ -23,6 +23,7 @@ from models import Company, Project
 import filesystem
 import utils
 import modelsbase
+import state
 
 LOGGER = None
 
@@ -412,10 +413,11 @@ class PreferencesDialog(wx.Dialog):
                            size=(550, 300),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
         self.config = config_object
-
+        self.parent = parent
         # Labels.
         screens_label = wx.StaticText(self, wx.ID_ANY, 'Screen visibility:')
         commands_label = wx.StaticText(self, wx.ID_ANY, 'Run commands:')
+        responsive_label = wx.StaticText(self, wx.ID_ANY, 'Act as Responsive:')
         name_label = wx.StaticText(self, wx.ID_ANY, 'Name:')
 
         # Configuration controls.
@@ -426,6 +428,10 @@ class PreferencesDialog(wx.Dialog):
         self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On',
                                           style=wx.RB_GROUP)
         self.commands_off = wx.RadioButton(self, wx.ID_ANY,
+                                           'Off  (recommended)')
+        self.responsive_on = wx.RadioButton(self, wx.ID_ANY, 'On',
+                                          style=wx.RB_GROUP)
+        self.responsive_off = wx.RadioButton(self, wx.ID_ANY,
                                            'Off  (recommended)')
         self.name_value = wx.TextCtrl(self, wx.ID_ANY, '')
 
@@ -441,14 +447,25 @@ class PreferencesDialog(wx.Dialog):
                             'computer.')
         txt_commands_on = ('This will enable the server to send remote '
                            'commands like "shutdown" to your computer.')
+        txt_responsive_off = ('This is the basic setting for a regular'
+                              ' peer node.')
+        txt_responsive_on = ('This setting makes it possible for this client'
+                             ' to act as a responsive node which has'
+                             ' responsibilities such as monitoring file '
+                             'system and recording audio. This should be only'
+                             ' enabled for stationary nodes.')
         self.screens_hidden.SetToolTip(wx.ToolTip(txt_screens_off))
         self.screens_show.SetToolTip(wx.ToolTip(txt_screens_on))
         self.commands_off.SetToolTip(wx.ToolTip(txt_commands_off))
         self.commands_on.SetToolTip(wx.ToolTip(txt_commands_on))
+        self.responsive_off.SetToolTip(wx.ToolTip(txt_responsive_off))
+        self.responsive_on.SetToolTip(wx.ToolTip(txt_responsive_on))
 
         # Other controls.
         open_button = wx.Button(self, wx.ID_ANY, 'Config File')
         open_button.Bind(wx.EVT_BUTTON, self.OpenConfig)
+        reload_button = wx.Button(self, wx.ID_ANY, 'Reload Config File')
+        reload_button.Bind(wx.EVT_BUTTON, self.ReloadConfig)
         save_button = wx.Button(self, wx.ID_ANY, 'OK')
         save_button.Bind(wx.EVT_BUTTON, self.SavePreferences)
         cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
@@ -459,6 +476,7 @@ class PreferencesDialog(wx.Dialog):
         preferences_sizer.AddGrowableCol(1)
         radio_sizer_screens = wx.BoxSizer(wx.HORIZONTAL)
         radio_sizer_commands = wx.BoxSizer(wx.HORIZONTAL)
+        radio_sizer_responsive = wx.BoxSizer(wx.HORIZONTAL)
 
         radio_sizer_screens.Add(self.screens_hidden)
         radio_sizer_screens.AddSpacer(5)
@@ -466,6 +484,9 @@ class PreferencesDialog(wx.Dialog):
         radio_sizer_commands.Add(self.commands_off)
         radio_sizer_commands.AddSpacer(5)
         radio_sizer_commands.Add(self.commands_on)
+        radio_sizer_responsive.Add(self.responsive_off)
+        radio_sizer_responsive.AddSpacer(5)
+        radio_sizer_responsive.Add(self.responsive_on)
 
         # Layout Preferences.
         preferences_sizer.Add(screens_label, 0,
@@ -476,6 +497,10 @@ class PreferencesDialog(wx.Dialog):
                               wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         preferences_sizer.Add(radio_sizer_commands, 0, wx.EXPAND)
 
+        preferences_sizer.Add(responsive_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        preferences_sizer.Add(radio_sizer_responsive, 0, wx.EXPAND)
+
         preferences_sizer.Add(name_label, 0,
                               wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         preferences_sizer.Add(self.name_value, 0, wx.EXPAND)
@@ -483,8 +508,11 @@ class PreferencesDialog(wx.Dialog):
         # Layout.
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        config_button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         main_sizer.Add(preferences_sizer, 0, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(open_button, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
+        config_button_sizer.Add(open_button, 0, wx.ALL, 5)
+        config_button_sizer.Add(reload_button, 0, wx.ALL, 5)
+        main_sizer.Add(config_button_sizer, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
         button_sizer.Add(save_button, 0, wx.ALL, 5)
         button_sizer.Add(cancel_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
@@ -502,6 +530,7 @@ class PreferencesDialog(wx.Dialog):
         """
         screens = self.config['SCREENS']
         commands = self.config['RUN_CMD']
+        responsive = self.config['RESPONSIVE']
         name = self.config['NAME']
         LOGGER.debug('config: {0!s}'.format(self.config))
         # Screens.
@@ -518,6 +547,13 @@ class PreferencesDialog(wx.Dialog):
         else:
             self.commands_on.SetValue(0)
             self.commands_off.SetValue(1)
+        # Responsive
+        if int(responsive) == diwavars.PGM_GROUP:
+            self.responsive_on.SetValue(1)
+            self.responsive_off.SetValue(0)
+        else:
+            self.responsive_on.SetValue(0)
+            self.responsive_off.SetValue(1)
         self.name_value.SetValue(name)
 
     #----------------------------------------------------------------------
@@ -532,6 +568,20 @@ class PreferencesDialog(wx.Dialog):
         if event:
             event.Skip()
         filesystem.open_file(diwavars.CONFIG_PATH)
+
+    #----------------------------------------------------------------------
+    def ReloadConfig(self, event):
+        """
+        Opens config file.
+
+        :param event: GUI event.
+        :type event: Event
+
+        """
+        diwavars.set_config(state.load_config())
+        self.parent.diwa_state.worker.parse_config(diwavars.CONFIG)
+        self.config = diwavars.CONFIG
+        self.LoadPreferences()
 
     #----------------------------------------------------------------------
     def OnCancel(self, event):
@@ -558,6 +608,15 @@ class PreferencesDialog(wx.Dialog):
         controller.set_node_screens(int(self.config['SCREENS']))
         self.config['RUN_CMD'] = 1 if self.commands_on.GetValue() else 0
         diwavars.set_run_cmd(self.commands_on.GetValue())
+        if self.responsive_on.GetValue():
+            self.config['RESPONSIVE'] = diwavars.PGM_GROUP
+            diwavars.update_responsive(diwavars.PGM_GROUP)
+            self.parent.diwa_state.set_responsive()
+        else:
+            self.config['RESPONSIVE'] = 0
+            diwavars.update_responsive(0)
+            self.parent.diwa_state.stop_responsive()
+        self.parent.diwa_state.worker.check_responsive()
         self.config['NAME'] = self.name_value.GetValue()
         controller.set_node_name(self.config['NAME'])
         self.config.write()
