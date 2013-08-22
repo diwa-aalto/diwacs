@@ -463,7 +463,6 @@ class PreferencesDialog(wx.Dialog):
         self.commands_on.SetToolTip(wx.ToolTip(txt_commands_on))
         self.responsive_off.SetToolTip(wx.ToolTip(txt_responsive_off))
         self.responsive_on.SetToolTip(wx.ToolTip(txt_responsive_on))
-        self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
 
         # Other controls.
         open_button = wx.Button(self, wx.ID_ANY, 'Config File')
@@ -475,9 +474,10 @@ class PreferencesDialog(wx.Dialog):
         cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         self.pgm_group_dropdown = wx.ComboBox(self, wx.ID_ANY, choices=[str(x)
-                                              for x in range(0, 10)],
+                                              for x in range(1, 10)],
                                          style=wx.CB_DROPDOWN | wx.CB_READONLY
                                          | wx.CB_SORT)
+        self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
         # Preferences sizers.
         preferences_sizer = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)
         preferences_sizer.AddGrowableCol(1)
