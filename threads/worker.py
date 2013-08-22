@@ -301,7 +301,7 @@ class WORKER_THREAD(DIWA_THREAD):
         elif value.find(','):
             value = value.split(',')
         else:
-            value = eval(value)
+            value = literal_eval(value)
         if (len(value) < 2) or (not value[0]) or (not value[1]):
             return
         value[0] = 'VK_' + value[0]
@@ -368,6 +368,7 @@ class WORKER_THREAD(DIWA_THREAD):
 
     @staticmethod
     def __on_status_box(value):
+        """ Short stub setter. """
         _logger().debug('Status box: {0}'.format(literal_eval(value)))
         diwavars.update_status_box(literal_eval(value))
 

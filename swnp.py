@@ -40,6 +40,7 @@ SENT = []
 RECV = []
 LOGGER = None
 
+
 def __init_logger():
     """
     Used to initialize the logger, when running from diwacs.py
@@ -118,12 +119,15 @@ class Node(object):
         self.timestamp = datetime.now()
 
     def get_age(self):
-        """ Return the elapsed time since last refresh. """
+        """
+        Return the elapsed time since last refresh.
+
+        """
         return (datetime.now() - self.timestamp)
 
     def __str__(self):
-        return "%s: %s with %s screens data %s" % (self.id, self.name,
-                                                   self.screens, self._data)
+        return ('{0.id}: {0.name} with {0.screens} screens data {0._data}'.\
+                format(self))
 
     def __repr__(self):
         return self.__str__()
