@@ -35,7 +35,8 @@ import wx
 # Own imports.
 import controller
 from dialogs import (CloseError, PreferencesDialog, ProjectSelectDialog,
-                     ErrorDialog, show_modal_and_destroy, ChooseDiwaProfileDialog)
+                     ErrorDialog, show_modal_and_destroy,
+                     ChooseDiwaProfileDialog)
 from graphicaldesign import (BlackOverlay, MySplashScreen, SysTray, NodeScreen,
                              GUItemplate, EventListTemplate)
 import state
@@ -319,9 +320,9 @@ class GraphicalUserInterface(GUItemplate):
             name = 'DEFAULT_NAME'
             if 'NAME' in diwavars.CONFIG:
                 name = diwavars.CONFIG['NAME']
-            status_box = False #TODO: Move update.
             if 'STATUS_BOX' in diwavars.CONFIG:
                 status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
+                diwavars.update_status_box(status_box)
             if node_manager.node.screens != screens:
                 node_manager.set_screens(screens)
                 should_update = True
