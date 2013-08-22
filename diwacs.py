@@ -35,7 +35,7 @@ import wx
 # Own imports.
 import controller
 from dialogs import (CloseError, PreferencesDialog, ProjectSelectDialog,
-                     ErrorDialog, show_modal_and_destroy)
+                     ErrorDialog, show_modal_and_destroy, ChooseDiwaProfileDialog)
 from graphicaldesign import (BlackOverlay, MySplashScreen, SysTray, NodeScreen,
                              GUItemplate, EventListTemplate)
 import state
@@ -202,7 +202,14 @@ class GraphicalUserInterface(GUItemplate):
         self.Hide()
         self.Freeze()
         NodeScreen.update_bitmaps()
-
+        profiles = ChooseDiwaProfileDialog.ListDatabaseProfiles()
+        if len(profiles):
+            diag = ChooseDiwaProfileDialog(None, profiles)
+            if diag.ShowModal(): # If non-zero return value, we should exit
+                LOGGER.info('Application closed!')
+                self.Destroy()
+                wx.GetApp().ExitMainLoop()
+                return
         # List for choices
         LOGGER.debug('WxPython version {0!s}'.format(wx.version()))
         self.list = EventList(self)

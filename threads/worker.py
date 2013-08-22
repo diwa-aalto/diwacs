@@ -235,38 +235,44 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_storage(value):
         """ Short stub setter. """
-        diwavars.update_storage(value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_storage(value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_address(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(address=value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(address=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_name(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(name=value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(name=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_type(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(type_=value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(type_=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_user(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(user=value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(user=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_pass(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(password=value)
-        modelsbase.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(password=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_name(value):
@@ -330,17 +336,20 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_camera_url(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(str(value), None, None)
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(str(value), None, None)
 
     @staticmethod
     def __on_camera_user(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(None, str(value), None)
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(None, str(value), None)
 
     @staticmethod
     def __on_camera_pass(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(None, None, str(value))
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(None, None, str(value))
 
     @staticmethod
     def __on_pad_url(value):

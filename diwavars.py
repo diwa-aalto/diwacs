@@ -369,6 +369,13 @@ def print_to_status_box(line):
     if STATUS_BOX_PRINT_CALLBACK is not None:
         STATUS_BOX_PRINT_CALLBACK(line)
 
+USING_DIWA_PROFILE = False
+
+
+def set_using_diwa_profile(value):
+    global USING_DIWA_PROFILE
+    USING_DIWA_PROFILE = value
+
 
 def update_variable(name, value):
     if name in globals():
