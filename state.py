@@ -561,17 +561,6 @@ class State(object):
                                                   self.current_project_id)
                 filesystem.open_file(filename)
 
-    def _on_wx_image(self, parameters):
-        image_data = b64decode(parameters)
-        image_buffer = cStringIO.StringIO(image_data)
-        wx_image = wx.EmptyImage()
-        wx_image.LoadStream(image_buffer)
-        if wx_image.Ok():
-            graphicaldesign.ImageViewer(self.parent, wx_image)
-        else:
-            LOGGER.exception('Received invalid wx_image.')
-        wx_image = None
-
     def _on_new_responsive(self, parameters):
         if self.is_responsive:
             self.stop_responsive()
@@ -756,7 +745,6 @@ class State(object):
             'key': State._on_key,
             'url': State._on_url,
             'open': self._on_open,
-            'wx_image': self._on_wx_image,
             'new_responsive': self._on_new_responsive,
             'event': self._on_event,
             'remote_start': self._on_remote_start,

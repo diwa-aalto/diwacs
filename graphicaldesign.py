@@ -63,30 +63,6 @@ diwavars.add_logger_initializer(__init_logger)
 diwavars.add_logger_level_setter(__set_logger_level)
 
 
-class ImageViewer(wx.Frame):
-    """
-    Used to show an image.
-
-    """
-    def __init__(self, parent, image, *args, **kwargs):
-        wx.Frame.__init__(self, parent, wx.ID_ANY, 'wx_image viewer',
-                          style=0, *args, **kwargs)
-        menu = wx.MenuBar()
-        file_menu = wx.Menu()
-        self.save_button = file_menu.Append(wx.ID_SAVEAS, '&Save',
-                                            'Save the image.')
-        self.exit_button = file_menu.Append(wx.ID_EXIT, 'E&xit',
-                                            'Close the image viewer.')
-        menu.Append(file_menu)
-        self.SetMenuBar(menu)
-        bitmap = wx.BitmapFromImage(image)
-        self.static_bitmap = wx.StaticBitmap(parent=self, id=wx.ID_ANY,
-                                             bitmap=bitmap)
-        self.Fit()
-        self.Show()
-        self.Raise()
-
-
 class BlackOverlay(wx.Frame):
     """
     Represents all black frame without a mouse.
@@ -246,17 +222,6 @@ class DropTarget(wx.PyDropTarget):
             data_type = self.dataobject.GetReceivedFormat().GetType()
             difference = self.id_iterator + self.parent.iterator
             node_id = self.parent.nodes[difference].id
-            if data_type == wx.DF_BITMAP:
-                bitmap = self.bmpdo.GetBitmap()
-                image = bitmap.ConvertToImage()
-                image_buffer = cStringIO.StringIO()
-                image.SaveStream(image_buffer, wx.BITMAP_TYPE_PNG)
-                image_data = image_buffer.getvalue()
-                msg = 'wx_image;{0}'.format(b64encode(image_data))
-                self.parent.diwa_state.swnp_send(str(node_id), msg)
-                LOGGER.debug('Sent wx_image to {0} with length {1}'.\
-                             format(node_id, len(msg) - len('wx_image;')))
-                image_buffer.close()
             if data_type in [wx.DF_UNICODETEXT, wx.DF_TEXT]:
                 text = self.textdo.GetText()
                 parsed = urlparse(text)

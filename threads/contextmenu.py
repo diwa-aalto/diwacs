@@ -227,8 +227,6 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
                 _logger().debug('CMFH got message: {0!s}'.format(message))
                 cmd, id_, path = message.split(';')
                 if cmd in handlers:
-                    if cmd == 'open':
-                        _logger().debug('OPEEEEEEEEEEEN:')
                     self.socket.send(handlers[cmd](id_, path))
                 else:
                     self.socket.send('ERROR')

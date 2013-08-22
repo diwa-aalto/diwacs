@@ -47,7 +47,7 @@ def __set_logger_level(level):
     """
     LOGGER.setLevel(level)
 
-
+# TODO: Map when copy_file_to_project and copy_to_temporary_directory are called.
 diwavars.add_logger_initializer(__init_logger)
 diwavars.add_logger_level_setter(__set_logger_level)
 
@@ -234,14 +234,6 @@ def get_node_image(node):
     except (ValueError, IOError, OSError):
         pass
     return result
-
-
-#=========================================================================
-#    List operations: difference and intersection.
-#
-#=========================================================================
-DIFFERENCE = lambda l1, l2: [x for x in l1 if x not in l2]
-INTERSECTION = lambda l1, l2: [x for x in l1 if x in l2]
 
 
 def open_file(filepath):
