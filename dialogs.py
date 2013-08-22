@@ -205,6 +205,8 @@ class AddProjectDialog(wx.Dialog):
                 'project': project_data,
                 'company': company_data
             }
+            if not self.dir.GetValue():
+                project_data.pop('dir')
             project = controller.add_project(data)
             LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
             result = project.id
@@ -721,7 +723,7 @@ class ProjectSelectDialog(wx.Dialog):
             project_id = show_modal_and_destroy(AddProjectDialog, self.parent,
                                                 params)
             if not project_id or project_id < 1:
-                return
+                self.EndModal(0)
             self.UpdateProjects()
             LOGGER.debug('Added project: {0}'.format(project_id))
             if project_id not in self.project_index:
@@ -730,7 +732,7 @@ class ProjectSelectDialog(wx.Dialog):
                 LOGGER.exception(msg)
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})
                 event.Skip()
-                return
+                self.EndModal(0)
             index = self.project_index.index(project_id)
             if index >= 0:
                 self.project_list.SetSelection(index)

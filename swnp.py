@@ -93,11 +93,19 @@ class Node(object):
 
     @property
     def data(self):
+        """
+        Returns data.
+
+        """
         # LOGGER.debug('NODE<id={0}> DATA: {1}'.format(self.id, self._data))
         return self._data
 
     @data.setter
     def data(self, value):
+        """
+        Sets data.
+
+        """
         # msg = 'NODE<id={0}> OLD_DATA: {1!s}; NEW_DATA: {2!s}'
         # LOGGER.debug(msg.format(self.id, self._data, value))
         self._data = value
@@ -215,13 +223,12 @@ class SWNP(object):
 
     """
     NODE_LIST = set()
-    MSG_BUFFER = []
     SYS_BUFFER = []
 
     def __init__(self, pgm_group, screens=0, name=None, context=None,
                  error_handler=None):
-        LOGGER.debug("ZMQ version: {0} PYZMQ version: {1}".format(
-                                    zmq.zmq_version(), zmq.pyzmq_version()))
+        LOGGER.debug("ZMQ version: {0} PYZMQ version: {1}".\
+                     format(zmq.zmq_version(), zmq.pyzmq_version()))
         # Check pgm_group
         if not pgm_group:
             pgm_group = 1
@@ -308,7 +315,7 @@ class SWNP(object):
 
         """
         target_is_thread = isinstance(target, threading.Thread)
-        if (target_is_thread and target and target.isAlive()):
+        if (target_is_thread and target.isAlive()):
             return
         target = threading.Thread(target=routine, name=name, args=args)
         target.daemon = True
@@ -378,7 +385,7 @@ class SWNP(object):
                         comp.screens = self.node.screens
                         success = controller.refresh_computer(comp)
                         if not success and previous_success:
-                            error_handler.queue.append(CloseError)
+                            error_handler.queue.append(CloseError())
                         previous_success = success
                 except Exception as excp:
                     log_msg = 'Ping_routine exception: {0!s}'
@@ -624,22 +631,6 @@ class SWNP(object):
                 self.publisher.send_multipart(my_message)
             except (ZMQError, ValueError) as excp:
                 LOGGER.exception('SENT EXCEPTION: %s', str(excp))
-
-    def get_buffer(self):
-        """
-        Gets the buffered messages and returns them
-
-        :returns: JSON formated string.
-        :rtype: String
-
-        """
-        buffer_json = None
-        try:
-            buffer_json = dumps(self.MSG_BUFFER, default=Message.to_dict)
-        except ValueError:
-            pass
-        self.MSG_BUFFER[:] = []
-        return buffer_json
 
     def get_list(self):
         """

@@ -136,22 +136,6 @@ def delete_directory(path):
     return result
 
 
-def file_to_base64(filepath):
-    """
-    Transform a file to a binary object.
-
-    :param filepath: The file path.
-    :type filepath: String
-
-    """
-    result = None
-    try:
-        result = xmlrpclib.Binary(open(filepath, "rb").read())
-    except (ValueError, IOError, OSError):
-        pass
-    return result
-
-
 # Module global constants.
 __WIN_XP_REG = r'Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme'
 __WIN_VISTA7_REG = r'Control Panel\Desktop'
@@ -250,33 +234,6 @@ def get_node_image(node):
     except (ValueError, IOError, OSError):
         pass
     return result
-
-
-def is_subtree(filename, parent, case_sensitive=True):
-    """
-    Determines, if filename is inside the parent folder.
-
-    :param filename: The file path.
-    :type filename: String
-
-    :param parent: The parent file path.
-    :type parent: String
-
-    """
-    if not filename:
-        return False
-    if not case_sensitive:
-        filename = filename.lower()
-    try:
-        for (root, directories, names) in os.walk(parent):
-            name_list = names
-            if not case_sensitive:
-                name_list = [name.lower() for name in names]
-            if filename in name_list:
-                return True
-    except (IOError, OSError):
-        pass
-    return False
 
 
 #=========================================================================
@@ -418,6 +375,6 @@ def test_storage_connection():
 
     """
     try:
-        return os.path.exists(r'\\' + diwavars.STORAGE + '\\Projects')
+        return os.path.exists(r'\\{0}\Projects'.format(diwavars.STORAGE))
     except (IOError, OSError):
         return False

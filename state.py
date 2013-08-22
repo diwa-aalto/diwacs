@@ -80,7 +80,7 @@ def initialization_test():
     At this time only includes test_connection() from controller, but
     more tests could be added here.
 
-    """
+    """#TODO: filesystem.test_storage_connection()
     error = ''
     if not error and not controller.test_connection():
         error += 'Database connection failed.\n'
@@ -889,7 +889,8 @@ class State(object):
 
         """
         session_id = int(session_id)
-        if session_id > 0 and session_id != self.current_session_id:
+        if session_id > 0 and self.current_session_id != session_id:
+            # Change session.
             if self.current_session_id:
                 controller.end_session(self.current_session_id)
                 self.end_current_session()
@@ -899,7 +900,8 @@ class State(object):
                 self.start_current_session_thread()
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
-        elif session_id == 0 and session_id != self.current_session_id:
+        elif session_id == 0 and self.current_session_id > 0:
+            # End session.
             self.current_session = None
             self.current_session_id = 0
             self.end_current_session()

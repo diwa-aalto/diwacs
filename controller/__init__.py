@@ -29,12 +29,11 @@ from controller.handlers import PROJECT_EVENT_HANDLER
 from controller.project import (
     add_file_to_project, add_project, check_password, create_file_action,
     get_active_project, get_project_id_by_activity, get_projects_by_company,
-    get_recent_files, edit_project, init_sync_project_directory,
-    is_project_file
+    edit_project, init_sync_project_directory, is_project_file
 )
 
 # Import session
 from controller.session import (
-    get_active_session, get_session_id_by_activity, get_sessions_by_project,
-    end_session, start_new_session, add_event, get_latest_event_id
+    get_active_session, get_session_id_by_activity, end_session,
+    start_new_session, add_event, get_latest_event_id
 )

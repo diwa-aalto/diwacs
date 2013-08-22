@@ -135,7 +135,7 @@ class BlackOverlay(wx.Frame):
         button = button.upper()
         hotkey_table = [button_modifier, button]
         for index, hotkey in enumerate(hotkey_table):
-            if hotkey in replaces:
+            if hotkey in replaces: # Otherway kind of.
                 hotkey_table[index] = replaces[hotkey]
         label_format = 'Press {0} + {1} to end remote control'
         label_text = label_format.format(hotkey_table[0], hotkey_table[1])
@@ -470,7 +470,10 @@ class NodeScreen(wx.StaticBitmap):
         self.EmptyScreen()
 
     def EmptyScreen(self):
-        """ Make this screen EmptyScreen. """
+        """
+        Make this screen EmptyScreen.
+
+        """
         for dot in [self.rdot, self.ydot, self.gdot]:
             dot.Hide()
         self.node = None
@@ -478,7 +481,10 @@ class NodeScreen(wx.StaticBitmap):
         self.SetToolTip(None)
 
     def ReloadAs(self, node):
-        """ Reload the content of this bitmap. """
+        """
+        Reload the content of this bitmap.
+
+        """
         if not node:
             self.EmptyScreen()
             return
@@ -587,13 +593,6 @@ class GUItemplate(wx.Frame):
         width = self.GetSize()[0]
         pos_x = (display_width - width) / 2
         self.SetPosition((pos_x, 0))
-
-    def ClearStatusText(self):
-        """
-        Sets the status text to EmptyScreen string.
-
-        """
-        self.status_text.SetLabel('')
 
     def ConnectionErrorHandler(self, error):
         """

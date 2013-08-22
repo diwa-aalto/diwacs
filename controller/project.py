@@ -226,43 +226,6 @@ def get_projects_by_company(company_id):
     return projects
 
 
-def get_recent_files(project_id, max_files_count=None):
-    """
-    Fetches files accessed recently in the project sessions from the database.
-
-    .. versionadded:: 0.9.3.0
-        Added a limit parameter, limits the number of returned results.
-
-    .. note::
-        Duplicate check has been added at some point in time.
-
-    :param project_id: The project id
-    :type project_id: Integer
-
-    :returns:
-        The list of filepaths that have recently been used in this project.
-    :rtype: List of String
-
-    """
-    database = None
-    result = []
-    try:
-        database = connect_to_database()
-        my_query = database.query(File.path, FileAction.action_time)
-        files = my_query.filter(File.project_id == project_id,
-                                File.id == FileAction.file_id)
-        files = files.order_by(sqlalchemy.desc(FileAction.action_time))
-        files = files.group_by(File.path)
-        if max_files_count is not None:
-            files = files.limit(max_files_count)
-        result = files.all()
-    except SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
-
-
 def edit_project(project_id, row):
     """
     Update the project info.

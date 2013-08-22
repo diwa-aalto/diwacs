@@ -113,39 +113,8 @@ def DottedIPToInt(dotted_ip):
     :rtype: Integer
 
     """
-    st = dotted_ip.split('.')
-    return int("%02x%02x%02x%02x" % (int(st[0]), int(st[1]),
-                                     int(st[2]), int(st[3])), 16)
-
-
-def GetLANMachines(lan_ip):
-    """
-
-    :param lan_ip: Local Area Network IP.
-    :type lan_ip: string
-    :returns: lan machines
-    :rtype: string[]
-
-    """
-    resultlist = []
-    index = lan_ip.rfind('.')
-    if index > -1:
-        lan_space = lan_ip[0:index]
-    else:
-        #print "given ip is not valid"
-        return resultlist
-    arp_table = subprocess.Popen('arp -a', shell=True, stdout=subprocess.PIPE)
-    for line in arp_table.stdout:
-        if line.find(lan_ip) > -1:
-            primary = True
-            continue
-        if not line.strip():
-            primary = False
-        item = line.split.split()[0]
-        if (primary and line.count('.') == 3 and
-                item.find(lan_space) > -1):
-            resultlist.append(item)
-    return resultlist
+    st = [int(value) for value in dotted_ip.split('.')]
+    return int('{0:02x}{1:02x}{2:02x}{3:02x}'.format(*st), 16)
 
 
 def GetLocalIPAddress(target):
@@ -183,22 +152,6 @@ def GetMacForIp(ip):
     except Exception as excp:
         LOGGER.exception("Exception in GetMacForIp: %s", str(excp))
     return ''
-
-
-def IntToDottedIP(intip):
-    """Transforms an Integer IP address to dotted representation.
-
-    :param intip: The IP
-    :type intip: Integer
-    :returns: The IP
-    :rtype: string
-
-    """
-    octet = ''
-    for exp in [3, 2, 1, 0]:
-        octet = octet + str(intip / (256 ** exp)) + "."
-        intip = intip % (256 ** exp)
-    return octet.rstrip('.')
 
 
 def MapNetworkShare(letter, share=None):

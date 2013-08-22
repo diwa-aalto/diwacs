@@ -91,17 +91,6 @@ def get_session_id_by_activity(activity_id):
     return activity.session_id if activity else 0
 
 
-def get_sessions_by_project(project_id):
-    """
-    Fetches sessions for a project.
-
-    :param project_id: Project id from database.
-    :type project_id: Integer
-
-    """
-    return Session.get('all', Session.project_id == project_id)
-
-
 def end_session(session_id):
     """
     Ends a session, sets its endtime to database.

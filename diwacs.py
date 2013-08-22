@@ -312,7 +312,7 @@ class GraphicalUserInterface(GUItemplate):
             name = 'DEFAULT_NAME'
             if 'NAME' in diwavars.CONFIG:
                 name = diwavars.CONFIG['NAME']
-            status_box = False
+            status_box = False #TODO: Move update.
             if 'STATUS_BOX' in diwavars.CONFIG:
                 status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
             if node_manager.node.screens != screens:
@@ -321,11 +321,9 @@ class GraphicalUserInterface(GUItemplate):
             if node_manager.node.name != name:
                 node_manager.set_name(name)
                 should_update = True
-            if status_box != diwavars.STATUS_BOX_VALUE:
-                diwavars.update_status_box(status_box)
             if should_update:
                 pub.sendMessage('update_screens', update=True)
-        except (ValueError, IOError, OSError):
+        except (ValueError, IOError, OSError): #TODO: More?
             LOGGER.exception('Show prefs exception.')
         if event:
             event.Skip()
@@ -344,13 +342,15 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project_id = self.diwa_state.current_project_id
+        if project_id < 1:
+            return
         file_path = Project.get_by_id(project_id).dir
         if file_path:
             Popen('explorer ' + file_path)
         else:
             log_msg = 'Failed explorer: {file_path}'
             log_msg = log_msg.format(file_path=file_path)
-            LOGGER.exception(log_msg)
+            LOGGER.exception(log_msg) #FIXME
             params = {'message': 'Could not open directory.'}
             show_modal_and_destroy(ErrorDialog, self, params)
         if event:
