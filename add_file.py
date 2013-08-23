@@ -40,7 +40,7 @@ def main():
         #: Uses interprocess ZeroMQ socket to inform diwacs of the operation.
         socket.connect('tcp://127.0.0.1:5555')
         command = u'add_to_project;0;' + unicode(filepath)
-        socket.send(command)
+        socket.send(command.encode('utf-8'))
         socket.close()
         return 0
     except (ValueError, IOError, IndexError):
