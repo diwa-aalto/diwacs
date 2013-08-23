@@ -205,8 +205,9 @@ class GraphicalUserInterface(GUItemplate):
         NodeScreen.update_bitmaps()
         profiles = ChooseDiwaProfileDialog.ListDatabaseProfiles()
         if len(profiles):
-            diag = ChooseDiwaProfileDialog(None, profiles)
-            if diag.ShowModal():  # If non-zero return value, we should exit
+            params = {'profiles': profiles}
+            ret = show_modal_and_destroy(ChooseDiwaProfileDialog, None, params)
+            if ret:  # If non-zero return value, we should exit
                 LOGGER.info('Application closed!')
                 self.Destroy()
                 wx.GetApp().ExitMainLoop()

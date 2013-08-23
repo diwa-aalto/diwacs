@@ -1076,13 +1076,16 @@ class SendProgressBar(wx.ProgressDialog):
 
 
 class ChooseDiwaProfileDialog(wx.Dialog):
-    """ Allows user to select a DiWa profile from a list of profiles. Profiles
-        are loaded from the filesystem.
+    """
+    Allows user to select a DiWa profile from a list of profiles. Profiles
+    are loaded from the filesystem.
 
-        :param parent: The parent object.
-        :type parent: Object
-        :param profiles: List of profiles
-        :type profiles: List
+    :param parent: The parent object.
+    :type parent: Object
+
+    :param profiles: List of profiles
+    :type profiles: List
+
     """
 
     PROFILES_PATH = os.path.join(os.path.dirname(diwavars.CONFIG_PATH),
@@ -1098,14 +1101,14 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         self.parent = parent
 
         # Labels.
-        dropdown_label = wx.StaticText(self, wx.ID_ANY,
-                                       'Select a profile:')
+        dropdown_label = wx.StaticText(self, wx.ID_ANY, 'Select a profile:')
 
         # Configuration controls.
+        style = wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT
         self.dropdown = wx.ComboBox(self, wx.ID_ANY, choices=profiles,
-                                    style=wx.CB_DROPDOWN | wx.CB_READONLY
-                                    | wx.CB_SORT)
+                                    style=style)
         self.dropdown.Bind(wx.EVT_COMBOBOX, self.OnComboBox)
+
         # Other controls.
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
         self.ok_button.Bind(wx.EVT_BUTTON, self.SelectDiwaProfile)
@@ -1125,7 +1128,7 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         button_sizer.Add(self.ok_button, 0, wx.ALL, 5)
         button_sizer.Add(exit_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 10)
-        self.SetSizer(main_sizer)
+        self.SetSizerAndFit(main_sizer)
         self.Center()
         self.SetFocus()
 
@@ -1138,24 +1141,24 @@ class ChooseDiwaProfileDialog(wx.Dialog):
     @staticmethod
     def ListDatabaseProfiles():
         profiles = []
-        for root, dirs, files in os.walk(os.path.join(os.path.dirname(
-                                                      diwavars.CONFIG_PATH),
-                                                      'profiles')):
-            for file in files:
-                profiles.append(os.path.splitext(file)[0])
+
+        for rdf in os.walk(ChooseDiwaProfileDialog.PROFILES_PATH):
+            files = rdf[2]
+            for file_ in files:
+                profiles.append(os.path.splitext(file_)[0])
         return profiles
 
     def SelectDiwaProfile(self, event):
         selected = self.dropdown.GetValue()
-        LOGGER.info('Selected database profile:{0}'.format(selected))
+        LOGGER.info('Selected database profile: {0}'.format(selected))
         valid_profile = 0
-        config = ConfigObj(os.path.join(self.PROFILES_PATH,
-                                        selected + '.ini'))
-        if all(k in config for k in ('DB_ADDRESS', 'DB_NAME', 'DB_TYPE',
-                                                        'DB_USER', 'DB_PASS')):
-            diwavars.update_database_vars(config['DB_ADDRESS'],
-                                          config['DB_NAME'], config['DB_TYPE'],
-                                          config['DB_USER'], config['DB_PASS'])
+        path = '{0}.ini'.format(selected)
+        path = os.path.join(ChooseDiwaProfileDialog.PROFILES_PATH, path)
+        config = ConfigObj(path)
+        wanted = ('DB_ADDRESS', 'DB_NAME', 'DB_TYPE', 'DB_USER', 'DB_PASS')
+        if all((k in config) for k in wanted):
+            values = [config[k] for k in wanted]
+            diwavars.update_database_vars(*values)
             modelsbase.update_database()
             valid_profile += 1
         if 'PGM_GROUP' in config:
@@ -1164,20 +1167,19 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         if 'STORAGE' in config:
             diwavars.update_storage(config['STORAGE'])
             valid_profile += 1
-        if all(k in config for k in ('CAMERA_URL', 'CAMERA_USER',
-                                                            'CAMERA_PASS')):
-            diwavars.update_camera_vars(config['CAMERA_URL'],
-                                config['CAMERA_USER'], config['CAMERA_PASS'])
+        wanted = ('CAMERA_URL', 'CAMERA_USER', 'CAMERA_PASS')
+        if all((k in config) for k in wanted):
+            values = [config[k] for k in wanted]
+            diwavars.update_camera_vars(*values)
         if valid_profile != 3:
-            diag = wx.MessageDialog(self, 'The profile you selected is invalid'
-                                    '. Please select another profile.',
-                                    'Invalid Profile', wx.OK | wx.ICON_ERROR)
-            diag.ShowModal()
-            diag.Destroy()
+            msg = ('The profile you selected is invalid . Please select '
+                   'another profile.')
+            params = {'message': msg, 'caption': 'Invalid profile',
+                      'style': wx.OK | wx.ICON_ERROR}
+            show_modal_and_destroy(wx.MessageDialog, self, params)
             return
         diwavars.set_using_diwa_profile(True)
         self.EndModal(0)
 
     def Exit(self, event):
-        self.Destroy()
         self.EndModal(1)
