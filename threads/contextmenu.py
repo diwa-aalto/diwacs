@@ -6,6 +6,7 @@ Created on 27.6.2013
 """
 # Standard imports.
 import webbrowser
+from ast import literal_eval
 
 # Third party imports.
 from wx import CallAfter, CloseEvent
@@ -98,15 +99,16 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Send to handler. """
         try:
             param = param.decode('utf-8')
-            fpath = unicode([self.handle_file(param)])
-            self.send_file(unicode(id_, 'open;' + fpath.encode('utf-8')))
+            fpath = unicode(self.handle_file([param]))
+            self.send_file(id_, 'open;' + fpath.encode('utf-8'))
         except Exception as excp:
             _logger().exception('File send exception: {0!s}'.format(excp))
         return 'OK'
 
     def __on_add_to_project(self, id_, param):
         """ Add to Project handler. """
-        id_ = id_
+        id_ = id
+        param = param.decode('utf-8')
         project_id = self.parent.diwa_state.current_project_id
         if project_id:
             controller.add_file_to_project(param, project_id)

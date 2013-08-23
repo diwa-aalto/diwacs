@@ -541,7 +541,9 @@ class PreferencesDialog(wx.Dialog):
         """
         screens = self.config['SCREENS']
         commands = self.config['RUN_CMD']
-        responsive = self.config['RESPONSIVE']
+        responsive = None
+        if 'RESPONSIVE' in self.config:
+            responsive = self.config['RESPONSIVE']
         pgm_group = self.config['PGM_GROUP']
         name = self.config['NAME']
         LOGGER.debug('config: {0!s}'.format(self.config))
@@ -560,7 +562,7 @@ class PreferencesDialog(wx.Dialog):
             self.commands_on.SetValue(0)
             self.commands_off.SetValue(1)
         # Responsive
-        if int(responsive) == diwavars.PGM_GROUP:
+        if responsive and int(responsive) == diwavars.PGM_GROUP:
             self.responsive_on.SetValue(1)
             self.responsive_off.SetValue(0)
         else:
@@ -1002,7 +1004,7 @@ class ProjectSelectedDialog(wx.Dialog):
             self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
             self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.cancel_button, 0, wx.ALL, 5)
+            self.sizer.Add(self.no_session, 0, wx.ALL, 5)
             self.sizer.Add(self.ok_button, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
