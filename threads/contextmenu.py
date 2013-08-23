@@ -179,7 +179,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
         """ Screenshot handler. """
         id_ = id_
         param = param
-        if self.parent.swnp.node.screens > 0:
+        if self.parent.diwa_state.swnp.node.screens > 0:
             project = self.parent.diwa_state.current_project
             if project is None:
                 return 'OK'
