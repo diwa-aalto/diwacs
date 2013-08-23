@@ -3,8 +3,8 @@ DiWaCS
 
 DiWaCS is a project collaboration tool for Windows.
 
->"(c) 2012-2013 DiWa project by Strategic Usability Research Group STRATUS,
-Aalto University School of Science."
+> (c) 2012-2013 DiWa project by Strategic Usability Research Group STRATUS,
+> Aalto University School of Science.
 
 
 Basic description of the system

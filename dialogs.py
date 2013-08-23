@@ -215,12 +215,12 @@ class AddProjectDialog(wx.Dialog):
             result = project.id
         except Exception as excp:
             LOGGER.exception('Error in add project: {0!s}'.format(excp))
-            self.EndModal(0)
+            self.EndModal(-1)
             return
 
         if not result:
             LOGGER.exception('ERROR in add project!')
-            self.EndModal(0)
+            self.EndModal(-1)
             return
         try:
             if result != self.parent.diwa_state.current_project_id:
@@ -783,8 +783,10 @@ class ProjectSelectDialog(wx.Dialog):
             params = {'title': 'Create a Project'}
             project_id = show_modal_and_destroy(AddProjectDialog, self.parent,
                                                 params)
-            if not project_id or project_id < 1:
+            if project_id < 0:
                 self.EndModal(0)
+            if project_id == 0:
+                return
             self.UpdateProjects()
             LOGGER.debug('Added project: {0}'.format(project_id))
             if project_id not in self.project_index:
@@ -820,7 +822,7 @@ class ProjectSelectDialog(wx.Dialog):
             }
             show_modal_and_destroy(AddProjectDialog, self, params)
             self.UpdateProjects()
-            if project_id:
+            if project_id > 0:
                 if project_id in self.project_index:
                     select_index = self.project_index.index(project_id)
                 self.project_list.SetSelection(select_index)
