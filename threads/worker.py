@@ -316,7 +316,7 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_pgm_group(value):
         """ Short stub setter. """
-        diwavars.update_PGM_group(literal_eval(value))
+        diwavars.update_pgm_group(literal_eval(value))
 
     @staticmethod
     def __on_audio(parent, value):

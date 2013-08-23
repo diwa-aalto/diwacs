@@ -419,6 +419,8 @@ class PreferencesDialog(wx.Dialog):
         commands_label = wx.StaticText(self, wx.ID_ANY, 'Run commands:')
         responsive_label = wx.StaticText(self, wx.ID_ANY, 'Act as Responsive:')
         name_label = wx.StaticText(self, wx.ID_ANY, 'Name:')
+        pgm_group_dropdown_label = wx.StaticText(self, wx.ID_ANY,
+                                                 'Edit PGM_GROUP:')
 
         # Configuration controls.
         self.screens_hidden = wx.RadioButton(self, wx.ID_ANY,
@@ -454,6 +456,7 @@ class PreferencesDialog(wx.Dialog):
                              ' responsibilities such as monitoring file '
                              'system and recording audio. This should be only'
                              ' enabled for stationary nodes.')
+        txt_pgm_group = ('This allows you to set the PGM_GROUP.')
         self.screens_hidden.SetToolTip(wx.ToolTip(txt_screens_off))
         self.screens_show.SetToolTip(wx.ToolTip(txt_screens_on))
         self.commands_off.SetToolTip(wx.ToolTip(txt_commands_off))
@@ -470,7 +473,11 @@ class PreferencesDialog(wx.Dialog):
         save_button.Bind(wx.EVT_BUTTON, self.SavePreferences)
         cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-
+        self.pgm_group_dropdown = wx.ComboBox(self, wx.ID_ANY, choices=[str(x)
+                                              for x in range(1, 10)],
+                                         style=wx.CB_DROPDOWN | wx.CB_READONLY
+                                         | wx.CB_SORT)
+        self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
         # Preferences sizers.
         preferences_sizer = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)
         preferences_sizer.AddGrowableCol(1)
@@ -505,6 +512,10 @@ class PreferencesDialog(wx.Dialog):
                               wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         preferences_sizer.Add(self.name_value, 0, wx.EXPAND)
 
+        preferences_sizer.Add(pgm_group_dropdown_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        preferences_sizer.Add(self.pgm_group_dropdown, 1, wx.EXPAND)
+
         # Layout.
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -531,6 +542,7 @@ class PreferencesDialog(wx.Dialog):
         screens = self.config['SCREENS']
         commands = self.config['RUN_CMD']
         responsive = self.config['RESPONSIVE']
+        pgm_group = self.config['PGM_GROUP']
         name = self.config['NAME']
         LOGGER.debug('config: {0!s}'.format(self.config))
         # Screens.
@@ -554,6 +566,7 @@ class PreferencesDialog(wx.Dialog):
         else:
             self.responsive_on.SetValue(0)
             self.responsive_off.SetValue(1)
+        self.pgm_group_dropdown.SetStringSelection(pgm_group)
         self.name_value.SetValue(name)
 
     #----------------------------------------------------------------------
@@ -620,6 +633,11 @@ class PreferencesDialog(wx.Dialog):
         self.config['NAME'] = self.name_value.GetValue()
         controller.set_node_name(self.config['NAME'])
         self.config.write()
+        if self.config['PGM_GROUP'] != self.pgm_group_dropdown.GetValue():
+            new_pgm_group = self.pgm_group_dropdown.GetValue()
+            diwavars.update_pgm_group(new_pgm_group)
+            diwavars.CONFIG['PGM_GROUP'] = new_pgm_group
+            self.parent.diwa_state.swnp.update_pgm_group(new_pgm_group)
         params = {'message': 'Preferences Saved!',
                   'caption': 'Information',
                   'style': wx.OK | wx.ICON_INFORMATION}
@@ -1141,7 +1159,7 @@ class ChooseDiwaProfileDialog(wx.Dialog):
             modelsbase.update_database()
             valid_profile += 1
         if 'PGM_GROUP' in config:
-            diwavars.update_PGM_group(config['PGM_GROUP'])
+            diwavars.update_pgm_group(config['PGM_GROUP'])
             valid_profile += 1
         if 'STORAGE' in config:
             diwavars.update_storage(config['STORAGE'])

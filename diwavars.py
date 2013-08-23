@@ -249,7 +249,7 @@ update_windows_version()
 PGM_GROUP = 1
 
 
-def update_PGM_group(new_group):
+def update_pgm_group(new_group):
     """
     Update the PGM group for this node.
 

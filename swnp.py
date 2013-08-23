@@ -399,6 +399,17 @@ class SWNP(object):
         LOGGER.debug('Ping routine closed.')
         error_handler.stop()
 
+    def __create_subscribers(self, sub_urls, target):
+        subscribers = []
+        for i, sub_url in enumerate(sub_urls):
+            subscribers.append(self.context.socket(zmq.SUB))
+            if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
+                subscribers[i].setsockopt(zmq.RATE, 1000000)
+            subscribers[i].setsockopt(zmq.LINGER, 0)
+            subscribers[i].setsockopt(zmq.SUBSCRIBE, target)
+            subscribers[i].connect(sub_url)
+        return subscribers
+
     def sub_routine(self, sub_urls):
         """
         Subscriber routine for the node ID.
@@ -407,17 +418,10 @@ class SWNP(object):
         :type sub_urls: List of Strings
 
         """
-        subscribers = []
-        for i, sub_url in enumerate(sub_urls):
-            subscribers.append(self.context.socket(zmq.SUB))
-            if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
-                subscribers[i].setsockopt(zmq.RATE, 1000000)
-            subscribers[i].setsockopt(zmq.LINGER, 0)
-            subscribers[i].setsockopt(zmq.SUBSCRIBE, self.id)
-            subscribers[i].connect(sub_url)
+        self.subscribers = self.__create_subscribers(sub_urls, self.id)
         LOGGER.debug('Listener Active!')
         while self.online:
-            for s in subscribers:
+            for s in self.subscribers:
                 try:
                     (address, contents) = s.recv_multipart(zmq.NOBLOCK)
                     message = loads(contents, object_hook=Message.from_json)
@@ -446,8 +450,8 @@ class SWNP(object):
                 except Exception as excp:
                     LOGGER.exception('SWNP EXCEPTION: %s', str(excp))
         LOGGER.debug('Closing sub')
-        while len(subscribers):
-            sub = subscribers.pop()
+        while len(self.subscribers):
+            sub = self.subscribers.pop()
             sub.close()
             sub = None
         LOGGER.debug('Sub closed')
@@ -461,19 +465,11 @@ class SWNP(object):
 
         """
         # Socket to talk to dispatcher
-        subscribers = []
-        for sub_url in sub_urls:
-            sub = self.context.socket(zmq.SUB)
-            if (sub_url.startswith('pgm') or sub_url.startswith('epgm')):
-                sub.setsockopt(zmq.RATE, 1000000)
-            sub.setsockopt(zmq.LINGER, 0)
-            sub.setsockopt(zmq.SUBSCRIBE, 'SYS')
-            sub.connect(sub_url)
-            subscribers.append(sub)
+        self.sys_subscribers = self.__create_subscribers(sub_urls, 'SYS')
         LOGGER.debug('SYS-listener active')
         while self.online:
             # Read envelope with address.
-            for s in subscribers:
+            for s in self.sys_subscribers:
                 try:
                     pack = s.recv_multipart(zmq.NOBLOCK)
                     if len(pack) != 2:
@@ -513,8 +509,8 @@ class SWNP(object):
                     self.online = False
                     break
         LOGGER.debug('Closing sys sub')
-        while len(subscribers):
-            sub = subscribers.pop()
+        while len(self.sys_subscribers):
+            sub = self.sys_subscribers.pop()
             sub.close()
             sub = None
         LOGGER.debug('Sys sub closed')
@@ -778,3 +774,38 @@ class SWNP(object):
         for node in nodes_gen:
             result_node = node
         return result_node
+
+    def update_pgm_group(self, new_pgm_group):
+        pgm_ip = '239.128.128.{0}:5555'.format(new_pgm_group)
+        LOGGER.debug('PGM IP Changed to {0}'.format(pgm_ip))
+        tladdr = 'epgm://' + self.ip + ';' + pgm_ip
+        try:
+            self.publisher.unbind(self.tladdr)
+        except:
+            LOGGER.exception('unbinding exception')
+        try:
+            self.publisher.bind(tladdr)
+        except:
+            LOGGER.exception('binding exception')
+        for s in self.subscribers:
+            try:
+                s.disconnect(self.tladdr)
+                s.connect(tladdr)
+            except Exception:
+                LOGGER.exception('disconnecting exception')
+            try:
+                s.connect(tladdr)
+            except Exception:
+                LOGGER.exception('connecting exception')
+        for s in self.sys_subscribers:
+            try:
+                s.disconnect(self.tladdr)
+                s.connect(tladdr)
+            except:
+                LOGGER.exception('disconnecting exception')
+            try:
+                s.connect(tladdr)
+            except Exception:
+                LOGGER.exception('connecting exception')
+        self.tladdr = tladdr
+
