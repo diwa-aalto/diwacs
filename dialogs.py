@@ -21,9 +21,7 @@ import controller
 import diwavars
 from models import Company, Project
 import filesystem
-import utils
 import modelsbase
-import state
 
 LOGGER = None
 
@@ -410,10 +408,11 @@ class PreferencesDialog(wx.Dialog):
                            parent=parent,
                            id=wx.ID_ANY,
                            title='Preferences',
-                           size=(550, 300),
+                           size=(450, 260),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
         self.config = config_object
         self.parent = parent
+
         # Labels.
         screens_label = wx.StaticText(self, wx.ID_ANY, 'Screen visibility:')
         commands_label = wx.StaticText(self, wx.ID_ANY, 'Run commands:')
@@ -473,10 +472,10 @@ class PreferencesDialog(wx.Dialog):
         save_button.Bind(wx.EVT_BUTTON, self.SavePreferences)
         cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-        self.pgm_group_dropdown = wx.ComboBox(self, wx.ID_ANY, choices=[str(x)
-                                              for x in range(1, 10)],
-                                         style=wx.CB_DROPDOWN | wx.CB_READONLY
-                                         | wx.CB_SORT)
+        box = wx.ComboBox(self, wx.ID_ANY,
+                          choices=[str(x) for x in range(1, 10)],
+                          style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
+        self.pgm_group_dropdown = box
         self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
         # Preferences sizers.
         preferences_sizer = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)
@@ -527,13 +526,13 @@ class PreferencesDialog(wx.Dialog):
         button_sizer.Add(save_button, 0, wx.ALL, 5)
         button_sizer.Add(cancel_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
-        self.SetSizerAndFit(main_sizer)
+        self.SetSizer(main_sizer)
 
         # load preferences
         self.LoadPreferences()
         self.SetFocus()
 
-    #----------------------------------------------------------------------
+    #---------------------------------------------------------------------
     def LoadPreferences(self):
         """
         Load the current preferences and fills the text controls.
@@ -593,7 +592,13 @@ class PreferencesDialog(wx.Dialog):
         :type event: Event
 
         """
-        diwavars.set_config(state.load_config())
+        try:
+            config_loader = diwavars.CONFIG_LOADER
+        except NameError:
+            # Removed circular reference to state.load_config when
+            # running unit tests.
+            return
+        diwavars.set_config(config_loader())
         self.parent.diwa_state.worker.parse_config(diwavars.CONFIG)
         self.config = diwavars.CONFIG
         self.LoadPreferences()
@@ -1156,22 +1161,22 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         valid_profile = 0
         path = '{0}.ini'.format(selected)
         path = os.path.join(ChooseDiwaProfileDialog.PROFILES_PATH, path)
-        config = ConfigObj(path)
+        config_ = ConfigObj(path)
         wanted = ('DB_ADDRESS', 'DB_NAME', 'DB_TYPE', 'DB_USER', 'DB_PASS')
-        if all((k in config) for k in wanted):
-            values = [config[k] for k in wanted]
+        if all((k in config_) for k in wanted):
+            values = [config_[k] for k in wanted]
             diwavars.update_database_vars(*values)
             modelsbase.update_database()
             valid_profile += 1
-        if 'PGM_GROUP' in config:
-            diwavars.update_pgm_group(config['PGM_GROUP'])
+        if 'PGM_GROUP' in config_:
+            diwavars.update_pgm_group(config_['PGM_GROUP'])
             valid_profile += 1
-        if 'STORAGE' in config:
-            diwavars.update_storage(config['STORAGE'])
+        if 'STORAGE' in config_:
+            diwavars.update_storage(config_['STORAGE'])
             valid_profile += 1
         wanted = ('CAMERA_URL', 'CAMERA_USER', 'CAMERA_PASS')
-        if all((k in config) for k in wanted):
-            values = [config[k] for k in wanted]
+        if all((k in config_) for k in wanted):
+            values = [config_[k] for k in wanted]
             diwavars.update_camera_vars(*values)
         if valid_profile != 3:
             msg = ('The profile you selected is invalid . Please select '

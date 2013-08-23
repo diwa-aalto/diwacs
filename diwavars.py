@@ -82,12 +82,19 @@ CONFIG_PATH = os.path.expanduser(r'~\.diwacs\config.ini')
 
 # A placeholder for configobj
 CONFIG = None
+CONFIG_LOADER = None
 
 
 def set_config(config):
     """ Set the CONFIG global... """
     global CONFIG
     CONFIG = config
+
+
+def update_config_loader(config_loader):
+    """ Set the CONFIG loader function... """
+    global CONFIG_LOADER
+    CONFIG_LOADER = config_loader
 
 
 # Currently running (not a dry-import)

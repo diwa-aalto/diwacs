@@ -8,7 +8,6 @@ Created on 4.7.2013
 from ast import literal_eval
 from base64 import b64decode, b64encode
 from cPickle import dumps, loads
-import cStringIO
 from datetime import datetime, timedelta
 from logging import config, getLogger
 import os
@@ -31,7 +30,6 @@ import controller
 from dialogs import show_modal_and_destroy
 import diwavars
 import filesystem
-import graphicaldesign
 import macro
 from modelsbase import REVERSE_ACTIONS
 from models import Project, Session
@@ -114,6 +112,9 @@ def load_config():
     if not os.path.exists(diwavars.CONFIG_PATH):
         create_config()
     return configobj.ConfigObj(diwavars.CONFIG_PATH)
+
+
+diwavars.update_config_loader(load_config)
 
 
 class State(object):

@@ -212,6 +212,7 @@ class GraphicalUserInterface(GUItemplate):
                 self.Destroy()
                 wx.GetApp().ExitMainLoop()
                 return
+
         # List for choices
         LOGGER.debug('WxPython version {0!s}'.format(wx.version()))
         self.list = EventList(self)
@@ -522,7 +523,10 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         def limit_int(min_value, value, max_value):
-            """ Limit the value between values of [min_value, max_value] """
+            """
+            Limit the value between values of [min_value, max_value].
+
+            """
             return min(max(value, min_value), max_value)
 
         if len(self.nodes) > 3:
@@ -530,7 +534,8 @@ class GraphicalUserInterface(GUItemplate):
                 new_iterator = self.iterator - 1
             elif event.GetId() == wx.ID_FORWARD:
                 new_iterator = self.iterator + 1
-            self.iterator = limit_int(0, new_iterator, len(self.nodes) - 3)
+            max_value = max(len(self.nodes) - 3, 0)
+            self.iterator = limit_int(0, new_iterator, max_value)
             pub.sendMessage('update_screens', update=True)
 
     def OnProjectChanged(self):
