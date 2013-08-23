@@ -1128,7 +1128,7 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         button_sizer.Add(self.ok_button, 0, wx.ALL, 5)
         button_sizer.Add(exit_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 10)
-        self.SetSizerAndFit(main_sizer)
+        self.SetSizer(main_sizer)
         self.Center()
         self.SetFocus()
 
