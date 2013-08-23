@@ -192,8 +192,8 @@ class State(object):
         self.selected_nodes = []
         self.current_project_id = 0
         self.current_session_id = 0
-        self.controlled = None
-        self.controlling = None
+        self.controlled = False
+        self.controlling = False
 
     def initialize(self):
         """
@@ -647,6 +647,7 @@ class State(object):
 
         """
         try:
+            LOGGER.debug('CLIP_RECV: {0}'.format(parameters))
             if parameters.startswith('PUSH_'):
                 self.clipboard_list = State._get_clipboard_content()
                 data = parameters.split('_', 1)[1]
@@ -670,6 +671,7 @@ class State(object):
                 if myhash != self.received_clipboard_hash:
                     # Sync with remote controller.
                     msg = 'clipboard_sync;FIN_{0}'.format(b64encode(pickled))
+                    LOGGER.debug('CLIP_SEND: {0}'.format(parameters))
                     self.swnp_send(requester_id, msg)
             elif parameters.startswith('FIN_'):
                 data = parameters.split('_', 1)[1]
@@ -806,10 +808,12 @@ class State(object):
         clipboard_data = dumps(clipboard_data, 1)
         clipboard_data = b64encode(clipboard_data)
         msg = 'clipboard_sync;PUSH_{0}'.format(clipboard_data)
+        LOGGER.debug(msg)
         self.swnp_send(str(target_node_id), msg)
 
     def send_pop_clipboard(self, target_node_id):
         msg = 'clipboard_sync;POP_{0}'.format(self.swnp.node.id)
+        LOGGER.debug(msg)
         self.swnp_send(str(target_node_id), msg)
 
     def on_project_selected(self):

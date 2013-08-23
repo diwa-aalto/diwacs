@@ -648,6 +648,7 @@ class GraphicalUserInterface(GUItemplate):
             threads.inputcapture.set_capture(True)
             try:
                 # Start remote
+                self.diwa_state.controlling = node.id
                 self.diwa_state.capture_thread.hook()
                 msg = 'remote_start;{0}'.format(node_manager.node.id)
                 sender(node.id, msg)

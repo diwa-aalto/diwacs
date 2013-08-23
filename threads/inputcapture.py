@@ -216,6 +216,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
                         self.swnp.send(str(id_), 'MSG', msg)
                         self.swnp.send(str(id_), 'MSG', end)
                         self.parent.diwa_state.send_pop_clipboard(id_)
+                        self.parent.diwa_state.controlling = False
                     self.parent.selected_nodes = []
                 except Exception as excp:
                     _logger().exception(str(excp))
