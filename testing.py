@@ -5,6 +5,7 @@ Created on 20.5.2013
 
 """
 # System imports
+from decimal import Decimal
 import os
 from datetime import datetime
 from time import sleep
@@ -84,7 +85,7 @@ class TestAudioRecorder(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testRecord(self):
+    def test_record(self):
         error = None
         try:
             recorder = audiorecorder.AudioRecorder(self.gui)
@@ -157,12 +158,75 @@ class TestFilesystem(unittest.TestCase):
             self.assertTrue(file_found, assertion_error.format(filename, root))
 
 
+class TestDocumentation(unittest.TestCase):
+    """
+    Test that every Python function has been documented.
+
+    """
+    def setUp(self):
+        self.target_folders = ['.', 'controller', 'threads']
+        self.target_types = ['.py']
+        self.ignore_methods = ['__init__']
+
+    def tearDown(self):
+        pass
+
+    def test_documentation(self):
+        files = []
+        for folder in self.target_folders:
+            items = os.listdir(folder)
+            for item in items:
+                if not os.path.isfile(item):
+                    continue
+                if os.path.splitext(item)[1] in self.target_types:
+                    files.append(item)
+        total_definitions = 0
+        documented_definitions = 0
+        misses = []
+        for filename in files:
+            last_line_was_definition = False
+            definition_ended = True
+            fin = open(filename, 'r')
+            try:
+                for index, line in enumerate(fin):
+                    stripped = str(line).strip()
+                    if (stripped.startswith('class ') or
+                            stripped.startswith('def ')):
+                        should_skip = False
+                        for ignore in self.ignore_methods:
+                            if ignore in stripped:
+                                should_skip = True
+                        if not should_skip:
+                            last_line_was_definition = True
+                            total_definitions += 1
+                            if ':' not in line:
+                                definition_ended = False
+                            continue
+                    if not definition_ended:
+                        if ':' in line:
+                            definition_ended = True
+                            continue
+                    if last_line_was_definition and ('"""' in line):
+                        documented_definitions += 1
+                    elif last_line_was_definition:
+                        misses.append('{0}:{1}'.format(filename, index + 1))
+                    last_line_was_definition = False
+            finally:
+                fin.close()
+        percentage = (Decimal(100) * Decimal(documented_definitions) /
+                      Decimal(total_definitions))
+        print 'HIT RATE {0}%, MISSED:'.format(percentage)
+        for miss in misses:
+            print miss
+        self.assertGreater(percentage, Decimal(90),
+                           'I find you documentation lacking.')
+
+
 class DiwaTest(unittest.TestSuite):
     """
     Container for unittest cases.
 
     """
-
     def __init__(self):
         tests = (TestUtils, TestFilesystem, TestAudioRecorder)
         unittest.TestSuite.__init__(self, tests)

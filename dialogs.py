@@ -272,9 +272,17 @@ class CloseError(Exception):
         Exception.__init__(self, *args, **kwds)
 
     def __str__(self):
+        """
+        Returns a string representation of CloseError.
+
+        """
         return 'CloseError'
 
     def __unicode__(self):
+        """
+        Returns a string representation (Unicode variant) of CloseError.
+
+        """
         return u'CloseError'
 
 
@@ -297,6 +305,10 @@ class ConnectionErrorDialog(wx.ProgressDialog):
                                    style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
 
     def GetResult(self):
+        """
+        Try to reconnect and return the outcome.
+
+        """
         success = False
         count = 0
         while not success and count < ConnectionErrorDialog.imax:
@@ -1019,6 +1031,13 @@ class ProjectSelectedDialog(wx.Dialog):
             self.EndModal(0)
 
     def OnOk(self, event):
+        """
+        Event handler for OK button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         event.Skip()
         self.EndModal(wx.ID_YES if self.no_session.GetValue() else wx.ID_NO)
 
@@ -1061,11 +1080,25 @@ class UpdateDialog(wx.Dialog):
         self.SetFocus()
 
     def OnOk(self, event):
+        """
+        Event handler for OK button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         event.Skip(False)
         self.EndModal(0)
 
     def UrlHandler(self, event):
-        event.Skip()
+        """
+        Event handler for URL text press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        event.Skip(False)
         webbrowser.open(self.link.GetURL())
 
 
@@ -1140,6 +1173,14 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         self.SetFocus()
 
     def OnComboBox(self, event):
+        """
+        Event handler for updating the state of OK button, depending
+        if there's anything selected in the combo-box.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         if self.dropdown.GetSelection() == -1:
             self.ok_button.Disable()
         else:
@@ -1147,6 +1188,13 @@ class ChooseDiwaProfileDialog(wx.Dialog):
 
     @staticmethod
     def ListDatabaseProfiles():
+        """
+        Returns the list of available profiles.
+
+        :returns: A list of profiles.
+        :rtype: List of Strings
+
+        """
         profiles = []
 
         for rdf in os.walk(ChooseDiwaProfileDialog.PROFILES_PATH):
@@ -1156,6 +1204,13 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         return profiles
 
     def SelectDiwaProfile(self, event):
+        """
+        Load settings from a profile, event handler.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         selected = self.dropdown.GetValue()
         LOGGER.info('Selected database profile: {0}'.format(selected))
         valid_profile = 0
@@ -1189,4 +1244,11 @@ class ChooseDiwaProfileDialog(wx.Dialog):
         self.EndModal(0)
 
     def Exit(self, event):
+        """
+        Event handler for Exit button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         self.EndModal(1)

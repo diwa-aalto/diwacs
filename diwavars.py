@@ -360,12 +360,35 @@ STATUS_BOX_PRINT_CALLBACK = None
 
 
 def register_status_box_callback(state_func, print_func):
+    """
+    Register a function for changing the state of status_box and
+    a function for printing data into the status_box.
+
+    :param state_func:
+        A function that get's called with the new value of status_box when
+        the value changes.
+    :type state_func: Function(Integer)
+
+    :param print_func:
+        A function that get's called to print text into the status_box.
+    :type print_func: Function(String)
+
+    """
     global STATUS_BOX_CALLBACK, STATUS_BOX_PRINT_CALLBACK
     STATUS_BOX_CALLBACK = state_func
     STATUS_BOX_PRINT_CALLBACK = print_func
 
 
 def update_status_box(value):
+    """
+    A function that get's called with the new value of status_box when
+    the value changes. This forwards the function call to the registered
+    function (registered via :py:function:`register_status_box_callback`).
+
+    :param value: The new value of status box.
+    :type value: Integer
+
+    """
     global STATUS_BOX_VALUE
     STATUS_BOX_VALUE = value
     if STATUS_BOX_CALLBACK is not None:
@@ -373,6 +396,15 @@ def update_status_box(value):
 
 
 def print_to_status_box(line):
+    """
+    A function that get's called to print text into the status_box.
+    This forwards the function call to the registered function
+    (registered via :py:function:`register_status_box_callback`).
+
+    :param value: The text to print to the status_box.
+    :type value: String
+
+    """
     if STATUS_BOX_PRINT_CALLBACK is not None:
         STATUS_BOX_PRINT_CALLBACK(line)
 
@@ -381,10 +413,28 @@ USING_DIWA_PROFILE = False
 
 
 def set_using_diwa_profile(value):
+    """
+    Set variable defining is a profile in use.
+
+    """
     global USING_DIWA_PROFILE
     USING_DIWA_PROFILE = value
 
 
 def update_variable(name, value):
+    """
+    Set ANY global value in diwavars.py into __value__ (literal_eval).
+
+    EXAMPLE:
+    .. code-block:: python
+        diwavars.update_variable('AUDIO', 'False')
+
+    :param name: The name of the global.
+    :type name: String
+
+    :param value: The new value of the global embedded into a string.
+    :type value: String
+
+    """
     if name in globals():
         globals()[name] = literal_eval(value)

@@ -339,6 +339,13 @@ class GraphicalUserInterface(GUItemplate):
             event.Skip()
 
     def OnFocus(self, event):
+        """
+        Event handler for gained focus.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         self.list.Hide()
         if event:
             event.Skip()
