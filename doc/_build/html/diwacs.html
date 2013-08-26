@@ -165,25 +165,6 @@ selected.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.GetNodeByName">
-<tt class="descname">GetNodeByName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.GetNodeByName" title="Permalink to this definition">¶</a></dt>
-<dd><p>From current session nodes, select a node with this name
-or return None.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; Name of the desired node.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The desired node if one exists.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="diwacs.GraphicalUserInterface.InitUICore">
 <tt class="descname">InitUICore</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.InitUICore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inits the Core UI (<tt class="xref py py-meth docutils literal"><span class="pre">guitemplates.GUItemplate.InitUI()</span></tt>) and
@@ -198,15 +179,15 @@ binds the functionality.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>e</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.OnEvtBtn">
-<tt class="descname">OnEvtBtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnEvtBtn" title="Permalink to this definition">¶</a></dt>
+<dt id="diwacs.GraphicalUserInterface.OnEventButton">
+<tt class="descname">OnEventButton</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnEventButton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event Button handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -227,6 +208,20 @@ binds the functionality.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnFocus">
+<tt class="descname">OnFocus</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnFocus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for gained focus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
 </tr>
 </tbody>
 </table>
@@ -276,8 +271,8 @@ Should toggle the minimized state of the application.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.OnProject">
-<tt class="descname">OnProject</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnProject" title="Permalink to this definition">¶</a></dt>
+<dt id="diwacs.GraphicalUserInterface.OnProjectChanged">
+<tt class="descname">OnProjectChanged</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnProjectChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Project selected event handler.</p>
 </dd></dl>
 
@@ -347,24 +342,6 @@ an existing one.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.PaintSelect">
-<tt class="descname">PaintSelect</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.PaintSelect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Paints the selection of a node.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For future use.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="diwacs.GraphicalUserInterface.SelectNode">
 <tt class="descname">SelectNode</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SelectNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the selection of a node, start remote control.</p>
@@ -400,7 +377,7 @@ an existing one.</p>
 <dt id="diwacs.GraphicalUserInterface.SetProjectName">
 <tt class="descname">SetProjectName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SetProjectName" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the project text.
-For example &#8220;No Project OnSelection&#8221;.</p>
+For example &#8220;No Project Selection&#8221;.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Requires None explicitly when the purpose is to set default label

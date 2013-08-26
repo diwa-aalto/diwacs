@@ -139,6 +139,12 @@ Messages are encoded to json for transmission.</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="swnp.Node.data">
+<tt class="descname">data</tt><a class="headerlink" href="#swnp.Node.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns data.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="swnp.Node.get_age">
 <tt class="descname">get_age</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.Node.get_age" title="Permalink to this definition">¶</a></dt>
@@ -155,7 +161,7 @@ Messages are encoded to json for transmission.</p>
 
 <dl class="class">
 <dt id="swnp.SWNP">
-<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>node_id=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main class of swnp.</p>
 <p>This class has the required ZeroMQ bindings and is responsible for
 communicating with other instances.</p>
@@ -171,7 +177,6 @@ communicating with other instances.</p>
 <li><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The Multicast Group this node wants to be a part of.</li>
 <li><strong>screens</strong> (<em>Integer</em>) &#8211; The number of visible screens. Defaults to 0.</li>
 <li><strong>name</strong> (<em>String</em>) &#8211; The name of the instance.</li>
-<li><strong>node_id</strong> (<em>Integer</em>) &#8211; ID of the current instance.</li>
 <li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.Context</span></tt>) &#8211; ZeroMQ context to use.</li>
 <li><strong>error_handler</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wos.CONN_ERR_TH</span></tt>) &#8211; Error handler for the init constructor.</li>
 </ul>
@@ -202,22 +207,6 @@ communicating with other instances.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_id</strong> (<em>Integer</em>) &#8211; The id of the searched node.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="swnp.SWNP.get_buffer">
-<tt class="descname">get_buffer</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.SWNP.get_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the buffered messages and returns them</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON formated string.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -410,6 +399,24 @@ communicating with other instances.</p>
 <dt id="swnp.SWNP.timeout_routine">
 <tt class="descname">timeout_routine</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.SWNP.timeout_routine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine for checking node list and removing nodes with timeout.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="swnp.SWNP.update_pgm_group">
+<tt class="descname">update_pgm_group</tt><big>(</big><em>new_pgm_group</em><big>)</big><a class="headerlink" href="#swnp.SWNP.update_pgm_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>This updates the PGM group on the fly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>new_pgm_group</strong> &#8211; New PGM Group value.</li>
+<li><strong>new_pgm_group</strong> &#8211; Integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

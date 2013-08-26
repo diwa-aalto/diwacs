@@ -65,6 +65,13 @@
 </tr>
 </tbody>
 </table>
+<dl class="exception">
+<dt id="state.SessionChangeException">
+<em class="property">exception </em><tt class="descclassname">state.</tt><tt class="descname">SessionChangeException</tt><a class="headerlink" href="#state.SessionChangeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A stub for new Exception that just had a different type to be
+catchable in its own right.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="state.State">
 <em class="property">class </em><tt class="descclassname">state.</tt><tt class="descname">State</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#state.State" title="Permalink to this definition">¶</a></dt>
@@ -73,6 +80,20 @@
 they are part of the main GraphicalUserInterface class right now.
 Likewise that class should minimize making direct changes to the
 current status of the software and only interpret user input.</p>
+<dl class="method">
+<dt id="state.State.append_swnp_data">
+<tt class="descname">append_swnp_data</tt><big>(</big><em>new_data</em><big>)</big><a class="headerlink" href="#state.State.append_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append data to current data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_data</strong> (<em>String</em>) &#8211; Value to be added</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="state.State.destroy">
 <tt class="descname">destroy</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.destroy" title="Permalink to this definition">¶</a></dt>
@@ -98,17 +119,23 @@ current status of the software and only interpret user input.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="state.State.get_swnp_data">
+<tt class="descname">get_swnp_data</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.get_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="state.State.handle_file_send">
-<tt class="descname">handle_file_send</tt><big>(</big><em>filenames</em>, <em>progressdialog=None</em><big>)</big><a class="headerlink" href="#state.State.handle_file_send" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">handle_file_send</tt><big>(</big><em>filenames</em>, <em>dialog_parameters=None</em><big>)</big><a class="headerlink" href="#state.State.handle_file_send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a file link to another node.</p>
 <p>First parses all the files and folder structure, then confirms weather
 the users wishes to add the items to project before beginning the copy
 routine.</p>
-<p>The copy routine first creates all the needed subfolders and then sums
+<p>The copy routine first creates all the needed sub-folders and then sums
 up all the file sizes to be copied. Then it will update the dialog
 in the beginning/end of every file transaction and whenever there&#8217;s
 been more than 1 second from the last update dialog update. Assuming
-the progressdialog parameter has been given.</p>
+the dialog_parameters parameter has been given.</p>
 <dl class="docutils">
 <dt>The progress dialog, if supplied, is updated as follows:</dt>
 <dd><ul class="first last simple">
@@ -126,7 +153,8 @@ the progressdialog parameter has been given.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filenames</strong> (<em>List of String</em>) &#8211; All the files/folders to be copied.</li>
-<li><strong>progressdialog</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.ProgressDialog</span></tt>) &#8211; The progress dialog to update (optional).</li>
+<li><strong>dialog_parameters</strong> (<tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt>) &#8211; The progress dialog to create by show_modal_and_destroy,
+initialization parameters in a dictionary.</li>
 </ul>
 </td>
 </tr>
@@ -164,12 +192,6 @@ done in between the __init__ and these calls here.</td>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="state.State.node_id">
-<tt class="descname">node_id</tt><em class="property"> = None</em><a class="headerlink" href="#state.State.node_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>FIXME: What the actual?</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="state.State.on_project_selected">
 <tt class="descname">on_project_selected</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.on_project_selected" title="Permalink to this definition">¶</a></dt>
@@ -183,9 +205,55 @@ done in between the __init__ and these calls here.</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="state.State.remove_from_swnp_data">
+<tt class="descname">remove_from_swnp_data</tt><big>(</big><em>old_data</em><big>)</big><a class="headerlink" href="#state.State.remove_from_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes data value from current data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>old_data</strong> (<em>String</em>) &#8211; Old data value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="state.State.remove_observer">
 <tt class="descname">remove_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.remove_observer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.send_pop_clipboard">
+<tt class="descname">send_pop_clipboard</tt><big>(</big><em>target_node_id</em><big>)</big><a class="headerlink" href="#state.State.send_pop_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to another node that they should restore their
+old clipboard content and send the overwritten content back to
+this node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_node_id</strong> (<em>Integer</em>) &#8211; The ID of the node that should perform the operation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.send_push_clipboard">
+<tt class="descname">send_push_clipboard</tt><big>(</big><em>target_node_id</em><big>)</big><a class="headerlink" href="#state.State.send_push_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to another node that they should save their
+clipboard content and set the current content to what this
+node has on its clipboard at this moment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_node_id</strong> (<em>Integer</em>) &#8211; The ID of the node that should perform the operation.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -227,6 +295,20 @@ and observer for image uploads by camera in scan folder.</p>
 <dt id="state.State.set_responsive">
 <tt class="descname">set_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_responsive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the current node as responsive.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.set_swnp_data">
+<tt class="descname">set_swnp_data</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#state.State.set_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>String</em>) &#8211; New data value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

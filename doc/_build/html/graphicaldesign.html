@@ -85,6 +85,25 @@
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="graphicaldesign.BlackOverlay.SetText">
+<tt class="descname">SetText</tt><big>(</big><em>button_modifier=None</em>, <em>button=None</em><big>)</big><a class="headerlink" href="#graphicaldesign.BlackOverlay.SetText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the text that appears on the black overlay.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>button_modifier</strong> (<em>String</em>) &#8211; The button name that should be held down.</li>
+<li><strong>button</strong> (<em>String</em>) &#8211; The button name that should be pressed when the modifier
+key is held down.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -159,12 +178,6 @@
 <dt id="graphicaldesign.GUItemplate.AlignCenterTop">
 <tt class="descname">AlignCenterTop</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.AlignCenterTop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Aligns frame to Horizontal center and vertical top.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="graphicaldesign.GUItemplate.ClearStatusText">
-<tt class="descname">ClearStatusText</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.ClearStatusText" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the status text to EmptyScreen string.</p>
 </dd></dl>
 
 <dl class="method">
@@ -246,12 +259,6 @@
 </dd></dl>
 
 <dl class="class">
-<dt id="graphicaldesign.ImageViewer">
-<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">ImageViewer</tt><big>(</big><em>parent</em>, <em>image</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#graphicaldesign.ImageViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to show an image.</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="graphicaldesign.MySplashScreen">
 <em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">MySplashScreen</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#graphicaldesign.MySplashScreen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a splash screen widget.</p>
@@ -271,6 +278,19 @@
 <dt id="graphicaldesign.NodeScreen.ReloadAs">
 <tt class="descname">ReloadAs</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.ReloadAs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reload the content of this bitmap.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.NodeScreen.SetNodeVars">
+<tt class="descname">SetNodeVars</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.SetNodeVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets NodeScreens variables.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="graphicaldesign.NodeScreen.update_bitmaps">
+<em class="property">static </em><tt class="descname">update_bitmaps</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.update_bitmaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the static bitmaps for hidden and wallpaperless screens.
+This caches them in memory to be used later without IO calls.</p>
 </dd></dl>
 
 </dd></dl>
@@ -316,8 +336,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>title</strong> (<em>String</em>) &#8211; Title to diplay in the balloon.</li>
-<li><strong>message</strong> (<em>String</em>) &#8211; Message to display in the balloong (max 255 chars).</li>
+<li><strong>title</strong> (<em>Unicode</em>) &#8211; Title to diplay in the balloon.</li>
+<li><strong>message</strong> (<em>Unicode</em>) &#8211; Message to display in the balloong (max 255 chars).</li>
 </ul>
 </td>
 </tr>

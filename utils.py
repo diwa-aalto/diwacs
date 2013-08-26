@@ -9,7 +9,6 @@ import base64
 import hashlib
 from logging import config, getLogger
 import socket
-import subprocess
 
 # 3rd party imports.
 from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK

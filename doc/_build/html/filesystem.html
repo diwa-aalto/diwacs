@@ -134,14 +134,18 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="filesystem.file_to_base64">
-<tt class="descclassname">filesystem.</tt><tt class="descname">file_to_base64</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.file_to_base64" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform a file to a binary object.</p>
+<dt id="filesystem.get_current_wallpaper">
+<tt class="descclassname">filesystem.</tt><tt class="descname">get_current_wallpaper</tt><big>(</big><em>win</em><big>)</big><a class="headerlink" href="#filesystem.get_current_wallpaper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to get the current wallpaper image path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String</em>) &#8211; The file path.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>win</strong> (<em>Tuple of Integers</em>) &#8211; Windows version (Major, Minor).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Wallpaper image path if it can find it.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -172,24 +176,6 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>Integer</em>) &#8211; The node id.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.is_subtree">
-<tt class="descclassname">filesystem.</tt><tt class="descname">is_subtree</tt><big>(</big><em>filename</em>, <em>parent</em>, <em>case_sensitive=True</em><big>)</big><a class="headerlink" href="#filesystem.is_subtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines, if filename is inside the parent folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<em>String</em>) &#8211; The file path.</li>
-<li><strong>parent</strong> (<em>String</em>) &#8211; The parent file path.</li>
-</ul>
-</td>
 </tr>
 </tbody>
 </table>

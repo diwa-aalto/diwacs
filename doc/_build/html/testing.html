@@ -66,15 +66,104 @@
 </tbody>
 </table>
 <dl class="class">
+<dt id="testing.CallAbsorber">
+<em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">CallAbsorber</tt><a class="headerlink" href="#testing.CallAbsorber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Substitute for GUIs.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="testing.DiwaTest">
 <em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">DiwaTest</tt><a class="headerlink" href="#testing.DiwaTest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for unittest cases.</p>
+<dl class="method">
+<dt id="testing.DiwaTest.run">
+<tt class="descname">run</tt><big>(</big><em>result</em>, <em>debug=False</em><big>)</big><a class="headerlink" href="#testing.DiwaTest.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the unittest.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="testing.TestAudioRecorder">
+<em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">TestAudioRecorder</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#testing.TestAudioRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test audio recorder module.</p>
+<dl class="method">
+<dt id="testing.TestAudioRecorder.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestAudioRecorder.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up the audio recorder helpers for testing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestAudioRecorder.tearDown">
+<tt class="descname">tearDown</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestAudioRecorder.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add cleaners in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestAudioRecorder.test_record">
+<tt class="descname">test_record</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestAudioRecorder.test_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test recording functionality of AudioRecorder.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="testing.TestDocumentation">
+<em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">TestDocumentation</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#testing.TestDocumentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that every Python function has been documented.</p>
+<dl class="method">
+<dt id="testing.TestDocumentation.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestDocumentation.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add helpers in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestDocumentation.tearDown">
+<tt class="descname">tearDown</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestDocumentation.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add cleaners in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestDocumentation.test_documentation">
+<tt class="descname">test_documentation</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestDocumentation.test_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that most of the code has been documented.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first">The algorithm that calculates the documentation percentage
+is not perfect but kind of works. It could be improved
+by using actual parser (and pylint even does the same) but
+this makes it an actual testcase.</p>
+<p>This also prints out the missed lines where there should have
+been documentation (docstrings) and prints the total percentage
+of the project documented.</p>
+<p class="last">This test fails if the percentage is lower than a hard-coded
+expected value. That value defaults to 95% at this moment.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="testing.TestFilesystem">
 <em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">TestFilesystem</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#testing.TestFilesystem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test filesystem module.</p>
+<dl class="method">
+<dt id="testing.TestFilesystem.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestFilesystem.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add helpers in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestFilesystem.tearDown">
+<tt class="descname">tearDown</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestFilesystem.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add cleaners in.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="testing.TestFilesystem.test_searchfile">
 <tt class="descname">test_searchfile</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestFilesystem.test_searchfile" title="Permalink to this definition">¶</a></dt>
@@ -88,21 +177,21 @@
 <em class="property">class </em><tt class="descclassname">testing.</tt><tt class="descname">TestUtils</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="headerlink" href="#testing.TestUtils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test utils module.</p>
 <dl class="method">
-<dt id="testing.TestUtils.test_getpassword">
-<tt class="descname">test_getpassword</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestUtils.test_getpassword" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test get_project_password function.</p>
+<dt id="testing.TestUtils.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestUtils.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add helpers in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="testing.TestUtils.tearDown">
+<tt class="descname">tearDown</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestUtils.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub to add cleaners in.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="testing.TestUtils.test_iterislast">
 <tt class="descname">test_iterislast</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestUtils.test_iterislast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test IterIsLast function.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="testing.TestUtils.test_passwordhash">
-<tt class="descname">test_passwordhash</tt><big>(</big><big>)</big><a class="headerlink" href="#testing.TestUtils.test_passwordhash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test the password hash generation.</p>
 </dd></dl>
 
 </dd></dl>

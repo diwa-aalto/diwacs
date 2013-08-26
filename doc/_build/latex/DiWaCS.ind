@@ -1,7 +1,7 @@
 \begin{theindex}
 
-  \item Action (class in models), \hyperpage{23}
-  \item Activity (class in models), \hyperpage{23}
+  \item Action (class in models), \hyperpage{24}
+  \item Activity (class in models), \hyperpage{24}
   \item add\_computer() (in module controller.computer), \hyperpage{5}
   \item add\_computer\_to\_session() (in module controller.computer), 
 		\hyperpage{5}
@@ -16,41 +16,42 @@
 		\hyperpage{4}
   \item add\_project() (in module controller.project), \hyperpage{7}
   \item add\_project\_registry\_entry() (threads.worker.WORKER\_THREAD static method), 
-		\hyperpage{37}
+		\hyperpage{39}
   \item add\_registry\_entry() (threads.worker.WORKER\_THREAD static method), 
-		\hyperpage{37}
+		\hyperpage{39}
   \item AddProjectDialog (class in dialogs), \hyperpage{9}
-  \item AddUser() (models.Session method), \hyperpage{27}
+  \item AddUser() (models.Session method), \hyperpage{28}
   \item AlignCenterTop() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
-  \item AudioRecorder (class in threads.audiorecorder), \hyperpage{33}
+		\hyperpage{19}
+  \item append\_swnp\_data() (state.State method), \hyperpage{29}
+  \item AudioRecorder (class in threads.audiorecorder), \hyperpage{35}
 
   \indexspace
 
-  \item BlackOverlay (class in graphicaldesign), \hyperpage{17}
+  \item BlackOverlay (class in graphicaldesign), \hyperpage{18}
 
   \indexspace
 
+  \item CallAbsorber (class in testing), \hyperpage{34}
   \item check\_password() (in module controller.project), \hyperpage{7}
   \item check\_responsive() (threads.worker.WORKER\_THREAD method), 
-		\hyperpage{37}
-  \item CHECK\_UPDATE (class in threads.checkupdate), \hyperpage{33}
+		\hyperpage{39}
+  \item CHECK\_UPDATE (class in threads.checkupdate), \hyperpage{36}
   \item CheckVisibility() (diwacs.EventList method), \hyperpage{12}
-  \item ClearStatusText() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
-  \item click() (in module macro), \hyperpage{20}
-  \item close() (swnp.SWNP method), \hyperpage{31}
+  \item ChooseDiwaProfileDialog (class in dialogs), \hyperpage{9}
+  \item click() (in module macro), \hyperpage{21}
+  \item close() (swnp.SWNP method), \hyperpage{32}
   \item CloseError, \hyperpage{10}
-  \item Company (class in models), \hyperpage{23}
-  \item Computer (class in models), \hyperpage{24}
-  \item connect\_to\_database() (in module modelsbase), \hyperpage{22}
+  \item Company (class in models), \hyperpage{25}
+  \item Computer (class in models), \hyperpage{25}
+  \item connect\_to\_database() (in module modelsbase), \hyperpage{24}
   \item CONNECTION\_ERROR\_THREAD (class in threads.connectionerror), 
-		\hyperpage{34}
+		\hyperpage{36}
   \item ConnectionErrorDialog (class in dialogs), \hyperpage{10}
   \item ConnectionErrorHandler() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
+		\hyperpage{19}
   \item ContextMenuFailure (class in threads.contextmenu), 
-		\hyperpage{34}
+		\hyperpage{36}
   \item controller.activity (module), \hyperpage{4}
   \item controller.common (module), \hyperpage{4}
   \item controller.computer (module), \hyperpage{5}
@@ -58,74 +59,75 @@
   \item controller.project (module), \hyperpage{7}
   \item controller.session (module), \hyperpage{8}
   \item copy\_file\_to\_project() (in module filesystem), 
-		\hyperpage{16}
+		\hyperpage{17}
   \item copy\_to\_temporary\_directory() (in module filesystem), 
-		\hyperpage{16}
-  \item create\_all() (in module modelsbase), \hyperpage{22}
-  \item create\_config() (in module state), \hyperpage{29}
+		\hyperpage{17}
+  \item create\_all() (in module modelsbase), \hyperpage{24}
+  \item create\_config() (in module state), \hyperpage{31}
   \item create\_event() (threads.worker.WORKER\_THREAD method), 
-		\hyperpage{37}
+		\hyperpage{39}
   \item create\_file\_action() (in module controller.project), 
 		\hyperpage{7}
   \item create\_project\_directory() (in module filesystem), 
-		\hyperpage{16}
-  \item CreateMenu() (graphicaldesign.SysTray method), \hyperpage{19}
-  \item CURRENT\_PROJECT (class in threads.current), \hyperpage{34}
-  \item CURRENT\_SESSION (class in threads.current), \hyperpage{35}
+		\hyperpage{17}
+  \item CreateMenu() (graphicaldesign.SysTray method), \hyperpage{20}
+  \item CURRENT\_PROJECT (class in threads.current), \hyperpage{37}
+  \item CURRENT\_SESSION (class in threads.current), \hyperpage{37}
 
   \indexspace
 
-  \item delete() (modelsbase.MethodMixin method), \hyperpage{22}
-  \item delete\_directory() (in module filesystem), \hyperpage{16}
+  \item data (swnp.Node attribute), \hyperpage{32}
+  \item delete() (modelsbase.MethodMixin method), \hyperpage{23}
+  \item delete\_directory() (in module filesystem), \hyperpage{17}
   \item delete\_many() (modelsbase.MethodMixin class method), 
-		\hyperpage{22}
+		\hyperpage{23}
   \item delete\_record() (in module controller.common), \hyperpage{4}
   \item DeleteProjectDialog (class in dialogs), \hyperpage{10}
-  \item destroy() (state.State method), \hyperpage{28}
+  \item destroy() (state.State method), \hyperpage{29}
   \item dialogs (module), \hyperpage{9}
   \item DisableDirectoryButton() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{12}
+		\hyperpage{13}
   \item DisableSessionButton() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{12}
-  \item DIWA\_THREAD (class in threads.diwathread), \hyperpage{35}
+		\hyperpage{13}
+  \item DIWA\_THREAD (class in threads.diwathread), \hyperpage{37}
   \item diwacs (module), \hyperpage{12}
-  \item DiwaTest (class in testing), \hyperpage{32}
+  \item DiwaTest (class in testing), \hyperpage{34}
   \item diwavars (module), \hyperpage{15}
-  \item do\_ping() (swnp.SWNP method), \hyperpage{31}
-  \item DottedIPToInt() (in module utils), \hyperpage{37}
-  \item DropTarget (class in graphicaldesign), \hyperpage{17}
+  \item do\_ping() (swnp.SWNP method), \hyperpage{32}
+  \item DottedIPToInt() (in module utils), \hyperpage{40}
+  \item DropTarget (class in graphicaldesign), \hyperpage{18}
 
   \indexspace
 
   \item edit\_project() (in module controller.project), \hyperpage{7}
   \item EmptyScreen() (graphicaldesign.NodeScreen method), 
-		\hyperpage{19}
+		\hyperpage{20}
   \item EnableDirectoryButton() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{12}
+		\hyperpage{13}
   \item EnableSessionButton() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{12}
-  \item end\_current\_project() (state.State method), \hyperpage{28}
-  \item end\_current\_session() (state.State method), \hyperpage{28}
-  \item end\_session() (in module controller.session), \hyperpage{9}
+		\hyperpage{13}
+  \item end\_current\_project() (state.State method), \hyperpage{29}
+  \item end\_current\_session() (state.State method), \hyperpage{29}
+  \item end\_session() (in module controller.session), \hyperpage{8}
   \item ErrorDialog (class in dialogs), \hyperpage{10}
-  \item Event (class in models), \hyperpage{24}
+  \item Event (class in models), \hyperpage{25}
   \item EventList (class in diwacs), \hyperpage{12}
-  \item EventListTemplate (class in graphicaldesign), \hyperpage{18}
+  \item EventListTemplate (class in graphicaldesign), \hyperpage{19}
+  \item Exit() (dialogs.ChooseDiwaProfileDialog method), \hyperpage{10}
 
   \indexspace
 
-  \item File (class in models), \hyperpage{25}
-  \item file\_to\_base64() (in module filesystem), \hyperpage{16}
-  \item FileAction (class in models), \hyperpage{25}
-  \item filesystem (module), \hyperpage{16}
+  \item File (class in models), \hyperpage{26}
+  \item FileAction (class in models), \hyperpage{26}
+  \item filesystem (module), \hyperpage{17}
   \item find\_input\_device() (threads.audiorecorder.AudioRecorder method), 
-		\hyperpage{33}
-  \item find\_node() (swnp.SWNP method), \hyperpage{31}
-  \item from\_json() (swnp.Message static method), \hyperpage{30}
+		\hyperpage{35}
+  \item find\_node() (swnp.SWNP method), \hyperpage{32}
+  \item from\_json() (swnp.Message static method), \hyperpage{31}
 
   \indexspace
 
-  \item get() (modelsbase.MethodMixin class method), \hyperpage{22}
+  \item get() (modelsbase.MethodMixin class method), \hyperpage{23}
   \item get\_active\_activity() (in module controller.activity), 
 		\hyperpage{4}
   \item get\_active\_computers() (in module controller.computer), 
@@ -135,153 +137,152 @@
   \item get\_active\_responsive\_nodes() (in module controller.computer), 
 		\hyperpage{6}
   \item get\_active\_session() (in module controller.session), 
-		\hyperpage{9}
-  \item get\_age() (swnp.Node method), \hyperpage{30}
-  \item get\_buffer() (swnp.SWNP method), \hyperpage{31}
+		\hyperpage{8}
+  \item get\_age() (swnp.Node method), \hyperpage{32}
   \item get\_by\_id() (modelsbase.MethodMixin class method), 
-		\hyperpage{22}
+		\hyperpage{23}
+  \item get\_current\_wallpaper() (in module filesystem), 
+		\hyperpage{17}
   \item get\_encrypted\_directory\_name() (in module utils), 
-		\hyperpage{38}
-  \item get\_file\_extension() (in module filesystem), \hyperpage{16}
+		\hyperpage{40}
+  \item get\_file\_extension() (in module filesystem), \hyperpage{17}
   \item get\_latest\_event\_id() (in module controller.session), 
-		\hyperpage{9}
-  \item get\_list() (swnp.SWNP method), \hyperpage{31}
+		\hyperpage{8}
+  \item get\_list() (swnp.SWNP method), \hyperpage{32}
   \item get\_most\_recent\_by\_mac() (models.Computer class method), 
-		\hyperpage{24}
-  \item get\_mouse\_position() (in module macro), \hyperpage{20}
-  \item get\_node\_image() (in module filesystem), \hyperpage{16}
+		\hyperpage{25}
+  \item get\_mouse\_position() (in module macro), \hyperpage{21}
+  \item get\_node\_image() (in module filesystem), \hyperpage{17}
   \item get\_or\_create() (in module controller.common), \hyperpage{5}
   \item get\_pad() (threads.checkupdate.CHECK\_UPDATE static method), 
-		\hyperpage{33}
+		\hyperpage{36}
   \item get\_project\_id\_by\_activity() (in module controller.project), 
 		\hyperpage{8}
   \item get\_projects\_by\_company() (in module controller.project), 
 		\hyperpage{8}
-  \item get\_random\_responsive() (state.State method), \hyperpage{28}
-  \item get\_recent\_files() (in module controller.project), 
-		\hyperpage{8}
-  \item get\_screen\_list() (swnp.SWNP method), \hyperpage{31}
-  \item get\_sendkeys() (in module macro), \hyperpage{20}
+  \item get\_random\_responsive() (state.State method), \hyperpage{29}
+  \item get\_screen\_list() (swnp.SWNP method), \hyperpage{32}
+  \item get\_sendkeys() (in module macro), \hyperpage{21}
   \item get\_session\_id\_by\_activity() (in module controller.session), 
 		\hyperpage{9}
-  \item get\_sessions\_by\_project() (in module controller.session), 
-		\hyperpage{9}
-  \item GetKeydown() (in module macro), \hyperpage{19}
-  \item GetLANMachines() (in module utils), \hyperpage{38}
-  \item GetLastChecked() (models.Session method), \hyperpage{27}
-  \item GetLocalIPAddress() (in module utils), \hyperpage{38}
-  \item GetMacForIp() (in module utils), \hyperpage{38}
-  \item GetNodeByName() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{12}
+  \item get\_swnp\_data() (state.State method), \hyperpage{29}
+  \item GetKeydown() (in module macro), \hyperpage{20}
+  \item GetLastChecked() (models.Session method), \hyperpage{28}
+  \item GetLocalIPAddress() (in module utils), \hyperpage{40}
+  \item GetMacForIp() (in module utils), \hyperpage{40}
   \item GetProgramIcon() (graphicaldesign.EventListTemplate method), 
-		\hyperpage{18}
+		\hyperpage{19}
   \item GetProgramIcon() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
-  \item graphicaldesign (module), \hyperpage{17}
-  \item GraphicalUserInterface (class in diwacs), \hyperpage{12}
-  \item GUItemplate (class in graphicaldesign), \hyperpage{18}
+		\hyperpage{19}
+  \item GetResult() (dialogs.ConnectionErrorDialog method), 
+		\hyperpage{10}
+  \item graphicaldesign (module), \hyperpage{18}
+  \item GraphicalUserInterface (class in diwacs), \hyperpage{13}
+  \item GUItemplate (class in graphicaldesign), \hyperpage{19}
 
   \indexspace
 
-  \item handle\_file\_send() (state.State method), \hyperpage{28}
-  \item HardwareInput (class in macro), \hyperpage{19}
-  \item hash\_password() (in module utils), \hyperpage{38}
+  \item handle\_file\_send() (state.State method), \hyperpage{29}
+  \item HardwareInput (class in macro), \hyperpage{20}
+  \item hash\_password() (in module utils), \hyperpage{40}
   \item HideNow() (diwacs.EventList method), \hyperpage{12}
   \item HideScreens() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
-  \item hold() (in module macro), \hyperpage{20}
+		\hyperpage{19}
+  \item hold() (in module macro), \hyperpage{21}
   \item hook() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
+		\hyperpage{38}
 
   \indexspace
 
   \item id\_ordering() (modelsbase.MethodMixin class method), 
-		\hyperpage{22}
-  \item ImageViewer (class in graphicaldesign), \hyperpage{19}
+		\hyperpage{23}
   \item init\_sync\_project\_directory() (in module controller.project), 
 		\hyperpage{8}
-  \item initialization\_test() (in module state), \hyperpage{29}
-  \item initialize() (state.State method), \hyperpage{28}
+  \item initialization\_test() (in module state), \hyperpage{31}
+  \item initialize() (state.State method), \hyperpage{30}
   \item InitScreens() (graphicaldesign.GUItemplate method), 
-		\hyperpage{18}
-  \item InitUI() (graphicaldesign.GUItemplate method), \hyperpage{18}
+		\hyperpage{19}
+  \item InitUI() (graphicaldesign.GUItemplate method), \hyperpage{19}
   \item InitUICore() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{13}
-  \item Input (class in macro), \hyperpage{19}
-  \item INPUT\_CAPTURE (class in threads.inputcapture), \hyperpage{35}
-  \item Input\_I (class in macro), \hyperpage{19}
-  \item IntToDottedIP() (in module utils), \hyperpage{38}
+  \item Input (class in macro), \hyperpage{21}
+  \item INPUT\_CAPTURE (class in threads.inputcapture), \hyperpage{38}
+  \item Input\_I (class in macro), \hyperpage{21}
   \item is\_project\_file() (in module controller.project), 
 		\hyperpage{8}
-  \item is\_subtree() (in module filesystem), \hyperpage{16}
-  \item ItemAlreadyExistsException, \hyperpage{21}
-  \item IterIsLast() (in module utils), \hyperpage{38}
+  \item ItemAlreadyExistsException, \hyperpage{23}
+  \item IterIsLast() (in module utils), \hyperpage{40}
 
   \indexspace
 
-  \item key\_press() (in module macro), \hyperpage{20}
-  \item KeyBdInput (class in macro), \hyperpage{20}
+  \item key\_press() (in module macro), \hyperpage{21}
+  \item KeyBdInput (class in macro), \hyperpage{21}
 
   \indexspace
 
   \item last\_active\_computer() (in module controller.computer), 
 		\hyperpage{6}
-  \item load\_config() (in module state), \hyperpage{29}
+  \item ListDatabaseProfiles() (dialogs.ChooseDiwaProfileDialog static method), 
+		\hyperpage{10}
+  \item load\_config() (in module state), \hyperpage{31}
   \item LoadPreferences() (dialogs.PreferencesDialog method), 
 		\hyperpage{10}
 
   \indexspace
 
-  \item macro (module), \hyperpage{19}
-  \item MacroPoint (class in macro), \hyperpage{20}
+  \item macro (module), \hyperpage{20}
+  \item MacroPoint (class in macro), \hyperpage{21}
   \item main() (in module add\_file), \hyperpage{3}
-  \item main() (in module diwacs), \hyperpage{14}
+  \item main() (in module diwacs), \hyperpage{15}
   \item main() (in module send\_file\_to), \hyperpage{3}
-  \item MapNetworkShare() (in module utils), \hyperpage{38}
-  \item Message (class in swnp), \hyperpage{30}
-  \item message\_handler() (state.State method), \hyperpage{28}
-  \item MethodMixin (class in modelsbase), \hyperpage{22}
-  \item middle\_click() (in module macro), \hyperpage{20}
-  \item middle\_hold() (in module macro), \hyperpage{20}
-  \item middle\_release() (in module macro), \hyperpage{20}
-  \item models (module), \hyperpage{23}
-  \item modelsbase (module), \hyperpage{21}
-  \item MOUSE\_CAPTURE (class in threads.inputcapture), \hyperpage{36}
-  \item MouseInput (class in macro), \hyperpage{20}
-  \item move() (in module macro), \hyperpage{20}
-  \item move\_to() (in module macro), \hyperpage{20}
-  \item MySplashScreen (class in graphicaldesign), \hyperpage{19}
+  \item MapNetworkShare() (in module utils), \hyperpage{40}
+  \item Message (class in swnp), \hyperpage{31}
+  \item message\_handler() (state.State method), \hyperpage{30}
+  \item MethodMixin (class in modelsbase), \hyperpage{23}
+  \item middle\_click() (in module macro), \hyperpage{21}
+  \item middle\_hold() (in module macro), \hyperpage{21}
+  \item middle\_release() (in module macro), \hyperpage{21}
+  \item models (module), \hyperpage{24}
+  \item modelsbase (module), \hyperpage{23}
+  \item MOUSE\_CAPTURE (class in threads.inputcapture), \hyperpage{38}
+  \item MouseInput (class in macro), \hyperpage{21}
+  \item move() (in module macro), \hyperpage{21}
+  \item move\_to() (in module macro), \hyperpage{21}
+  \item MySplashScreen (class in graphicaldesign), \hyperpage{20}
 
   \indexspace
 
-  \item Node (class in swnp), \hyperpage{30}
-  \item node\_id (state.State attribute), \hyperpage{28}
-  \item NodeScreen (class in graphicaldesign), \hyperpage{19}
+  \item Node (class in swnp), \hyperpage{32}
+  \item NodeScreen (class in graphicaldesign), \hyperpage{20}
 
   \indexspace
 
   \item on\_keyboard\_event() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
+		\hyperpage{38}
   \item on\_mouse\_event() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
-  \item on\_project\_selected() (state.State method), \hyperpage{29}
-  \item on\_session\_changed() (state.State method), \hyperpage{29}
+		\hyperpage{38}
+  \item on\_project\_selected() (state.State method), \hyperpage{30}
+  \item on\_session\_changed() (state.State method), \hyperpage{30}
   \item OnAboutBox() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{13}
   \item OnAdd() (dialogs.AddProjectDialog method), \hyperpage{9}
   \item OnCancel() (dialogs.DeleteProjectDialog method), \hyperpage{10}
   \item OnCancel() (dialogs.PreferencesDialog method), \hyperpage{10}
-  \item OnCancel() (dialogs.ProjectSelectDialog method), \hyperpage{10}
-  \item OnClose() (dialogs.AddProjectDialog method), \hyperpage{10}
-  \item OnData() (graphicaldesign.DropTarget method), \hyperpage{17}
+  \item OnCancel() (dialogs.ProjectSelectDialog method), \hyperpage{11}
+  \item OnClose() (dialogs.AddProjectDialog method), \hyperpage{9}
+  \item OnComboBox() (dialogs.ChooseDiwaProfileDialog method), 
+		\hyperpage{10}
+  \item OnData() (graphicaldesign.DropTarget method), \hyperpage{19}
   \item OnEnter() (diwacs.EventList method), \hyperpage{12}
-  \item OnEvtBtn() (diwacs.GraphicalUserInterface method), 
+  \item OnEventButton() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{13}
   \item OnExit() (diwacs.GraphicalUserInterface method), \hyperpage{13}
-  \item OnExit() (graphicaldesign.GUItemplate method), \hyperpage{18}
+  \item OnExit() (graphicaldesign.GUItemplate method), \hyperpage{19}
+  \item OnFocus() (diwacs.GraphicalUserInterface method), 
+		\hyperpage{13}
   \item OnFocusLost() (diwacs.EventList method), \hyperpage{12}
   \item OnFocusLost() (graphicaldesign.BlackOverlay method), 
-		\hyperpage{17}
+		\hyperpage{18}
   \item OnIconify() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{13}
   \item OnInfoBtn() (diwacs.GraphicalUserInterface method), 
@@ -290,13 +291,15 @@
 		\hyperpage{13}
   \item OnOk() (dialogs.DeleteProjectDialog method), \hyperpage{10}
   \item OnOk() (dialogs.ProjectAuthenticationDialog method), 
-		\hyperpage{10}
+		\hyperpage{11}
+  \item OnOk() (dialogs.ProjectSelectedDialog method), \hyperpage{11}
+  \item OnOk() (dialogs.UpdateDialog method), \hyperpage{12}
   \item OnPreferences() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
-  \item OnProject() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
+		\hyperpage{14}
   \item OnProjectAdd() (dialogs.ProjectSelectDialog method), 
 		\hyperpage{11}
+  \item OnProjectChanged() (diwacs.GraphicalUserInterface method), 
+		\hyperpage{14}
   \item OnProjectDelete() (dialogs.ProjectSelectDialog method), 
 		\hyperpage{11}
   \item OnProjectEdit() (dialogs.ProjectSelectDialog method), 
@@ -307,215 +310,250 @@
   \item OnSelectionChange() (dialogs.ProjectSelectDialog method), 
 		\hyperpage{11}
   \item OnSession() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
+		\hyperpage{14}
   \item OnTaskBarActivate() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
+		\hyperpage{14}
   \item OnTaskBarClose() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
-  \item OnText() (dialogs.AddProjectDialog method), \hyperpage{10}
-  \item OnText() (diwacs.EventList method), \hyperpage{12}
+		\hyperpage{14}
+  \item OnText() (dialogs.AddProjectDialog method), \hyperpage{9}
+  \item OnText() (diwacs.EventList method), \hyperpage{13}
   \item OnWABtn() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{13}
+		\hyperpage{14}
   \item open\_file() (in module filesystem), \hyperpage{17}
   \item open\_mic\_stream() (threads.audiorecorder.AudioRecorder method), 
-		\hyperpage{33}
+		\hyperpage{35}
   \item OpenConfig() (dialogs.PreferencesDialog method), \hyperpage{10}
   \item OpenProjectDir() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{14}
 
   \indexspace
 
-  \item PaintSelect() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{14}
   \item parse\_config() (threads.worker.WORKER\_THREAD method), 
-		\hyperpage{37}
+		\hyperpage{39}
   \item parse\_mouse\_events() (threads.inputcapture.MOUSE\_CAPTURE method), 
-		\hyperpage{36}
-  \item ping\_handler() (swnp.SWNP method), \hyperpage{31}
-  \item ping\_routine() (swnp.SWNP method), \hyperpage{31}
+		\hyperpage{39}
+  \item ping\_handler() (swnp.SWNP method), \hyperpage{32}
+  \item ping\_routine() (swnp.SWNP method), \hyperpage{33}
   \item PreferencesDialog (class in dialogs), \hyperpage{10}
-  \item Project (class in models), \hyperpage{26}
+  \item print\_to\_status\_box() (in module diwavars), \hyperpage{15}
+  \item Project (class in models), \hyperpage{27}
   \item PROJECT\_EVENT\_HANDLER (class in controller.handlers), 
 		\hyperpage{6}
-  \item ProjectAuthenticationDialog (class in dialogs), \hyperpage{10}
-  \item ProjectSelectDialog (class in dialogs), \hyperpage{10}
+  \item ProjectAuthenticationDialog (class in dialogs), \hyperpage{11}
+  \item ProjectSelectDialog (class in dialogs), \hyperpage{11}
   \item ProjectSelectedDialog (class in dialogs), \hyperpage{11}
 
   \indexspace
 
-  \item refresh() (swnp.Node method), \hyperpage{30}
+  \item refresh() (swnp.Node method), \hyperpage{32}
   \item refresh\_computer() (in module controller.computer), 
 		\hyperpage{6}
   \item refresh\_computer\_by\_wos\_id() (in module controller.computer), 
 		\hyperpage{6}
-  \item release() (in module macro), \hyperpage{21}
-  \item release\_all\_keys() (in module macro), \hyperpage{21}
-  \item ReloadAs() (graphicaldesign.NodeScreen method), \hyperpage{19}
+  \item register\_status\_box\_callback() (in module diwavars), 
+		\hyperpage{15}
+  \item release() (in module macro), \hyperpage{22}
+  \item release\_all\_keys() (in module macro), \hyperpage{22}
+  \item ReloadAs() (graphicaldesign.NodeScreen method), \hyperpage{20}
+  \item ReloadConfig() (dialogs.PreferencesDialog method), 
+		\hyperpage{10}
   \item remove\_all\_registry\_entries() (threads.worker.WORKER\_THREAD static method), 
-		\hyperpage{37}
-  \item remove\_observer() (state.State method), \hyperpage{29}
+		\hyperpage{40}
+  \item remove\_from\_swnp\_data() (state.State method), \hyperpage{30}
+  \item remove\_observer() (state.State method), \hyperpage{30}
   \item remove\_self() (threads.diwathread.DIWA\_THREAD method), 
-		\hyperpage{35}
+		\hyperpage{37}
   \item reset\_mouse\_events() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
-  \item right\_click() (in module macro), \hyperpage{21}
-  \item right\_hold() (in module macro), \hyperpage{21}
-  \item right\_release() (in module macro), \hyperpage{21}
+		\hyperpage{38}
+  \item right\_click() (in module macro), \hyperpage{22}
+  \item right\_hold() (in module macro), \hyperpage{22}
+  \item right\_release() (in module macro), \hyperpage{22}
+  \item run() (testing.DiwaTest method), \hyperpage{34}
   \item run() (threads.audiorecorder.AudioRecorder method), 
-		\hyperpage{33}
+		\hyperpage{35}
   \item run() (threads.checkupdate.CHECK\_UPDATE method), 
-		\hyperpage{33}
-  \item run() (threads.connectionerror.CONNECTION\_ERROR\_THREAD method), 
-		\hyperpage{34}
-  \item run() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method), 
-		\hyperpage{34}
-  \item run() (threads.current.CURRENT\_PROJECT method), \hyperpage{35}
-  \item run() (threads.current.CURRENT\_SESSION method), \hyperpage{35}
-  \item run() (threads.inputcapture.INPUT\_CAPTURE method), 
 		\hyperpage{36}
-  \item run() (threads.worker.SNAPSHOT\_THREAD method), \hyperpage{37}
-  \item run() (threads.worker.WORKER\_THREAD method), \hyperpage{37}
+  \item run() (threads.connectionerror.CONNECTION\_ERROR\_THREAD method), 
+		\hyperpage{36}
+  \item run() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method), 
+		\hyperpage{37}
+  \item run() (threads.current.CURRENT\_PROJECT method), \hyperpage{37}
+  \item run() (threads.current.CURRENT\_SESSION method), \hyperpage{37}
+  \item run() (threads.inputcapture.INPUT\_CAPTURE method), 
+		\hyperpage{38}
+  \item run() (threads.worker.SNAPSHOT\_THREAD method), \hyperpage{39}
+  \item run() (threads.worker.WORKER\_THREAD method), \hyperpage{40}
 
   \indexspace
 
   \item save() (threads.audiorecorder.AudioRecorder method), 
-		\hyperpage{33}
-  \item save\_screen() (in module filesystem), \hyperpage{17}
+		\hyperpage{35}
+  \item save\_screen() (in module filesystem), \hyperpage{18}
   \item SavePreferences() (dialogs.PreferencesDialog method), 
+		\hyperpage{11}
+  \item screen\_capture() (in module filesystem), \hyperpage{18}
+  \item search\_file() (in module filesystem), \hyperpage{18}
+  \item SelectDiwaProfile() (dialogs.ChooseDiwaProfileDialog method), 
 		\hyperpage{10}
-  \item screen\_capture() (in module filesystem), \hyperpage{17}
-  \item search\_file() (in module filesystem), \hyperpage{17}
   \item SelectNode() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{14}
   \item SelectNode() (graphicaldesign.GUItemplate method), 
-		\hyperpage{19}
+		\hyperpage{20}
   \item SelectProjectDialog() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{14}
-  \item send() (swnp.SWNP method), \hyperpage{31}
+  \item send() (swnp.SWNP method), \hyperpage{33}
   \item SEND\_FILE\_CONTEX\_MENU\_HANDLER (class in threads.contextmenu), 
-		\hyperpage{34}
+		\hyperpage{36}
   \item send\_file\_to (module), \hyperpage{3}
-  \item send\_input() (in module macro), \hyperpage{21}
+  \item send\_input() (in module macro), \hyperpage{22}
+  \item send\_pop\_clipboard() (state.State method), \hyperpage{30}
+  \item send\_push\_clipboard() (state.State method), \hyperpage{30}
   \item SendProgressBar (class in dialogs), \hyperpage{11}
-  \item Session (class in models), \hyperpage{26}
+  \item Session (class in models), \hyperpage{27}
+  \item SessionChangeException, \hyperpage{29}
   \item set\_blank\_cursor() (in module diwavars), \hyperpage{15}
-  \item set\_capture() (in module threads.inputcapture), \hyperpage{36}
+  \item set\_capture() (in module threads.inputcapture), \hyperpage{39}
   \item set\_config() (in module diwavars), \hyperpage{15}
-  \item set\_current\_project() (state.State method), \hyperpage{29}
-  \item set\_current\_session() (state.State method), \hyperpage{29}
+  \item set\_current\_project() (state.State method), \hyperpage{30}
+  \item set\_current\_session() (state.State method), \hyperpage{30}
   \item set\_default\_cursor() (in module diwavars), \hyperpage{15}
-  \item set\_name() (swnp.SWNP method), \hyperpage{31}
+  \item set\_name() (swnp.SWNP method), \hyperpage{33}
   \item set\_node\_name() (in module controller.common), \hyperpage{5}
   \item set\_node\_screens() (in module controller.common), 
 		\hyperpage{5}
-  \item set\_observer() (state.State method), \hyperpage{29}
-  \item set\_responsive() (state.State method), \hyperpage{29}
-  \item set\_responsive() (swnp.SWNP method), \hyperpage{31}
+  \item set\_observer() (state.State method), \hyperpage{30}
+  \item set\_responsive() (state.State method), \hyperpage{30}
+  \item set\_responsive() (swnp.SWNP method), \hyperpage{33}
   \item set\_run\_cmd() (in module diwavars), \hyperpage{15}
-  \item set\_running() (in module diwavars), \hyperpage{15}
-  \item set\_screens() (swnp.SWNP method), \hyperpage{31}
+  \item set\_running() (in module diwavars), \hyperpage{16}
+  \item set\_screens() (swnp.SWNP method), \hyperpage{33}
+  \item set\_swnp\_data() (state.State method), \hyperpage{30}
+  \item set\_using\_diwa\_profile() (in module diwavars), 
+		\hyperpage{16}
+  \item SetNodeVars() (graphicaldesign.NodeScreen method), 
+		\hyperpage{20}
   \item SetProjectName() (diwacs.GraphicalUserInterface method), 
 		\hyperpage{14}
+  \item SetText() (graphicaldesign.BlackOverlay method), \hyperpage{18}
+  \item setUp() (testing.TestAudioRecorder method), \hyperpage{34}
+  \item setUp() (testing.TestDocumentation method), \hyperpage{34}
+  \item setUp() (testing.TestFilesystem method), \hyperpage{35}
+  \item setUp() (testing.TestUtils method), \hyperpage{35}
   \item Shift() (diwacs.GraphicalUserInterface method), \hyperpage{14}
   \item show\_dialog() (threads.checkupdate.CHECK\_UPDATE method), 
-		\hyperpage{33}
-  \item show\_modal\_and\_destroy() (in module dialogs), \hyperpage{11}
-  \item ShowMenu() (graphicaldesign.SysTray method), \hyperpage{19}
+		\hyperpage{36}
+  \item show\_modal\_and\_destroy() (in module dialogs), \hyperpage{12}
+  \item ShowMenu() (graphicaldesign.SysTray method), \hyperpage{20}
   \item ShowNotification() (graphicaldesign.SysTray method), 
-		\hyperpage{19}
-  \item ShowNow() (diwacs.EventList method), \hyperpage{12}
-  \item shutdown() (swnp.SWNP method), \hyperpage{32}
-  \item slide() (in module macro), \hyperpage{21}
-  \item slide\_to() (in module macro), \hyperpage{21}
-  \item SNAPSHOT\_THREAD (class in threads.worker), \hyperpage{37}
-  \item Start() (models.Session method), \hyperpage{27}
-  \item start\_audio\_recorder() (state.State method), \hyperpage{29}
+		\hyperpage{20}
+  \item ShowNow() (diwacs.EventList method), \hyperpage{13}
+  \item shutdown() (swnp.SWNP method), \hyperpage{33}
+  \item slide() (in module macro), \hyperpage{22}
+  \item slide\_to() (in module macro), \hyperpage{22}
+  \item SNAPSHOT\_THREAD (class in threads.worker), \hyperpage{39}
+  \item Start() (models.Session method), \hyperpage{28}
+  \item start\_audio\_recorder() (state.State method), \hyperpage{30}
   \item start\_current\_project\_thread() (state.State method), 
-		\hyperpage{29}
+		\hyperpage{30}
   \item start\_current\_session\_thread() (state.State method), 
-		\hyperpage{29}
+		\hyperpage{31}
   \item start\_new\_session() (in module controller.session), 
 		\hyperpage{9}
-  \item start\_new\_session() (state.State method), \hyperpage{29}
-  \item start\_sub\_routine() (swnp.SWNP static method), \hyperpage{32}
-  \item State (class in state), \hyperpage{28}
-  \item state (module), \hyperpage{28}
+  \item start\_new\_session() (state.State method), \hyperpage{31}
+  \item start\_sub\_routine() (swnp.SWNP static method), \hyperpage{33}
+  \item State (class in state), \hyperpage{29}
+  \item state (module), \hyperpage{29}
   \item stop() (threads.audiorecorder.AudioRecorder method), 
-		\hyperpage{33}
+		\hyperpage{35}
   \item stop() (threads.contextmenu.SEND\_FILE\_CONTEX\_MENU\_HANDLER method), 
-		\hyperpage{34}
-  \item stop() (threads.diwathread.DIWA\_THREAD method), \hyperpage{35}
+		\hyperpage{37}
+  \item stop() (threads.diwathread.DIWA\_THREAD method), \hyperpage{37}
   \item stop() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
+		\hyperpage{38}
   \item stop\_all() (threads.diwathread.DIWA\_THREAD static method), 
-		\hyperpage{35}
+		\hyperpage{37}
   \item stop\_is\_set() (threads.diwathread.DIWA\_THREAD method), 
-		\hyperpage{35}
-  \item stop\_responsive() (state.State method), \hyperpage{29}
-  \item sub\_routine() (swnp.SWNP method), \hyperpage{32}
-  \item sub\_routine\_sys() (swnp.SWNP method), \hyperpage{32}
-  \item SWNP (class in swnp), \hyperpage{30}
-  \item swnp (module), \hyperpage{30}
-  \item swnp\_send() (state.State method), \hyperpage{29}
-  \item sys\_handler() (swnp.SWNP method), \hyperpage{32}
-  \item SysTray (class in graphicaldesign), \hyperpage{19}
+		\hyperpage{37}
+  \item stop\_responsive() (state.State method), \hyperpage{31}
+  \item sub\_routine() (swnp.SWNP method), \hyperpage{33}
+  \item sub\_routine\_sys() (swnp.SWNP method), \hyperpage{33}
+  \item SWNP (class in swnp), \hyperpage{32}
+  \item swnp (module), \hyperpage{31}
+  \item swnp\_send() (state.State method), \hyperpage{31}
+  \item sys\_handler() (swnp.SWNP method), \hyperpage{33}
+  \item SysTray (class in graphicaldesign), \hyperpage{20}
 
   \indexspace
 
+  \item tearDown() (testing.TestAudioRecorder method), \hyperpage{34}
+  \item tearDown() (testing.TestDocumentation method), \hyperpage{34}
+  \item tearDown() (testing.TestFilesystem method), \hyperpage{35}
+  \item tearDown() (testing.TestUtils method), \hyperpage{35}
   \item test\_connection() (in module controller.common), \hyperpage{5}
-  \item test\_getpassword() (testing.TestUtils method), \hyperpage{32}
-  \item test\_iterislast() (testing.TestUtils method), \hyperpage{32}
-  \item test\_passwordhash() (testing.TestUtils method), \hyperpage{33}
+  \item test\_documentation() (testing.TestDocumentation method), 
+		\hyperpage{34}
+  \item test\_iterislast() (testing.TestUtils method), \hyperpage{35}
+  \item test\_record() (testing.TestAudioRecorder method), 
+		\hyperpage{34}
   \item test\_searchfile() (testing.TestFilesystem method), 
-		\hyperpage{32}
+		\hyperpage{35}
   \item test\_storage\_connection() (in module filesystem), 
-		\hyperpage{17}
-  \item TestFilesystem (class in testing), \hyperpage{32}
-  \item testing (module), \hyperpage{32}
-  \item TestUtils (class in testing), \hyperpage{32}
-  \item threads.audiorecorder (module), \hyperpage{33}
-  \item threads.checkupdate (module), \hyperpage{33}
-  \item threads.common (module), \hyperpage{34}
-  \item threads.connectionerror (module), \hyperpage{34}
-  \item threads.contextmenu (module), \hyperpage{34}
-  \item threads.current (module), \hyperpage{34}
-  \item threads.diwathread (module), \hyperpage{35}
-  \item threads.inputcapture (module), \hyperpage{35}
-  \item threads.worker (module), \hyperpage{37}
-  \item time\_ordering() (models.Computer class method), \hyperpage{24}
-  \item timeout\_routine() (swnp.SWNP method), \hyperpage{32}
-  \item TimeoutException, \hyperpage{35}
-  \item to\_dict() (swnp.Message static method), \hyperpage{30}
+		\hyperpage{18}
+  \item TestAudioRecorder (class in testing), \hyperpage{34}
+  \item TestDocumentation (class in testing), \hyperpage{34}
+  \item TestFilesystem (class in testing), \hyperpage{34}
+  \item testing (module), \hyperpage{34}
+  \item TestUtils (class in testing), \hyperpage{35}
+  \item threads.audiorecorder (module), \hyperpage{35}
+  \item threads.checkupdate (module), \hyperpage{36}
+  \item threads.common (module), \hyperpage{36}
+  \item threads.connectionerror (module), \hyperpage{36}
+  \item threads.contextmenu (module), \hyperpage{36}
+  \item threads.current (module), \hyperpage{37}
+  \item threads.diwathread (module), \hyperpage{37}
+  \item threads.inputcapture (module), \hyperpage{38}
+  \item threads.worker (module), \hyperpage{39}
+  \item time\_ordering() (models.Computer class method), \hyperpage{25}
+  \item timeout\_routine() (swnp.SWNP method), \hyperpage{33}
+  \item TimeoutException, \hyperpage{37}
+  \item to\_dict() (swnp.Message static method), \hyperpage{31}
 
   \indexspace
 
   \item unhook() (threads.inputcapture.INPUT\_CAPTURE method), 
-		\hyperpage{36}
+		\hyperpage{38}
   \item unset\_activity() (in module controller.activity), 
 		\hyperpage{4}
-  \item update() (modelsbase.MethodMixin method), \hyperpage{22}
-  \item update\_audio() (in module diwavars), \hyperpage{15}
-  \item update\_camera\_vars() (in module diwavars), \hyperpage{15}
-  \item update\_database() (in module modelsbase), \hyperpage{23}
-  \item update\_database\_vars() (in module diwavars), \hyperpage{15}
-  \item update\_keys() (in module diwavars), \hyperpage{15}
+  \item update() (modelsbase.MethodMixin method), \hyperpage{23}
+  \item update\_audio() (in module diwavars), \hyperpage{16}
+  \item update\_bitmaps() (graphicaldesign.NodeScreen static method), 
+		\hyperpage{20}
+  \item update\_camera\_vars() (in module diwavars), \hyperpage{16}
+  \item update\_config\_loader() (in module diwavars), \hyperpage{16}
+  \item update\_database() (in module modelsbase), \hyperpage{24}
+  \item update\_database\_vars() (in module diwavars), \hyperpage{16}
+  \item update\_keys() (in module diwavars), \hyperpage{16}
   \item update\_many() (modelsbase.MethodMixin class method), 
-		\hyperpage{22}
-  \item update\_padfile() (in module diwavars), \hyperpage{15}
-  \item update\_PGM\_group() (in module diwavars), \hyperpage{15}
-  \item update\_responsive() (in module diwavars), \hyperpage{15}
-  \item update\_storage() (in module diwavars), \hyperpage{15}
+		\hyperpage{23}
+  \item update\_padfile() (in module diwavars), \hyperpage{16}
+  \item update\_pgm\_group() (in module diwavars), \hyperpage{16}
+  \item update\_pgm\_group() (swnp.SWNP method), \hyperpage{34}
+  \item update\_responsive() (in module diwavars), \hyperpage{16}
+  \item update\_status\_box() (in module diwavars), \hyperpage{16}
+  \item update\_storage() (in module diwavars), \hyperpage{16}
+  \item update\_variable() (in module diwavars), \hyperpage{16}
   \item update\_windows\_version() (in module diwavars), \hyperpage{16}
-  \item UpdateDialog (class in dialogs), \hyperpage{11}
+  \item UpdateDialog (class in dialogs), \hyperpage{12}
   \item UpdateProjects() (dialogs.ProjectSelectDialog method), 
 		\hyperpage{11}
   \item UpdateScreens() (diwacs.GraphicalUserInterface method), 
-		\hyperpage{14}
-  \item User (class in models), \hyperpage{27}
-  \item utils (module), \hyperpage{37}
+		\hyperpage{15}
+  \item UrlHandler() (dialogs.UpdateDialog method), \hyperpage{12}
+  \item User (class in models), \hyperpage{28}
+  \item utils (module), \hyperpage{40}
 
   \indexspace
 
-  \item WORKER\_THREAD (class in threads.worker), \hyperpage{37}
+  \item WORKER\_THREAD (class in threads.worker), \hyperpage{39}
 
 \end{theindex}

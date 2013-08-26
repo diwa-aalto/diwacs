@@ -383,7 +383,7 @@ def update_status_box(value):
     """
     A function that get's called with the new value of status_box when
     the value changes. This forwards the function call to the registered
-    function (registered via :py:function:`register_status_box_callback`).
+    function (registered via :py:func:`register_status_box_callback`).
 
     :param value: The new value of status box.
     :type value: Integer
@@ -399,7 +399,7 @@ def print_to_status_box(line):
     """
     A function that get's called to print text into the status_box.
     This forwards the function call to the registered function
-    (registered via :py:function:`register_status_box_callback`).
+    (registered via :py:func:`register_status_box_callback`).
 
     :param value: The text to print to the status_box.
     :type value: String
@@ -423,10 +423,12 @@ def set_using_diwa_profile(value):
 
 def update_variable(name, value):
     """
-    Set ANY global value in diwavars.py into __value__ (literal_eval).
+    Set ANY global value in diwavars.py into **value** (literal_eval).
 
     EXAMPLE:
+
     .. code-block:: python
+
         diwavars.update_variable('AUDIO', 'False')
 
     :param name: The name of the global.

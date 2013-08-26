@@ -164,23 +164,26 @@
 
 <dl class="function">
 <dt id="controller.common.get_or_create">
-<tt class="descclassname">controller.common.</tt><tt class="descname">get_or_create</tt><big>(</big><em>model</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#controller.common.get_or_create" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">controller.common.</tt><tt class="descname">get_or_create</tt><big>(</big><em>model</em>, <em>*filters</em>, <em>**initializers</em><big>)</big><a class="headerlink" href="#controller.common.get_or_create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches or creates a instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>database</strong> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.session.Session</span></tt>) &#8211; a related database.</li>
-<li><strong>model</strong> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base</span></tt>) &#8211; The model of which an instance is wanted.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.ext.declarative.declarative_base</span></tt>) &#8211; The model of which an instance is wanted.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An object of the desired model.</p>
-</td>
+</tbody>
+</table>
+<p>Filters are given after model and represent the query conditions for get.</p>
+<p>Initializers are given after filters and are keyword arguments used for
+initializing a new object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An object of the desired model.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Throws :</th><td class="field-body"><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.exc.SQLAlchemyException</span></tt></p>
-</td>
+<tr class="field-even field"><th class="field-name">Throws :</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.exc.SQLAlchemyException</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -416,7 +419,7 @@ It uses watchdog library internally.</p>
 </table>
 <dl class="function">
 <dt id="controller.project.add_file_to_project">
-<tt class="descclassname">controller.project.</tt><tt class="descname">add_file_to_project</tt><big>(</big><em>filepath</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.add_file_to_project" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">controller.project.</tt><tt class="descname">add_file_to_project</tt><big>(</big><em>file_path</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#controller.project.add_file_to_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a file to project. Copies it to the folder and adds a record to
 database.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -424,12 +427,12 @@ database.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filepath</strong> (<em>String</em>) &#8211; A filepath.</li>
+<li><strong>file_path</strong> (<em>String</em>) &#8211; A file_path.</li>
 <li><strong>project_id</strong> &#8211; Project id from database.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New filepath.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">New file_path.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
@@ -543,12 +546,12 @@ provided is ignored in this case.</p>
 <dl class="function">
 <dt id="controller.project.get_project_id_by_activity">
 <tt class="descclassname">controller.project.</tt><tt class="descname">get_project_id_by_activity</tt><big>(</big><em>activity_id</em><big>)</big><a class="headerlink" href="#controller.project.get_project_id_by_activity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the project ID that this activity is a part of.</p>
+<dd><p>Get the project ID that this activity_id is a part of.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>activity_id</strong> (<em>Integer</em>) &#8211; ID of the activity.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>activity_id</strong> (<em>Integer</em>) &#8211; ID of the activity_id.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The project ID.</td>
 </tr>
@@ -567,31 +570,6 @@ provided is ignored in this case.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>company_id</strong> (<em>Integer</em>) &#8211; A company id from database.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.project.get_recent_files">
-<tt class="descclassname">controller.project.</tt><tt class="descname">get_recent_files</tt><big>(</big><em>project_id</em>, <em>max_files_count=None</em><big>)</big><a class="headerlink" href="#controller.project.get_recent_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches files accessed recently in the project sessions from the database.</p>
-<div class="versionadded">
-<p><span>New in version 0.9.3.0: </span>Added a limit parameter, limits the number of returned results.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Duplicate check has been added at some point in time.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; The project id</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of filepaths that have recently been used in this project.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List of String</td>
 </tr>
 </tbody>
 </table>
@@ -722,30 +700,16 @@ Ends file scanner.</p>
 <dl class="function">
 <dt id="controller.session.get_session_id_by_activity">
 <tt class="descclassname">controller.session.</tt><tt class="descname">get_session_id_by_activity</tt><big>(</big><em>activity_id</em><big>)</big><a class="headerlink" href="#controller.session.get_session_id_by_activity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the session ID that this activity is a part of.</p>
+<dd><p>Get the session ID that this activity_id is a part of.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>activity_id</strong> (<em>Integer</em>) &#8211; ID of the activity.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>activity_id</strong> (<em>Integer</em>) &#8211; ID of the activity_id.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The project ID.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="controller.session.get_sessions_by_project">
-<tt class="descclassname">controller.session.</tt><tt class="descname">get_sessions_by_project</tt><big>(</big><em>project_id</em><big>)</big><a class="headerlink" href="#controller.session.get_sessions_by_project" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetches sessions for a project.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>project_id</strong> (<em>Integer</em>) &#8211; Project id from database.</td>
 </tr>
 </tbody>
 </table>

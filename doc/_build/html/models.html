@@ -146,7 +146,7 @@ the action.</p>
 
 <dl class="class">
 <dt id="models.Computer">
-<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Computer</tt><big>(</big><em>name</em>, <em>ip</em>, <em>mac</em>, <em>screens</em>, <em>responsive</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#models.Computer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Computer</tt><big>(</big><em>name</em>, <em>ip</em>, <em>mac</em>, <em>screens</em>, <em>responsive</em>, <em>pgm_group</em>, <em>wos_id</em><big>)</big><a class="headerlink" href="#models.Computer" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a computer.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
@@ -180,17 +180,17 @@ the action.</p>
 
 <dl class="class">
 <dt id="models.Event">
-<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Event</tt><big>(</big><em>session</em>, <em>title=''</em>, <em>description=''</em><big>)</big><a class="headerlink" href="#models.Event" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">Event</tt><big>(</big><em>session_id</em>, <em>title=''</em>, <em>description=''</em><big>)</big><a class="headerlink" href="#models.Event" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of Event. A simple note with timestamp during a
 session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the event, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Title of the event (Max 40 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">desc</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - More in-depth description of the event (Max 500 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DateTime)</span></tt>)        - Time the event took place.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the session this event belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the event, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Title of the event (Max 40 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">desc</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - More in-depth description of the event (Max 500 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(DateTime)</span></tt>)        - Time the event took place.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the session this event belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Session this event belongs to.</li>
 </ul>
 </dd>
@@ -199,14 +199,14 @@ session.</p>
 
 <dl class="class">
 <dt id="models.File">
-<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">File</tt><big>(</big><em>file_path</em>, <em>project=None</em><big>)</big><a class="headerlink" href="#models.File" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">models.</tt><tt class="descname">File</tt><big>(</big><em>path</em>, <em>project_id=None</em><big>)</big><a class="headerlink" href="#models.File" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class representation of a file.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the file, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">path</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Path of the file on DiWa (max 255 chars).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the project this file belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the file, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">path</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Path of the file on DiWa (max 255 chars).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the project this file belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Project this file belongs to.</li>
 </ul>
 </dd>
@@ -220,17 +220,17 @@ session.</p>
 <p>Fields:</p>
 <blockquote>
 <div><ul class="simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the FileAction, used as primary key in the database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the FileAction, used as primary key in the database table.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">file_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlaclhemy.types.Integer)</span></tt>)        - ID of the file this FileAction affects.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">file</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship)</span></tt>)        - The file this FileAction affects.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">action_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the action affecting the file.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">action_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the action affecting the file.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">action</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship)</span></tt>)        - Action affecting the file.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">action_time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DateTime)</span></tt>)        - Time the action took place on.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the user performing the action.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">action_time</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(DateTime)</span></tt>)        - Time the action took place on.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">user_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the user performing the action.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">user</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - User peforming the action.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">computer_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the computer user performed the action on.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">computer_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the computer user performed the action on.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">computer</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Computer user performed the action on.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the session user performed the action in.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the session user performed the action in.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">session</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Session user performed the action in.</li>
 </ul>
 </div></blockquote>
@@ -258,12 +258,12 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of project, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the project (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the company that owns the project.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of project, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Name of the project (Max 50 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the company that owns the project.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The company that owns the project.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">dir</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Directory path for the project files (Max 255 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">password</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Password for the project (Max 40 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">dir</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Directory path for the project files (Max 255 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">password</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Password for the project (Max 40 characters).</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">members</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The users that work on the project.</li>
 </ul>
 </dd>
@@ -272,13 +272,12 @@ session.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) &#8211; Name of the project.</li>
+<li><strong>directory</strong> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) &#8211; The location of project on disc.</li>
 <li><strong>company</strong> (<a class="reference internal" href="#models.Company" title="models.Company"><tt class="xref py py-class docutils literal"><span class="pre">models.Company</span></tt></a>) &#8211; The owner of the project.</li>
+<li><strong>password</strong> (<tt class="xref py py-class docutils literal"><span class="pre">String</span></tt>) &#8211; The project password.</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Todo :</th><td class="field-body"><p class="first last">document <cite>directory</cite> and <cite>password</cite> parameters.</p>
 </td>
 </tr>
 </tbody>
@@ -292,13 +291,13 @@ session.</p>
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of session, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of session (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the project the session belongs to.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of session, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Name of session (Max 50 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">project_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the project the session belongs to.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">project</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - The project the session belongs to.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">starttime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DateTime)</span></tt>)        - Time the session began, defaults to <cite>now()</cite>.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">endtime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.DateTime)</span></tt>)        - The time session ended.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the previous session.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">starttime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(DateTime)</span></tt>)        - Time the session began, defaults to <cite>now()</cite>.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">endtime</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(DateTime)</span></tt>)        - The time session ended.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the previous session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">previous_session</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>) - The previous session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">participants</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Users that belong to this session.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">computers</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Computers that belong to this session.</li>
@@ -367,12 +366,12 @@ Set the <tt class="xref py py-attr docutils literal"><span class="pre">last_chec
 <dl class="docutils">
 <dt>Fields:</dt>
 <dd><ul class="first last simple">
-<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - ID of the user, used as primary key in database table.</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Name of the user (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">email</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Email address of the user (Max 100 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Title of the user in the company (Max 50 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">department</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.String)</span></tt>)        - Department of the user in the company (Max 100 characters).</li>
-<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(sqlalchemy.types.Integer)</span></tt>)        - Company id of the employing company.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - ID of the user, used as primary key in database table.</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">name</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Name of the user (Max 50 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">email</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Email address of the user (Max 100 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">title</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Title of the user in the company (Max 50 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">department</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(String)</span></tt>)        - Department of the user in the company (Max 100 characters).</li>
+<li><tt class="xref py py-attr docutils literal"><span class="pre">company_id</span></tt>        (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.schema.Column(Integer)</span></tt>)        - Company id of the employing company.</li>
 <li><tt class="xref py py-attr docutils literal"><span class="pre">company</span></tt> (<tt class="xref py py-class docutils literal"><span class="pre">sqlalchemy.orm.relationship</span></tt>)        - Company relationship.</li>
 </ul>
 </dd>

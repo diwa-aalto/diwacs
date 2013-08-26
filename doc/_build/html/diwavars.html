@@ -94,6 +94,42 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="diwavars.print_to_status_box">
+<tt class="descclassname">diwavars.</tt><tt class="descname">print_to_status_box</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#diwavars.print_to_status_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that get&#8217;s called to print text into the status_box.
+This forwards the function call to the registered function
+(registered via <a class="reference internal" href="#diwavars.register_status_box_callback" title="diwavars.register_status_box_callback"><tt class="xref py py-func docutils literal"><span class="pre">register_status_box_callback()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>String</em>) &#8211; The text to print to the status_box.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.register_status_box_callback">
+<tt class="descclassname">diwavars.</tt><tt class="descname">register_status_box_callback</tt><big>(</big><em>state_func</em>, <em>print_func</em><big>)</big><a class="headerlink" href="#diwavars.register_status_box_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a function for changing the state of status_box and
+a function for printing data into the status_box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>state_func</strong> (<em>Function(Integer)</em>) &#8211; A function that get&#8217;s called with the new value of status_box when
+the value changes.</li>
+<li><strong>print_func</strong> (<em>Function(String)</em>) &#8211; A function that get&#8217;s called to print text into the status_box.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="diwavars.set_blank_cursor">
 <tt class="descclassname">diwavars.</tt><tt class="descname">set_blank_cursor</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.set_blank_cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the blank cursor variable.</p>
@@ -134,9 +170,9 @@ to files.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="diwavars.update_PGM_group">
-<tt class="descclassname">diwavars.</tt><tt class="descname">update_PGM_group</tt><big>(</big><em>new_group</em><big>)</big><a class="headerlink" href="#diwavars.update_PGM_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the PGM group for this node.</p>
+<dt id="diwavars.set_using_diwa_profile">
+<tt class="descclassname">diwavars.</tt><tt class="descname">set_using_diwa_profile</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.set_using_diwa_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set variable defining is a profile in use.</p>
 </dd></dl>
 
 <dl class="function">
@@ -152,6 +188,12 @@ to files.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="diwavars.update_config_loader">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_config_loader</tt><big>(</big><em>config_loader</em><big>)</big><a class="headerlink" href="#diwavars.update_config_loader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the CONFIG loader function...</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="diwavars.update_database_vars">
 <tt class="descclassname">diwavars.</tt><tt class="descname">update_database_vars</tt><big>(</big><em>address=None</em>, <em>name=None</em>, <em>type_=None</em>, <em>user=None</em>, <em>password=None</em><big>)</big><a class="headerlink" href="#diwavars.update_database_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the global database settings.</p>
@@ -159,7 +201,7 @@ to files.</p>
 
 <dl class="function">
 <dt id="diwavars.update_keys">
-<tt class="descclassname">diwavars.</tt><tt class="descname">update_keys</tt><big>(</big><em>modifier=91</em>, <em>key=27</em><big>)</big><a class="headerlink" href="#diwavars.update_keys" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_keys</tt><big>(</big><em>modifier=91</em>, <em>key=164</em><big>)</big><a class="headerlink" href="#diwavars.update_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the key combination to stop remote controlling.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -182,9 +224,31 @@ to files.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="diwavars.update_pgm_group">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_pgm_group</tt><big>(</big><em>new_group</em><big>)</big><a class="headerlink" href="#diwavars.update_pgm_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the PGM group for this node.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="diwavars.update_responsive">
 <tt class="descclassname">diwavars.</tt><tt class="descname">update_responsive</tt><big>(</big><em>responsive</em><big>)</big><a class="headerlink" href="#diwavars.update_responsive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the global responsive setting.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_status_box">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_status_box</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#diwavars.update_status_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that get&#8217;s called with the new value of status_box when
+the value changes. This forwards the function call to the registered
+function (registered via <a class="reference internal" href="#diwavars.register_status_box_callback" title="diwavars.register_status_box_callback"><tt class="xref py py-func docutils literal"><span class="pre">register_status_box_callback()</span></tt></a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<em>Integer</em>) &#8211; The new value of status box.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -196,6 +260,28 @@ to files.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>storage</strong> (<em>String</em>) &#8211; The new address of storage.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="diwavars.update_variable">
+<tt class="descclassname">diwavars.</tt><tt class="descname">update_variable</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="headerlink" href="#diwavars.update_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set ANY global value in diwavars.py into <strong>value</strong> (literal_eval).</p>
+<p>EXAMPLE:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">diwavars</span><span class="o">.</span><span class="n">update_variable</span><span class="p">(</span><span class="s">&#39;AUDIO&#39;</span><span class="p">,</span> <span class="s">&#39;False&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>String</em>) &#8211; The name of the global.</li>
+<li><strong>value</strong> (<em>String</em>) &#8211; The new value of the global embedded into a string.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

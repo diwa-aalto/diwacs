@@ -124,6 +124,84 @@ is pressed.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="dialogs.ChooseDiwaProfileDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ChooseDiwaProfileDialog</tt><big>(</big><em>parent</em>, <em>profiles</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows user to select a DiWa profile from a list of profiles. Profiles
+are loaded from the filesystem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<em>Object</em>) &#8211; The parent object.</li>
+<li><strong>profiles</strong> (<em>List</em>) &#8211; List of profiles</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.Exit">
+<tt class="descname">Exit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.Exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for Exit button press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dialogs.ChooseDiwaProfileDialog.ListDatabaseProfiles">
+<em class="property">static </em><tt class="descname">ListDatabaseProfiles</tt><big>(</big><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.ListDatabaseProfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of available profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of profiles.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List of Strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.OnComboBox">
+<tt class="descname">OnComboBox</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.OnComboBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for updating the state of OK button, depending
+if there&#8217;s anything selected in the combo-box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.SelectDiwaProfile">
+<tt class="descname">SelectDiwaProfile</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.SelectDiwaProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load settings from a profile, event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="exception">
 <dt id="dialogs.CloseError">
 <em class="property">exception </em><tt class="descclassname">dialogs.</tt><tt class="descname">CloseError</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#dialogs.CloseError" title="Permalink to this definition">¶</a></dt>
@@ -135,6 +213,12 @@ is pressed.</p>
 <em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ConnectionErrorDialog</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#dialogs.ConnectionErrorDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a connection error dialog that informs the user about reconnection
 attempts made by the software.</p>
+<dl class="method">
+<dt id="dialogs.ConnectionErrorDialog.GetResult">
+<tt class="descname">GetResult</tt><big>(</big><big>)</big><a class="headerlink" href="#dialogs.ConnectionErrorDialog.GetResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to reconnect and return the outcome.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -197,6 +281,20 @@ change some settings.</p>
 <dl class="method">
 <dt id="dialogs.PreferencesDialog.OpenConfig">
 <tt class="descname">OpenConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.OpenConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens config file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.ReloadConfig">
+<tt class="descname">ReloadConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.ReloadConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens config file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -352,6 +450,20 @@ Shows a dialog of the selected project.</p>
 <dt id="dialogs.ProjectSelectedDialog">
 <em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectSelectedDialog</tt><big>(</big><em>parent</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog for project selection confirmation.</p>
+<dl class="method">
+<dt id="dialogs.ProjectSelectedDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for OK button press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -377,6 +489,34 @@ Contains the URL which the user can click on.</p>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="dialogs.UpdateDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.UpdateDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for OK button press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.UpdateDialog.UrlHandler">
+<tt class="descname">UrlHandler</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.UpdateDialog.UrlHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for URL text press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
