@@ -36,19 +36,37 @@ class CallAbsorber(object):
             CallAbsorber.NUMBER += 1
 
     def __call__(self, *args, **kwargs):
+        """
+        Do nothing if the object is called.
+
+        :TODO:
+            Log the call with method name (possibly create new
+            CallAbsorber with argument name when using get
+            attribute to create unique absorbers).
+
+        """
         pass
 
     def __getattribute__(self, *args, **kwargs):
+        """
+        Get attribute by name.
+
+        """
         return CallAbsorber()
 
     def __setattr__(self, *args, **kwargs):
+        """
+        Set attribute value by name.
+
+        """
         pass
 
-    def __str__(self):
-        return 'CallAbsorber {0}'.format(hash(self))
+    def __repr__(self):
+        """
+        Return the call_absorber string.
 
-    def __unicode__(self):
-        return u'CallAbsorber {0}'.format(hash(self))
+        """
+        return 'CallAbsorber {0}'.format(hash(self))
 
     def __hash__(self, *args, **kwargs):
         """
@@ -58,7 +76,7 @@ class CallAbsorber(object):
         """
         try:
             return int(self.number)
-        except:
+        except Exception:
             return 0
 
 
@@ -68,6 +86,10 @@ class TestAudioRecorder(unittest.TestCase):
 
     """
     def setUp(self):
+        """
+        Set up the audio recorder helpers for testing.
+
+        """
         timeform = str(datetime.now().isoformat())
         timeform = timeform[:timeform.rfind('.')]
         replaces = (('-', ''), (':', ''), ('T', '_'))
@@ -83,9 +105,14 @@ class TestAudioRecorder(unittest.TestCase):
         unittest.TestCase.setUp(self)
 
     def tearDown(self):
+        """Stub to add cleaners in."""
         pass
 
     def test_record(self):
+        """
+        Test recording functionality of AudioRecorder.
+
+        """
         error = None
         try:
             recorder = audiorecorder.AudioRecorder(self.gui)
@@ -104,9 +131,11 @@ class TestUtils(unittest.TestCase):
 
     """
     def setUp(self):
+        """Stub to add helpers in."""
         pass
 
     def tearDown(self):
+        """Stub to add cleaners in."""
         pass
 
     def test_iterislast(self):
@@ -135,9 +164,11 @@ class TestFilesystem(unittest.TestCase):
 
     """
     def setUp(self):
+        """Stub to add helpers in."""
         pass
 
     def tearDown(self):
+        """Stub to add cleaners in."""
         pass
 
     def test_searchfile(self):
@@ -150,12 +181,33 @@ class TestFilesystem(unittest.TestCase):
             'DiWaCS.ilg',
             '001_Edit_project_definition.pyc'
         ]
+        tonotfind = [
+            'NOT_EXISTING.log',
+            'exists_not.exe',
+            'True',
+            'False',
+            'COM1',         # This is evil!
+            'IOError',
+            ''
+        ]
         root = os.getcwd()
         for filename in tofind:
             filepath = filesystem.search_file(filename, root)
             file_found = bool(filepath)
             assertion_error = '{0} not found in {1}'
             self.assertTrue(file_found, assertion_error.format(filename, root))
+        for filename in tonotfind:
+            error = None
+            try:
+                filepath = filesystem.search_file(filename, root)
+                file_found = bool(filepath)
+                assertion_error = ('{0} found in {1} although it does not '
+                                   'exists anywhere!')
+                self.assertFalse(file_found, assertion_error.format(filename,
+                                                                    root))
+            except Exception as excp:
+                error = excp
+            self.assertIs(error, None, 'Error')
 
 
 class TestDocumentation(unittest.TestCase):
@@ -164,14 +216,33 @@ class TestDocumentation(unittest.TestCase):
 
     """
     def setUp(self):
+        """Stub to add helpers in."""
         self.target_folders = ['.', 'controller', 'threads']
         self.target_types = ['.py']
         self.ignore_methods = ['__init__']
 
     def tearDown(self):
+        """Stub to add cleaners in."""
         pass
 
     def test_documentation(self):
+        """
+        Test that most of the code has been documented.
+
+        :note:
+            The algorithm that calculates the documentation percentage
+            is not perfect but kind of works. It could be improved
+            by using actual parser (and pylint even does the same) but
+            this makes it an actual testcase.
+
+            This also prints out the missed lines where there should have
+            been documentation (docstrings) and prints the total percentage
+            of the project documented.
+
+            This test fails if the percentage is lower than a hard-coded
+            expected value. That value defaults to 95% at this moment.
+
+        """
         files = []
         for folder in self.target_folders:
             items = os.listdir(folder)
@@ -215,11 +286,14 @@ class TestDocumentation(unittest.TestCase):
                 fin.close()
         percentage = (Decimal(100) * Decimal(documented_definitions) /
                       Decimal(total_definitions))
-        print 'HIT RATE {0}%, MISSED:'.format(percentage)
-        for miss in misses:
-            print miss
-        self.assertGreater(percentage, Decimal(90),
-                           'I find you documentation lacking.')
+        print 'HIT RATE {0:.4}%'.format(percentage)
+        if percentage < Decimal(100):
+            print 'MISSED:'
+            for miss in misses:
+                print miss
+        # Expect at least 95% to be documented.
+        on_fail = 'I find your documentation lacking!'
+        self.assertGreaterEqual(percentage, Decimal(95), on_fail)
 
 
 class DiwaTest(unittest.TestSuite):
@@ -232,6 +306,7 @@ class DiwaTest(unittest.TestSuite):
         unittest.TestSuite.__init__(self, tests)
 
     def run(self, result, debug=False):
+        """Run the unittest."""
         return unittest.TestSuite.run(self, result, debug=debug)
 
 

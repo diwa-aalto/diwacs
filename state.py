@@ -68,6 +68,11 @@ diwavars.add_logger_level_setter(__set_logger_level)
 
 
 class SessionChangeException(Exception):
+    """
+    A stub for new Exception that just had a different type to be
+    catchable in its own right.
+
+    """
     pass
 
 
@@ -520,6 +525,11 @@ class State(object):
 
     @staticmethod
     def _on_mouse_event(parameters):
+        """
+        Event handler for messages that contain mouse clicks or wheel
+        movement.
+
+        """
         target, wheel = [int(i) for i in parameters.split(',')]
         flags = 0
         mouse_data = 0
@@ -531,11 +541,19 @@ class State(object):
 
     @staticmethod
     def _on_mouse_move(parameters):
+        """
+        Event handler for messages that contain mouse movement.
+
+        """
         pos_x, pos_y = [int(i) for i in parameters.split(',')]
         macro.send_input('m', (pos_x, pos_y), 0x0001)
 
     @staticmethod
     def _on_key(parameters):
+        """
+        Event handler for messages that contain key presses.
+
+        """
         evt_code, key, scan = [int(i) for i in parameters.split(',')]
         flags = 0
         if evt_code == 257:
@@ -544,10 +562,18 @@ class State(object):
 
     @staticmethod
     def _on_url(parameters):
+        """
+        Event handler for messages that request you to open an URL address.
+
+        """
         LOGGER.debug('Open URL: {0}'.format(parameters))
         webbrowser.open(parameters)
 
     def _on_open(self, parameters):
+        """
+        Event handler for messages that request you to open a file.
+
+        """
         #  Open all files in list.
         target = literal_eval(parameters)
         for filename in target:
@@ -563,6 +589,10 @@ class State(object):
                 filesystem.open_file(filename)
 
     def _on_new_responsive(self, parameters):
+        """
+        Event handler for messages that inform you of a new responsive node.
+
+        """
         if self.is_responsive:
             self.stop_responsive()
             self.is_responsive = False
@@ -570,18 +600,49 @@ class State(object):
             LOGGER.info('Responsive changed to: {0}'.format(parameters))
 
     def _on_event(self, parameters):
+        """
+        Event handler for messages that inform you of new events.
+
+        """
         LOGGER.info('event: {0}'.format(parameters))
         if self.is_responsive:
             self.worker.create_event(parameters)
 
     def _on_remote_start(self, parameters):
+        """
+        Event handler for messages that inform you of starting remote control.
+
+        """
         # macro.release_all_keys()
         self.controlled = parameters
         LOGGER.debug('CONTROLLED: {0}'.format(parameters))
         self.append_swnp_data('controlled')
 
+    def _on_remote_end(self, parameters):  # @UnusedVariable
+        """
+        Event handler for messages that inform you of ending remote control.
+
+        """
+        # if self.controlled:
+        #     macro.release_all_keys()
+        if self.controlling:
+            self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
+            self.selected_nodes = []
+            threads.inputcapture.set_capture(False)
+            self.capture_thread.unhook()
+            self.parent.overlay.Hide()
+        self.controlled = False
+        self.controlling = False
+        self.remove_from_swnp_data('controlled')
+
     @staticmethod
     def _try_open_clipboard(trycount, sleepamount):
+        """
+        Helper function to open the clipboard by trying a few times
+        instead of giving up if it's been locked by another process
+        and without raising exceptions.
+
+        """
         tries = 0
         while tries < trycount:
             try:
@@ -596,8 +657,10 @@ class State(object):
     @staticmethod
     def _get_clipboard_content():
         """
-        Returns the clipboard content list.
-        list of tuples (format, data).
+        Helper function to get the current clipboard content.
+
+        :returns: The current clipboard contents.
+        :rtype: A list of Tuples containing (Format, Data)
 
         """
         result = []
@@ -623,6 +686,13 @@ class State(object):
 
     @staticmethod
     def _set_clipboard_content(contents):
+        """
+        Helper function to set the current clipboard content.
+
+        :param contents: The desired clipboard contents.
+        :type contents: A list of Tuples containing (Format, Data)
+
+        """
         if not State._try_open_clipboard(10, 0.01):
             return False
         answer = True
@@ -641,6 +711,8 @@ class State(object):
 
     def _on_clipboard_sync(self, parameters):
         """
+        Event handler for clipboard synchronization.
+
         parameters:
         PUSH_{...}        - request to push data into clipboard
         POP_ID            - request to pop data from clipboard
@@ -685,32 +757,32 @@ class State(object):
         except Exception as excp:
             LOGGER.exception('CLIPBOARD_SYNC_EXCEPTION: {0}'.format(excp))
 
-    def _on_remote_end(self, parameters):  # @UnusedVariable
-        # if self.controlled:
-        #     macro.release_all_keys()
-        if self.controlling:
-            self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
-            self.selected_nodes = []
-            threads.inputcapture.set_capture(False)
-            self.capture_thread.unhook()
-            self.parent.overlay.Hide()
-        self.controlled = False
-        self.controlling = False
-        self.remove_from_swnp_data('controlled')
-
     def _on_set(self, parameters):
+        """
+        Event handler for messages that request you to set a variable to
+        given value.
+
+        """
         if parameters == 'responsive':
             if diwavars.RESPONSIVE > 0:
                 self.is_responsive = True
                 self.set_responsive()
 
     def _on_screenshot(self, parameters):  # @UnusedVariable
+        """
+        Event handler for messages that request for a screenshot.
+
+        """
         if self.swnp.node.screens > 0:
             LOGGER.info('Taking a screenshot.')
             project_path = self.current_project.dir
             filesystem.screen_capture(project_path, self.swnp.node.id)
 
     def _on_current_activity(self, parameters):
+        """
+        Event handler for messages that inform of the current activity.
+
+        """
         self.activity_id = int(parameters)
         old_project_id = self.current_project_id
         old_session_id = self.current_session_id
@@ -724,12 +796,20 @@ class State(object):
             self.parent.OnProjectChanged()
 
     def _on_current_project(self, parameters):
+        """
+        Event handler for messages that inform of the current project.
+
+        """
         project_id = int(parameters)
         if project_id != self.current_project_id:
             self.set_current_project(project_id)
             self.parent.OnProjectChanged()
 
     def _on_current_session(self, parameters):
+        """
+        Event handler for messages that inform of the current session.
+
+        """
         session_id = int(parameters)
         if session_id != self.current_session_id:
             self.set_current_session(session_id)
@@ -805,6 +885,16 @@ class State(object):
         self.set_swnp_data(data)
 
     def send_push_clipboard(self, target_node_id):
+        """
+        Sends a command to another node that they should save their
+        clipboard content and set the current content to what this
+        node has on its clipboard at this moment.
+
+        :param target_node_id:
+            The ID of the node that should perform the operation.
+        :type target_node_id: Integer
+
+        """
         clipboard_data = State._get_clipboard_content()
         clipboard_data = dumps(clipboard_data, 1)
         clipboard_data = b64encode(clipboard_data)
@@ -813,6 +903,15 @@ class State(object):
         self.swnp_send(str(target_node_id), msg)
 
     def send_pop_clipboard(self, target_node_id):
+        """
+        Sends a command to another node that they should restore their
+        old clipboard content and send the overwritten content back to
+        this node.
+
+        :param target_node_id:
+            The ID of the node that should perform the operation.
+        :type target_node_id: Integer
+        """
         msg = 'clipboard_sync;POP_{0}'.format(self.swnp.node.id)
         LOGGER.debug(msg)
         self.swnp_send(str(target_node_id), msg)

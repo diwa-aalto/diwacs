@@ -77,13 +77,28 @@ class Message:
     from_json = staticmethod(from_json)
 
     def __str__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        """
+        Get the string representation of the message.
+
+        """
+        return '_'.join([self.TAG, self.PREFIX, self.PAYLOAD])
 
     def __repr__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        """
+        Get the debug representation of the message.
+
+        """
+        return '_'.join([self.TAG, self.PREFIX, self.PAYLOAD])
 
 
 def main():
+    """
+    Main functionality of open_file_in.
+
+    :argument 1: Node to send the open command to.
+    :argument 2: Filepath to send.
+
+    """
     if len(sys.argv) == 3:
         target = sys.argv[1]
         filepath = sys.argv[2]

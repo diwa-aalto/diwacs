@@ -143,12 +143,19 @@ class MethodMixin():
 
     """
     def __repr__(self):
+        """
+        Common way of representing models classes based on their id number.
+
+        """
         id_ = getattr(self, 'id', -1)
         name = self.__class__.__name__
         return '<id={0}, item={1}>'.format(id_, name)
 
     def delete(self):
-        """Delete an object of this class from the database."""
+        """
+        Delete an object of this class from the database.
+
+        """
         database = None
         try:
             database = connect_to_database()

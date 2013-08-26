@@ -142,6 +142,16 @@ __WIN_VISTA7_REG = r'Control Panel\Desktop'
 
 
 def get_current_wallpaper(win):
+    """
+    Try to get the current wallpaper image path.
+
+    :param win: Windows version (Major, Minor).
+    :type win: Tuple of Integers
+
+    :returns: Wallpaper image path if it can find it.
+    :rtype: String
+
+    """
     wallpaper = None
     wallpaper_path = ''
     key = None

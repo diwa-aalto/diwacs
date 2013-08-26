@@ -99,6 +99,18 @@ class BlackOverlay(wx.Frame):
             evt.Skip(True)
 
     def SetText(self, button_modifier=None, button=None):
+        """
+        Sets the text that appears on the black overlay.
+
+        :param button_modifier: The button name that should be held down.
+        :type button_modifier: String
+
+        :param button:
+            The button name that should be pressed when the modifier
+            key is held down.
+        :type button: String
+
+        """
         if not button_modifier:
             button_modifier = 'ALT'
         if not button:
@@ -111,8 +123,10 @@ class BlackOverlay(wx.Frame):
         button = button.upper()
         hotkey_table = [button_modifier, button]
         for index, hotkey in enumerate(hotkey_table):
-            if hotkey in replaces: # Otherway kind of.
-                hotkey_table[index] = replaces[hotkey]
+            for replacer in replaces:
+                if replacer in hotkey:
+                    hotkey_table[index] = replaces[replacer]
+                    break
         label_format = 'Press {0} + {1} to end remote control'
         label_text = label_format.format(hotkey_table[0], hotkey_table[1])
         self.exit_label.SetLabel(label_text)
@@ -412,6 +426,11 @@ class NodeScreen(wx.StaticBitmap):
 
     @staticmethod
     def update_bitmaps():
+        """
+        Load the static bitmaps for hidden and wallpaperless screens.
+        This caches them in memory to be used later without IO calls.
+
+        """
         NodeScreen.DEFAULT_BITMAP = wx.Bitmap(diwavars.DEFAULT_SCREEN,
                                               wx.BITMAP_TYPE_ANY)
         NodeScreen.EMPTY_BITMAP = wx.Bitmap(diwavars.NO_SCREEN,
@@ -822,12 +841,26 @@ class GUItemplate(wx.Frame):
         self.Refresh()
 
     def _OnStatusBoxCallback(self, value):
+        """
+        Procedure handler for setting the status box visibility.
+
+        :param value: Should the box be visible.
+        :type value: Boolean
+
+        """
         if value:
             self.status_box.Show()
         else:
             self.status_box.Hide()
 
     def _OnStatusBoxPrint(self, value):
+        """
+        Procedure handler for printing text into the status box.
+
+        :param value: Line to be printed into the status box.
+        :type value: String
+
+        """
         if len(self.status_box.GetValue()):
             self.status_box.AppendText('\r\n')
         self.status_box.AppendText(value)

@@ -85,6 +85,15 @@ DATA_FILETYPE_ICONS = ('icons/filetypes', glob(r'icons\filetypes\*.*'))
 
 
 def main():
+    """
+    Main functionality of the setup script.
+
+    Please give "py2exe" parameter for this one.
+
+    Call it like this:
+    `Python setup.py py2exe`
+
+    """
     sys.path.append(VISUAL_STUDIO_PATH)
     sys.path.append(POSTGRESQL_PATH)
     #sys.path.append(ocipath)

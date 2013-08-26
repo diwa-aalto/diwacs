@@ -68,7 +68,18 @@ class Action(MethodMixin, Base):
         Action.update(self)
 
     def __str__(self):
+        """
+        Returns the string representation of Action.
+
+        """
         return self.name
+
+    def __unicode__(self):
+        """
+        Returns the string representation (UNICODE) of Action.
+
+        """
+        return unicode(self.name)
 
 
 class Activity(MethodMixin, Base):
@@ -167,13 +178,17 @@ class Company(MethodMixin, Base):
 
     def __str__(self):
         """
-        Human interface representation for Company.
-
-        :returns: The name of the company.
-        :rtype: String
+        Returns the string representation of Company.
 
         """
         return self.name
+
+    def __unicode__(self):
+        """
+        Returns the string representation (UNICODE) of Company.
+
+        """
+        return unicode(self.name)
 
 
 class Computer(MethodMixin, Base):
@@ -260,7 +275,10 @@ class Computer(MethodMixin, Base):
 
     @classmethod
     def time_ordering(cls, computer):
-        """Key function for time ordering."""
+        """
+        Key function for time ordering.
+
+        """
         return computer.time
 
     @classmethod
@@ -295,8 +313,22 @@ class Computer(MethodMixin, Base):
         return sorted(computers, key=Computer.time_ordering).pop()
 
     def __str__(self):
+        """
+        Returns the string representation of Computer.
+
+        """
         str_msg = '<{wos_id}: name={name} screens={screens}{iftime}>'
         my_time = (' time=' + self.time.isoformat()) if self.time else ''
+        return str_msg.format(iftime=my_time, **self.__dict__)
+
+    def __unicode__(self):
+        """
+        Returns the string representation (UNICODE) of Computer.
+
+        """
+        str_msg = u'<{wos_id}: name={name} screens={screens}{iftime}>'
+        my_time = (u' time=' + unicode(self.time.isoformat()) if self.time
+                   else u'')
         return str_msg.format(iftime=my_time, **self.__dict__)
 
 
@@ -397,7 +429,18 @@ class File(MethodMixin, Base):
         File.update(self)
 
     def __str__(self):
-        return self.path
+        """
+        Returns the string representation of File.
+
+        """
+        return str(self.path)
+
+    def __unicode__(self):
+        """
+        Returns the string representation (UNICODE) of File.
+
+        """
+        return unicode(self.path)
 
 
 class FileAction(MethodMixin, Base):
@@ -577,7 +620,18 @@ class Project(MethodMixin, Base):
         Project.update(self)
 
     def __str__(self):
-        return self.name
+        """
+        Returns the string representation of Project.
+
+        """
+        return str(self.name)
+
+    def __unicode__(self):
+        """
+        Returns the string representation (UNICODE) of Project.
+
+        """
+        return unicode(self.name)
 
 
 class Session(MethodMixin, Base):

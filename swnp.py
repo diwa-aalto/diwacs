@@ -126,16 +126,35 @@ class Node(object):
         return (datetime.now() - self.timestamp)
 
     def __str__(self):
-        return ('{0.id}: {0.name} with {0.screens} screens data {0._data}'.\
-                format(self))
+        """
+        Returns a string representation of the node.
+
+        """
+        form = '{0.id}: {0.name} with {0.screens} screens data {0._data}'
+        return form.format(self)
 
     def __repr__(self):
-        return self.__str__()
+        """
+        Returns a debug representation of the node.
+
+        """
+        return str(self)
 
     def __hash__(self):
+        """
+        Returns an uniquely identifying Integer of this object.
+
+        :returns: Unique identifier.
+        :rtype: Integer
+
+        """
         return int(self.id)
 
     def __cmp__(self, other):
+        """
+        Compare this node with another node.
+
+        """
         return cmp(self.id, other.id)
 
 
@@ -195,9 +214,17 @@ class Message(object):
                        json_dict['PAYLOAD'].encode('utf-8'))
 
     def __str__(self):
+        """
+        Returns a string representation of the message.
+
+        """
         return '_'.join([self.tag, self.prefix, self.payload])
 
     def __repr__(self):
+        """
+        Returns a debug representation of the message.
+
+        """
         return '_'.join([self.tag, self.prefix, self.payload])
 
 
@@ -400,6 +427,13 @@ class SWNP(object):
         error_handler.stop()
 
     def __create_subscribers(self, sub_urls, target):
+        """
+        Create multiple subscriber sockets.
+
+        :returns: The subscribed sockets.
+        :rtype: Array of :py:class:`zmq.Socket`
+
+        """
         subscribers = []
         for i, sub_url in enumerate(sub_urls):
             subscribers.append(self.context.socket(zmq.SUB))
@@ -776,6 +810,13 @@ class SWNP(object):
         return result_node
 
     def update_pgm_group(self, new_pgm_group):
+        """
+        This updates the PGM group on the fly.
+
+        :param new_pgm_group: New PGM Group value.
+        :param new_pgm_group: Integer
+
+        """
         pgm_ip = '239.128.128.{0}:5555'.format(new_pgm_group)
         LOGGER.debug('PGM IP Changed to {0}'.format(pgm_ip))
         tladdr = 'epgm://' + self.ip + ';' + pgm_ip
@@ -808,4 +849,3 @@ class SWNP(object):
             except Exception:
                 LOGGER.exception('connecting exception')
         self.tladdr = tladdr
-
