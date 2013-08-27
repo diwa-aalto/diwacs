@@ -603,12 +603,13 @@ class GraphicalUserInterface(GUItemplate):
             # We want to end our session!
             try:
                 self.diwa_state.on_session_changed(False)
+                self.DisableSessionButton()
+                self.diwa_state.current_session_id = 0
                 activity_id = controller.add_or_update_activity(
                     project_id, diwavars.PGM_GROUP, 0,
                     self.diwa_state.activity_id
                 )
                 self.diwa_state.activity_id = activity_id
-                self.DisableSessionButton()
                 LOGGER.info('Session ended.')
                 diwavars.print_to_status_box('Session ended.')
             except Exception as excp:
