@@ -11,8 +11,9 @@ from logging import config, getLogger
 import socket
 
 # 3rd party imports.
-from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK
-import win32wnet
+from win32net import NetUseAdd, NetUseDel, USE_LOTS_OF_FORCE
+# from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK
+# import win32wnet
 from winerror import ERROR_NOT_CONNECTED
 import wmi
 
@@ -162,17 +163,25 @@ def MapNetworkShare(letter, share=None):
     :type share: String
 
     """
-    logmsg = 'error mapping share %s %s %s'
+    logmsg = u'error mapping share {0} {1} {2!s}'
     try:
-        win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
+        # win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
+        NetUseDel(None, letter, USE_LOTS_OF_FORCE)
     except Exception as excp:
         # NOT_CONNECTED can be safely ignored as this is the state that
         # we wished for in the beginning.
         if int(excp[0]) != ERROR_NOT_CONNECTED:
-            LOGGER.exception(logmsg, letter, share, str(excp))
+            msg = logmsg.format(letter, share, excp)
+            LOGGER.exception(msg.encode('utf-8'))
     # If we still need to reconnect it.
     if share is not None:
         try:
-            win32wnet.WNetAddConnection2(DISK, letter, share)
+            # win32wnet.WNetAddConnection2(DISK, letter, share)
+            data = {
+                u'remote': unicode(share),
+                u'local': unicode(letter)
+            }
+            NetUseAdd(None, 1, data)
         except Exception as excp:
-            LOGGER.exception(logmsg, letter, share, str(excp))
+            msg = logmsg.format(letter, share, excp)
+            LOGGER.exception(msg.encode('utf-8'))
