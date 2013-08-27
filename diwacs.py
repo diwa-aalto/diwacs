@@ -21,7 +21,6 @@ import logging
 import os
 import pstats
 import StringIO
-from subprocess import Popen
 import threading
 from time import sleep
 import webbrowser
@@ -641,10 +640,10 @@ class GraphicalUserInterface(GUItemplate):
         if node.id == node_manager.node.id:
             try:
                 controlled = self.diwa_state.controlled
-                if controlled:
+                for target in controlled:
                     own_id = node_manager.node.id
-                    sender(own_id, 'remote_end;{0}'.format(controlled))
-                    sender(str(controlled), 'remote_end;{0}'.format(own_id))
+                    sender(own_id, 'remote_end;{0}'.format(target))
+                    sender(str(target), 'remote_end;{0}'.format(own_id))
             except (IOError, OSError) as excp:
                 LOGGER.exception('EXCPT! {0!s}'.format(excp))
             return

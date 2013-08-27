@@ -198,7 +198,7 @@ class State(object):
         self.selected_nodes = []
         self.current_project_id = 0
         self.current_session_id = 0
-        self.controlled = False
+        self.controlled = []
         self.controlling = False
 
     def initialize(self):
@@ -614,13 +614,11 @@ class State(object):
 
         """
         # macro.release_all_keys()
-        was_controlled = self.controlled
-        if was_controlled:
-            msg = 'remote_end;{0}'.format(self.swnp.node.id)
-            self.swnp_send(self.controlled, msg)
-        self.controlled = int(parameters)
+        node_id = int(parameters)
+        if node_id not in self.controlled:
+            self.controlled.append(node_id)
         # LOGGER.debug('CONTROLLED: {0}'.format(parameters))
-        if not was_controlled:
+        if 'controlled' not in self.swnp.node.data:
             self.append_swnp_data('controlled')
 
     def _on_remote_end(self, parameters):  # @UnusedVariable
@@ -633,9 +631,10 @@ class State(object):
         node_id = int(parameters)  # NOT COMPATIBLE WITH OLDER VERSIONS!
         # CONTROLLED is actually the node who's controlling you!
         msg = 'remote_end;{0}'.format(self.swnp.node.id)
-        if self.controlled and self.controlled == node_id:
-            self.controlled = False
-            self.remove_from_swnp_data('controlled')
+        if node_id in self.controlled:
+            self.controlled.remove(node_id)
+            if not self.controlled:
+                self.remove_from_swnp_data('controlled')
             self.swnp_send(node_id, msg)
         # CONTROLLING is actually the node who you're controlling!
         if self.controlling and self.controlling == node_id:

@@ -155,7 +155,8 @@ def GetMacForIp(ip):
 
 
 def MapNetworkShare(letter, share=None):
-    """Maps the network share to a letter.
+    """
+    Maps the network share to a letter.
 
     :param letter: The letter for which to map.
     :type letter: String
