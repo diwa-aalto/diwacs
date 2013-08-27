@@ -361,13 +361,13 @@ class GraphicalUserInterface(GUItemplate):
         project_id = self.diwa_state.current_project_id
         if project_id < 1:
             return
-        file_path = Project.get_by_id(project_id).dir
+        file_path = unicode(Project.get_by_id(project_id).dir)
         if file_path:
-            Popen(u'explorer ' + file_path)
+            os.startfile(file_path, u'explore')
         else:
-            log_msg = u'Failed explorer: {file_path}'
-            log_msg = log_msg.format(file_path=file_path)
-            LOGGER.exception(log_msg)  # FIXME
+            log_msg = u'Failed explorer: {0}'
+            log_msg = log_msg.format(file_path)
+            LOGGER.exception(log_msg.encode('utf-8'))  # FIXME
             params = {'message': 'Could not open directory.'}
             show_modal_and_destroy(ErrorDialog, self, params)
         if event:
