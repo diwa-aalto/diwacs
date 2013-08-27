@@ -614,9 +614,14 @@ class State(object):
 
         """
         # macro.release_all_keys()
-        self.controlled = parameters
-        LOGGER.debug('CONTROLLED: {0}'.format(parameters))
-        self.append_swnp_data('controlled')
+        was_controlled = self.controlled
+        if was_controlled:
+            msg = 'remote_end;{0}'.format(self.swnp.node.id)
+            self.swnp_send(self.controlled, msg)
+        self.controlled = int(parameters)
+        # LOGGER.debug('CONTROLLED: {0}'.format(parameters))
+        if not was_controlled:
+            self.append_swnp_data('controlled')
 
     def _on_remote_end(self, parameters):  # @UnusedVariable
         """
@@ -625,15 +630,22 @@ class State(object):
         """
         # if self.controlled:
         #     macro.release_all_keys()
-        if self.controlling:
+        node_id = int(parameters)  # NOT COMPATIBLE WITH OLDER VERSIONS!
+        # CONTROLLED is actually the node who's controlling you!
+        msg = 'remote_end;{0}'.format(self.swnp.node.id)
+        if self.controlled and self.controlled == node_id:
+            self.controlled = False
+            self.remove_from_swnp_data('controlled')
+            self.swnp_send(node_id, msg)
+        # CONTROLLING is actually the node who you're controlling!
+        if self.controlling and self.controlling == node_id:
+            self.controlling = False
             self.parent.SetCursor(diwavars.DEFAULT_CURSOR)
             self.selected_nodes = []
             threads.inputcapture.set_capture(False)
             self.capture_thread.unhook()
             self.parent.overlay.Hide()
-        self.controlled = False
-        self.controlling = False
-        self.remove_from_swnp_data('controlled')
+            self.swnp_send(node_id, msg)
 
     @staticmethod
     def _try_open_clipboard(trycount, sleepamount):

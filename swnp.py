@@ -36,8 +36,6 @@ import utils
 from dialogs import CloseError
 from zmq.error import Again, ContextTerminated, ZMQError
 
-SENT = []
-RECV = []
 LOGGER = None
 
 
@@ -382,9 +380,6 @@ class SWNP(object):
         """
         msg = '{id}_SCREENS_{node.screens}_NAME_{node.name}_DATA_{node.data}'
         msg = msg.format(id=self.id, node=self.node)
-        if msg not in SENT:
-            SENT.append(msg)
-            LOGGER.debug('PING: ' + msg)
         try:
             self.send('SYS', PREFIX_CHOICES[4], msg)
         except ZMQError as excp:
@@ -727,9 +722,6 @@ class SWNP(object):
     def _on_ping(self, payload):
         """ On ping handlers. """
         try:
-            if payload not in RECV:
-                RECV.append(payload)
-                LOGGER.debug('RECV-PING: ' + payload)
             self.ping_handler(payload)
         except Exception as excp:
             LOGGER.exception('PING EXCEPTION: {0}'.format(excp))
