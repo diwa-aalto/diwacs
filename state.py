@@ -964,8 +964,10 @@ class State(object):
                                       session_id, self.activity_id)
         else:
             self.end_current_session()
-            self.activity_id = update(self.current_project_id,
-                                      diwavars.PGM_GROUP, 0, self.activity_id)
+            if self.is_responsive:
+                self.activity_id = update(self.current_project_id,
+                                          diwavars.PGM_GROUP,
+                                          0, self.activity_id)
         send_session = 'current_session;{0}'.format(self.current_session_id)
         send_activity = 'current_activity;{0}'.format(self.activity_id)
         LOGGER.debug(send_session + '  ' + send_activity)
