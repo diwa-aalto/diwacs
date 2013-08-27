@@ -91,7 +91,6 @@
 		\hyperpage{13}
   \item DIWA\_THREAD (class in threads.diwathread), \hyperpage{37}
   \item diwacs (module), \hyperpage{12}
-  \item DiwaTest (class in testing), \hyperpage{34}
   \item diwavars (module), \hyperpage{15}
   \item do\_ping() (swnp.SWNP method), \hyperpage{32}
   \item DottedIPToInt() (in module utils), \hyperpage{40}
@@ -368,7 +367,7 @@
   \item right\_click() (in module macro), \hyperpage{22}
   \item right\_hold() (in module macro), \hyperpage{22}
   \item right\_release() (in module macro), \hyperpage{22}
-  \item run() (testing.DiwaTest method), \hyperpage{34}
+  \item run() (testing.TestDiwa method), \hyperpage{34}
   \item run() (threads.audiorecorder.AudioRecorder method), 
 		\hyperpage{35}
   \item run() (threads.checkupdate.CHECK\_UPDATE method), 
@@ -500,6 +499,7 @@
   \item test\_storage\_connection() (in module filesystem), 
 		\hyperpage{18}
   \item TestAudioRecorder (class in testing), \hyperpage{34}
+  \item TestDiwa (class in testing), \hyperpage{34}
   \item TestDocumentation (class in testing), \hyperpage{34}
   \item TestFilesystem (class in testing), \hyperpage{34}
   \item testing (module), \hyperpage{34}

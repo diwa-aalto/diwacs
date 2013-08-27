@@ -964,10 +964,9 @@ class State(object):
                                       session_id, self.activity_id)
         else:
             self.end_current_session()
-            if self.is_responsive:
-                self.activity_id = update(self.current_project_id,
-                                          diwavars.PGM_GROUP,
-                                          0, self.activity_id)
+            self.activity_id = update(self.current_project_id,
+                                      diwavars.PGM_GROUP,
+                                      0, self.activity_id)
         send_session = 'current_session;{0}'.format(self.current_session_id)
         send_activity = 'current_activity;{0}'.format(self.activity_id)
         LOGGER.debug(send_session + '  ' + send_activity)
@@ -995,7 +994,7 @@ class State(object):
         session_id = int(session_id)
         if session_id > 0 and self.current_session_id != session_id:
             # Change session.
-            if self.current_session_id:
+            if self.current_session_id and self.is_responsive:
                 controller.end_session(self.current_session_id)
                 self.end_current_session()
             self.current_session_id = session_id
@@ -1008,7 +1007,8 @@ class State(object):
             # End session.
             self.current_session = None
             self.current_session_id = 0
-            self.end_current_session()
+            if self.is_responsive:
+                self.end_current_session()
             self.parent.DisableSessionButton()
             LOGGER.info('Session ended')
 

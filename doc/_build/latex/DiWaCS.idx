@@ -294,12 +294,12 @@
 \indexentry{update\_pgm\_group() (swnp.SWNP method)|hyperpage}{34}
 \indexentry{testing (module)|hyperpage}{34}
 \indexentry{CallAbsorber (class in testing)|hyperpage}{34}
-\indexentry{DiwaTest (class in testing)|hyperpage}{34}
-\indexentry{run() (testing.DiwaTest method)|hyperpage}{34}
 \indexentry{TestAudioRecorder (class in testing)|hyperpage}{34}
 \indexentry{setUp() (testing.TestAudioRecorder method)|hyperpage}{34}
 \indexentry{tearDown() (testing.TestAudioRecorder method)|hyperpage}{34}
 \indexentry{test\_record() (testing.TestAudioRecorder method)|hyperpage}{34}
+\indexentry{TestDiwa (class in testing)|hyperpage}{34}
+\indexentry{run() (testing.TestDiwa method)|hyperpage}{34}
 \indexentry{TestDocumentation (class in testing)|hyperpage}{34}
 \indexentry{setUp() (testing.TestDocumentation method)|hyperpage}{34}
 \indexentry{tearDown() (testing.TestDocumentation method)|hyperpage}{34}
