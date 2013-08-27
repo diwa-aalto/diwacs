@@ -33,13 +33,90 @@ except ImportError:
     pass
 
 
-from distutils.core import setup
-import py2exe  # @UnusedImport
 from glob import glob
+import os
+import re
+import traceback
+
+from distutils.core import setup
+from py2exe.build_exe import py2exe
+
+LOGFILE = open('COMPILE.LOG', 'w')
+
+
+class Py2ExeWithUPX(py2exe):
+    """
+    Custom py2exe distributer which packs all dll,pyd and exe files
+    with upx before packaging.
+
+    Class has been taken from:
+    http://www.py2exe.org/index.cgi/BetterCompression
+
+    And the original author of the class code is David Bolen.
+
+    """
+
+    UPX_CMD = r'C:\upx309w\upx.exe {0}'
+    PYTHON_RE = re.compile(r'python[0-9]*\.dll')
+    FILETYPES = ('.dll',)  # , '.pyd', '.exe')
+    DEFAULT_OPTIONS = ('-1', '--compress-exports=0',
+                       '--strip-relocs=0')
+
+    def initialize_options(self):
+        """DOCSTRING"""
+        self.upx = False
+        py2exe.initialize_options(self)
+
+    def copy_file(self, *args, **kwargs):
+        """DOCSTRING"""
+        result = py2exe.copy_file(self, *args, **kwargs)
+
+        # Process
+        (filename, copied) = result
+        filename = os.path.basename(filename).lower()
+        (name, extension) = os.path.splitext(filename)
+        LOGFILE.write(filename)
+
+        # Helpers
+        is_python = Py2ExeWithUPX.PYTHON_RE.match(filename) is not None
+        is_packable = extension in Py2ExeWithUPX.FILETYPES
+        LOGFILE.write(': {0} and {1} and {2} and not {3}\n'.\
+                      format(copied, self.upx, is_packable, is_python))
+        if (copied and self.upx and is_packable and not is_python):
+            params = [s for s in Py2ExeWithUPX.DEFAULT_OPTIONS]
+            params.append('"{0}"'.format(os.path.normpath(result[0])))
+            params.append('>NUL')
+            cmd = Py2ExeWithUPX.UPX_CMD.format(' '.join(params))
+            os.system(cmd)
+        return result
+
+    def patch_python_dll_winver(self, dll_name, new_winver=None):
+        """DOCSTRING"""
+        if not self.dry_run:
+#             query_params = ['-qt', '"{0}"'.format(dll_name), '>NUL']
+#             cmd = Py2ExeWithUPX.UPX_CMD.format(' '.join(query_params))
+#             cmd_result = os.system(cmd)
+#             if not cmd_result:
+#                 is_upxd = True
+#             elif cmd_result == 2:
+#                 is_upxd = False
+#             else:
+#                 raise IOError('UPX Analyising failed!')
+#             if is_upxd:
+#                 if self.verbose:
+#                     template = 'Skipping winver patch for {0} (UPX\'d)'
+#                     print template.format(dll_name)
+#             else:
+            py2exe.patch_python_dll_winver(self, dll_name, new_winver)
+#                 if self.upx:
+#                     params = [s for s in Py2ExeWithUPX.DEFAULT_OPTIONS]
+#                     params.append('"{0}"'.format(os.path.normpath(dll_name)))
+#                     params.append('>NULL')
+#                     cmd = Py2ExeWithUPX.UPX_CMD.format(' '.join(params))
+#                     os.system(cmd)
 
 
 # --------------------------- EDIT BEGIN ------------------------------- #
-
 VISUAL_STUDIO_PATH = (r'C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC'
                       r'\redist\x86\Microsoft.VC90.CRT')
 
@@ -79,7 +156,7 @@ DATA_INCLUDES = [
 ]
 
 DATA_ICONS = ('icons', glob(r'icons\*.*'))
-DATA_FILETYPE_ICONS = ('icons/filetypes', glob(r'icons\filetypes\*.*'))
+DATA_FILETYPE_ICONS = ('icons/FILETYPES', glob(r'icons\FILETYPES\*.*'))
 
 # ---------------------------- EDIT END -------------------------------- #
 
@@ -107,6 +184,7 @@ def main():
         'typelibs': TYPELIBS,
         'bundle_files': 1,
         'optimize': 2,
+        # 'upx': True,
         'compressed': True,
         'includes': INCLUDES,
         'excludes': EXCLUDES,
@@ -132,9 +210,11 @@ def main():
         DATA_FILETYPE_ICONS
     ]
     options = {'py2exe': options_py2exe}
+    cmdclass = {'py2exe': Py2ExeWithUPX}
 
     setup_params = {
         'name': 'DiWaCS',
+        # 'cmdclass': cmdclass, # DOES NOT WORK ATM...
         'options': options,
         'windows': windows,
         'data_files': data_files,
@@ -144,10 +224,15 @@ def main():
     setup(**setup_params)
     return 0
 
+
 if __name__ == '__main__':
     value = 1
     try:
         value = main()
-    except Exception:
-        pass
+    except Exception as excp:
+        print str(excp)
+        traceback.print_tb(sys.exc_info()[2])
+    LOGFILE.close()
     sys.exit(value)
+else:
+    LOGFILE.close()
