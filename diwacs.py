@@ -363,9 +363,9 @@ class GraphicalUserInterface(GUItemplate):
             return
         file_path = Project.get_by_id(project_id).dir
         if file_path:
-            Popen('explorer ' + file_path)
+            Popen(u'explorer ' + file_path)
         else:
-            log_msg = 'Failed explorer: {file_path}'
+            log_msg = u'Failed explorer: {file_path}'
             log_msg = log_msg.format(file_path=file_path)
             LOGGER.exception(log_msg)  # FIXME
             params = {'message': 'Could not open directory.'}
@@ -444,8 +444,8 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         if name is None:
-            name = 'No Project Selection'
-        self.pro_label.SetLabel('Project: {0}'.format(name))
+            name = u'No Project Selection'
+        self.pro_label.SetLabel(u'Project: {0}'.format(name))
 
     def SelectProjectDialog(self, event):
         """
