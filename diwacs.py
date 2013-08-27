@@ -645,37 +645,27 @@ class GraphicalUserInterface(GUItemplate):
                     own_id = node_manager.node.id
                     sender(own_id, 'remote_end;{0}'.format(controlled))
                     sender(str(controlled), 'remote_end;{0}'.format(own_id))
-                return
             except (IOError, OSError) as excp:
                 LOGGER.exception('EXCPT! {0!s}'.format(excp))
-        if node.id in self.selected_nodes:
-            threads.inputcapture.set_capture(False)
-            try:
-                # End Remote
-                self.selected_nodes.remove(node.id)
-                self.diwa_state.capture_thread.unhook()
-            except (IOError, OSError) as excp:
-                LOGGER.exception('EXCPT! {0!s}'.format(excp))
-            finally:
-                self.overlay.Hide()
-        else:
-            threads.inputcapture.set_capture(True)
-            try:
-                # Start remote
-                self.diwa_state.controlling = node.id
-                self.diwa_state.capture_thread.hook()
-                msg = 'remote_start;{0}'.format(node_manager.node.id)
-                sender(node.id, msg)
-                # Sync clipboard.
-                self.diwa_state.send_push_clipboard(node.id)
+            return
+        threads.inputcapture.set_capture(True)
+        try:
+            # Start remote
+            self.diwa_state.controlling = node.id
+            self.diwa_state.capture_thread.hook()
+            msg = 'remote_start;{0}'.format(node_manager.node.id)
+            sender(node.id, msg)
+            # Sync clipboard.
+            self.diwa_state.send_push_clipboard(node.id)
+            if node.id not in self.selected_nodes:
                 self.selected_nodes.append(node.id)
-                self.Refresh()
-                tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
-                tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
-                self.overlay.SetText(tmod, tkey)
-                self.overlay.Show()
-            except (IOError, OSError) as excp:
-                LOGGER.exception('EXCPT! {0!s}'.format(excp))
+            self.Refresh()
+            tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
+            tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
+            self.overlay.SetText(tmod, tkey)
+            self.overlay.Show()
+        except (IOError, OSError) as excp:
+            LOGGER.exception('EXCPT! {0!s}'.format(excp))
 
     def UpdateScreens(self, update):
         """
