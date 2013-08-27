@@ -420,7 +420,7 @@ class PreferencesDialog(wx.Dialog):
                            parent=parent,
                            id=wx.ID_ANY,
                            title='Preferences',
-                           size=(450, 260),
+                           size=(550, 300),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
         self.config = config_object
         self.parent = parent
@@ -487,6 +487,7 @@ class PreferencesDialog(wx.Dialog):
         box = wx.ComboBox(self, wx.ID_ANY,
                           choices=[str(x) for x in range(1, 10)],
                           style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
+        box.SetMinSize((200, box.GetMinHeight()))
         self.pgm_group_dropdown = box
         self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
         # Preferences sizers.
@@ -538,7 +539,7 @@ class PreferencesDialog(wx.Dialog):
         button_sizer.Add(save_button, 0, wx.ALL, 5)
         button_sizer.Add(cancel_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
-        self.SetSizer(main_sizer)
+        self.SetSizerAndFit(main_sizer)
 
         # load preferences
         self.LoadPreferences()

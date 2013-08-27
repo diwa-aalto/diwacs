@@ -19,7 +19,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=C:\Users\Kristian\workspace\diwacs\installer
 OutputBaseFilename=DiwaCS-setup-{#MyAppVersion}
-Compression=lzma
+Compression=lzma/max
 SolidCompression=yes
 PrivilegesRequired=none
 

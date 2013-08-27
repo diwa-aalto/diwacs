@@ -296,7 +296,7 @@ class TestDocumentation(unittest.TestCase):
         self.assertGreaterEqual(percentage, Decimal(95), on_fail)
 
 
-class DiwaTest(unittest.TestSuite):
+class TestDiwa(unittest.TestSuite):
     """
     Container for unittest cases.
 
