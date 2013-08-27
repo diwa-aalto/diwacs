@@ -53,5 +53,5 @@ Name: "{app}\data"; Permissions: users-modify
 ;Name: "{app}\icons"; Permissions: users-modify 
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{%HOMEPATH}\.wos"
+Type: filesandordirs; Name: "{%HOMEPATH}\.diwacs"
 Type: filesandordirs; Name: "{app}\data"

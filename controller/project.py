@@ -109,12 +109,12 @@ def add_project(data):
     password = ''
     if 'password' in project_data:
         password = project_data['password']
-        password = utils.hash_password(password)
-        directory = utils.get_encrypted_directory_name(name, password)
-        directory_set = True
+        if password:
+            password = utils.hash_password(password)
+            directory = utils.get_encrypted_directory_name(name, password)
+            directory_set = True
     if not directory_set:
         return None
-    _logger().debug('Adding project: {name}'.format(name=name))
     project = Project(name, '', company, password)
     if directory:
         project.dir = filesystem.create_project_directory(directory)
