@@ -640,9 +640,11 @@ class GraphicalUserInterface(GUItemplate):
         sender = self.diwa_state.swnp_send
         if node.id == node_manager.node.id:
             try:
-                if self.diwa_state.controlled:
-                    sender(node_manager.node.id, 'remote_end;now')
-                    sender(str(self.diwa_state.controlled), 'remote_end;now')
+                controlled = self.diwa_state.controlled
+                if controlled:
+                    own_id = node_manager.node.id
+                    sender(own_id, 'remote_end;{0}'.format(controlled))
+                    sender(str(controlled), 'remote_end;{0}'.format(own_id))
                 return
             except (IOError, OSError) as excp:
                 LOGGER.exception('EXCPT! {0!s}'.format(excp))
