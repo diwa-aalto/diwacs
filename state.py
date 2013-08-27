@@ -487,14 +487,14 @@ class State(object):
         End the current session.
 
         """
-        log_msg = 'end_current_session({0})...'.format(self.current_session_id)
+        log_msg = ('????? end_current_session({0})...'\
+                   .format(self.current_session_id))
         LOGGER.debug(log_msg)
         controller.end_session(self.current_session_id)
         if self.current_session_thread.isAlive():
             self.current_session_thread.stop()
         self.current_session_id = 0
         self.current_session = None
-        LOGGER.debug('end of end_current_session')
 
     def get_random_responsive(self):
         """
@@ -964,10 +964,8 @@ class State(object):
                                       session_id, self.activity_id)
         else:
             self.end_current_session()
-            if self.is_responsive:
-                self.activity_id = update(self.current_project_id,
-                                          diwavars.PGM_GROUP,
-                                          0, self.activity_id)
+            self.activity_id = update(self.current_project_id,
+                                      diwavars.PGM_GROUP, 0, self.activity_id)
         send_session = 'current_session;{0}'.format(self.current_session_id)
         send_activity = 'current_activity;{0}'.format(self.activity_id)
         LOGGER.debug(send_session + '  ' + send_activity)
