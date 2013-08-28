@@ -638,14 +638,14 @@ class GraphicalUserInterface(GUItemplate):
         node_manager = self.diwa_state.swnp
         sender = self.diwa_state.swnp_send
         if node.id == node_manager.node.id:
-            try:
-                controlled = self.diwa_state.controlled
-                for target in controlled:
-                    own_id = node_manager.node.id
+            controlled = self.diwa_state.controlled
+            own_id = str(node_manager.node.id)
+            for target in [str(id_) for id_ in controlled]:
+                try:
                     sender(own_id, 'remote_end;{0}'.format(target))
-                    sender(str(target), 'remote_end;{0}'.format(own_id))
-            except (IOError, OSError) as excp:
-                LOGGER.exception('EXCPT! {0!s}'.format(excp))
+                    sender(target, 'remote_end;{0}'.format(own_id))
+                except (IOError, OSError) as excp:
+                    LOGGER.exception('EXCPT! {0!s}'.format(excp))
             return
         threads.inputcapture.set_capture(True)
         try:

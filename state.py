@@ -19,9 +19,11 @@ from time import sleep
 import webbrowser
 import win32clipboard
 import re
+from win32con import WM_KEYUP, WM_SYSKEYUP
 
 # 3rd party imports.
 import configobj
+import pyHook
 from watchdog.observers import Observer
 import wx
 
@@ -554,10 +556,10 @@ class State(object):
         Event handler for messages that contain key presses.
 
         """
-        evt_code, key, scan = [int(i) for i in parameters.split(',')]
-        flags = 0
-        if evt_code == 257:
-            flags = 2
+        evt_code, key, scan, extended = [int(i) for i in parameters.split(',')]
+        flags = extended
+        if evt_code in [WM_KEYUP, WM_SYSKEYUP]:
+            flags += 2
         macro.send_input('k', key, flags, scan)
 
     @staticmethod
@@ -620,6 +622,7 @@ class State(object):
         # LOGGER.debug('CONTROLLED: {0}'.format(parameters))
         if 'controlled' not in self.swnp.node.data:
             self.append_swnp_data('controlled')
+            self.swnp.do_ping()
 
     def _on_remote_end(self, parameters):  # @UnusedVariable
         """
@@ -633,9 +636,10 @@ class State(object):
         msg = 'remote_end;{0}'.format(self.swnp.node.id)
         if node_id in self.controlled:
             self.controlled.remove(node_id)
+            self.swnp_send(node_id, msg)
             if not self.controlled:
                 self.remove_from_swnp_data('controlled')
-            self.swnp_send(node_id, msg)
+                self.swnp.do_ping()
         # CONTROLLING is actually the node who you're controlling!
         if self.controlling and self.controlling == node_id:
             self.controlling = False

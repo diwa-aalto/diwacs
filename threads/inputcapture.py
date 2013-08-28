@@ -20,6 +20,11 @@ from threads.diwathread import DIWA_THREAD
 
 
 CAPTURE = False
+#EXTENDED_KEYS_NAMES = [
+#    'VK_RMENU', 'VK_RCONTROL', 'VK_UP', 'VK_DOWN', 'VK_LEFT', 'VK_RIGHT',
+#    'VK_HOME', 'VK_END', 'VK_PRIOR', 'VK_NEXT', 'VK_INSERT', 'VK_DELETE',
+#    'VK_NUMLOCK', 'VK_...'
+#]
 
 
 def _logger():
@@ -200,6 +205,7 @@ class INPUT_CAPTURE(DIWA_THREAD):
         """
         key = event.KeyID
         if CAPTURE:
+            extended = 1 if event.IsExtended() else 0
             if key == diwavars.KEY and self.modifierdown:
                 _logger().debug('ESCAPE - CAPTURE')
                 try:
@@ -209,9 +215,9 @@ class INPUT_CAPTURE(DIWA_THREAD):
                     self.reset_mouse_events()
                     self_id = self.swnp.node.id
                     for id_ in self.parent.selected_nodes:
-                        msg = 'key;{0},{1},{2}'.format(WM_KEYUP,
-                                                       diwavars.KEY_MODIFIER,
-                                                       diwavars.KEY_MODIFIER)
+                        msg = 'key;{0},{1},{2},{3}'
+                        msg = msg.format(WM_KEYUP, diwavars.KEY_MODIFIER,
+                                         diwavars.KEY_MODIFIER, extended)
                         end = 'remote_end;{0}'.format(self_id)
                         self.swnp.send(str(id_), 'MSG', msg)
                         self.swnp.send(str(id_), 'MSG', end)
@@ -227,8 +233,9 @@ class INPUT_CAPTURE(DIWA_THREAD):
                     self.modifierdown = True
                 elif event.Message == WM_KEYUP:
                     self.modifierdown = False
-            msg = 'key;{0},{1},{2}'.format(event.Message, event.KeyID,
-                                           event.ScanCode)
+            msg = 'key;{0},{1},{2},{3}'
+            msg = msg.format(event.Message, event.KeyID, event.ScanCode,
+                             extended)
             for id_ in self.parent.selected_nodes:
                 self.swnp.send(str(id_), 'MSG', msg)
             return False
