@@ -194,9 +194,13 @@ class GraphicalUserInterface(GUItemplate):
     """
     def __init__(self):
         # SUPER #
-        super(GraphicalUserInterface, self).__init__(parent=None,
-            title=diwavars.TRAY_TOOLTIP, size=diwavars.FRAME_SIZE,
-            style=wx.FRAME_NO_TASKBAR)
+        kwargs = {
+            'parant': None,
+            'title': diwavars.TRAY_TOOLTIP,
+            'size': diwavars.FRAME_SIZE,
+            'style': wx.FRAME_NO_TASKBAR
+        }
+        GUItemplate.__init__(self, **kwargs)
 
         # UI can not be shown yet.
         self.Hide()

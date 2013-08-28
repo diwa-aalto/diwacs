@@ -404,7 +404,7 @@ class WORKER_THREAD(DIWA_THREAD):
             elif key == 'AUDIO':
                 WORKER_THREAD.__on_audio(self.parent, value)
             else:
-                globals()[key] = eval(value)
+                globals()[key] = literal_eval(value)
 
     def __save_audio(self, parameters):
         """
