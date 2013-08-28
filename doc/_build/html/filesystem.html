@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Filesystem module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Filesystem module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Graphical Design module" href="graphicaldesign.html" />
     <link rel="prev" title="DiWaVars module" href="diwavars.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="diwavars.html" title="DiWaVars module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -134,14 +134,18 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="filesystem.file_to_base64">
-<tt class="descclassname">filesystem.</tt><tt class="descname">file_to_base64</tt><big>(</big><em>filepath</em><big>)</big><a class="headerlink" href="#filesystem.file_to_base64" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform a file to a binary object.</p>
+<dt id="filesystem.get_current_wallpaper">
+<tt class="descclassname">filesystem.</tt><tt class="descname">get_current_wallpaper</tt><big>(</big><em>win</em><big>)</big><a class="headerlink" href="#filesystem.get_current_wallpaper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to get the current wallpaper image path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> (<em>String</em>) &#8211; The file path.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>win</strong> (<em>Tuple of Integers</em>) &#8211; Windows version (Major, Minor).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Wallpaper image path if it can find it.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -172,24 +176,6 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<em>Integer</em>) &#8211; The node id.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.is_subtree">
-<tt class="descclassname">filesystem.</tt><tt class="descname">is_subtree</tt><big>(</big><em>filename</em>, <em>parent</em>, <em>case_sensitive=True</em><big>)</big><a class="headerlink" href="#filesystem.is_subtree" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines, if filename is inside the parent folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<em>String</em>) &#8211; The file path.</li>
-<li><strong>parent</strong> (<em>String</em>) &#8211; The parent file path.</li>
-</ul>
-</td>
 </tr>
 </tbody>
 </table>
@@ -266,53 +252,6 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="filesystem.set_logger_level">
-<tt class="descclassname">filesystem.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#filesystem.set_logger_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the logger level for filesystem logger.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; Level of logging.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.snapshot">
-<tt class="descclassname">filesystem.</tt><tt class="descname">snapshot</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.snapshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Start the worker thread for snapshot.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="filesystem.snapshot_procedure">
-<tt class="descclassname">filesystem.</tt><tt class="descname">snapshot_procedure</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#filesystem.snapshot_procedure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Worker for storing the snapshot.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">This object has a timeout of 1 minute. So consider terminating
-the thread on shutdown if it&#8217;s hanging.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="filesystem.test_storage_connection">
 <tt class="descclassname">filesystem.</tt><tt class="descname">test_storage_connection</tt><big>(</big><big>)</big><a class="headerlink" href="#filesystem.test_storage_connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Try to access \StorageProjects</p>
@@ -341,19 +280,20 @@ the thread on shutdown if it&#8217;s hanging.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -414,7 +354,7 @@ the thread on shutdown if it&#8217;s hanging.</p>
         <li class="right" >
           <a href="diwavars.html" title="DiWaVars module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

@@ -6,13 +6,14 @@ Created on 8.5.2012
 """
 # Critical imports
 import sys
+from ast import literal_eval
 import diwavars
 import datetime
+from models import Project
+from state import SessionChangeException
 
 if __name__ == '__main__':
     diwavars.set_running()
-    sys.stdout = open(r'data\stdout.log', 'w')
-    sys.stderr = open(r'data\stderr.log', 'w')
 
 # Standard imports.
 import cProfile
@@ -20,7 +21,6 @@ import logging
 import os
 import pstats
 import StringIO
-from subprocess import Popen
 import threading
 from time import sleep
 import webbrowser
@@ -34,7 +34,8 @@ import wx
 # Own imports.
 import controller
 from dialogs import (CloseError, PreferencesDialog, ProjectSelectDialog,
-                     ErrorDialog, show_modal_and_destroy)
+                     ErrorDialog, show_modal_and_destroy,
+                     ChooseDiwaProfileDialog)
 from graphicaldesign import (BlackOverlay, MySplashScreen, SysTray, NodeScreen,
                              GUItemplate, EventListTemplate)
 import state
@@ -51,13 +52,17 @@ LOGGER = None
 if __name__ == '__main__':
     # Load up the loggers for every module.
     global LOGGER
+    try:
+        os.makedirs(os.path.dirname(diwavars.CONFIG_PATH))
+    except Exception:
+        pass
     logging.config.fileConfig('logging.conf')
     LOGGER = logging.getLogger('diwacs')
     for logger_initializer in diwavars.LOGGER_INITIALIZER_LIST:
         logger_initializer()
 
 
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Used to set logger level.
 
@@ -73,10 +78,10 @@ class EventList(EventListTemplate):
     A Frame which displays the possible event titles and handles the event
     creation.
 
-
     """
     def __init__(self, parent, *args, **kwargs):
         EventListTemplate.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
         self.evtlist.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelection)
         self.evtlist.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnSelection)
         self.custom_event.Bind(wx.EVT_SET_FOCUS, self.OnText)
@@ -92,17 +97,23 @@ class EventList(EventListTemplate):
         :type event: :py:class:`wx.Event`
 
         """
+        LOGGER.debug('EventList.OnEnter()')
         label = self.custom_event.GetValue()
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
-        if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, 'event;%s' % label)
+        if not self.parent.diwa_state.is_responsive:
+            LOGGER.debug('EventList.OnEnter(-NOT RESPONSIVE-)')
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
+                                             'event;{0}'.format(label))
         elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+            LOGGER.debug('EventList.OnEnter(CALL AFTER)')
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         self.custom_event.SetValue('')
         wx.CallLater(1000, self.HideNow)
+        LOGGER.debug('EventList.OnEnter(endish)')
         if event:
             event.Skip()
+        LOGGER.debug('EventList.OnEnter(end)')
 
     def OnText(self, event):
         """
@@ -137,10 +148,11 @@ class EventList(EventListTemplate):
 
         """
         self.Hide()
-        i = self.evtlist.GetNextItem(-1)
-        while i != -1:
-            self.evtlist.SetItemBackgroundColour(i, wx.Colour(255, 255, 255))
-            i = self.evtlist.GetNextItem(i)
+        index = self.evtlist.GetNextItem(-1)
+        colour = wx.Colour(255, 255, 255)
+        while index != -1:
+            self.evtlist.SetItemBackgroundColour(index, colour)
+            index = self.evtlist.GetNextItem(index)
 
     def OnSelection(self, event):
         """
@@ -150,16 +162,17 @@ class EventList(EventListTemplate):
         i = self.evtlist.GetNextSelected(-1)
         self.evtlist.SetItemBackgroundColour(i, wx.Colour(45, 137, 255))
         label = self.evtlist.GetItemText(i)
-        LOGGER.debug('Custom event %s responsive is %s', str(label),
-                     str(self.parent.responsive))
+        LOGGER.debug('Custom event {0!s} responsive is {1!s}'.\
+                     format(label, self.parent.diwa_state.responsive))
         self.evtlist.Select(i, False)
         self.selection_made += 1
         project = self.parent.diwa_state.current_project
         session = self.parent.diwa_state.current_session
-        if not self.parent.is_responsive:
-            self.parent.SwnpSend(self.parent.responsive, 'event;%s' % label)
-        elif project and session:
-            wx.CallAfter(self.parent.worker.create_event, label)
+        if not self.parent.diwa_state.is_responsive:
+            self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
+                                            'event;{0}'.format(label))
+        elif (project is not None) and (session is not None):
+            wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         wx.CallLater(1000, self.HideNow)
         if event:
             event.Skip()
@@ -179,22 +192,44 @@ class GraphicalUserInterface(GUItemplate):
     WOS Application Frame.
 
     """
-
     def __init__(self):
         # SUPER #
         super(GraphicalUserInterface, self).__init__(parent=None,
             title=diwavars.TRAY_TOOLTIP, size=diwavars.FRAME_SIZE,
             style=wx.FRAME_NO_TASKBAR)
+
+        # UI can not be shown yet.
+        self.Hide()
+        self.Freeze()
         NodeScreen.update_bitmaps()
+        profiles = ChooseDiwaProfileDialog.ListDatabaseProfiles()
+        if len(profiles):
+            params = {'profiles': profiles}
+            ret = show_modal_and_destroy(ChooseDiwaProfileDialog, None, params)
+            if ret:  # If non-zero return value, we should exit
+                LOGGER.info('Application closed!')
+                self.Destroy()
+                wx.GetApp().ExitMainLoop()
+                return
 
         # List for choices
-        LOGGER.debug('WxPython version %s', str(wx.version()))
+        LOGGER.debug('WxPython version {0!s}'.format(wx.version()))
         self.list = EventList(self)
         splash_screen = MySplashScreen()
         splash_screen.Show()
-        self.diwa_state = state.State(parent=self)
         self.screen_selected = None
         self.ui_initialized = False
+
+        self.diwa_state = state.State(parent=self)
+        self.InitUICore()
+        self.diwa_state.initialize()
+        pub.sendMessage('update_screens', update=True)
+        if self.diwa_state.config_was_created:
+            self.OnPreferences(None)
+
+        # UI can be shown now.
+        self.Thaw()
+        self.Show()
 
         # Perform initial testing before actual initialization.
         initial_test = state.initialization_test()
@@ -213,9 +248,6 @@ class GraphicalUserInterface(GUItemplate):
         diwavars.set_blank_cursor(wx.StockCursor(wx.CURSOR_BLANK))
         self.overlay = BlackOverlay((0, 0), wx.DisplaySize(), self, '')
         self.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
-        self.diwa_state.initialize()
-        if self.diwa_state.config_was_created:
-            self.OnPreferences(None)
 
         try:
             self.trayicon = SysTray(self)
@@ -231,13 +263,12 @@ class GraphicalUserInterface(GUItemplate):
             self.icon = wx.Icon(diwavars.TRAY_ICON, wx.BITMAP_TYPE_PNG)
             self.trayicon.SetIcon(self.icon, diwavars.TRAY_TOOLTIP)
             wx.EVT_TASKBAR_LEFT_UP(self.trayicon, self.OnTaskBarActivate)
-            self.InitUICore()
             self.Refresh()
             self.Show(True)
             splash_screen.Hide()
             splash_screen.Destroy()
-        except:
-            LOGGER.exception("load exception")
+        except Exception as excp:
+            LOGGER.exception('load exception: {0!s}'.format(excp))
             splash_screen.Hide()
             splash_screen.Destroy()
             self.Destroy()
@@ -257,7 +288,7 @@ class GraphicalUserInterface(GUItemplate):
         self.setbtn.Bind(wx.EVT_BUTTON, self.OnPreferences)
         self.hidebtn.Bind(wx.EVT_BUTTON, self.OnTaskBarActivate)
         self.closebtn.Bind(wx.EVT_BUTTON, self.OnExit)
-        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEvtBtn)
+        self.evtbtn.Bind(wx.EVT_BUTTON, self.OnEventButton)
         self.logo.Bind(wx.EVT_LEFT_DOWN, self.OnAboutBox)
         self.diwawabtn.Bind(wx.EVT_BUTTON, self.OnWABtn)
         self.diwambbtn.Bind(wx.EVT_BUTTON, self.OnMBBtn)
@@ -267,7 +298,6 @@ class GraphicalUserInterface(GUItemplate):
         pub.subscribe(self.UpdateScreens, 'update_screens')
         pub.subscribe(self.diwa_state.message_handler, 'message_received')
         pub.subscribe(self.ConnectionErrorHandler, 'ConnectionErrorHandler')
-        pub.sendMessage('update_screens', update=True)
         self.ui_initialized = True
 
     def OnPreferences(self, event):
@@ -285,8 +315,15 @@ class GraphicalUserInterface(GUItemplate):
             # your own screen if need be.
             should_update = False
             node_manager = self.diwa_state.swnp
-            screens = int(diwavars.CONFIG['SCREENS'])
-            name = diwavars.CONFIG['NAME']
+            screens = 0
+            if 'SCREENS' in diwavars.CONFIG:
+                screens = int(diwavars.CONFIG['SCREENS'])
+            name = 'DEFAULT_NAME'
+            if 'NAME' in diwavars.CONFIG:
+                name = diwavars.CONFIG['NAME']
+            if 'STATUS_BOX' in diwavars.CONFIG:
+                status_box = literal_eval(diwavars.CONFIG['STATUS_BOX'])
+                diwavars.update_status_box(status_box)
             if node_manager.node.screens != screens:
                 node_manager.set_screens(screens)
                 should_update = True
@@ -295,12 +332,19 @@ class GraphicalUserInterface(GUItemplate):
                 should_update = True
             if should_update:
                 pub.sendMessage('update_screens', update=True)
-        except (ValueError, IOError, OSError):
-            LOGGER.exception('show prefs exception.')
+        except (ValueError, IOError, OSError):  # TODO: More?
+            LOGGER.exception('Show prefs exception.')
         if event:
             event.Skip()
 
     def OnFocus(self, event):
+        """
+        Event handler for gained focus.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         self.list.Hide()
         if event:
             event.Skip()
@@ -314,11 +358,15 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         project_id = self.diwa_state.current_project_id
-        file_path = controller.get_project_path(project_id)
+        if project_id < 1:
+            return
+        file_path = unicode(Project.get_by_id(project_id).dir)
         if file_path:
-            Popen('explorer %s' % str(file_path))
+            os.startfile(file_path, u'explore')
         else:
-            LOGGER.exception('Failed explorer: %s', file_path)
+            log_msg = u'Failed explorer: {0}'
+            log_msg = log_msg.format(file_path)
+            LOGGER.exception(log_msg.encode('utf-8'))  # FIXME
             params = {'message': 'Could not open directory.'}
             show_modal_and_destroy(ErrorDialog, self, params)
         if event:
@@ -334,6 +382,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Enable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
         self.evtbtn.SetFocus()
 
     def DisableSessionButton(self):
@@ -349,6 +399,8 @@ class GraphicalUserInterface(GUItemplate):
         self.evtbtn.Disable()
         self.sesbtn.Refresh()
         self.evtbtn.Refresh()
+        self.sesbtn.Update()
+        self.evtbtn.Update()
 
     def EnableDirectoryButton(self):
         """
@@ -358,6 +410,7 @@ class GraphicalUserInterface(GUItemplate):
         """
         self.dirbtn.Enable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def DisableDirectoryButton(self):
         """
@@ -367,17 +420,18 @@ class GraphicalUserInterface(GUItemplate):
         .. note::
             There should be no need for this as the software should
             always start a new project after the old one ends.
-            But for the mid state to be legimate this is still
+            But for the mid state to be legitimate this is still
             usable.
 
         """
         self.dirbtn.Disable()
         self.dirbtn.Refresh()
+        self.dirbtn.Update()
 
     def SetProjectName(self, name):
         """
         Set the project text.
-        For example "No Project OnSelection".
+        For example "No Project Selection".
 
         .. note::
             Requires None explicitly when the purpose is to set default label
@@ -389,8 +443,8 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         if name is None:
-            name = 'No Project OnSelection'
-        self.pro_label.SetLabel(name)
+            name = u'No Project Selection'
+        self.pro_label.SetLabel(u'Project: {0}'.format(name))
 
     def SelectProjectDialog(self, event):
         """
@@ -404,10 +458,7 @@ class GraphicalUserInterface(GUItemplate):
             msg = 'Cannot change project during session.'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             return
-        try:
-            show_modal_and_destroy(ProjectSelectDialog, self)
-        except:
-            LOGGER.exception('ShowSelectProjectDialog exception.')
+        show_modal_and_destroy(ProjectSelectDialog, self)
         if event:
             event.Skip()
 
@@ -444,24 +495,7 @@ class GraphicalUserInterface(GUItemplate):
         if event:
             event.Skip()
 
-    def GetNodeByName(self, name):
-        """
-        From current session nodes, select a node with this name
-        or return None.
-
-        :param name: Name of the desired node.
-        :type name: String
-
-        :returns: The desired node if one exists.
-        :rtype: :py:class:`swnp.Node`
-
-        """
-        for node in self.nodes:
-            if node.name == name:
-                return node.id
-        return None
-
-    def OnEvtBtn(self, event):
+    def OnEventButton(self, event):
         """
         Event Button handler.
 
@@ -495,7 +529,10 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         def limit_int(min_value, value, max_value):
-            """ Limit the value between values of [min_value, max_value] """
+            """
+            Limit the value between values of [min_value, max_value].
+
+            """
             return min(max(value, min_value), max_value)
 
         if len(self.nodes) > 3:
@@ -503,26 +540,31 @@ class GraphicalUserInterface(GUItemplate):
                 new_iterator = self.iterator - 1
             elif event.GetId() == wx.ID_FORWARD:
                 new_iterator = self.iterator + 1
-            self.iterator = limit_int(0, new_iterator, len(self.nodes) - 3)
+            max_value = max(len(self.nodes) - 3, 0)
+            self.iterator = limit_int(0, new_iterator, max_value)
             pub.sendMessage('update_screens', update=True)
 
-    def OnProject(self):
+    def OnProjectChanged(self):
         """
         Project selected event handler.
 
         """
-        if self.diwa_state.current_project:
-            # Note: on_project_selected() takes some time.
-            #       try to minimize calls to OnProject.
+        project = self.diwa_state.current_project
+        session = self.diwa_state.current_session
+        if project is not None:
             self.diwa_state.on_project_selected()
-            self.SetProjectName(self.diwa_state.current_project.name)
+            self.SetProjectName(project.name)
             self.EnableDirectoryButton()
-            self.EnableSessionButton()
+            self.sesbtn.Enable(True)
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
+        if session is not None:
+            self.EnableSessionButton()
+        else:
             self.DisableSessionButton()
         self.Refresh()
+        self.Update()
 
     def OnSession(self, event):
         """
@@ -537,78 +579,47 @@ class GraphicalUserInterface(GUItemplate):
         """
         session_id = self.diwa_state.current_session_id
         project_id = self.diwa_state.current_project_id
-        sender = self.diwa_state.swnp_send
-        if project_id <= 0:
+        if project_id < 1:
             # We should not ever get here as the button should be disabled!
             params = {'message': 'No project selected.'}
             show_modal_and_destroy(ErrorDialog, self, params)
-        elif session_id > 0:
-            # We want to end our session!
-            try:
-                self.diwa_state.end_current_session()
-                self.DisableSessionButton()
-                controller.add_activity(project_id, diwavars.PGM_GROUP,
-                                        activity_id=self.diwa_state.activity)
-                sender('SYS', 'current_session;0')
-                sender('SYS', 'current_activity;%s' %
-                       str(self.diwa_state.activity))
-                LOGGER.info('Session ended.')
-            except Exception, excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
-            # TODO: Check all wx.ICON_INFORMATION uses and maybe
-            #       create a common dialog for it.
-            params = {'message': 'Session ended!',
-                      'caption': 'Information',
-                      'style': wx.OK | wx.ICON_INFORMATION}
-            show_modal_and_destroy(wx.MessageDialog, self, params)
-            self.Refresh()
-        else:
+        elif session_id < 1:
             # We want to start a new session!
             try:
-                session_id = self.diwa_state.start_new_session()
-                if session_id == 0:
-                    params = {'message': 'Failed to start a new session!'}
-                    LOGGER.exception(params['message'])
-                    show_modal_and_destroy(ErrorDialog, self, params)
-                    self.Update()
-                    return
-                controller.add_activity(project_id, diwavars.PGM_GROUP,
-                                        session_id, self.diwa_state.activity)
-                sender('SYS', 'current_activity;%s' %
-                       str(self.diwa_state.activity))
-                sender('SYS', 'current_session;%d' % session_id)
-                LOGGER.info('OnSession started: %d', session_id)
+                self.diwa_state.on_session_changed(True)
                 self.EnableSessionButton()
-                self.panel.SetFocus()
-                self.Update()
-            except Exception, excp:
-                LOGGER.exception('OnSession exception: %s', str(excp))
+                session_id = self.diwa_state.current_session_id
+                msg = 'Session started: {0}'.format(session_id)
+                LOGGER.info(msg)
+                diwavars.print_to_status_box(msg)
+            except SessionChangeException:
+                params = {'message': 'Failed to start a new session!'}
+                LOGGER.exception('Session change failed...')
+                show_modal_and_destroy(ErrorDialog, self, params)
+            except Exception as excp:
+                LOGGER.exception('OnSession exception: {0!s}'.format(excp))
+        else:
+            # We want to end our session!
+            try:
+                self.diwa_state.on_session_changed(False)
+                self.DisableSessionButton()
+                LOGGER.info('Session ended.')
+                diwavars.print_to_status_box('Session ended.')
+            except Exception as excp:
+                LOGGER.exception('OnSession exception: {0!s}'.format(excp))
+            # TODO: Check all wx.ICON_INFORMATION uses and maybe
+            #       create a common dialog for it.
+            params = {
+                'message': 'Session ended!',
+                'caption': 'Information',
+                'style': wx.OK | wx.ICON_INFORMATION
+            }
+            show_modal_and_destroy(wx.MessageDialog, self, params)
+        self.panel.SetFocus()
+        self.Refresh()
+        self.Update()
         if event:
             event.Skip()
-
-    def PaintSelect(self, evt):
-        """
-        Paints the selection of a node.
-
-        .. note:: For future use.
-
-        :param evt: GraphicalUserInterface Event
-        :type evt: Event
-
-        """
-        device_context = wx.ClientDC(self.panel)
-        device_context.Clear()
-        if self.screen_selected == evt.GetId():
-            self.screen_selected = None
-        else:
-            self.screen_selected = self.iterator + evt.GetId()
-            device_context.BeginDrawing()
-            pen = wx.Pen('#4c4c4c', 3, wx.SOLID)
-            device_context.SetPen(pen)
-            (x_1, y_1) = (66 + self.screen_selected * (6 + 128), 110)
-            (x_2, y_2) = (98 + self.screen_selected * (6 + 128), 110)
-            device_context.DrawLine(x_1, y_1, x_2, y_2)
-            device_context.EndDrawing()
 
     def SelectNode(self, event):
         """
@@ -627,28 +638,33 @@ class GraphicalUserInterface(GUItemplate):
         node_manager = self.diwa_state.swnp
         sender = self.diwa_state.swnp_send
         if node.id == node_manager.node.id:
-            if self.diwa_state.controlled:
-                sender(node_manager.node.id, 'remote_end;now')
-                sender(str(self.diwa_state.controlled), 'remote_end;now')
+            controlled = self.diwa_state.controlled
+            own_id = str(node_manager.node.id)
+            for target in [str(id_) for id_ in controlled]:
+                try:
+                    sender(own_id, 'remote_end;{0}'.format(target))
+                    sender(target, 'remote_end;{0}'.format(own_id))
+                except (IOError, OSError) as excp:
+                    LOGGER.exception('EXCPT! {0!s}'.format(excp))
             return
-        if node.id in self.selected_nodes:
-            # End Remote
-            self.selected_nodes.remove(node.id)
-            threads.inputcapture.set_capture(False)
-            self.diwa_state.capture_thread.unhook()
-            self.overlay.Hide()
-        else:
+        threads.inputcapture.set_capture(True)
+        try:
             # Start remote
-            threads.inputcapture.set_capture(True)
-            self.diwa_state.capture_thread.reset_mouse_events()
+            self.diwa_state.controlling = node.id
             self.diwa_state.capture_thread.hook()
-            sender(node.id, 'remote_start;%s' % node_manager.node.id)
-            self.selected_nodes.append(node.id)
+            msg = 'remote_start;{0}'.format(node_manager.node.id)
+            sender(node.id, msg)
+            # Sync clipboard.
+            self.diwa_state.send_push_clipboard(node.id)
+            if node.id not in self.selected_nodes:
+                self.selected_nodes.append(node.id)
             self.Refresh()
             tmod = pyHook.HookConstants.IDToName(diwavars.KEY_MODIFIER)
             tkey = pyHook.HookConstants.IDToName(diwavars.KEY)
             self.overlay.SetText(tmod, tkey)
             self.overlay.Show()
+        except (IOError, OSError) as excp:
+            LOGGER.exception('EXCPT! {0!s}'.format(excp))
 
     def UpdateScreens(self, update):
         """
@@ -678,19 +694,20 @@ class GraphicalUserInterface(GUItemplate):
             iterated = (i + self.iterator) % len(self.nodes)
             node_screen = self.node_screens[i]
             node_screen.Enable()
+            # TODO: When reloading, remove old registry entry.
             node_screen.ReloadAs(self.nodes[iterated])
         if len(self.nodes) < diwavars.MAX_SCREENS:
             for i in xrange(len(self.nodes), diwavars.MAX_SCREENS):
+                self.node_screens[i].EmptyScreen()
                 self.node_screens[i].Disable()
+                # TODO: Remove old registry entry.
         for node in self.nodes:
             try:
-                self.diwa_state.worker.add_registry_entry(name=node.name,
-                                                          node_id=node.id)
+                self.diwa_state.worker.add_registry_entry(node.name, node.id)
             except WindowsError:
                 pass
         self.diwa_state.worker.check_responsive()
-        self.Thaw()                         # Pair for freeze()
-#-------------------- CONTINUE HERE ------------------------------------------#
+        self.Thaw()                     # Pair for freeze()
 
     def OnExit(self, event):
         """
@@ -701,11 +718,13 @@ class GraphicalUserInterface(GUItemplate):
 
         """
         if event and isinstance(event, threads.ContextMenuFailure):
-            error_text = ('Socket binding error. You might have multiple '
-                          'instances of the software running.\n'
-                          'Please wait for them to terminate or use the '
-                          'task manager to force all of them to quit.\n\n'
-                          'Press OK to start waiting...')
+            error_text = (
+                'Socket binding error. You might have multiple instances of '
+                'the software running.\n'
+                'Please wait for them to terminate or use the task manager '
+                'to force all of them to quit.\n\n'
+                'Press OK to start waiting...'
+            )
             params = {'message': error_text}
             show_modal_and_destroy(ErrorDialog, self, params)
         if not self.exited:
@@ -719,10 +738,10 @@ class GraphicalUserInterface(GUItemplate):
                 self.closebtn.SetToolTip(None)
                 if not event == 'conn_err' and self.diwa_state.is_responsive:
                     LOGGER.debug('On exit self is responsive')
-                    self.diwa_state.remove_observers()
+                    self.diwa_state.remove_observer()
                 last_computer = controller.last_active_computer()
                 if not event == 'conn_err' and last_computer:
-                    LOGGER.debug('On exit self is last active comp.')
+                    LOGGER.debug('On exit self is last active computer.')
                     controller.unset_activity(diwavars.PGM_GROUP)
                     session_id = self.diwa_state.current_session_id
                     if session_id:
@@ -730,16 +749,17 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.debug('Application closing...')
                 utils.MapNetworkShare('W:')
                 diwavars.update_responsive(0)
-                sleep(4)
+                sleep(0.5)
                 self.diwa_state.destroy()
                 LOGGER.debug('GraphicalUserInterface closing...')
                 self.Destroy()
                 LOGGER.info('Application closed!')
                 wx.GetApp().ExitMainLoop()
-            except CloseError, excp:
-                raise excp
-            except Exception, e:
-                LOGGER.exception('Exception in Close: %s', str(e))
+            except CloseError:
+                raise   # Raise without parameter rises the original exception.
+                        # This also preseves the original traceback.
+            except Exception as excp:
+                LOGGER.exception('Exception in Close: {0!s}'.format(excp))
                 for thread in threading.enumerate():
                     LOGGER.debug(thread.getName())
                 self.Destroy()
@@ -749,8 +769,8 @@ class GraphicalUserInterface(GUItemplate):
         """
         About dialog.
 
-        :param e: GraphicalUserInterface Event.
-        :type e: Event
+        :param event: GraphicalUserInterface Event.
+        :type event: Event
 
         """
         description = (diwavars.APPLICATION_NAME +
@@ -864,8 +884,8 @@ def main(profile):
     try:
         window = GraphicalUserInterface()
         app.MainLoop()
-    except Exception, excp:
-        LOGGER.exception('GENERIC EXCEPTION: %s', str(excp))
+    except Exception as excp:
+        LOGGER.exception('GENERIC EXCEPTION: {0!s}'.format(excp))
     finally:
         if window:
             window = None
@@ -888,12 +908,12 @@ def main(profile):
             rindex = suffix.rfind('.')
             if rindex > 0:
                 suffix = suffix[:rindex]
-            log_path = r'data\diwacs_profile_%s.log' % suffix
+            log_path = r'data\diwacs_profile_{0}.log'.format(suffix)
             with open(log_path, 'w') as ofile:
                 ofile.write('PROFILE DATA:\n\n')
                 ofile.write(sval)
-        except (ValueError, IOError, OSError), excp:
-            LOGGER.exception('PROFILING EXCEPTION: %s', str(excp))
+        except (ValueError, IOError, OSError) as excp:
+            LOGGER.exception('PROFILING EXCEPTION: {0!s}'.format(excp))
         LOGGER.info('...PROFILING PRINT END')
 
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Threads package &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Threads package &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Utils module" href="utils.html" />
     <link rel="prev" title="Testing module" href="testing.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="testing.html" title="Testing module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -79,14 +79,14 @@ even as we prefer upper case for threading types.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt>) &#8211; Parent of the thread.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<a class="reference internal" href="diwacs.html#diwacs.GraphicalUserInterface" title="diwacs.GraphicalUserInterface"><tt class="xref py py-class docutils literal"><span class="pre">diwacs.GraphicalUserInterface</span></tt></a>) &#8211; Parent of the thread.</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="threads.audiorecorder.AudioRecorder.find_input_device">
 <tt class="descname">find_input_device</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.find_input_device" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the microphone device.</p>
+<dd><p>Find a microphone device.</p>
 </dd></dl>
 
 <dl class="method">
@@ -99,28 +99,23 @@ even as we prefer upper case for threading types.</p>
 <dt id="threads.audiorecorder.AudioRecorder.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continuously record from the microphone to the buffer.</p>
-<p>If the buffer is full, the first frame will be removed and
-the new block appended.</p>
+<p>The size should be limited at diwavars.MAX_LENGTH constant.
+The implementation keeps only the most recent data in the
+case that there&#8217;s too much data to store.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="threads.audiorecorder.AudioRecorder.save">
-<tt class="descname">save</tt><big>(</big><em>ide</em>, <em>path</em><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.save" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">save</tt><big>(</big><em>event_id</em>, <em>path</em><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the buffer to a file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="threads.audiorecorder.AudioRecorder.stop">
 <tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.AudioRecorder.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop audio recorder.</p>
+<dd><p>Stop the audio recorder thread.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.audiorecorder.logger">
-<tt class="descclassname">threads.audiorecorder.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.audiorecorder.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 </div>
@@ -185,12 +180,6 @@ the software.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="threads.checkupdate.logger">
-<tt class="descclassname">threads.checkupdate.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.checkupdate.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-threads.common">
 <span id="threads-common-module"></span><h2>threads.common module<a class="headerlink" href="#module-threads.common" title="Permalink to this headline">¶</a></h2>
@@ -233,12 +222,6 @@ the software.</p>
 <dd><p>Starts the thread.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.connectionerror.logger">
-<tt class="descclassname">threads.connectionerror.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.connectionerror.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 </div>
@@ -288,12 +271,6 @@ the software.</p>
 <dd><p>Stops the thread.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.contextmenu.logger">
-<tt class="descclassname">threads.contextmenu.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.contextmenu.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 </div>
@@ -361,12 +338,6 @@ instance is terminated.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="threads.current.logger">
-<tt class="descclassname">threads.current.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.current.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-threads.diwathread">
 <span id="threads-diwathread-module"></span><h2>threads.diwathread module<a class="headerlink" href="#module-threads.diwathread" title="Permalink to this headline">¶</a></h2>
@@ -383,6 +354,13 @@ instance is terminated.</p>
 <dt id="threads.diwathread.DIWA_THREAD">
 <em class="property">class </em><tt class="descclassname">threads.diwathread.</tt><tt class="descname">DIWA_THREAD</tt><big>(</big><em>target=None</em>, <em>name=None</em>, <em>args=()</em>, <em>kwargs=None</em><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Doc string here.</p>
+<dl class="method">
+<dt id="threads.diwathread.DIWA_THREAD.remove_self">
+<tt class="descname">remove_self</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.remove_self" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes self from the thread list, this should be used only when
+the thread is sure to die soon.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="threads.diwathread.DIWA_THREAD.stop">
 <tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.DIWA_THREAD.stop" title="Permalink to this definition">¶</a></dt>
@@ -407,12 +385,6 @@ instance is terminated.</p>
 <dt id="threads.diwathread.TimeoutException">
 <em class="property">exception </em><tt class="descclassname">threads.diwathread.</tt><tt class="descname">TimeoutException</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#threads.diwathread.TimeoutException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a thread timeout event.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.diwathread.logger">
-<tt class="descclassname">threads.diwathread.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.diwathread.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 </div>
@@ -446,7 +418,7 @@ instance is terminated.</p>
 <dl class="method">
 <dt id="threads.inputcapture.INPUT_CAPTURE.hook">
 <tt class="descname">hook</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.hook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Add the input hooks to the system.</p>
 </dd></dl>
 
 <dl class="method">
@@ -481,7 +453,7 @@ instance is terminated.</p>
 <dl class="method">
 <dt id="threads.inputcapture.INPUT_CAPTURE.reset_mouse_events">
 <tt class="descname">reset_mouse_events</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.reset_mouse_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Clear the mouse event queue.</p>
 </dd></dl>
 
 <dl class="method">
@@ -499,7 +471,7 @@ instance is terminated.</p>
 <dl class="method">
 <dt id="threads.inputcapture.INPUT_CAPTURE.unhook">
 <tt class="descname">unhook</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.INPUT_CAPTURE.unhook" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Remove the input hooks from the system.</p>
 </dd></dl>
 
 </dd></dl>
@@ -507,19 +479,26 @@ instance is terminated.</p>
 <dl class="class">
 <dt id="threads.inputcapture.MOUSE_CAPTURE">
 <em class="property">class </em><tt class="descclassname">threads.inputcapture.</tt><tt class="descname">MOUSE_CAPTURE</tt><big>(</big><em>parent</em>, <em>swnp</em><big>)</big><a class="headerlink" href="#threads.inputcapture.MOUSE_CAPTURE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>A thread for capturing mouse movements and sending them to remote
+controlled systems.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<a class="reference internal" href="diwacs.html#diwacs.GraphicalUserInterface" title="diwacs.GraphicalUserInterface"><tt class="xref py py-class docutils literal"><span class="pre">diwacs.GraphicalUserInterface</span></tt></a>) &#8211; The main GUI.</li>
+<li><strong>swnp</strong> (<a class="reference internal" href="swnp.html#swnp.SWNP" title="swnp.SWNP"><tt class="xref py py-class docutils literal"><span class="pre">swnp.SWNP</span></tt></a>) &#8211; The network handler.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events">
 <tt class="descname">parse_mouse_events</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Routine that constantly parses mouse events in the queue.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.inputcapture.logger">
-<tt class="descclassname">threads.inputcapture.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.inputcapture.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 <dl class="function">
@@ -549,9 +528,42 @@ instance is terminated.</p>
 </tbody>
 </table>
 <dl class="class">
+<dt id="threads.worker.SNAPSHOT_THREAD">
+<em class="property">class </em><tt class="descclassname">threads.worker.</tt><tt class="descname">SNAPSHOT_THREAD</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#threads.worker.SNAPSHOT_THREAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Worker thread for taking snapshot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) &#8211; File path where to store the snapshot.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="threads.worker.SNAPSHOT_THREAD.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.SNAPSHOT_THREAD.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Worker procedure for storing the snapshot.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This object has a timeout of 1 minute. So consider terminating
+the thread on shutdown if it&#8217;s hanging.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="threads.worker.WORKER_THREAD">
 <em class="property">class </em><tt class="descclassname">threads.worker.</tt><tt class="descname">WORKER_THREAD</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Worker thread for non-UI jobs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> &#8211; The GUI object.</td>
+</tr>
+</tbody>
+</table>
 <dl class="staticmethod">
 <dt id="threads.worker.WORKER_THREAD.add_project_registry_entry">
 <em class="property">static </em><tt class="descname">add_project_registry_entry</tt><big>(</big><em>reg_type</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.add_project_registry_entry" title="Permalink to this definition">¶</a></dt>
@@ -589,13 +601,21 @@ can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</
 <dl class="method">
 <dt id="threads.worker.WORKER_THREAD.check_responsive">
 <tt class="descname">check_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.check_responsive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Determine the responsive node.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="threads.worker.WORKER_THREAD.create_event">
 <tt class="descname">create_event</tt><big>(</big><em>title</em><big>)</big><a class="headerlink" href="#threads.worker.WORKER_THREAD.create_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
+<dd><p>Create a new event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>title</strong> (<em>String</em>) &#8211; Title of the event.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -616,12 +636,6 @@ can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</
 <dd><p>Run the worker thread.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="threads.worker.logger">
-<tt class="descclassname">threads.worker.</tt><tt class="descname">logger</tt><big>(</big><big>)</big><a class="headerlink" href="#threads.worker.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the common logger.</p>
 </dd></dl>
 
 </div>
@@ -645,6 +659,7 @@ can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
@@ -722,7 +737,7 @@ can be e.g. &#8216;*&#8217; for all files or &#8216;Folder&#8217; for folders.</
         <li class="right" >
           <a href="testing.html" title="Testing module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

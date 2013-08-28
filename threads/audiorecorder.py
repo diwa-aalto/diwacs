@@ -21,8 +21,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -34,7 +44,7 @@ class AudioRecorder(DIWA_THREAD):
     even as we prefer upper case for threading types.
 
     :param parent: Parent of the thread.
-    :type parent: :py:class:`threading.Thread`
+    :type parent: :py:class:`diwacs.GraphicalUserInterface`
 
     """
     def __init__(self, parent):
@@ -45,13 +55,19 @@ class AudioRecorder(DIWA_THREAD):
         self.buffer = deque(maxlen=diwavars.MAX_LENGTH)
 
     def stop(self):
-        """ Stop audio recorder. """
+        """
+        Stop the audio recorder thread.
+
+        """
         DIWA_THREAD.stop(self)
-        sleep(0.2)
+        sleep(0.1)
         self.stream.close()
 
     def find_input_device(self):
-        """ Find the microphone device. """
+        """
+        Find a microphone device.
+
+        """
         for i in range(self.py_audio.get_device_count()):
             # Internationalization hack...
             # LOGGER.debug("Selecting audio device %s / %s " %
@@ -69,7 +85,10 @@ class AudioRecorder(DIWA_THREAD):
         return None
 
     def open_mic_stream(self):
-        """ Opens the stream object for microphone. """
+        """
+        Opens the stream object for microphone.
+
+        """
         device_index = None
         # uncomment the next line to search for a device.
         # device_index = self.find_input_device()
@@ -87,25 +106,30 @@ class AudioRecorder(DIWA_THREAD):
         """
         Continuously record from the microphone to the buffer.
 
-        If the buffer is full, the first frame will be removed and
-        the new block appended.
+        The size should be limited at diwavars.MAX_LENGTH constant.
+        The implementation keeps only the most recent data in the
+        case that there's too much data to store.
 
         """
         while not self._stop.is_set():
             try:
                 data = self.stream.read(diwavars.INPUT_FRAMES_PER_BLOCK)
-                if len(self.buffer) == self.buffer.maxlen:
+                while len(self.buffer) >= self.buffer.maxlen:
                     element = self.buffer.popleft()
                     del element
                 self.buffer.append(data)
-            except IOError, excp:
-                logger().exception('Error recording: %s', str(excp))
+            except IOError as excp:
+                _logger().exception('Error recording: {0!s}'.format(excp))
 
-    def save(self, ide, path):
-        """Save the buffer to a file."""
+    def save(self, event_id, path):
+        """
+        Save the buffer to a file.
+
+        """
         try:
+            _logger().debug('Saving audio buffer')
             date_string = datetime.now().strftime('%d%m%Y%H%M')
-            filename = '%d_%s.wav' % (ide, date_string)
+            filename = '{0}_{1}.wav'.format(event_id, date_string)
             filepath = os.path.join(path, 'Audio')
             if not os.path.exists(filepath):
                 os.makedirs(filepath)
@@ -117,7 +141,8 @@ class AudioRecorder(DIWA_THREAD):
             wave_file.setframerate(diwavars.RATE)
             wave_file.writeframes(b''.join(self.buffer))
             wave_file.close()
-            CallAfter(self.parent.ClearStatusText)
         except:
-            logger().exception('audio save exception')
-            CallAfter(self.parent.ClearStatusText)
+            _logger().exception('audio save exception')
+        #CallAfter(self.parent.ClearStatusText)
+        self.parent.diwa_state.remove_from_swnp_data('audio')
+        CallAfter(self.parent.UpdateScreens(update=True))

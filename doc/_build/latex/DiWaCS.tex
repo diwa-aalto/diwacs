@@ -14,8 +14,8 @@
 
 
 \title{DiWaCS Documentation}
-\date{July 15, 2013}
-\release{0.9.3.0}
+\date{August 27, 2013}
+\release{0.9.3.1}
 \author{Nick Eriksson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -167,7 +167,7 @@ Contents:
 
 \chapter{Automated Code Documentation}
 \label{api:automated-code-documentation}\label{api::doc}\label{api:welcome-to-diwacs-documentation}
-Documentation generated on 2013-07-15 at 14:51.
+Documentation generated on 2013-08-26 at 11:39.
 
 
 \section{Add file module}
@@ -274,11 +274,11 @@ Created on 28.6.2013
 neriksso
 
 \end{description}\end{quote}
-\index{add\_activity() (in module controller.activity)}
+\index{add\_or\_update\_activity() (in module controller.activity)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.activity.add_activity}\pysiglinewithargsret{\code{controller.activity.}\bfcode{add\_activity}}{\emph{project\_id}, \emph{pgm\_group}, \emph{session\_id=None}, \emph{activity\_id=None}}{}
-Add activity to database.
+\phantomsection\label{controller:controller.activity.add_or_update_activity}\pysiglinewithargsret{\code{controller.activity.}\bfcode{add\_or\_update\_activity}}{\emph{project\_id}, \emph{pgm\_group}, \emph{session\_id=0}, \emph{activity\_id=0}}{}
+Add activity to database or update it if it exists already.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -309,26 +309,18 @@ Integer
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.activity.get_active_activity}\pysiglinewithargsret{\code{controller.activity.}\bfcode{get\_active\_activity}}{\emph{pgm\_group}}{}
-Get the latest active activity id.
+Get the latest active activity.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{pgm\_group} (\emph{Integer}) -- The PGM Group number.
 
 \item[{Returns}] \leavevmode
-Latest active activity ID.
+Latest active activity.
 
 \item[{Return type}] \leavevmode
-Integer
+{\hyperref[models:models.Activity]{\code{models.Activity}}}
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.activity)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.activity.logger}\pysiglinewithargsret{\code{controller.activity.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
@@ -355,33 +347,6 @@ Created on 28.6.2013
 neriksso
 
 \end{description}\end{quote}
-\index{connect\_to\_database() (in module controller.common)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.common.connect_to_database}\pysiglinewithargsret{\code{controller.common.}\bfcode{connect\_to\_database}}{\emph{expire=False}}{}
-Connect to the database and return a Session object.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{expire} (\emph{Boolean}) -- Parameter passed to session maker as expire\_on\_commit.
-
-\item[{Returns}] \leavevmode
-Session.
-
-\item[{Return type}] \leavevmode
-\code{sqlalchemy.orm.session.Session}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{create\_all() (in module controller.common)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.common.create_all}\pysiglinewithargsret{\code{controller.common.}\bfcode{create\_all}}{}{}
-Create tables to the database.
-
-\end{fulllineitems}
-
 \index{delete\_record() (in module controller.common)}
 
 \begin{fulllineitems}
@@ -407,31 +372,27 @@ Boolean
 
 \end{fulllineitems}
 
-\index{get\_action\_id\_by\_name() (in module controller.common)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.common.get_action_id_by_name}\pysiglinewithargsret{\code{controller.common.}\bfcode{get\_action\_id\_by\_name}}{\emph{action\_name}}{}
-Get the static ID of action name.
-
-\end{fulllineitems}
-
 \index{get\_or\_create() (in module controller.common)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.common.get_or_create}\pysiglinewithargsret{\code{controller.common.}\bfcode{get\_or\_create}}{\emph{database}, \emph{model}, \emph{**kwargs}}{}
+\phantomsection\label{controller:controller.common.get_or_create}\pysiglinewithargsret{\code{controller.common.}\bfcode{get\_or\_create}}{\emph{model}, \emph{*filters}, \emph{**initializers}}{}
 Fetches or creates a instance.
 \begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{database} (\code{sqlalchemy.orm.session.Session}) -- a related database.
-
-\item {} 
+\item[{Parameters}] \leavevmode
 \textbf{model} (\code{sqlalchemy.ext.declarative.declarative\_base}) -- The model of which an instance is wanted.
 
-\end{itemize}
+\end{description}\end{quote}
 
+Filters are given after model and represent the query conditions for get.
+
+Initializers are given after filters and are keyword arguments used for
+initializing a new object.
+\begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
 An object of the desired model.
+
+\item[{Throws }] \leavevmode
+\code{sqlalchemy.exc.SQLAlchemyException}
 
 \end{description}\end{quote}
 
@@ -476,19 +437,6 @@ Does the software have access to the database at this time.
 Boolean
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{update\_database() (in module controller.common)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.common.update_database}\pysiglinewithargsret{\code{controller.common.}\bfcode{update\_database}}{}{}
-Update the database connection engine.
-
-\begin{notice}{note}{Note:}
-This only works when DB\_STRING is completely defined by
-the log reader.
-\end{notice}
 
 \end{fulllineitems}
 
@@ -551,6 +499,9 @@ Adds a computer to a session.
 
 \end{itemize}
 
+\item[{Note }] \leavevmode
+This is not currently used so consider removing it.
+
 \end{description}\end{quote}
 
 \end{fulllineitems}
@@ -558,12 +509,12 @@ Adds a computer to a session.
 \index{get\_active\_computers() (in module controller.computer)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.computer.get_active_computers}\pysiglinewithargsret{\code{controller.computer.}\bfcode{get\_active\_computers}}{\emph{timeout}}{}
+\phantomsection\label{controller:controller.computer.get_active_computers}\pysiglinewithargsret{\code{controller.computer.}\bfcode{get\_active\_computers}}{\emph{timeout}, \emph{*filters}}{}
 Get all the active computers from database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{timeout} (\emph{Integer}) -- The number of seconds an ``active'' computer may have been idle while
-still being considered active.
+still being considered active. Default is 10 seconds.
 
 \item[{Returns}] \leavevmode
 A list of active computers.
@@ -599,23 +550,11 @@ A list of Integer
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.computer.last_active_computer}\pysiglinewithargsret{\code{controller.computer.}\bfcode{last\_active\_computer}}{}{}
 Is the current node last active computer.
-
-\begin{notice}{note}{Note:}
-This uses 10 seconds as timeout for definition ``not active''.
-\end{notice}
 \begin{quote}\begin{description}
 \item[{Return type}] \leavevmode
 Boolean
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.computer)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.computer.logger}\pysiglinewithargsret{\code{controller.computer.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
@@ -627,12 +566,6 @@ Refresh the computer in database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{computer} ({\hyperref[models:models.Computer]{\code{models.Computer}}}) -- The computer to refresh.
-
-\item[{Returns}] \leavevmode
-The Refreshed computer.
-
-\item[{Return type}] \leavevmode
-{\hyperref[models:models.Computer]{\code{models.Computer}}}
 
 \end{description}\end{quote}
 
@@ -659,12 +592,6 @@ Refresh the computer by node id and give it optionally new configurations.
 
 \end{itemize}
 
-\item[{Returns}] \leavevmode
-Success
-
-\item[{Return type}] \leavevmode
-Boolean
-
 \end{description}\end{quote}
 
 \end{fulllineitems}
@@ -679,89 +606,17 @@ Created on 28.6.2013
 neriksso
 
 \end{description}\end{quote}
-\index{PROJECT\_FILE\_EVENT\_HANDLER (class in controller.handlers)}
+\index{PROJECT\_EVENT\_HANDLER (class in controller.handlers)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.PROJECT_FILE_EVENT_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.handlers.}\bfcode{PROJECT\_FILE\_EVENT\_HANDLER}}{\emph{project\_id}}{}
+\phantomsection\label{controller:controller.handlers.PROJECT_EVENT_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.handlers.}\bfcode{PROJECT\_EVENT\_HANDLER}}{\emph{project\_id}, \emph{handler\_type='project'}}{}
 Handler for FileSystem events on project folder.
+It uses watchdog library internally.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{project\_id} (\emph{Integer}) -- Project id from database.
 
 \end{description}\end{quote}
-\index{on\_created() (controller.handlers.PROJECT\_FILE\_EVENT\_HANDLER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
-On\_created event handler. Logs to database.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{event} (an instance of \code{watchdog.events.FileSystemEvent}) -- The event.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{on\_deleted() (controller.handlers.PROJECT\_FILE\_EVENT\_HANDLER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_deleted}\pysiglinewithargsret{\bfcode{on\_deleted}}{\emph{event}}{}
-On\_deleted event handler. Logs to database.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{event} (an instance of \code{watchdog.events.FileSystemEvent}) -- The event.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{on\_modified() (controller.handlers.PROJECT\_FILE\_EVENT\_HANDLER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.PROJECT_FILE_EVENT_HANDLER.on_modified}\pysiglinewithargsret{\bfcode{on\_modified}}{\emph{event}}{}
-On\_modified event handler. Logs to database.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{event} (an instance of \code{watchdog.events.FileSystemEvent}) -- The event.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\index{SCAN\_HANDLER (class in controller.handlers)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.SCAN_HANDLER}\pysiglinewithargsret{\strong{class }\code{controller.handlers.}\bfcode{SCAN\_HANDLER}}{\emph{project\_id}}{}
-Handler for FileSystem events on SCANNING folder.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{project\_id} (\emph{Integer}) -- Project id from database.
-
-\end{description}\end{quote}
-\index{on\_created() (controller.handlers.SCAN\_HANDLER method)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.SCAN_HANDLER.on_created}\pysiglinewithargsret{\bfcode{on\_created}}{\emph{event}}{}
-On\_created event handler. Logs to database.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{event} (an instance of \code{watchdog.events.FileSystemEvent}) -- The event.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.handlers)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.handlers.logger}\pysiglinewithargsret{\code{controller.handlers.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
@@ -778,13 +633,13 @@ neriksso
 \index{add\_file\_to\_project() (in module controller.project)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.project.add_file_to_project}\pysiglinewithargsret{\code{controller.project.}\bfcode{add\_file\_to\_project}}{\emph{filepath}, \emph{project\_id}}{}
+\phantomsection\label{controller:controller.project.add_file_to_project}\pysiglinewithargsret{\code{controller.project.}\bfcode{add\_file\_to\_project}}{\emph{file\_path}, \emph{project\_id}}{}
 Add a file to project. Copies it to the folder and adds a record to
 database.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{filepath} (\emph{String}) -- A filepath.
+\textbf{file\_path} (\emph{String}) -- A file\_path.
 
 \item {} 
 \textbf{project\_id} -- Project id from database.
@@ -792,7 +647,7 @@ database.
 \end{itemize}
 
 \item[{Returns}] \leavevmode
-New filepath.
+New file\_path.
 
 \item[{Return type}] \leavevmode
 String
@@ -821,7 +676,29 @@ an instance of {\hyperref[models:models.Project]{\code{models.Project}}}
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.project.check_password}\pysiglinewithargsret{\code{controller.project.}\bfcode{check\_password}}{\emph{project\_id}, \emph{password}}{}
-Docstring here.
+Check that the password is correct for accessing a given project.
+\begin{quote}\begin{description}
+\item[{Note }] \leavevmode
+This returns true also if the project does not have password
+specified as the project is public in that case. The password
+provided is ignored in this case.
+
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{project\_id} (\emph{Integer}) -- ID of the project.
+
+\item {} 
+\textbf{password} (\emph{String}) -- Password to check.
+
+\end{itemize}
+
+\item[{Returns}] \leavevmode
+Is the password authorized to access the project.
+
+\item[{Type }] \leavevmode
+Boolean
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -853,12 +730,12 @@ Logs a file action to the database.
 \index{edit\_project() (in module controller.project)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.project.edit_project}\pysiglinewithargsret{\code{controller.project.}\bfcode{edit\_project}}{\emph{id\_number}, \emph{row}}{}
+\phantomsection\label{controller:controller.project.edit_project}\pysiglinewithargsret{\code{controller.project.}\bfcode{edit\_project}}{\emph{project\_id}, \emph{row}}{}
 Update the project info.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{id\_number} (\emph{Integer}) -- Database id number of the project.
+\textbf{project\_id} (\emph{Integer}) -- Database id number of the project.
 
 \item {} 
 \textbf{row} (\emph{A dictionary}) -- The new project information.
@@ -888,70 +765,20 @@ Integer
 
 \end{fulllineitems}
 
-\index{get\_file\_path() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.get_file_path}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_file\_path}}{\emph{project\_id}, \emph{filename}}{}
-Returns the filepath for filename.
-\begin{quote}\begin{description}
-\item[{Returns}] \leavevmode
-Filepath.
-
-\item[{Return type}] \leavevmode
-String
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{get\_project() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.get_project}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_project}}{\emph{project\_id}}{}
-Fetches projects by a company.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{company\_id} (\emph{Integer}) -- A company id from database.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{get\_project\_id\_by\_activity() (in module controller.project)}
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.project.get_project_id_by_activity}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_project\_id\_by\_activity}}{\emph{activity\_id}}{}
-Docstring here.
-
-\end{fulllineitems}
-
-\index{get\_project\_password() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.get_project_password}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_project\_password}}{\emph{project\_id}}{}
-Returns the project password.
+Get the project ID that this activity\_id is a part of.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{project\_id} (\emph{Integer}) -- ID of the project.
+\textbf{activity\_id} (\emph{Integer}) -- ID of the activity\_id.
+
+\item[{Returns}] \leavevmode
+The project ID.
 
 \item[{Return type}] \leavevmode
-String
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{get\_project\_path() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.get_project_path}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_project\_path}}{\emph{project\_id}}{}
-Fetches the project path from database and return it.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{project\_id} (\emph{Integer}) -- Project id for database.
-
-\item[{Return type}] \leavevmode
-String
+Integer
 
 \end{description}\end{quote}
 
@@ -965,31 +792,6 @@ Fetches projects by a company.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{company\_id} (\emph{Integer}) -- A company id from database.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{get\_recent\_files() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.get_recent_files}\pysiglinewithargsret{\code{controller.project.}\bfcode{get\_recent\_files}}{\emph{project\_id}, \emph{max\_files\_count=None}}{}
-Fetches files accessed recently in the project sessions from the database.
-
-\DUspan{}{New in version 0.9.3.0: }Added a limit parameter, limits the number of returned results.
-
-\begin{notice}{note}{Note:}
-Duplicate check has been added at some point in time.
-\end{notice}
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{project\_id} (\emph{Integer}) -- The project id
-
-\item[{Returns}] \leavevmode
-The list of filepaths that have recently been used in this project.
-
-\item[{Return type}] \leavevmode
-List of String
 
 \end{description}\end{quote}
 
@@ -1031,14 +833,6 @@ Boolean
 
 \end{fulllineitems}
 
-\index{logger() (in module controller.project)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.project.logger}\pysiglinewithargsret{\code{controller.project.}\bfcode{logger}}{}{}
-Return controller logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{controller.session module}
@@ -1054,6 +848,7 @@ neriksso
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.session.add_event}\pysiglinewithargsret{\code{controller.session.}\bfcode{add\_event}}{\emph{session\_id}, \emph{title}, \emph{description}}{}
 Adds an event to the database.
+Returns the ID field of the added event.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
@@ -1063,6 +858,12 @@ Adds an event to the database.
 \textbf{description} (\emph{String}) -- Description of the event.
 
 \end{itemize}
+
+\item[{Returns}] \leavevmode
+The event ID.
+
+\item[{Return type}] \leavevmode
+Integer
 
 \end{description}\end{quote}
 
@@ -1101,10 +902,10 @@ Integer
 
 \end{fulllineitems}
 
-\index{get\_latest\_event() (in module controller.session)}
+\index{get\_latest\_event\_id() (in module controller.session)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.session.get_latest_event}\pysiglinewithargsret{\code{controller.session.}\bfcode{get\_latest\_event}}{}{}
+\phantomsection\label{controller:controller.session.get_latest_event_id}\pysiglinewithargsret{\code{controller.session.}\bfcode{get\_latest\_event\_id}}{}{}
 Get the latest event id.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
@@ -1121,43 +922,30 @@ Integer
 
 \begin{fulllineitems}
 \phantomsection\label{controller:controller.session.get_session_id_by_activity}\pysiglinewithargsret{\code{controller.session.}\bfcode{get\_session\_id\_by\_activity}}{\emph{activity\_id}}{}
-Docstring here.
-
-\end{fulllineitems}
-
-\index{get\_sessions\_by\_project() (in module controller.session)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.session.get_sessions_by_project}\pysiglinewithargsret{\code{controller.session.}\bfcode{get\_sessions\_by\_project}}{\emph{project\_id}}{}
-Fetches sessions for a project.
+Get the session ID that this activity\_id is a part of.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{project\_id} (\emph{Integer}) -- Project id from database.
+\textbf{activity\_id} (\emph{Integer}) -- ID of the activity\_id.
+
+\item[{Returns}] \leavevmode
+The project ID.
+
+\item[{Return type}] \leavevmode
+Integer
 
 \end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{logger() (in module controller.session)}
-
-\begin{fulllineitems}
-\phantomsection\label{controller:controller.session.logger}\pysiglinewithargsret{\code{controller.session.}\bfcode{logger}}{}{}
-Return controller logger.
 
 \end{fulllineitems}
 
 \index{start\_new\_session() (in module controller.session)}
 
 \begin{fulllineitems}
-\phantomsection\label{controller:controller.session.start_new_session}\pysiglinewithargsret{\code{controller.session.}\bfcode{start\_new\_session}}{\emph{project\_id}, \emph{session\_id=None}, \emph{old\_session\_id=None}}{}
+\phantomsection\label{controller:controller.session.start_new_session}\pysiglinewithargsret{\code{controller.session.}\bfcode{start\_new\_session}}{\emph{project\_id}, \emph{old\_session\_id=None}}{}
 Creates a session to the database and return a session object.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
 \textbf{project\_id} (\emph{Integer}) -- Project id from database.
-
-\item {} 
-\textbf{session\_id} (\emph{Integer}) -- an existing session id from database.
 
 \item {} 
 \textbf{old\_session\_id} (\emph{Integer}) -- A session id of a session which will be continued.
@@ -1174,6 +962,15 @@ Creates a session to the database and return a session object.
 \label{dialogs:dialogs-module}\label{dialogs::doc}\label{dialogs:module-dialogs}\index{dialogs (module)}
 Created on 4.6.2013
 \begin{quote}\begin{description}
+\item[{platform}] \leavevmode
+Windows Vista, Windows 7, Windows 8
+
+\item[{synopsis}] \leavevmode
+Define the pop-up dialogs for the application.
+
+\item[{note}] \leavevmode
+Requires WxPython.
+
 \item[{author}] \leavevmode
 neriksso
 
@@ -1232,6 +1029,82 @@ Event handler for text changed.
 
 \end{fulllineitems}
 
+\index{ChooseDiwaProfileDialog (class in dialogs)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ChooseDiwaProfileDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ChooseDiwaProfileDialog}}{\emph{parent}, \emph{profiles}}{}
+Allows user to select a DiWa profile from a list of profiles. Profiles
+are loaded from the filesystem.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{parent} (\emph{Object}) -- The parent object.
+
+\item {} 
+\textbf{profiles} (\emph{List}) -- List of profiles
+
+\end{itemize}
+
+\end{description}\end{quote}
+\index{Exit() (dialogs.ChooseDiwaProfileDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ChooseDiwaProfileDialog.Exit}\pysiglinewithargsret{\bfcode{Exit}}{\emph{event}}{}
+Event handler for Exit button press.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{ListDatabaseProfiles() (dialogs.ChooseDiwaProfileDialog static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ChooseDiwaProfileDialog.ListDatabaseProfiles}\pysiglinewithargsret{\strong{static }\bfcode{ListDatabaseProfiles}}{}{}
+Returns the list of available profiles.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+A list of profiles.
+
+\item[{Return type}] \leavevmode
+List of Strings
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{OnComboBox() (dialogs.ChooseDiwaProfileDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ChooseDiwaProfileDialog.OnComboBox}\pysiglinewithargsret{\bfcode{OnComboBox}}{\emph{event}}{}
+Event handler for updating the state of OK button, depending
+if there's anything selected in the combo-box.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{SelectDiwaProfile() (dialogs.ChooseDiwaProfileDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ChooseDiwaProfileDialog.SelectDiwaProfile}\pysiglinewithargsret{\bfcode{SelectDiwaProfile}}{\emph{event}}{}
+Load settings from a profile, event handler.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 \index{CloseError}
 
 \begin{fulllineitems}
@@ -1246,6 +1119,14 @@ Class describing an error while closing application.
 \phantomsection\label{dialogs:dialogs.ConnectionErrorDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ConnectionErrorDialog}}{\emph{parent}}{}
 Create a connection error dialog that informs the user about reconnection
 attempts made by the software.
+\index{GetResult() (dialogs.ConnectionErrorDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ConnectionErrorDialog.GetResult}\pysiglinewithargsret{\bfcode{GetResult}}{}{}
+Try to reconnect and return the outcome.
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -1317,6 +1198,19 @@ Closes the dialog without modifications.
 
 \begin{fulllineitems}
 \phantomsection\label{dialogs:dialogs.PreferencesDialog.OpenConfig}\pysiglinewithargsret{\bfcode{OpenConfig}}{\emph{event}}{}
+Opens config file.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\emph{Event}) -- GUI event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{ReloadConfig() (dialogs.PreferencesDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.PreferencesDialog.ReloadConfig}\pysiglinewithargsret{\bfcode{ReloadConfig}}{\emph{event}}{}
 Opens config file.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1471,8 +1365,21 @@ Integer
 \index{ProjectSelectedDialog (class in dialogs)}
 
 \begin{fulllineitems}
-\phantomsection\label{dialogs:dialogs.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{title}, \emph{project\_id}}{}
+\phantomsection\label{dialogs:dialogs.ProjectSelectedDialog}\pysiglinewithargsret{\strong{class }\code{dialogs.}\bfcode{ProjectSelectedDialog}}{\emph{parent}, \emph{project\_id}}{}
 A dialog for project selection confirmation.
+\index{OnOk() (dialogs.ProjectSelectedDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.ProjectSelectedDialog.OnOk}\pysiglinewithargsret{\bfcode{OnOk}}{\emph{event}}{}
+Event handler for OK button press.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -1501,19 +1408,32 @@ Contains the URL which the user can click on.
 \end{itemize}
 
 \end{description}\end{quote}
+\index{OnOk() (dialogs.UpdateDialog method)}
+
+\begin{fulllineitems}
+\phantomsection\label{dialogs:dialogs.UpdateDialog.OnOk}\pysiglinewithargsret{\bfcode{OnOk}}{\emph{event}}{}
+Event handler for OK button press.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module dialogs)}
+\index{UrlHandler() (dialogs.UpdateDialog method)}
 
 \begin{fulllineitems}
-\phantomsection\label{dialogs:dialogs.set_logger_level}\pysiglinewithargsret{\code{dialogs.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for dialogs logger.
+\phantomsection\label{dialogs:dialogs.UpdateDialog.UrlHandler}\pysiglinewithargsret{\bfcode{UrlHandler}}{\emph{event}}{}
+Event handler for URL text press.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
+\textbf{event} (\code{wx.Event}) -- GUI event.
 
 \end{description}\end{quote}
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
@@ -1645,7 +1565,7 @@ unselected.
 \begin{notice}{note}{Note:}
 There should be no need for this as the software should
 always start a new project after the old one ends.
-But for the mid state to be legimate this is still
+But for the mid state to be legitimate this is still
 usable.
 \end{notice}
 
@@ -1681,26 +1601,6 @@ Used to enable the needed buttons after session has been started.
 
 \end{fulllineitems}
 
-\index{GetNodeByName() (diwacs.GraphicalUserInterface method)}
-
-\begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.GetNodeByName}\pysiglinewithargsret{\bfcode{GetNodeByName}}{\emph{name}}{}
-From current session nodes, select a node with this name
-or return None.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{name} (\emph{String}) -- Name of the desired node.
-
-\item[{Returns}] \leavevmode
-The desired node if one exists.
-
-\item[{Return type}] \leavevmode
-{\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{InitUICore() (diwacs.GraphicalUserInterface method)}
 
 \begin{fulllineitems}
@@ -1717,16 +1617,16 @@ binds the functionality.
 About dialog.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{e} (\emph{Event}) -- GraphicalUserInterface Event.
+\textbf{event} (\emph{Event}) -- GraphicalUserInterface Event.
 
 \end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{OnEvtBtn() (diwacs.GraphicalUserInterface method)}
+\index{OnEventButton() (diwacs.GraphicalUserInterface method)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.OnEvtBtn}\pysiglinewithargsret{\bfcode{OnEvtBtn}}{\emph{event}}{}
+\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.OnEventButton}\pysiglinewithargsret{\bfcode{OnEventButton}}{\emph{event}}{}
 Event Button handler.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
@@ -1744,6 +1644,19 @@ Exits program.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{event} (\emph{Event}) -- GraphicalUserInterface Event
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{OnFocus() (diwacs.GraphicalUserInterface method)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.OnFocus}\pysiglinewithargsret{\bfcode{OnFocus}}{\emph{event}}{}
+Event handler for gained focus.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{event} (\code{wx.Event}) -- GUI event.
 
 \end{description}\end{quote}
 
@@ -1796,10 +1709,10 @@ Preferences dialog event handler.
 
 \end{fulllineitems}
 
-\index{OnProject() (diwacs.GraphicalUserInterface method)}
+\index{OnProjectChanged() (diwacs.GraphicalUserInterface method)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.OnProject}\pysiglinewithargsret{\bfcode{OnProject}}{}{}
+\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.OnProjectChanged}\pysiglinewithargsret{\bfcode{OnProjectChanged}}{}{}
 Project selected event handler.
 
 \end{fulllineitems}
@@ -1869,23 +1782,6 @@ Opens project directory in windows explorer.
 
 \end{fulllineitems}
 
-\index{PaintSelect() (diwacs.GraphicalUserInterface method)}
-
-\begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.GraphicalUserInterface.PaintSelect}\pysiglinewithargsret{\bfcode{PaintSelect}}{\emph{evt}}{}
-Paints the selection of a node.
-
-\begin{notice}{note}{Note:}
-For future use.
-\end{notice}
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{evt} (\emph{Event}) -- GraphicalUserInterface Event
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{SelectNode() (diwacs.GraphicalUserInterface method)}
 
 \begin{fulllineitems}
@@ -1921,7 +1817,7 @@ Select project event handler.
 \begin{fulllineitems}
 \phantomsection\label{diwacs:diwacs.GraphicalUserInterface.SetProjectName}\pysiglinewithargsret{\bfcode{SetProjectName}}{\emph{name}}{}
 Set the project text.
-For example ``No Project OnSelection''.
+For example ``No Project Selection''.
 
 \begin{notice}{note}{Note:}
 Requires None explicitly when the purpose is to set default label
@@ -1987,24 +1883,16 @@ Remember to disable it from release binaries.
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module diwacs)}
-
-\begin{fulllineitems}
-\phantomsection\label{diwacs:diwacs.set_logger_level}\pysiglinewithargsret{\code{diwacs.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Used to set logger level.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- The level desired.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 
 
 \section{DiWaVars module}
 \label{diwavars:module-diwavars}\label{diwavars:diwavars-module}\label{diwavars::doc}\index{diwavars (module)}
 DiWaCS Variables
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\end{description}\end{quote}
 \index{add\_logger\_initializer() (in module diwavars)}
 
 \begin{fulllineitems}
@@ -2026,6 +1914,42 @@ For setting application logger level globally.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{logger\_level\_setter} (\emph{function}) -- The logger level setter to add to level set chain.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{print\_to\_status\_box() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.print_to_status_box}\pysiglinewithargsret{\code{diwavars.}\bfcode{print\_to\_status\_box}}{\emph{line}}{}
+A function that get's called to print text into the status\_box.
+This forwards the function call to the registered function
+(registered via {\hyperref[diwavars:diwavars.register_status_box_callback]{\code{register\_status\_box\_callback()}}}).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{value} (\emph{String}) -- The text to print to the status\_box.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{register\_status\_box\_callback() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.register_status_box_callback}\pysiglinewithargsret{\code{diwavars.}\bfcode{register\_status\_box\_callback}}{\emph{state\_func}, \emph{print\_func}}{}
+Register a function for changing the state of status\_box and
+a function for printing data into the status\_box.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{state\_func} (\emph{Function(Integer)}) -- A function that get's called with the new value of status\_box when
+the value changes.
+
+\item {} 
+\textbf{print\_func} (\emph{Function(String)}) -- A function that get's called to print text into the status\_box.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -2079,11 +2003,11 @@ to files.
 
 \end{fulllineitems}
 
-\index{update\_PGM\_group() (in module diwavars)}
+\index{set\_using\_diwa\_profile() (in module diwavars)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwavars:diwavars.update_PGM_group}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_PGM\_group}}{\emph{new\_group}}{}
-Update the PGM group for this node.
+\phantomsection\label{diwavars:diwavars.set_using_diwa_profile}\pysiglinewithargsret{\code{diwavars.}\bfcode{set\_using\_diwa\_profile}}{\emph{value}}{}
+Set variable defining is a profile in use.
 
 \end{fulllineitems}
 
@@ -2091,7 +2015,7 @@ Update the PGM group for this node.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_audio}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_audio}}{\emph{audio}}{}
-Docstring here.
+Update the global Audio variable.
 
 \end{fulllineitems}
 
@@ -2099,7 +2023,15 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_camera_vars}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_camera\_vars}}{\emph{url}, \emph{user}, \emph{passwd}}{}
-Docstring here.
+Update the global variables that control the camera settings.
+
+\end{fulllineitems}
+
+\index{update\_config\_loader() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.update_config_loader}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_config\_loader}}{\emph{config\_loader}}{}
+Set the CONFIG loader function...
 
 \end{fulllineitems}
 
@@ -2107,14 +2039,14 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{diwavars:diwavars.update_database_vars}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_database\_vars}}{\emph{address=None}, \emph{name=None}, \emph{type\_=None}, \emph{user=None}, \emph{password=None}}{}
-Docstring here.
+Update the global database settings.
 
 \end{fulllineitems}
 
 \index{update\_keys() (in module diwavars)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwavars:diwavars.update_keys}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_keys}}{\emph{modifier=91}, \emph{key=27}}{}
+\phantomsection\label{diwavars:diwavars.update_keys}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_keys}}{\emph{modifier=91}, \emph{key=164}}{}
 Update the key combination to stop remote controlling.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
@@ -2138,11 +2070,34 @@ Set the padfile address.
 
 \end{fulllineitems}
 
+\index{update\_pgm\_group() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.update_pgm_group}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_pgm\_group}}{\emph{new\_group}}{}
+Update the PGM group for this node.
+
+\end{fulllineitems}
+
 \index{update\_responsive() (in module diwavars)}
 
 \begin{fulllineitems}
-\phantomsection\label{diwavars:diwavars.update_responsive}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_responsive}}{\emph{resp}}{}
-Docstring here.
+\phantomsection\label{diwavars:diwavars.update_responsive}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_responsive}}{\emph{responsive}}{}
+Update the global responsive setting.
+
+\end{fulllineitems}
+
+\index{update\_status\_box() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.update_status_box}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_status\_box}}{\emph{value}}{}
+A function that get's called with the new value of status\_box when
+the value changes. This forwards the function call to the registered
+function (registered via {\hyperref[diwavars:diwavars.register_status_box_callback]{\code{register\_status\_box\_callback()}}}).
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{value} (\emph{Integer}) -- The new value of status box.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -2154,6 +2109,31 @@ Update the address of storage.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{storage} (\emph{String}) -- The new address of storage.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{update\_variable() (in module diwavars)}
+
+\begin{fulllineitems}
+\phantomsection\label{diwavars:diwavars.update_variable}\pysiglinewithargsret{\code{diwavars.}\bfcode{update\_variable}}{\emph{name}, \emph{value}}{}
+Set ANY global value in diwavars.py into \textbf{value} (literal\_eval).
+
+EXAMPLE:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{diwavars}\PYG{o}{.}\PYG{n}{update\PYGZus{}variable}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{AUDIO}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s}{\PYGZsq{}}\PYG{l+s}{False}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
+\end{Verbatim}
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{name} (\emph{String}) -- The name of the global.
+
+\item {} 
+\textbf{value} (\emph{String}) -- The new value of the global embedded into a string.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -2253,14 +2233,20 @@ String
 
 \end{fulllineitems}
 
-\index{file\_to\_base64() (in module filesystem)}
+\index{get\_current\_wallpaper() (in module filesystem)}
 
 \begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.file_to_base64}\pysiglinewithargsret{\code{filesystem.}\bfcode{file\_to\_base64}}{\emph{filepath}}{}
-Transform a file to a binary object.
+\phantomsection\label{filesystem:filesystem.get_current_wallpaper}\pysiglinewithargsret{\code{filesystem.}\bfcode{get\_current\_wallpaper}}{\emph{win}}{}
+Try to get the current wallpaper image path.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{filepath} (\emph{String}) -- The file path.
+\textbf{win} (\emph{Tuple of Integers}) -- Windows version (Major, Minor).
+
+\item[{Returns}] \leavevmode
+Wallpaper image path if it can find it.
+
+\item[{Return type}] \leavevmode
+String
 
 \end{description}\end{quote}
 
@@ -2290,25 +2276,6 @@ Searches for a node's image in STORAGE.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{node} (\emph{Integer}) -- The node id.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{is\_subtree() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.is_subtree}\pysiglinewithargsret{\code{filesystem.}\bfcode{is\_subtree}}{\emph{filename}, \emph{parent}, \emph{case\_sensitive=True}}{}
-Determines, if filename is inside the parent folder.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\textbf{filename} (\emph{String}) -- The file path.
-
-\item {} 
-\textbf{parent} (\emph{String}) -- The parent file path.
-
-\end{itemize}
 
 \end{description}\end{quote}
 
@@ -2384,50 +2351,6 @@ String
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.set_logger_level}\pysiglinewithargsret{\code{filesystem.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for filesystem logger.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{snapshot() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.snapshot}\pysiglinewithargsret{\code{filesystem.}\bfcode{snapshot}}{\emph{path}}{}
-Start the worker thread for snapshot.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{path} (\emph{String}) -- File path where to store the snapshot.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{snapshot\_procedure() (in module filesystem)}
-
-\begin{fulllineitems}
-\phantomsection\label{filesystem:filesystem.snapshot_procedure}\pysiglinewithargsret{\code{filesystem.}\bfcode{snapshot\_procedure}}{\emph{path}}{}
-Worker for storing the snapshot.
-
-\begin{notice}{warning}{Warning:}
-This object has a timeout of 1 minute. So consider terminating
-the thread on shutdown if it's hanging.
-\end{notice}
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{path} (\emph{String}) -- File path where to store the snapshot.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{test\_storage\_connection() (in module filesystem)}
 
 \begin{fulllineitems}
@@ -2447,7 +2370,7 @@ Boolean
 
 
 \section{Graphical Design module}
-\label{graphicaldesign:graphical-design-module}\label{graphicaldesign::doc}\phantomsection\label{graphicaldesign:module-graphicaldesign}\index{graphicaldesign (module)}
+\label{graphicaldesign:graphical-design-module}\label{graphicaldesign:module-graphicaldesign}\label{graphicaldesign::doc}\index{graphicaldesign (module)}
 Created on 6.6.2013
 \begin{quote}\begin{description}
 \item[{author}] \leavevmode
@@ -2470,6 +2393,26 @@ Event handler for focus losing of the window.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{evt} (\code{wx.Event}) -- The focus lost event.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{SetText() (graphicaldesign.BlackOverlay method)}
+
+\begin{fulllineitems}
+\phantomsection\label{graphicaldesign:graphicaldesign.BlackOverlay.SetText}\pysiglinewithargsret{\bfcode{SetText}}{\emph{button\_modifier=None}, \emph{button=None}}{}
+Sets the text that appears on the black overlay.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{button\_modifier} (\emph{String}) -- The button name that should be held down.
+
+\item {} 
+\textbf{button} (\emph{String}) -- The button name that should be pressed when the modifier
+key is held down.
+
+\end{itemize}
 
 \end{description}\end{quote}
 
@@ -2571,14 +2514,6 @@ Aligns frame to Horizontal center and vertical top.
 
 \end{fulllineitems}
 
-\index{ClearStatusText() (graphicaldesign.GUItemplate method)}
-
-\begin{fulllineitems}
-\phantomsection\label{graphicaldesign:graphicaldesign.GUItemplate.ClearStatusText}\pysiglinewithargsret{\bfcode{ClearStatusText}}{}{}
-Sets the status text to EmptyScreen string.
-
-\end{fulllineitems}
-
 \index{ConnectionErrorHandler() (graphicaldesign.GUItemplate method)}
 
 \begin{fulllineitems}
@@ -2661,14 +2596,6 @@ Handles the selection of a node, prototype.
 
 \end{fulllineitems}
 
-\index{ImageViewer (class in graphicaldesign)}
-
-\begin{fulllineitems}
-\phantomsection\label{graphicaldesign:graphicaldesign.ImageViewer}\pysiglinewithargsret{\strong{class }\code{graphicaldesign.}\bfcode{ImageViewer}}{\emph{parent}, \emph{image}, \emph{*args}, \emph{**kwargs}}{}
-Used to show an image.
-
-\end{fulllineitems}
-
 \index{MySplashScreen (class in graphicaldesign)}
 
 \begin{fulllineitems}
@@ -2695,6 +2622,23 @@ Make this screen EmptyScreen.
 \begin{fulllineitems}
 \phantomsection\label{graphicaldesign:graphicaldesign.NodeScreen.ReloadAs}\pysiglinewithargsret{\bfcode{ReloadAs}}{\emph{node}}{}
 Reload the content of this bitmap.
+
+\end{fulllineitems}
+
+\index{SetNodeVars() (graphicaldesign.NodeScreen method)}
+
+\begin{fulllineitems}
+\phantomsection\label{graphicaldesign:graphicaldesign.NodeScreen.SetNodeVars}\pysiglinewithargsret{\bfcode{SetNodeVars}}{}{}
+Sets NodeScreens variables.
+
+\end{fulllineitems}
+
+\index{update\_bitmaps() (graphicaldesign.NodeScreen static method)}
+
+\begin{fulllineitems}
+\phantomsection\label{graphicaldesign:graphicaldesign.NodeScreen.update_bitmaps}\pysiglinewithargsret{\strong{static }\bfcode{update\_bitmaps}}{}{}
+Load the static bitmaps for hidden and wallpaperless screens.
+This caches them in memory to be used later without IO calls.
 
 \end{fulllineitems}
 
@@ -2740,10 +2684,10 @@ Start a thread to show the notification.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{title} (\emph{String}) -- Title to diplay in the balloon.
+\textbf{title} (\emph{Unicode}) -- Title to diplay in the balloon.
 
 \item {} 
-\textbf{message} (\emph{String}) -- Message to display in the balloong (max 255 chars).
+\textbf{message} (\emph{Unicode}) -- Message to display in the balloong (max 255 chars).
 
 \end{itemize}
 
@@ -2757,13 +2701,24 @@ Start a thread to show the notification.
 
 
 \section{Macro module}
-\label{macro:macro-module}\label{macro:module-macro}\label{macro::doc}\index{macro (module)}
+\label{macro:macro-module}\label{macro:module-macro}\label{macro::doc}\index{macro (module)}\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{synopsis}] \leavevmode
 macro.py defines a few user input functions.
+
+\end{description}\end{quote}
 \index{GetKeydown() (in module macro)}
 
 \begin{fulllineitems}
 \phantomsection\label{macro:macro.GetKeydown}\pysiglinewithargsret{\code{macro.}\bfcode{GetKeydown}}{\emph{code}}{}
-Docstring here.
+Check if the key with keycode is held down.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{code} (\emph{Integer}) -- Keycode of the key.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -3064,6 +3019,190 @@ Slides the mouse to point (target\_x, target\_y)
 
 
 
+\section{Modelsbase module}
+\label{modelsbase:module-modelsbase}\label{modelsbase::doc}\label{modelsbase:modelsbase-module}\index{modelsbase (module)}
+Created on 31.6.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
+
+\item[{note}] \leavevmode
+Requires \code{sqlalchemy}
+
+\item[{synopsis}] \leavevmode
+Defines and constructs the SQL alchemy Base class.
+
+\end{description}\end{quote}
+\index{ItemAlreadyExistsException}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.ItemAlreadyExistsException}\pysiglinewithargsret{\strong{exception }\code{modelsbase.}\bfcode{ItemAlreadyExistsException}}{\emph{message}}{}
+When the item already exists in the database, you need to use
+get method instead of constructor.
+
+\end{fulllineitems}
+
+\index{MethodMixin (class in modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin}\pysigline{\strong{class }\code{modelsbase.}\bfcode{MethodMixin}}
+A base class for all our DiWa models.
+
+Defines some common methods / use cases of SQLAlchemy.
+\index{delete() (modelsbase.MethodMixin method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.delete}\pysiglinewithargsret{\bfcode{delete}}{}{}
+Delete an object of this class from the database.
+
+\end{fulllineitems}
+
+\index{delete\_many() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.delete_many}\pysiglinewithargsret{\strong{classmethod }\bfcode{delete\_many}}{\emph{instances}}{}
+Delete objects of this class from the database.
+
+\end{fulllineitems}
+
+\index{get() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.get}\pysiglinewithargsret{\strong{classmethod }\bfcode{get}}{\emph{method}, \emph{*filters}}{}~\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{method} (\emph{String}) -- \begin{description}
+\item[{Valid values are:}] \leavevmode\begin{itemize}
+\item {} 
+all - This returns a list of matching objects.
+
+\item {} 
+count - This returns an integer which represents the count                of matching objects.
+
+\item {} 
+delete - This deletes all the matching objects from the                database.
+
+\item {} 
+exists - This returns boolean informing weather the an                object match was found from the database.
+
+\item {} 
+first - This returns the first matching object.
+
+\item {} 
+last - This returns the last matching object.
+
+\item {} 
+one - This returns the object if it exists and raises an                exception if it doesn't or if there's more than one instance                of the desired object.
+
+\end{itemize}
+
+\end{description}
+
+
+\end{description}\end{quote}
+
+Additional parameters may be specified to filter results.
+
+\end{fulllineitems}
+
+\index{get\_by\_id() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.get_by_id}\pysiglinewithargsret{\strong{classmethod }\bfcode{get\_by\_id}}{\emph{id\_=1}}{}
+Gets the instance of model by ID.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{id} (\emph{Integer}) -- ID of the desired model.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{id\_ordering() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.id_ordering}\pysiglinewithargsret{\strong{classmethod }\bfcode{id\_ordering}}{\emph{instance}}{}
+Key function for id ordering.
+
+\end{fulllineitems}
+
+\index{update() (modelsbase.MethodMixin method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.update}\pysiglinewithargsret{\bfcode{update}}{}{}
+Posts updates to this object into the database.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+Success value.
+
+\item[{Return type}] \leavevmode
+Boolean
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{update\_many() (modelsbase.MethodMixin class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.MethodMixin.update_many}\pysiglinewithargsret{\strong{classmethod }\bfcode{update\_many}}{\emph{instances}}{}
+Posts updates to these objects into the database.
+\begin{quote}\begin{description}
+\item[{Returns}] \leavevmode
+Success value.
+
+\item[{Return type}] \leavevmode
+Boolean
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{connect\_to\_database() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.connect_to_database}\pysiglinewithargsret{\code{modelsbase.}\bfcode{connect\_to\_database}}{\emph{expire=False}}{}
+Connect to the database and return a Session object.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{expire} (\emph{Boolean}) -- Parameter passed to session maker as expire\_on\_commit.
+
+\item[{Returns}] \leavevmode
+Session.
+
+\item[{Return type}] \leavevmode
+\code{sqlalchemy.orm.session.Session}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{create\_all() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.create_all}\pysiglinewithargsret{\code{modelsbase.}\bfcode{create\_all}}{}{}
+Create tables to the database.
+
+\end{fulllineitems}
+
+\index{update\_database() (in module modelsbase)}
+
+\begin{fulllineitems}
+\phantomsection\label{modelsbase:modelsbase.update_database}\pysiglinewithargsret{\code{modelsbase.}\bfcode{update\_database}}{}{}
+Update the database connection engine.
+
+\begin{notice}{note}{Note:}
+This only works when DB\_STRING is completely defined by
+the log reader as otherwise the create\_engine call would
+cause an exception.
+\end{notice}
+
+\end{fulllineitems}
+
+
+
 \section{Models module}
 \label{models:module-models}\label{models::doc}\label{models:models-module}\index{models (module)}
 Created on 23.5.2012
@@ -3071,11 +3210,11 @@ Created on 23.5.2012
 \item[{author}] \leavevmode
 neriksso
 
-\item[{warning}] \leavevmode
-Requires \code{sqlalchemy} and \code{pywin32}
+\item[{note}] \leavevmode
+Requires \code{sqlalchemy}
 
 \item[{synopsis}] \leavevmode
-Used to represent the different database structures on DiWa.
+Defines and constructs the SQL alchemy Base class.
 
 \end{description}\end{quote}
 \index{Action (class in models)}
@@ -3087,10 +3226,10 @@ the action.
 \begin{description}
 \item[{Field:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the action, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the action, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the action (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of the action (Max 50 characters).
 
 \end{itemize}
 
@@ -3111,22 +3250,22 @@ A class representation of an activity.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of activity, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of activity, used as primary key in database table.
 
 \item {} 
-\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the session activity belongs to.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the session activity belongs to.
 
 \item {} 
 \code{session} (\code{sqlalchemy.orm.relationship})        - Session relationship.
 
 \item {} 
-\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the project activity belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the project activity belongs to.
 
 \item {} 
 \code{project} (\code{sqlalchemy.orm.relationship})        - Project relationship.
 
 \item {} 
-\code{active}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.BOOLEAN)})        - Boolean flag indicating that the project is active.
+\code{active}        (\code{sqlalchemy.schema.Column(Boolean)})        - Boolean flag indicating that the project is active.
 
 \end{itemize}
 
@@ -3153,10 +3292,10 @@ A class representation of a company.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the company, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the company, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the company (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of the company (Max 50 characters).
 
 \end{itemize}
 
@@ -3172,68 +3311,84 @@ A class representation of a company.
 \index{Computer (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.Computer}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Computer}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.Computer}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Computer}}{\emph{name}, \emph{ip}, \emph{mac}, \emph{screens}, \emph{responsive}, \emph{pgm\_group}, \emph{wos\_id}}{}
 A class representation of a computer.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of computer, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of computer, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the computer.
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of the computer.
 
 \item {} 
-\code{ip}        (\code{sqlalchemy.schema.Column(sqlalchemy.dialects.INTEGER)})        - Internet Protocol address of the computer (Defined as unsigned).
+\code{ip}        (\code{sqlalchemy.schema.Column(Integer)})        - Internet Protocol address of the computer (Defined as unsigned).
 
 \item {} 
-\code{mac}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)}        - Media Access Control address of the computer.
+\code{mac}        (\code{sqlalchemy.schema.Column(String)}        - Media Access Control address of the computer.
 
 \item {} 
-\code{time}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)})        - Time of the last network activity from the computer.
+\code{time}        (\code{sqlalchemy.schema.Column(DateTime)})        - Time of the last network activity from the computer.
 
 \item {} 
-\code{screens}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)})        - Number of screens on the computer.
+\code{screens}        (\code{sqlalchemy.schema.Column(SmallInteger)})        - Number of screens on the computer.
 
 \item {} 
-\code{responsive}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.SMALLINT)})        - The responsive value of the computer.
+\code{responsive}        (\code{sqlalchemy.schema.Column(SmallInteger)})        - The responsive value of the computer.
 
 \item {} 
-\code{user\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the user currently using the computer.
+\code{user\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the user currently using the computer.
 
 \item {} 
 \code{user} (\code{sqlalchemy.orm.relationship})        - The current user.
 
 \item {} 
-\code{wos\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - \textbf{WOS} ID.
+\code{wos\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - Network node ID, usually the last part of IP address (X.X.X.Y).
 
 \end{itemize}
 
 \end{description}
+\index{get\_most\_recent\_by\_mac() (models.Computer class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{models:models.Computer.get_most_recent_by_mac}\pysiglinewithargsret{\strong{classmethod }\bfcode{get\_most\_recent\_by\_mac}}{\emph{mac\_address}}{}
+Retrieve a computer by it's hardware identifier.
+
+\end{fulllineitems}
+
+\index{time\_ordering() (models.Computer class method)}
+
+\begin{fulllineitems}
+\phantomsection\label{models:models.Computer.time_ordering}\pysiglinewithargsret{\strong{classmethod }\bfcode{time\_ordering}}{\emph{computer}}{}
+Key function for time ordering.
+
+\end{fulllineitems}
+
 
 \end{fulllineitems}
 
 \index{Event (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.Event}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Event}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.Event}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Event}}{\emph{session\_id}, \emph{title='`}, \emph{description='`}}{}
 A class representation of Event. A simple note with timestamp during a
 session.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the event, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the event, used as primary key in database table.
 
 \item {} 
-\code{title}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Title of the event (Max 40 characters).
+\code{title}        (\code{sqlalchemy.schema.Column(String)})        - Title of the event (Max 40 characters).
 
 \item {} 
-\code{desc}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - More in-depth description of the event (Max 500 characters).
+\code{desc}        (\code{sqlalchemy.schema.Column(String)})        - More in-depth description of the event (Max 500 characters).
 
 \item {} 
-\code{time}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)})        - Time the event took place.
+\code{time}        (\code{sqlalchemy.schema.Column(DateTime)})        - Time the event took place.
 
 \item {} 
-\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the session this event belongs to.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the session this event belongs to.
 
 \item {} 
 \code{session} (\code{sqlalchemy.orm.relationship})        - Session this event belongs to.
@@ -3247,18 +3402,18 @@ session.
 \index{File (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.File}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{File}}{\emph{**kwargs}}{}
+\phantomsection\label{models:models.File}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{File}}{\emph{path}, \emph{project\_id=None}}{}
 A class representation of a file.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the file, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the file, used as primary key in database table.
 
 \item {} 
-\code{path}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Path of the file on DiWa (max 255 chars).
+\code{path}        (\code{sqlalchemy.schema.Column(String)})        - Path of the file on DiWa (max 255 chars).
 
 \item {} 
-\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the project this file belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the project this file belongs to.
 
 \item {} 
 \code{project} (\code{sqlalchemy.orm.relationship})        - Project this file belongs to.
@@ -3272,53 +3427,52 @@ A class representation of a file.
 \index{FileAction (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.FileAction}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{FileAction}}{\emph{fileobject}, \emph{action}, \emph{session=None}, \emph{computer=None}, \emph{user=None}}{}
+\phantomsection\label{models:models.FileAction}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{FileAction}}{\emph{file\_}, \emph{action}, \emph{session=None}, \emph{computer=None}, \emph{user=None}}{}
 A class representation of a file action.
-\begin{description}
-\item[{Fields:}] \leavevmode\begin{itemize}
+
+Fields:
+\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the FileAction, used as primary key in the database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the FileAction, used as primary key in the database table.
 
 \item {} 
-\code{file\_id}        (\code{sqlalchemy.schema.Column(sqlaclhemy.types.INTEGER)})        - ID of the file this FileAction affects.
+\code{file\_id}        (\code{sqlalchemy.schema.Column(sqlaclhemy.types.Integer)})        - ID of the file this FileAction affects.
 
 \item {} 
 \code{file} (\code{sqlalchemy.orm.relationship)})        - The file this FileAction affects.
 
 \item {} 
-\code{action\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the action affecting the file.
+\code{action\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the action affecting the file.
 
 \item {} 
 \code{action} (\code{sqlalchemy.orm.relationship)})        - Action affecting the file.
 
 \item {} 
-\code{action\_time}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)})        - Time the action took place on.
+\code{action\_time}        (\code{sqlalchemy.schema.Column(DateTime)})        - Time the action took place on.
 
 \item {} 
-\code{user\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the user performing the action.
+\code{user\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the user performing the action.
 
 \item {} 
 \code{user} (\code{sqlalchemy.orm.relationship})        - User peforming the action.
 
 \item {} 
-\code{computer\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the computer user performed the action on.
+\code{computer\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the computer user performed the action on.
 
 \item {} 
 \code{computer} (\code{sqlalchemy.orm.relationship})        - Computer user performed the action on.
 
 \item {} 
-\code{session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the session user performed the action in.
+\code{session\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the session user performed the action in.
 
 \item {} 
 \code{session} (\code{sqlalchemy.orm.relationship})        - Session user performed the action in.
 
 \end{itemize}
-
-\end{description}
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
 \item {} 
-\textbf{fileobject} ({\hyperref[models:models.File]{\code{models.File}}}) -- The file which is subjected to the action.
+\textbf{file} ({\hyperref[models:models.File]{\code{models.File}}}) -- The file which is subjected to the action.
 
 \item {} 
 \textbf{action} ({\hyperref[models:models.Action]{\code{models.Action}}}) -- The action which is applied to the file.
@@ -3341,27 +3495,27 @@ A class representation of a file action.
 \index{Project (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.Project}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Project}}{\emph{name}, \emph{company}, \emph{password}}{}
+\phantomsection\label{models:models.Project}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Project}}{\emph{name}, \emph{directory}, \emph{company}, \emph{password}}{}
 A class representation of a project.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of project, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of project, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the project (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of the project (Max 50 characters).
 
 \item {} 
-\code{company\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the company that owns the project.
+\code{company\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the company that owns the project.
 
 \item {} 
 \code{company} (\code{sqlalchemy.orm.relationship})        - The company that owns the project.
 
 \item {} 
-\code{dir}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Directory path for the project files (Max 255 characters).
+\code{dir}        (\code{sqlalchemy.schema.Column(String)})        - Directory path for the project files (Max 255 characters).
 
 \item {} 
-\code{password}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Password for the project (Max 40 characters).
+\code{password}        (\code{sqlalchemy.schema.Column(String)})        - Password for the project (Max 40 characters).
 
 \item {} 
 \code{members} (\code{sqlalchemy.orm.relationship})        - The users that work on the project.
@@ -3375,7 +3529,13 @@ A class representation of a project.
 \textbf{name} (\code{String}) -- Name of the project.
 
 \item {} 
+\textbf{directory} (\code{String}) -- The location of project on disc.
+
+\item {} 
 \textbf{company} ({\hyperref[models:models.Company]{\code{models.Company}}}) -- The owner of the project.
+
+\item {} 
+\textbf{password} (\code{String}) -- The project password.
 
 \end{itemize}
 
@@ -3386,30 +3546,30 @@ A class representation of a project.
 \index{Session (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.Session}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Session}}{\emph{project}}{}
+\phantomsection\label{models:models.Session}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{Session}}{\emph{project}, \emph{previous\_session=None}}{}
 A class representation of a session.
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of session, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of session, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of session (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of session (Max 50 characters).
 
 \item {} 
-\code{project\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the project the session belongs to.
+\code{project\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the project the session belongs to.
 
 \item {} 
 \code{project} (\code{sqlalchemy.orm.relationship})        - The project the session belongs to.
 
 \item {} 
-\code{starttime}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)})        - Time the session began, defaults to \emph{now()}.
+\code{starttime}        (\code{sqlalchemy.schema.Column(DateTime)})        - Time the session began, defaults to \emph{now()}.
 
 \item {} 
-\code{endtime}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.DATETIME)})        - The time session ended.
+\code{endtime}        (\code{sqlalchemy.schema.Column(DateTime)})        - The time session ended.
 
 \item {} 
-\code{previous\_session\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the previous session.
+\code{previous\_session\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the previous session.
 
 \item {} 
 \code{previous\_session}        (\code{sqlalchemy.orm.relationship}) - The previous session.
@@ -3441,19 +3601,6 @@ Add users to a session.
 
 \end{fulllineitems}
 
-\index{FileRoutine() (models.Session method)}
-
-\begin{fulllineitems}
-\phantomsection\label{models:models.Session.FileRoutine}\pysiglinewithargsret{\bfcode{FileRoutine}}{}{}
-File checking routine for logging.
-\begin{quote}\begin{description}
-\item[{Throws IOError}] \leavevmode
-When log.txt is not available for write access.
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
 \index{GetLastChecked() (models.Session method)}
 
 \begin{fulllineitems}
@@ -3461,8 +3608,7 @@ When log.txt is not available for write access.
 Fetch \code{last\_checked} field.
 \begin{quote}\begin{description}
 \item[{Returns}] \leavevmode
-\code{last\_checked} field (None before
-\code{models.Session.start()} is called).
+\code{last\_checked} field (None before                  \code{models.Session.start()} is called).
 
 \item[{Return type}] \leavevmode
 \code{datetime.datetime} or \code{None}
@@ -3486,27 +3632,32 @@ Set the \code{last\_checked} field to current DateTime.
 \index{User (class in models)}
 
 \begin{fulllineitems}
-\phantomsection\label{models:models.User}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{User}}{\emph{name}, \emph{company}}{}
+\phantomsection\label{models:models.User}\pysiglinewithargsret{\strong{class }\code{models.}\bfcode{User}}{\emph{name}, \emph{company}, \emph{email=None}, \emph{title=None}, \emph{department=None}}{}
 A class representation of a user.
+\begin{quote}\begin{description}
+\item[{Note }] \leavevmode
+Currently not used anywhere.
+
+\end{description}\end{quote}
 \begin{description}
 \item[{Fields:}] \leavevmode\begin{itemize}
 \item {} 
-\code{id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - ID of the user, used as primary key in database table.
+\code{id}        (\code{sqlalchemy.schema.Column(Integer)})        - ID of the user, used as primary key in database table.
 
 \item {} 
-\code{name}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Name of the user (Max 50 characters).
+\code{name}        (\code{sqlalchemy.schema.Column(String)})        - Name of the user (Max 50 characters).
 
 \item {} 
-\code{email}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Email address of the user (Max 100 characters).
+\code{email}        (\code{sqlalchemy.schema.Column(String)})        - Email address of the user (Max 100 characters).
 
 \item {} 
-\code{title}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Title of the user in the company (Max 50 characters).
+\code{title}        (\code{sqlalchemy.schema.Column(String)})        - Title of the user in the company (Max 50 characters).
 
 \item {} 
-\code{department}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.String)})        - Department of the user in the company (Max 100 characters).
+\code{department}        (\code{sqlalchemy.schema.Column(String)})        - Department of the user in the company (Max 100 characters).
 
 \item {} 
-\code{company\_id}        (\code{sqlalchemy.schema.Column(sqlalchemy.types.INTEGER)})        - Company id of the employing company.
+\code{company\_id}        (\code{sqlalchemy.schema.Column(Integer)})        - Company id of the employing company.
 
 \item {} 
 \code{company} (\code{sqlalchemy.orm.relationship})        - Company relationship.
@@ -3548,13 +3699,51 @@ pypi.python.org/pypi/setuptools
 \section{Models state}
 \label{state:module-state}\label{state::doc}\label{state:models-state}\index{state (module)}
 Created on 4.7.2013
+\begin{quote}\begin{description}
+\item[{author}] \leavevmode
+neriksso
 
-@author: neriksso
+\end{description}\end{quote}
+\index{SessionChangeException}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.SessionChangeException}\pysigline{\strong{exception }\code{state.}\bfcode{SessionChangeException}}
+A stub for new Exception that just had a different type to be
+catchable in its own right.
+
+\end{fulllineitems}
+
 \index{State (class in state)}
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State}\pysiglinewithargsret{\strong{class }\code{state.}\bfcode{State}}{\emph{parent}}{}
-classdocs
+Used to represent the state of the client.
+
+All the graphical buttons etc have been removed from here and
+they are part of the main GraphicalUserInterface class right now.
+Likewise that class should minimize making direct changes to the
+current status of the software and only interpret user input.
+\index{append\_swnp\_data() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.append_swnp_data}\pysiglinewithargsret{\bfcode{append\_swnp\_data}}{\emph{new\_data}}{}
+Append data to current data value for {\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{new\_data} (\emph{String}) -- Value to be added
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{destroy() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.destroy}\pysiglinewithargsret{\bfcode{destroy}}{}{}
+Part of the shutdown routine, closes all the threads under this.
+
+\end{fulllineitems}
+
 \index{end\_current\_project() (state.State method)}
 
 \begin{fulllineitems}
@@ -3579,21 +3768,29 @@ Get a random node amongst all the responsive nodes.
 
 \end{fulllineitems}
 
+\index{get\_swnp\_data() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.get_swnp_data}\pysiglinewithargsret{\bfcode{get\_swnp\_data}}{}{}
+Returns the data value for {\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
+
+\end{fulllineitems}
+
 \index{handle\_file\_send() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.handle_file_send}\pysiglinewithargsret{\bfcode{handle\_file\_send}}{\emph{filenames}, \emph{progressdialog=None}}{}
+\phantomsection\label{state:state.State.handle_file_send}\pysiglinewithargsret{\bfcode{handle\_file\_send}}{\emph{filenames}, \emph{dialog\_parameters=None}}{}
 Sends a file link to another node.
 
 First parses all the files and folder structure, then confirms weather
 the users wishes to add the items to project before beginning the copy
 routine.
 
-The copy routine first creates all the needed subfolders and then sums
+The copy routine first creates all the needed sub-folders and then sums
 up all the file sizes to be copied. Then it will update the dialog
 in the beginning/end of every file transaction and whenever there's
 been more than 1 second from the last update dialog update. Assuming
-the progressdialog parameter has been given.
+the dialog\_parameters parameter has been given.
 \begin{description}
 \item[{The progress dialog, if supplied, is updated as follows:}] \leavevmode\begin{itemize}
 \item {} 
@@ -3620,7 +3817,8 @@ Progress bar is set to percent {[}0, 100{]} of the total data             transf
 \textbf{filenames} (\emph{List of String}) -- All the files/folders to be copied.
 
 \item {} 
-\textbf{progressdialog} (\code{wx.ProgressDialog}) -- The progress dialog to update (optional).
+\textbf{dialog\_parameters} (\code{dict}) -- The progress dialog to create by show\_modal\_and\_destroy,
+initialization parameters in a dictionary.
 
 \end{itemize}
 
@@ -3632,7 +3830,14 @@ Progress bar is set to percent {[}0, 100{]} of the total data             transf
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.initialize}\pysiglinewithargsret{\bfcode{initialize}}{}{}
-Docstring.
+Finish the initialization (2-stage init).
+\begin{quote}\begin{description}
+\item[{Note }] \leavevmode
+As this is not so essential, we could just stick it up to
+the \_\_init\_\_ but there might be something that needs to be
+done in between the \_\_init\_\_ and these calls here.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -3643,7 +3848,7 @@ Docstring.
 Message handler for received messages.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{message} (an instance of {\hyperref[swnp:swnp.Message]{\code{swnp.Message}}}) -- Received message.
+\textbf{message} (\emph{String}) -- Received message.
 
 \end{description}\end{quote}
 
@@ -3653,15 +3858,66 @@ Message handler for received messages.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.on_project_selected}\pysiglinewithargsret{\bfcode{on\_project\_selected}}{}{}
+Event handler for project selection in the client.
+
+\end{fulllineitems}
+
+\index{on\_session\_changed() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.on_session_changed}\pysiglinewithargsret{\bfcode{on\_session\_changed}}{\emph{desired\_state}}{}
+Event handler for session change in the client.
+
+\end{fulllineitems}
+
+\index{remove\_from\_swnp\_data() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.remove_from_swnp_data}\pysiglinewithargsret{\bfcode{remove\_from\_swnp\_data}}{\emph{old\_data}}{}
+Removes data value from current data value for {\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{old\_data} (\emph{String}) -- Old data value
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{remove\_observer() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.remove_observer}\pysiglinewithargsret{\bfcode{remove\_observer}}{}{}
 Docstring.
 
 \end{fulllineitems}
 
-\index{remove\_observers() (state.State method)}
+\index{send\_pop\_clipboard() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.remove_observers}\pysiglinewithargsret{\bfcode{remove\_observers}}{}{}
-Docstring.
+\phantomsection\label{state:state.State.send_pop_clipboard}\pysiglinewithargsret{\bfcode{send\_pop\_clipboard}}{\emph{target\_node\_id}}{}
+Sends a command to another node that they should restore their
+old clipboard content and send the overwritten content back to
+this node.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{target\_node\_id} (\emph{Integer}) -- The ID of the node that should perform the operation.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+\index{send\_push\_clipboard() (state.State method)}
+
+\begin{fulllineitems}
+\phantomsection\label{state:state.State.send_push_clipboard}\pysiglinewithargsret{\bfcode{send\_push\_clipboard}}{\emph{target\_node\_id}}{}
+Sends a command to another node that they should save their
+clipboard content and set the current content to what this
+node has on its clipboard at this moment.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{target\_node\_id} (\emph{Integer}) -- The ID of the node that should perform the operation.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -3691,19 +3947,12 @@ Set current session.
 
 \end{fulllineitems}
 
-\index{set\_observers() (state.State method)}
+\index{set\_observer() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.set_observers}\pysiglinewithargsret{\bfcode{set\_observers}}{}{}
-Docstring.
-
-\end{fulllineitems}
-
-\index{set\_project\_observer() (state.State method)}
-
-\begin{fulllineitems}
-\phantomsection\label{state:state.State.set_project_observer}\pysiglinewithargsret{\bfcode{set\_project\_observer}}{}{}
-Observer for file changes in project directory.
+\phantomsection\label{state:state.State.set_observer}\pysiglinewithargsret{\bfcode{set\_observer}}{}{}
+Set an observer for file changes in project directory and
+and observer for image uploads by camera in scan folder.
 
 \end{fulllineitems}
 
@@ -3711,15 +3960,20 @@ Observer for file changes in project directory.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.set_responsive}\pysiglinewithargsret{\bfcode{set\_responsive}}{}{}
-Docstring.
+Set the current node as responsive.
 
 \end{fulllineitems}
 
-\index{set\_scan\_observer() (state.State method)}
+\index{set\_swnp\_data() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.set_scan_observer}\pysiglinewithargsret{\bfcode{set\_scan\_observer}}{}{}
-Observer for created files in scanned or taken with camera.
+\phantomsection\label{state:state.State.set_swnp_data}\pysiglinewithargsret{\bfcode{set\_swnp\_data}}{\emph{data}}{}
+Set data value for {\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{data} (\emph{String}) -- New data value
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -3731,18 +3985,18 @@ Starts the audio recorder thread.
 
 \end{fulllineitems}
 
-\index{start\_current\_project() (state.State method)}
+\index{start\_current\_project\_thread() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.start_current_project}\pysiglinewithargsret{\bfcode{start\_current\_project}}{}{}
+\phantomsection\label{state:state.State.start_current_project_thread}\pysiglinewithargsret{\bfcode{start\_current\_project\_thread}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
 
-\index{start\_current\_session() (state.State method)}
+\index{start\_current\_session\_thread() (state.State method)}
 
 \begin{fulllineitems}
-\phantomsection\label{state:state.State.start_current_session}\pysiglinewithargsret{\bfcode{start\_current\_session}}{}{}
+\phantomsection\label{state:state.State.start_current_session_thread}\pysiglinewithargsret{\bfcode{start\_current\_session\_thread}}{}{}
 Start current project loop.
 
 \end{fulllineitems}
@@ -3759,7 +4013,7 @@ Start a new session.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.State.stop_responsive}\pysiglinewithargsret{\bfcode{stop\_responsive}}{}{}
-Docstring.
+Stop being responsive.
 
 \end{fulllineitems}
 
@@ -3791,13 +4045,19 @@ Sends a message to the node.
 \phantomsection\label{state:state.create_config}\pysiglinewithargsret{\code{state.}\bfcode{create\_config}}{}{}
 Creates a config file.
 
+This actually just copies the default one from installation folder
+to the \textasciitilde{}wos settings folder.
+
 \end{fulllineitems}
 
 \index{initialization\_test() (in module state)}
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.initialization_test}\pysiglinewithargsret{\code{state.}\bfcode{initialization\_test}}{}{}
-Docstring.
+Used to test that we have are good to go.
+
+At this time only includes test\_connection() from controller, but
+more tests could be added here.
 
 \end{fulllineitems}
 
@@ -3805,7 +4065,7 @@ Docstring.
 
 \begin{fulllineitems}
 \phantomsection\label{state:state.load_config}\pysiglinewithargsret{\code{state.}\bfcode{load\_config}}{}{}
-Loads a config file or creates one.
+Loads a config file, creating it if it does not exists.
 
 \end{fulllineitems}
 
@@ -3901,6 +4161,14 @@ A class representation of a node in the network.
 \end{itemize}
 
 \end{description}\end{quote}
+\index{data (swnp.Node attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{swnp:swnp.Node.data}\pysigline{\bfcode{data}}
+Returns data.
+
+\end{fulllineitems}
+
 \index{get\_age() (swnp.Node method)}
 
 \begin{fulllineitems}
@@ -3923,7 +4191,7 @@ Updates the timestamp.
 \index{SWNP (class in swnp)}
 
 \begin{fulllineitems}
-\phantomsection\label{swnp:swnp.SWNP}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{SWNP}}{\emph{pgm\_group}, \emph{screens=0}, \emph{name=None}, \emph{node\_id=None}, \emph{context=None}, \emph{error\_handler=None}}{}
+\phantomsection\label{swnp:swnp.SWNP}\pysiglinewithargsret{\strong{class }\code{swnp.}\bfcode{SWNP}}{\emph{pgm\_group}, \emph{screens=0}, \emph{name=None}, \emph{context=None}, \emph{error\_handler=None}}{}
 The main class of swnp.
 
 This class has the required ZeroMQ bindings and is responsible for
@@ -3942,9 +4210,6 @@ Only one instance per computer
 
 \item {} 
 \textbf{name} (\emph{String}) -- The name of the instance.
-
-\item {} 
-\textbf{node\_id} (\emph{Integer}) -- ID of the current instance.
 
 \item {} 
 \textbf{context} (\code{zmq.Context}) -- ZeroMQ context to use.
@@ -3982,22 +4247,6 @@ Search the node list for a specific node.
 
 \item[{Return type}] \leavevmode
 {\hyperref[swnp:swnp.Node]{\code{swnp.Node}}}
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{get\_buffer() (swnp.SWNP method)}
-
-\begin{fulllineitems}
-\phantomsection\label{swnp:swnp.SWNP.get_buffer}\pysiglinewithargsret{\bfcode{get\_buffer}}{}{}
-Gets the buffered messages and returns them
-\begin{quote}\begin{description}
-\item[{Returns}] \leavevmode
-JSON formated string.
-
-\item[{Return type}] \leavevmode
-String
 
 \end{description}\end{quote}
 
@@ -4197,19 +4446,25 @@ Routine for checking node list and removing nodes with timeout.
 
 \end{fulllineitems}
 
+\index{update\_pgm\_group() (swnp.SWNP method)}
+
+\begin{fulllineitems}
+\phantomsection\label{swnp:swnp.SWNP.update_pgm_group}\pysiglinewithargsret{\bfcode{update\_pgm\_group}}{\emph{new\_pgm\_group}}{}
+This updates the PGM group on the fly.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{new\_pgm\_group} -- New PGM Group value.
+
+\item {} 
+\textbf{new\_pgm\_group} -- Integer
+
+\end{itemize}
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
-\index{set\_logger\_level() (in module swnp)}
-
-\begin{fulllineitems}
-\phantomsection\label{swnp:swnp.set_logger_level}\pysiglinewithargsret{\code{swnp.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Sets the logger level for swnp logger.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{level} (\emph{Integer}) -- Level of logging.
-
-\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4223,6 +4478,173 @@ Created on 20.5.2013
 Kristian
 
 \end{description}\end{quote}
+\index{CallAbsorber (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.CallAbsorber}\pysigline{\strong{class }\code{testing.}\bfcode{CallAbsorber}}
+Substitute for GUIs.
+
+\end{fulllineitems}
+
+\index{TestAudioRecorder (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestAudioRecorder}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestAudioRecorder}}{\emph{methodName='runTest'}}{}
+Test audio recorder module.
+\index{setUp() (testing.TestAudioRecorder method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestAudioRecorder.setUp}\pysiglinewithargsret{\bfcode{setUp}}{}{}
+Set up the audio recorder helpers for testing.
+
+\end{fulllineitems}
+
+\index{tearDown() (testing.TestAudioRecorder method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestAudioRecorder.tearDown}\pysiglinewithargsret{\bfcode{tearDown}}{}{}
+Stub to add cleaners in.
+
+\end{fulllineitems}
+
+\index{test\_record() (testing.TestAudioRecorder method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestAudioRecorder.test_record}\pysiglinewithargsret{\bfcode{test\_record}}{}{}
+Test recording functionality of AudioRecorder.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestDiwa (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDiwa}\pysigline{\strong{class }\code{testing.}\bfcode{TestDiwa}}
+Container for unittest cases.
+\index{run() (testing.TestDiwa method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDiwa.run}\pysiglinewithargsret{\bfcode{run}}{\emph{result}, \emph{debug=False}}{}
+Run the unittest.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestDocumentation (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDocumentation}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestDocumentation}}{\emph{methodName='runTest'}}{}
+Test that every Python function has been documented.
+\index{setUp() (testing.TestDocumentation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDocumentation.setUp}\pysiglinewithargsret{\bfcode{setUp}}{}{}
+Stub to add helpers in.
+
+\end{fulllineitems}
+
+\index{tearDown() (testing.TestDocumentation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDocumentation.tearDown}\pysiglinewithargsret{\bfcode{tearDown}}{}{}
+Stub to add cleaners in.
+
+\end{fulllineitems}
+
+\index{test\_documentation() (testing.TestDocumentation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestDocumentation.test_documentation}\pysiglinewithargsret{\bfcode{test\_documentation}}{}{}
+Test that most of the code has been documented.
+\begin{quote}\begin{description}
+\item[{Note }] \leavevmode
+The algorithm that calculates the documentation percentage
+is not perfect but kind of works. It could be improved
+by using actual parser (and pylint even does the same) but
+this makes it an actual testcase.
+
+This also prints out the missed lines where there should have
+been documentation (docstrings) and prints the total percentage
+of the project documented.
+
+This test fails if the percentage is lower than a hard-coded
+expected value. That value defaults to 95\% at this moment.
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestFilesystem (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestFilesystem}}{\emph{methodName='runTest'}}{}
+Test filesystem module.
+\index{setUp() (testing.TestFilesystem method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem.setUp}\pysiglinewithargsret{\bfcode{setUp}}{}{}
+Stub to add helpers in.
+
+\end{fulllineitems}
+
+\index{tearDown() (testing.TestFilesystem method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem.tearDown}\pysiglinewithargsret{\bfcode{tearDown}}{}{}
+Stub to add cleaners in.
+
+\end{fulllineitems}
+
+\index{test\_searchfile() (testing.TestFilesystem method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestFilesystem.test_searchfile}\pysiglinewithargsret{\bfcode{test\_searchfile}}{}{}
+Test searchfile function.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestUtils (class in testing)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils}\pysiglinewithargsret{\strong{class }\code{testing.}\bfcode{TestUtils}}{\emph{methodName='runTest'}}{}
+Test utils module.
+\index{setUp() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.setUp}\pysiglinewithargsret{\bfcode{setUp}}{}{}
+Stub to add helpers in.
+
+\end{fulllineitems}
+
+\index{tearDown() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.tearDown}\pysiglinewithargsret{\bfcode{tearDown}}{}{}
+Stub to add cleaners in.
+
+\end{fulllineitems}
+
+\index{test\_iterislast() (testing.TestUtils method)}
+
+\begin{fulllineitems}
+\phantomsection\label{testing:testing.TestUtils.test_iterislast}\pysiglinewithargsret{\bfcode{test\_iterislast}}{}{}
+Test IterIsLast function.
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 
 
 \section{Threads package}
@@ -4248,14 +4670,14 @@ By convention AudioRecorder is usually written in mixed case
 even as we prefer upper case for threading types.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
-\textbf{parent} (\code{threading.Thread}) -- Parent of the thread.
+\textbf{parent} ({\hyperref[diwacs:diwacs.GraphicalUserInterface]{\code{diwacs.GraphicalUserInterface}}}) -- Parent of the thread.
 
 \end{description}\end{quote}
 \index{find\_input\_device() (threads.audiorecorder.AudioRecorder method)}
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.find_input_device}\pysiglinewithargsret{\bfcode{find\_input\_device}}{}{}
-Find the microphone device.
+Find a microphone device.
 
 \end{fulllineitems}
 
@@ -4273,15 +4695,16 @@ Opens the stream object for microphone.
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.run}\pysiglinewithargsret{\bfcode{run}}{}{}
 Continuously record from the microphone to the buffer.
 
-If the buffer is full, the first frame will be removed and
-the new block appended.
+The size should be limited at diwavars.MAX\_LENGTH constant.
+The implementation keeps only the most recent data in the
+case that there's too much data to store.
 
 \end{fulllineitems}
 
 \index{save() (threads.audiorecorder.AudioRecorder method)}
 
 \begin{fulllineitems}
-\phantomsection\label{threads:threads.audiorecorder.AudioRecorder.save}\pysiglinewithargsret{\bfcode{save}}{\emph{ide}, \emph{path}}{}
+\phantomsection\label{threads:threads.audiorecorder.AudioRecorder.save}\pysiglinewithargsret{\bfcode{save}}{\emph{event\_id}, \emph{path}}{}
 Save the buffer to a file.
 
 \end{fulllineitems}
@@ -4290,18 +4713,10 @@ Save the buffer to a file.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.audiorecorder.AudioRecorder.stop}\pysiglinewithargsret{\bfcode{stop}}{}{}
-Stop audio recorder.
+Stop the audio recorder thread.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.audiorecorder)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.audiorecorder.logger}\pysiglinewithargsret{\code{threads.audiorecorder.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4364,14 +4779,6 @@ the software.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.checkupdate)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.checkupdate.logger}\pysiglinewithargsret{\code{threads.checkupdate.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.common module}
@@ -4410,14 +4817,6 @@ Starts the thread.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.connectionerror)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.connectionerror.logger}\pysiglinewithargsret{\code{threads.connectionerror.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4474,14 +4873,6 @@ Stops the thread.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.contextmenu)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.contextmenu.logger}\pysiglinewithargsret{\code{threads.contextmenu.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4554,14 +4945,6 @@ Starts the thread.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.current)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.current.logger}\pysiglinewithargsret{\code{threads.current.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.diwathread module}
@@ -4577,6 +4960,15 @@ neriksso
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.diwathread.DIWA_THREAD}\pysiglinewithargsret{\strong{class }\code{threads.diwathread.}\bfcode{DIWA\_THREAD}}{\emph{target=None}, \emph{name=None}, \emph{args=()}, \emph{kwargs=None}}{}
 Doc string here.
+\index{remove\_self() (threads.diwathread.DIWA\_THREAD method)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.diwathread.DIWA_THREAD.remove_self}\pysiglinewithargsret{\bfcode{remove\_self}}{}{}
+Removes self from the thread list, this should be used only when
+the thread is sure to die soon.
+
+\end{fulllineitems}
+
 \index{stop() (threads.diwathread.DIWA\_THREAD method)}
 
 \begin{fulllineitems}
@@ -4612,14 +5004,6 @@ Represents a thread timeout event.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.diwathread)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.diwathread.logger}\pysiglinewithargsret{\code{threads.diwathread.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \subsection{threads.inputcapture module}
@@ -4650,7 +5034,7 @@ Thread for capturing input from mouse/keyboard.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.hook}\pysiglinewithargsret{\bfcode{hook}}{}{}
-Docstring here.
+Add the input hooks to the system.
 
 \end{fulllineitems}
 
@@ -4715,7 +5099,7 @@ WM\_MOUSEHWHEEL = 0x20E
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.reset_mouse_events}\pysiglinewithargsret{\bfcode{reset\_mouse\_events}}{}{}
-Docstring here.
+Clear the mouse event queue.
 
 \end{fulllineitems}
 
@@ -4739,7 +5123,7 @@ Stops the thread.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.INPUT_CAPTURE.unhook}\pysiglinewithargsret{\bfcode{unhook}}{}{}
-Docstring here.
+Remove the input hooks from the system.
 
 \end{fulllineitems}
 
@@ -4750,23 +5134,27 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.MOUSE_CAPTURE}\pysiglinewithargsret{\strong{class }\code{threads.inputcapture.}\bfcode{MOUSE\_CAPTURE}}{\emph{parent}, \emph{swnp}}{}
-Docstring.
+A thread for capturing mouse movements and sending them to remote
+controlled systems.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode\begin{itemize}
+\item {} 
+\textbf{parent} ({\hyperref[diwacs:diwacs.GraphicalUserInterface]{\code{diwacs.GraphicalUserInterface}}}) -- The main GUI.
+
+\item {} 
+\textbf{swnp} ({\hyperref[swnp:swnp.SWNP]{\code{swnp.SWNP}}}) -- The network handler.
+
+\end{itemize}
+
+\end{description}\end{quote}
 \index{parse\_mouse\_events() (threads.inputcapture.MOUSE\_CAPTURE method)}
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.inputcapture.MOUSE_CAPTURE.parse_mouse_events}\pysiglinewithargsret{\bfcode{parse\_mouse\_events}}{}{}
-Docstring here.
+Routine that constantly parses mouse events in the queue.
 
 \end{fulllineitems}
 
-
-\end{fulllineitems}
-
-\index{logger() (in module threads.inputcapture)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.inputcapture.logger}\pysiglinewithargsret{\code{threads.inputcapture.}\bfcode{logger}}{}{}
-Get the common logger.
 
 \end{fulllineitems}
 
@@ -4793,11 +5181,42 @@ Created on 27.6.2013
 neriksso
 
 \end{description}\end{quote}
+\index{SNAPSHOT\_THREAD (class in threads.worker)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.worker.SNAPSHOT_THREAD}\pysiglinewithargsret{\strong{class }\code{threads.worker.}\bfcode{SNAPSHOT\_THREAD}}{\emph{path}}{}
+Worker thread for taking snapshot.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{path} (\emph{String}) -- File path where to store the snapshot.
+
+\end{description}\end{quote}
+\index{run() (threads.worker.SNAPSHOT\_THREAD method)}
+
+\begin{fulllineitems}
+\phantomsection\label{threads:threads.worker.SNAPSHOT_THREAD.run}\pysiglinewithargsret{\bfcode{run}}{}{}
+Worker procedure for storing the snapshot.
+
+\begin{notice}{warning}{Warning:}
+This object has a timeout of 1 minute. So consider terminating
+the thread on shutdown if it's hanging.
+\end{notice}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
 \index{WORKER\_THREAD (class in threads.worker)}
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.worker.WORKER_THREAD}\pysiglinewithargsret{\strong{class }\code{threads.worker.}\bfcode{WORKER\_THREAD}}{\emph{parent}}{}
 Worker thread for non-UI jobs.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{parent} -- The GUI object.
+
+\end{description}\end{quote}
 \index{add\_project\_registry\_entry() (threads.worker.WORKER\_THREAD static method)}
 
 \begin{fulllineitems}
@@ -4836,7 +5255,7 @@ Adds a node to registry.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.worker.WORKER_THREAD.check_responsive}\pysiglinewithargsret{\bfcode{check\_responsive}}{}{}
-Docstring here.
+Determine the responsive node.
 
 \end{fulllineitems}
 
@@ -4844,7 +5263,12 @@ Docstring here.
 
 \begin{fulllineitems}
 \phantomsection\label{threads:threads.worker.WORKER_THREAD.create_event}\pysiglinewithargsret{\bfcode{create\_event}}{\emph{title}}{}
-Docstring here.
+Create a new event.
+\begin{quote}\begin{description}
+\item[{Parameters}] \leavevmode
+\textbf{title} (\emph{String}) -- Title of the event.
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 
@@ -4875,19 +5299,11 @@ Run the worker thread.
 
 \end{fulllineitems}
 
-\index{logger() (in module threads.worker)}
-
-\begin{fulllineitems}
-\phantomsection\label{threads:threads.worker.logger}\pysiglinewithargsret{\code{threads.worker.}\bfcode{logger}}{}{}
-Get the common logger.
-
-\end{fulllineitems}
-
 
 
 \section{Utils module}
 \label{utils:utils-module}\label{utils:module-utils}\label{utils::doc}\index{utils (module)}
-Recreated on 17.5.2013
+Created on 17.5.2013
 \begin{quote}\begin{description}
 \item[{author}] \leavevmode
 neriksso
@@ -4907,23 +5323,6 @@ The IP address.
 
 \item[{Return type}] \leavevmode
 Integer
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{GetLANMachines() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.GetLANMachines}\pysiglinewithargsret{\code{utils.}\bfcode{GetLANMachines}}{\emph{lan\_ip}}{}~\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{lan\_ip} (\emph{string}) -- Local Area Network IP.
-
-\item[{Returns}] \leavevmode
-lan machines
-
-\item[{Return type}] \leavevmode
-string{[}{]}
 
 \end{description}\end{quote}
 
@@ -4953,25 +5352,6 @@ Returns the mac address for an local IP address.
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode
 \textbf{ip} (\emph{String}) -- IP address
-
-\end{description}\end{quote}
-
-\end{fulllineitems}
-
-\index{IntToDottedIP() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.IntToDottedIP}\pysiglinewithargsret{\code{utils.}\bfcode{IntToDottedIP}}{\emph{intip}}{}
-Transforms an Integer IP address to dotted representation.
-\begin{quote}\begin{description}
-\item[{Parameters}] \leavevmode
-\textbf{intip} (\emph{Integer}) -- The IP
-
-\item[{Returns}] \leavevmode
-The IP
-
-\item[{Return type}] \leavevmode
-string
 
 \end{description}\end{quote}
 
@@ -5011,14 +5391,6 @@ Maps the network share to a letter.
 
 \end{fulllineitems}
 
-\index{check\_project\_password() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.check_project_password}\pysiglinewithargsret{\code{utils.}\bfcode{check\_project\_password}}{\emph{project\_id}, \emph{password}}{}
-Compares the the provided password with the project password.
-
-\end{fulllineitems}
-
 \index{get\_encrypted\_directory\_name() (in module utils)}
 
 \begin{fulllineitems}
@@ -5032,14 +5404,6 @@ Returns the encrypted name for project directory.
 \begin{fulllineitems}
 \phantomsection\label{utils:utils.hash_password}\pysiglinewithargsret{\code{utils.}\bfcode{hash\_password}}{\emph{password}}{}
 Hashes the provided password.
-
-\end{fulllineitems}
-
-\index{set\_logger\_level() (in module utils)}
-
-\begin{fulllineitems}
-\phantomsection\label{utils:utils.set_logger_level}\pysiglinewithargsret{\code{utils.}\bfcode{set\_logger\_level}}{\emph{level}}{}
-Docstring here.
 
 \end{fulllineitems}
 
@@ -5560,6 +5924,7 @@ Exit the application
 \bigletter{m}
 \item {\texttt{macro}}, \pageref{macro:module-macro}
 \item {\texttt{models}}, \pageref{models:module-models}
+\item {\texttt{modelsbase}}, \pageref{modelsbase:module-modelsbase}
 \indexspace
 \bigletter{s}
 \item {\texttt{send\_file\_to}}, \pageref{send_file:module-send_file_to}

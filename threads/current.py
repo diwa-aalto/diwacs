@@ -14,8 +14,18 @@ import threads.common
 from threads.diwathread import DIWA_THREAD
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
@@ -52,7 +62,8 @@ class CURRENT_PROJECT(DIWA_THREAD):
                 ipgm = diwavars.PGM_GROUP
                 project_id = controller.get_active_project(ipgm)
                 if project_id:
-                    self.swnp('SYS', 'current_project;%d' % project_id)
+                    self.swnp.send('SYS', 'MSG',
+                                   'current_project;{0}'.format(project_id))
             sleep(1)
 
 
@@ -87,5 +98,6 @@ class CURRENT_SESSION(DIWA_THREAD):
                 ipgm = diwavars.PGM_GROUP
                 session_id = controller.get_active_session(ipgm)
                 if session_id:
-                    self.swnp('SYS', 'current_session;%d' % session_id)
+                    self.swnp.send('SYS', 'MSG',
+                                   'current_session;{0}'.format(session_id))
             sleep(1)

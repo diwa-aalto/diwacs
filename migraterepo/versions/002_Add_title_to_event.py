@@ -4,7 +4,9 @@ from migrate import *
 meta = MetaData()
 
 table = Table('event', meta)
-col = Column('title',String(40),nullable=False)
+col = Column('title', String(40), nullable=False)
+
+
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine; bind
     # migrate_engine to your metadata

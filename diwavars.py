@@ -1,12 +1,15 @@
 """
 DiWaCS Variables
 
+:author: neriksso
+
 """
 import pyaudio
 import os
 import re
 import sys
-from win32con import VK_LWIN, VK_ESCAPE
+from win32con import VK_LWIN, VK_LMENU
+from ast import literal_eval
 
 
 # A placeholder for default system cursor
@@ -39,7 +42,7 @@ def set_blank_cursor(value):
 APPLICATION_NAME = 'DiWaCS'
 
 # current application version
-VERSION = '0.9.3.0'
+VERSION = '0.9.3.2'
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -53,11 +56,20 @@ DEFAULT_SCREEN = os.path.join('data', 'SCREEN.png')
 # Empty screen icon filename
 NO_SCREEN = os.path.join('data', 'noscreen.png')
 
+# Green dot icon filename
+GREEN_DOT = os.path.join('data', 'square_green.png')
+
+# Yellow dot icon filename
+YELLOW_DOT = os.path.join('data', 'square_yellow.png')
+
+# Red dot icon filename
+RED_DOT = os.path.join('data', 'square_red.png')
+
 # Splash screen
 SPLASH_SCREEN = os.path.join('data', 'splashscreen.png')
 
 # The tooltip shown on systray hover
-TRAY_TOOLTIP = '%s %s' % (APPLICATION_NAME, VERSION)
+TRAY_TOOLTIP = '{0} {1}'.format(APPLICATION_NAME, VERSION)
 
 # The size of the main frame
 FRAME_SIZE = (585, 170)
@@ -66,16 +78,23 @@ FRAME_SIZE = (585, 170)
 MAX_SCREENS = 3
 
 # Path of the config file. Users home directory/.wos
-CONFIG_PATH = os.path.join(os.path.expanduser('~'), '.wos', "config.ini")
+CONFIG_PATH = os.path.expanduser(r'~\.diwacs\config.ini')
 
 # A placeholder for configobj
 CONFIG = None
+CONFIG_LOADER = None
 
 
 def set_config(config):
     """ Set the CONFIG global... """
     global CONFIG
     CONFIG = config
+
+
+def update_config_loader(config_loader):
+    """ Set the CONFIG loader function... """
+    global CONFIG_LOADER
+    CONFIG_LOADER = config_loader
 
 
 # Currently running (not a dry-import)
@@ -145,10 +164,10 @@ def set_run_cmd(value):
 
 
 KEY_MODIFIER = VK_LWIN
-KEY = VK_ESCAPE
+KEY = VK_LMENU
 
 
-def update_keys(modifier=VK_LWIN, key=VK_ESCAPE):
+def update_keys(modifier=VK_LWIN, key=VK_LMENU):
     """
     Update the key combination to stop remote controlling.
 
@@ -189,11 +208,8 @@ PASSWORD_ITERATIONS = 101
 # If debug mode is enable or not
 DEBUG = False
 
-# IS the input of the running computer being captured
-CAPTURE = False
-
 # The URL of the PAD file. For version checking purposes
-PAD_URL = ''
+PAD_URL = 'http://raw.github.com/diwa-aalto/diwacs/master/pad_file.xml'
 
 
 def update_padfile(padurl):
@@ -228,8 +244,9 @@ def update_windows_version():
 
     """
     global WINDOWS_MAJOR, WINDOWS_MINOR
-    WINDOWS_MAJOR = sys.getwindowsversion().major
-    WINDOWS_MINOR = sys.getwindowsversion().minor
+    version = sys.getwindowsversion()
+    WINDOWS_MAJOR = version.major
+    WINDOWS_MINOR = version.minor
 
 
 update_windows_version()
@@ -239,7 +256,7 @@ update_windows_version()
 PGM_GROUP = 1
 
 
-def update_PGM_group(new_group):
+def update_pgm_group(new_group):
     """
     Update the PGM group for this node.
 
@@ -256,7 +273,7 @@ CAMERA_PASS = ''
 
 def update_camera_vars(url, user, passwd):
     """
-    Docstring here.
+    Update the global variables that control the camera settings.
 
     """
     global CAMERA_URL, CAMERA_USER, CAMERA_PASS
@@ -274,7 +291,7 @@ AUDIO = False
 
 def update_audio(audio):
     """
-    Docstring here.
+    Update the global Audio variable.
 
     """
     global AUDIO
@@ -288,13 +305,13 @@ def update_audio(audio):
 RESPONSIVE = -1
 
 
-def update_responsive(resp):
+def update_responsive(responsive):
     """
-    Docstring here.
+    Update the global responsive setting.
 
     """
     global RESPONSIVE
-    RESPONSIVE = resp
+    RESPONSIVE = responsive
 
 
 # DATABASE CONFIGS
@@ -315,11 +332,11 @@ DB_STRING = ''
 def update_database_vars(address=None, name=None, type_=None, user=None,
                          password=None):
     """
-    Docstring here.
+    Update the global database settings.
 
     """
     global DB_ADDRESS, DB_NAME, DB_TYPE, DB_USER, DB_PASS, DB_STRING
-    __myformat = '%s+%s://%s:%s@%s/%s?charset=utf8&use_unicode=1'
+    __myformat = '{0}+{1}://{2}:{3}@{4}/{5}?charset=utf8&use_unicode=1'
     if address:
         DB_ADDRESS = address
     if name:
@@ -334,5 +351,92 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
         db_driver = DB_DRIVER[DB_TYPE] if DB_TYPE in DB_DRIVER else ''
         if not db_driver:
             return
-        DB_STRING = __myformat % (DB_TYPE, db_driver, DB_USER, DB_PASS,
-                                  DB_ADDRESS, DB_NAME)
+        DB_STRING = __myformat.format(DB_TYPE, db_driver, DB_USER, DB_PASS,
+                                      DB_ADDRESS, DB_NAME)
+
+STATUS_BOX_VALUE = 0
+STATUS_BOX_CALLBACK = None
+STATUS_BOX_PRINT_CALLBACK = None
+
+
+def register_status_box_callback(state_func, print_func):
+    """
+    Register a function for changing the state of status_box and
+    a function for printing data into the status_box.
+
+    :param state_func:
+        A function that get's called with the new value of status_box when
+        the value changes.
+    :type state_func: Function(Integer)
+
+    :param print_func:
+        A function that get's called to print text into the status_box.
+    :type print_func: Function(String)
+
+    """
+    global STATUS_BOX_CALLBACK, STATUS_BOX_PRINT_CALLBACK
+    STATUS_BOX_CALLBACK = state_func
+    STATUS_BOX_PRINT_CALLBACK = print_func
+
+
+def update_status_box(value):
+    """
+    A function that get's called with the new value of status_box when
+    the value changes. This forwards the function call to the registered
+    function (registered via :py:func:`register_status_box_callback`).
+
+    :param value: The new value of status box.
+    :type value: Integer
+
+    """
+    global STATUS_BOX_VALUE
+    STATUS_BOX_VALUE = value
+    if STATUS_BOX_CALLBACK is not None:
+        STATUS_BOX_CALLBACK(value)
+
+
+def print_to_status_box(line):
+    """
+    A function that get's called to print text into the status_box.
+    This forwards the function call to the registered function
+    (registered via :py:func:`register_status_box_callback`).
+
+    :param value: The text to print to the status_box.
+    :type value: String
+
+    """
+    if STATUS_BOX_PRINT_CALLBACK is not None:
+        STATUS_BOX_PRINT_CALLBACK(line)
+
+
+USING_DIWA_PROFILE = False
+
+
+def set_using_diwa_profile(value):
+    """
+    Set variable defining is a profile in use.
+
+    """
+    global USING_DIWA_PROFILE
+    USING_DIWA_PROFILE = value
+
+
+def update_variable(name, value):
+    """
+    Set ANY global value in diwavars.py into **value** (literal_eval).
+
+    EXAMPLE:
+
+    .. code-block:: python
+
+        diwavars.update_variable('AUDIO', 'False')
+
+    :param name: The name of the global.
+    :type name: String
+
+    :param value: The new value of the global embedded into a string.
+    :type value: String
+
+    """
+    if name in globals():
+        globals()[name] = literal_eval(value)

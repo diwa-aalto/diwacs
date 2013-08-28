@@ -1,5 +1,6 @@
 """
-macro.py defines a few user input functions.
+:author: neriksso
+:synopsis: macro.py defines a few user input functions.
 
 """
 
@@ -194,7 +195,13 @@ SENDKEYS_TABLE = (
 
 
 def GetKeydown(code):
-    """ Docstring here. """
+    """
+    Check if the key with keycode is held down.
+
+    :param code: Keycode of the key.
+    :type code: Integer
+
+    """
     return (win32api.GetKeyState(code) & (1 << 15)) != 0
 
 
@@ -219,29 +226,51 @@ PUL = POINTER(c_ulong)
 
 class KeyBdInput(Structure):
     """ Docstring here. """
-    _fields_ = [('wVk', c_ushort), ('wScan', c_ushort), ('dwFlags', c_ulong),
-                ('time', c_ulong), ('dwExtraInfo', PUL)]
+    _fields_ = [
+        ('wVk', c_ushort),
+        ('wScan', c_ushort),
+        ('dwFlags', c_ulong),
+        ('time', c_ulong),
+        ('dwExtraInfo', PUL)
+    ]
 
 
 class HardwareInput(Structure):
     """ Docstring here. """
-    _fields_ = [('uMsg', c_ulong), ('wParamL', c_short), ('wParamH', c_ushort)]
+    _fields_ = [
+        ('uMsg', c_ulong),
+        ('wParamL', c_short),
+        ('wParamH', c_ushort)
+    ]
 
 
 class MouseInput(Structure):
     """ Docstring here. """
-    _fields_ = [('dx', c_long), ('dy', c_long), ('mouseData', c_ulong),
-                ('dwFlags', c_ulong), ('time', c_ulong), ('dwExtraInfo', PUL)]
+    _fields_ = [
+        ('dx', c_long),
+        ('dy', c_long),
+        ('mouseData', c_ulong),
+        ('dwFlags', c_ulong),
+        ('time', c_ulong),
+        ('dwExtraInfo', PUL)
+    ]
 
 
 class Input_I(Union):
     """ Docstring here. """
-    _fields_ = [('ki', KeyBdInput), ('mi', MouseInput), ('hi', HardwareInput)]
+    _fields_ = [
+        ('ki', KeyBdInput),
+        ('mi', MouseInput),
+        ('hi', HardwareInput)
+    ]
 
 
 class Input(Structure):
     """ Docstring here. """
-    _fields_ = [('type', c_ulong), ('ii', Input_I)]
+    _fields_ = [
+        ('type', c_ulong),
+        ('ii', Input_I)
+    ]
 
 
 class MacroPoint(Structure):
@@ -391,7 +420,16 @@ def slide_to(target_x, target_y, speed='normal'):
 
     """
     def close_enough(first_location, second_location):
-        """ Docstring. """
+        """
+        Check if the points are close enough.
+
+        :param first_location: The first point.
+        :type first_location: Tuple of Integers
+
+        :param second_location: The second point.
+        :type second_location: Tuple of Integers
+
+        """
         close_x = abs(first_location[0] - second_location[0]) < 5
         close_y = abs(first_location[1] - second_location[1]) < 5
         return close_x and close_y

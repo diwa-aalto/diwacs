@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>DiWaCS module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>DiWaCS module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="DiWaVars module" href="diwavars.html" />
     <link rel="prev" title="Dialogs module" href="dialogs.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="dialogs.html" title="Dialogs module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -135,7 +135,7 @@ unselected.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">There should be no need for this as the software should
 always start a new project after the old one ends.
-But for the mid state to be legimate this is still
+But for the mid state to be legitimate this is still
 usable.</p>
 </div>
 </dd></dl>
@@ -165,25 +165,6 @@ selected.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.GetNodeByName">
-<tt class="descname">GetNodeByName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.GetNodeByName" title="Permalink to this definition">¶</a></dt>
-<dd><p>From current session nodes, select a node with this name
-or return None.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>String</em>) &#8211; Name of the desired node.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The desired node if one exists.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="diwacs.GraphicalUserInterface.InitUICore">
 <tt class="descname">InitUICore</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.InitUICore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inits the Core UI (<tt class="xref py py-meth docutils literal"><span class="pre">guitemplates.GUItemplate.InitUI()</span></tt>) and
@@ -198,15 +179,15 @@ binds the functionality.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>e</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.OnEvtBtn">
-<tt class="descname">OnEvtBtn</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnEvtBtn" title="Permalink to this definition">¶</a></dt>
+<dt id="diwacs.GraphicalUserInterface.OnEventButton">
+<tt class="descname">OnEventButton</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnEventButton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event Button handler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -227,6 +208,20 @@ binds the functionality.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="diwacs.GraphicalUserInterface.OnFocus">
+<tt class="descname">OnFocus</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnFocus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for gained focus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
 </tr>
 </tbody>
 </table>
@@ -276,8 +271,8 @@ Should toggle the minimized state of the application.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.OnProject">
-<tt class="descname">OnProject</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnProject" title="Permalink to this definition">¶</a></dt>
+<dt id="diwacs.GraphicalUserInterface.OnProjectChanged">
+<tt class="descname">OnProjectChanged</tt><big>(</big><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.OnProjectChanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Project selected event handler.</p>
 </dd></dl>
 
@@ -347,24 +342,6 @@ an existing one.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="diwacs.GraphicalUserInterface.PaintSelect">
-<tt class="descname">PaintSelect</tt><big>(</big><em>evt</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.PaintSelect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Paints the selection of a node.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For future use.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<em>Event</em>) &#8211; GraphicalUserInterface Event</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="diwacs.GraphicalUserInterface.SelectNode">
 <tt class="descname">SelectNode</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SelectNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the selection of a node, start remote control.</p>
@@ -400,7 +377,7 @@ an existing one.</p>
 <dt id="diwacs.GraphicalUserInterface.SetProjectName">
 <tt class="descname">SetProjectName</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#diwacs.GraphicalUserInterface.SetProjectName" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the project text.
-For example &#8220;No Project OnSelection&#8221;.</p>
+For example &#8220;No Project Selection&#8221;.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Requires None explicitly when the purpose is to set default label
@@ -469,20 +446,6 @@ wish to profile the execution of the diwacs system.</p>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="diwacs.set_logger_level">
-<tt class="descclassname">diwacs.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#diwacs.set_logger_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to set logger level.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; The level desired.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 
 
@@ -496,19 +459,20 @@ wish to profile the execution of the diwacs system.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -569,7 +533,7 @@ wish to profile the execution of the diwacs system.</p>
         <li class="right" >
           <a href="dialogs.html" title="Dialogs module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

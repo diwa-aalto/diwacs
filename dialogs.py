@@ -1,25 +1,27 @@
 """
 Created on 4.6.2013
 
+:platform: Windows Vista, Windows 7, Windows 8
+:synopsis: Define the pop-up dialogs for the application.
+:note: Requires WxPython.
 :author: neriksso
 
 """
 # System imports
 from logging import config, getLogger
 import webbrowser
+import os
 
 # Third party imports
 import wx
+from configobj import ConfigObj
 
 # Own imports
 import controller
 import diwavars
 from models import Company, Project
 import filesystem
-import utils
-from sqlalchemy.dialects.oracle.zxjdbc import SQLException
-import datetime
-
+import modelsbase
 
 LOGGER = None
 
@@ -37,10 +39,7 @@ def __init_logger():
     LOGGER = getLogger('dialogs')
 
 
-diwavars.add_logger_initializer(__init_logger)
-
-
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Sets the logger level for dialogs logger.
 
@@ -49,6 +48,10 @@ def set_logger_level(level):
 
     """
     LOGGER.setLevel(level)
+
+
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def show_modal_and_destroy(class_, parent, params=None):
@@ -80,13 +83,12 @@ def show_modal_and_destroy(class_, parent, params=None):
         else:
             dialog = class_(parent)
         result = dialog.ShowModal()
-    except Exception, excp:
-        LOGGER.exception('Exception in %s: %s', str(class_), str(excp))
+    except Exception as excp:
+        LOGGER.exception('Exception in {0!s}: {1!s}'.format(class_, excp))
     finally:
         try:
-            if hasattr(dialog, 'Destroy'):
-                dialog.Destroy()
-        except Exception:
+            dialog.Destroy()
+        except (NameError, AttributeError):
             pass
     dialog = None
     return result
@@ -110,10 +112,15 @@ class AddProjectDialog(wx.Dialog):
         self.project_id = 0
         self.parent = parent
 
-        LOGGER.debug('AddProjectDebug:\n'
-                     'AddProjectDialog(self, parent=%(parent)s, '
-                     'title=%(title)s, style=%(style)d, size=%(size)s)',
-                     locals())
+        to_print = {
+            'parent': parent,
+            'title': title,
+            'project_id': project_id
+        }
+        msg = ['AddProjectDebug:\n']
+        for key in to_print:
+            msg.append('{0}={1}'.format(key, to_print[key]))
+        LOGGER.debug(''.join(msg))
 
         # Static definitions of common strings.
         add_label = 'Create'
@@ -154,7 +161,7 @@ class AddProjectDialog(wx.Dialog):
 
         # The project handling.
         if self.project_id:
-            project = controller.get_project(self.project_id)
+            project = Project.get_by_id(project_id)
             self.name.SetValue(project.name)
             self.dir.SetValue(project.dir)
 
@@ -185,54 +192,55 @@ class AddProjectDialog(wx.Dialog):
             if event:
                 event.Skip()
             return
-
-        database = None
         try:
-            database = controller.connect_to_database()
-            company = database.query(Company).filter(Company.id == 1).one()
-            company_name = company.name
+            company = Company.get_by_id()
             project_data = {
                 'name': self.name.GetValue(),
                 'dir': self.dir.GetValue(),
                 'password': self.password.GetValue()
             }
             company_data = {
-                'name': company_name
+                'name': company.name
             }
             data = {
                 'project': project_data,
                 'company': company_data
             }
+            if not self.dir.GetValue():
+                project_data.pop('dir')
             project = controller.add_project(data)
-            LOGGER.info('Created Project: %s (id=%d)', project.name,
-                        project.id)
+            LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
             result = project.id
-        except SQLException, excp:
-            LOGGER.exception('Error in add project: %s', str(excp))
-            self.EndModal(0)
+        except Exception as excp:
+            LOGGER.exception('Error in add project: {0!s}'.format(excp))
+            self.EndModal(-1)
             return
 
         if not result:
             LOGGER.exception('ERROR in add project!')
-            self.EndModal(0)
+            self.EndModal(-1)
             return
-
-        if result != self.parent.diwa_state.current_project_id:
-            self.parent.set_current_project(project.id)
-            self.parent.start_current_project()
-            self.parent.OnProject()
-            LOGGER.debug('Current Project set')
-            params = {'message': 'Do you want to start a new session?',
-                      'caption': 'Session',
-                      'style': wx.YES_NO | wx.ICON_QUESTION}
-            dlg_result = show_modal_and_destroy(wx.MessageDialog, self, params)
-            if dlg_result == wx.ID_YES:
-                self.parent.OnSession(None)
-
+        try:
+            if result != self.parent.diwa_state.current_project_id:
+                self.parent.diwa_state.set_current_project(project.id)
+                self.parent.diwa_state.start_current_project_thread()
+                self.parent.OnProjectChanged()
+                LOGGER.debug('Current Project set')
+                params = {'project_id': result}
+                dlg_result = show_modal_and_destroy(ProjectSelectedDialog,
+                                                    self, params)
+                if dlg_result == wx.ID_NO:
+                    self.parent.OnSession(None)
+        except Exception as excp:
+            log_msg = 'Exception in Project creation: {0!s}'
+            LOGGER.exception(log_msg.format(excp))
         self.EndModal(result)
 
     def OnText(self, event):
-        """ Event handler for text changed. """
+        """
+        Event handler for text changed.
+
+        """
         source_object = event.GetEventObject()
         source_string = source_object.GetValue()
         if source_object == self.dir:
@@ -264,9 +272,17 @@ class CloseError(Exception):
         Exception.__init__(self, *args, **kwds)
 
     def __str__(self):
+        """
+        Returns a string representation of CloseError.
+
+        """
         return 'CloseError'
 
     def __unicode__(self):
+        """
+        Returns a string representation (Unicode variant) of CloseError.
+
+        """
         return u'CloseError'
 
 
@@ -276,30 +292,40 @@ class ConnectionErrorDialog(wx.ProgressDialog):
     attempts made by the software.
 
     """
-    stat_text = ('Reconnecting... DiWaCS will shutdown in %s seconds if ' +
+    stat_text = ('Reconnecting... DiWaCS will shutdown in {0} seconds if '
                  'no connection is made.')
     imax = 80
 
     def __init__(self, parent):
         self.parent = parent
         wx.ProgressDialog.__init__(self, 'Connection Error',
-                                   ConnectionErrorDialog.stat_text % str(20),
+                                   ConnectionErrorDialog.stat_text.format(20),
                                    maximum=ConnectionErrorDialog.imax,
                                    parent=self.parent,
                                    style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
 
     def GetResult(self):
-        keep_going = True
+        """
+        Try to reconnect and return the outcome.
+
+        """
+        success = False
         count = 0
-        while keep_going and count < ConnectionErrorDialog.imax:
+        while not success and count < ConnectionErrorDialog.imax:
             count += 1
             wx.MilliSleep(250)
-            keep_going = not (filesystem.test_storage_connection() and
-                             controller.test_connection())
+            tests = [filesystem.test_storage_connection(),
+                     controller.test_connection()]
+            success = True
+            for test in tests:
+                if not test:
+                    success = False
+                    break
             if count % 4 == 0:
-                seconds = str((ConnectionErrorDialog.imax - count) / 4)
-                self.Update(count, ConnectionErrorDialog.stat_text % seconds)
-        return keep_going
+                seconds = (ConnectionErrorDialog.imax - count) / 4
+                notice = ConnectionErrorDialog.stat_text.format(seconds)
+                self.Update(count, notice)
+        return not success
 
 
 class DeleteProjectDialog(wx.Dialog):
@@ -311,15 +337,16 @@ class DeleteProjectDialog(wx.Dialog):
         wx.Dialog.__init__(self, parent=parent, title=title,
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            size=(250, 200))
-        self.project = controller.get_project(project_id)
+        self.project = Project.get_by_id(project_id)
         if not self.project:
             self.Destroy()
             msg = 'The project does not seem to exist anymore.'
             show_modal_and_destroy(ErrorDialog, parent, {'message': msg})
             return
 
-        label_text = ('You are about to delete project %s permanently.'
-                      ' Are you really sure?') % self.project.name
+        label_text = ('You are about to delete project "{0}" permanently. '
+                      ' Are you really sure?')
+        label_text = label_text.format(self.project.name)
         self.notice = wx.StaticText(self, label=label_text)
         yes_text = 'Yes, delete the project.'
         files_text = 'Also delete all saved project files.'
@@ -327,8 +354,8 @@ class DeleteProjectDialog(wx.Dialog):
         self.files_delete = wx.CheckBox(self, wx.ID_ANY, files_text)
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
         self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
-        self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk, self)
-        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel, self)
+        self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
+        self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         button_sizer.Add(self.ok_button, 0)
         button_sizer.Add(self.cancel_button, 0)
@@ -345,7 +372,8 @@ class DeleteProjectDialog(wx.Dialog):
         Event handler for pressing OK button.
 
         """
-        event.Skip(False)
+        if event:
+            event.Skip(False)
         ret = 0
         if self.yes_delete.GetValue():
             ret += 1
@@ -358,7 +386,8 @@ class DeleteProjectDialog(wx.Dialog):
         Event handler for pressing Cancel button.
 
         """
-        event.Skip(False)
+        if event:
+            event.Skip(False)
         self.EndModal(0)
 
 
@@ -394,22 +423,29 @@ class PreferencesDialog(wx.Dialog):
                            size=(550, 300),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
         self.config = config_object
+        self.parent = parent
 
         # Labels.
         screens_label = wx.StaticText(self, wx.ID_ANY, 'Screen visibility:')
         commands_label = wx.StaticText(self, wx.ID_ANY, 'Run commands:')
+        responsive_label = wx.StaticText(self, wx.ID_ANY, 'Act as Responsive:')
         name_label = wx.StaticText(self, wx.ID_ANY, 'Name:')
+        pgm_group_dropdown_label = wx.StaticText(self, wx.ID_ANY,
+                                                 'Edit PGM_GROUP:')
 
         # Configuration controls.
         self.screens_hidden = wx.RadioButton(self, wx.ID_ANY,
                                              'Off (recommended)',
                                              style=wx.RB_GROUP)
-        self.screens_show = wx.RadioButton(self, wx.ID_ANY,
-                                           'On (not recommended)')
-        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On (recommended)',
+        self.screens_show = wx.RadioButton(self, wx.ID_ANY, 'On')
+        self.commands_on = wx.RadioButton(self, wx.ID_ANY, 'On',
                                           style=wx.RB_GROUP)
         self.commands_off = wx.RadioButton(self, wx.ID_ANY,
-                                           'Off (not recommended')
+                                           'Off  (recommended)')
+        self.responsive_on = wx.RadioButton(self, wx.ID_ANY, 'On',
+                                          style=wx.RB_GROUP)
+        self.responsive_off = wx.RadioButton(self, wx.ID_ANY,
+                                           'Off  (recommended)')
         self.name_value = wx.TextCtrl(self, wx.ID_ANY, '')
 
         # Tooltips.
@@ -424,24 +460,42 @@ class PreferencesDialog(wx.Dialog):
                             'computer.')
         txt_commands_on = ('This will enable the server to send remote '
                            'commands like "shutdown" to your computer.')
+        txt_responsive_off = ('This is the basic setting for a regular'
+                              ' peer node.')
+        txt_responsive_on = ('This setting makes it possible for this client'
+                             ' to act as a responsive node which has'
+                             ' responsibilities such as monitoring file '
+                             'system and recording audio. This should be only'
+                             ' enabled for stationary nodes.')
+        txt_pgm_group = ('This allows you to set the PGM_GROUP.')
         self.screens_hidden.SetToolTip(wx.ToolTip(txt_screens_off))
         self.screens_show.SetToolTip(wx.ToolTip(txt_screens_on))
         self.commands_off.SetToolTip(wx.ToolTip(txt_commands_off))
         self.commands_on.SetToolTip(wx.ToolTip(txt_commands_on))
+        self.responsive_off.SetToolTip(wx.ToolTip(txt_responsive_off))
+        self.responsive_on.SetToolTip(wx.ToolTip(txt_responsive_on))
 
         # Other controls.
         open_button = wx.Button(self, wx.ID_ANY, 'Config File')
         open_button.Bind(wx.EVT_BUTTON, self.OpenConfig)
+        reload_button = wx.Button(self, wx.ID_ANY, 'Reload Config File')
+        reload_button.Bind(wx.EVT_BUTTON, self.ReloadConfig)
         save_button = wx.Button(self, wx.ID_ANY, 'OK')
         save_button.Bind(wx.EVT_BUTTON, self.SavePreferences)
         cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-
+        box = wx.ComboBox(self, wx.ID_ANY,
+                          choices=[str(x) for x in range(1, 10)],
+                          style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
+        box.SetMinSize((200, box.GetMinHeight()))
+        self.pgm_group_dropdown = box
+        self.pgm_group_dropdown.SetToolTip(wx.ToolTip(txt_pgm_group))
         # Preferences sizers.
         preferences_sizer = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)
         preferences_sizer.AddGrowableCol(1)
         radio_sizer_screens = wx.BoxSizer(wx.HORIZONTAL)
         radio_sizer_commands = wx.BoxSizer(wx.HORIZONTAL)
+        radio_sizer_responsive = wx.BoxSizer(wx.HORIZONTAL)
 
         radio_sizer_screens.Add(self.screens_hidden)
         radio_sizer_screens.AddSpacer(5)
@@ -449,6 +503,9 @@ class PreferencesDialog(wx.Dialog):
         radio_sizer_commands.Add(self.commands_off)
         radio_sizer_commands.AddSpacer(5)
         radio_sizer_commands.Add(self.commands_on)
+        radio_sizer_responsive.Add(self.responsive_off)
+        radio_sizer_responsive.AddSpacer(5)
+        radio_sizer_responsive.Add(self.responsive_on)
 
         # Layout Preferences.
         preferences_sizer.Add(screens_label, 0,
@@ -459,15 +516,26 @@ class PreferencesDialog(wx.Dialog):
                               wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         preferences_sizer.Add(radio_sizer_commands, 0, wx.EXPAND)
 
+        preferences_sizer.Add(responsive_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        preferences_sizer.Add(radio_sizer_responsive, 0, wx.EXPAND)
+
         preferences_sizer.Add(name_label, 0,
                               wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         preferences_sizer.Add(self.name_value, 0, wx.EXPAND)
 
+        preferences_sizer.Add(pgm_group_dropdown_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        preferences_sizer.Add(self.pgm_group_dropdown, 1, wx.EXPAND)
+
         # Layout.
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        config_button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         main_sizer.Add(preferences_sizer, 0, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(open_button, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
+        config_button_sizer.Add(open_button, 0, wx.ALL, 5)
+        config_button_sizer.Add(reload_button, 0, wx.ALL, 5)
+        main_sizer.Add(config_button_sizer, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
         button_sizer.Add(save_button, 0, wx.ALL, 5)
         button_sizer.Add(cancel_button, 0, wx.ALL, 5)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 30)
@@ -477,7 +545,7 @@ class PreferencesDialog(wx.Dialog):
         self.LoadPreferences()
         self.SetFocus()
 
-    #----------------------------------------------------------------------
+    #---------------------------------------------------------------------
     def LoadPreferences(self):
         """
         Load the current preferences and fills the text controls.
@@ -485,8 +553,12 @@ class PreferencesDialog(wx.Dialog):
         """
         screens = self.config['SCREENS']
         commands = self.config['RUN_CMD']
+        responsive = None
+        if 'RESPONSIVE' in self.config:
+            responsive = self.config['RESPONSIVE']
+        pgm_group = self.config['PGM_GROUP']
         name = self.config['NAME']
-        LOGGER.debug('config: %s', str(self.config))
+        LOGGER.debug('config: {0!s}'.format(self.config))
         # Screens.
         if int(screens) > 0:
             self.screens_show.SetValue(1)
@@ -501,6 +573,14 @@ class PreferencesDialog(wx.Dialog):
         else:
             self.commands_on.SetValue(0)
             self.commands_off.SetValue(1)
+        # Responsive
+        if responsive and int(responsive) == diwavars.PGM_GROUP:
+            self.responsive_on.SetValue(1)
+            self.responsive_off.SetValue(0)
+        else:
+            self.responsive_on.SetValue(0)
+            self.responsive_off.SetValue(1)
+        self.pgm_group_dropdown.SetStringSelection(pgm_group)
         self.name_value.SetValue(name)
 
     #----------------------------------------------------------------------
@@ -515,6 +595,26 @@ class PreferencesDialog(wx.Dialog):
         if event:
             event.Skip()
         filesystem.open_file(diwavars.CONFIG_PATH)
+
+    #----------------------------------------------------------------------
+    def ReloadConfig(self, event):
+        """
+        Opens config file.
+
+        :param event: GUI event.
+        :type event: Event
+
+        """
+        try:
+            config_loader = diwavars.CONFIG_LOADER
+        except NameError:
+            # Removed circular reference to state.load_config when
+            # running unit tests.
+            return
+        diwavars.set_config(config_loader())
+        self.parent.diwa_state.worker.parse_config(diwavars.CONFIG)
+        self.config = diwavars.CONFIG
+        self.LoadPreferences()
 
     #----------------------------------------------------------------------
     def OnCancel(self, event):
@@ -537,12 +637,27 @@ class PreferencesDialog(wx.Dialog):
 
         """
         self.config['SCREENS'] = 1 if self.screens_show.GetValue() else 0
+        LOGGER.debug('Screens: {0}'.format(self.config['SCREENS']))
         controller.set_node_screens(int(self.config['SCREENS']))
         self.config['RUN_CMD'] = 1 if self.commands_on.GetValue() else 0
         diwavars.set_run_cmd(self.commands_on.GetValue())
+        if self.responsive_on.GetValue():
+            self.config['RESPONSIVE'] = diwavars.PGM_GROUP
+            diwavars.update_responsive(diwavars.PGM_GROUP)
+            self.parent.diwa_state.set_responsive()
+        else:
+            self.config['RESPONSIVE'] = 0
+            diwavars.update_responsive(0)
+            self.parent.diwa_state.stop_responsive()
+        self.parent.diwa_state.worker.check_responsive()
         self.config['NAME'] = self.name_value.GetValue()
         controller.set_node_name(self.config['NAME'])
         self.config.write()
+        if self.config['PGM_GROUP'] != self.pgm_group_dropdown.GetValue():
+            new_pgm_group = self.pgm_group_dropdown.GetValue()
+            diwavars.update_pgm_group(new_pgm_group)
+            diwavars.CONFIG['PGM_GROUP'] = new_pgm_group
+            self.parent.diwa_state.swnp.update_pgm_group(new_pgm_group)
         params = {'message': 'Preferences Saved!',
                   'caption': 'Information',
                   'style': wx.OK | wx.ICON_INFORMATION}
@@ -563,10 +678,10 @@ class ProjectAuthenticationDialog(wx.Dialog):
                            size=(250, 200))
         self.parent = parent
         self.project_id = project_id
-        self.project = controller.get_project(project_id)
-        labeltext = ('Please enter password for Project %s' %
-                     self.project.name)
-        self.notice = wx.StaticText(self, label=labeltext)
+        self.project = Project.get_by_id(project_id)
+        label_text = 'Please enter password for Project {0}'
+        label_text = label_text.format(self.project.name)
+        self.notice = wx.StaticText(self, label=label_text)
         passwd_style = wx.TE_PASSWORD | wx.TE_PROCESS_ENTER
         self.password = wx.TextCtrl(self, -1, '', style=passwd_style)
         self.ok_button = wx.Button(self, -1, 'OK')
@@ -581,16 +696,19 @@ class ProjectAuthenticationDialog(wx.Dialog):
         self.SetFocus()
 
     def OnOk(self, event):
-        """ Called on OK button press. """
+        """
+        Called on OK button press.
+
+        """
         if event:
             event.Skip(False)
         result = 1
         try:
-            password_checker = utils.check_project_password
+            password_checker = controller.project.check_password
             if password_checker(self.project_id, self.password.GetValue()):
                 result = 0
-        except Exception, excp:
-            LOGGER.exception('OnOk EXception: %s', str(excp))
+        except Exception as excp:
+            LOGGER.exception('OnOk Exception: {0!s}'.format(excp))
             self.EndModal(1)
         self.EndModal(result)
 
@@ -610,6 +728,7 @@ class ProjectSelectDialog(wx.Dialog):
                            title='Project Selection',
                            size=(400, 300),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
+        self.parent = parent
         self.diwa_state = parent.diwa_state
         self.project_index = []
         self.project_list = wx.ListBox(self, wx.ID_ANY, choices=[],
@@ -700,18 +819,21 @@ class ProjectSelectDialog(wx.Dialog):
         project_id = 0
         try:
             params = {'title': 'Create a Project'}
-            project_id = show_modal_and_destroy(AddProjectDialog, self, params)
-            if not project_id or project_id < 1:
+            project_id = show_modal_and_destroy(AddProjectDialog, self.parent,
+                                                params)
+            if project_id < 0:
+                self.EndModal(0)
+            if project_id == 0:
                 return
             self.UpdateProjects()
-            LOGGER.debug('Added project: %d', project_id)
+            LOGGER.debug('Added project: {0}'.format(project_id))
             if project_id not in self.project_index:
                 msg = ('The project was not updated to database for some '
                        'reason!')
                 LOGGER.exception(msg)
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})
                 event.Skip()
-                return
+                self.EndModal(0)
             index = self.project_index.index(project_id)
             if index >= 0:
                 self.project_list.SetSelection(index)
@@ -732,16 +854,18 @@ class ProjectSelectDialog(wx.Dialog):
         try:
             select_index = self.project_list.GetSelection()
             project_id = self.project_index[select_index]
-            params = {'title': 'Modify a Project',
-                      'project_id': project_id}
+            params = {
+                'title': 'Modify a Project',
+                'project_id': project_id
+            }
             show_modal_and_destroy(AddProjectDialog, self, params)
             self.UpdateProjects()
-            if project_id:
+            if project_id > 0:
                 if project_id in self.project_index:
                     select_index = self.project_index.index(project_id)
                 self.project_list.SetSelection(select_index)
-        except:
-            LOGGER.exception('Edit event exception')
+        except Exception as excp:
+            LOGGER.exception('Edit event exception: {0!s}'.format(excp))
         if event:
             event.Skip()
 
@@ -765,15 +889,23 @@ class ProjectSelectDialog(wx.Dialog):
             msg = 'You cannot delete currently active project.'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
             return
-        params = {'title': 'Delete Project',
-                  'project_id': project_id}
+        params = {
+            'title': 'Delete Project',
+            'project_id': project_id
+        }
         result = show_modal_and_destroy(DeleteProjectDialog, self, params)
-        result_object = {'delete': result & 1 > 0, 'files': result & 2 > 0}
-        LOGGER.debug('OnProjectDelete result: ' + str(result_object))
+        if not result:
+            return
+        result_object = {
+            'delete': (result & 1) > 0,
+            'files': (result & 2) > 0
+        }
+        LOGGER.debug('OnProjectDelete result: {0}'.format(result_object))
         if result_object['delete']:
             if result_object['files']:
-                project_path = controller.get_project_path(project_id)
-                filesystem.delete_directory(project_path)
+                project = Project.get_by_id(project_id)
+                filesystem.delete_directory(project.dir)
+                project = None
             controller.delete_record(Project, project_id)
             self.UpdateProjects()
         if event:
@@ -796,7 +928,7 @@ class ProjectSelectDialog(wx.Dialog):
                 event.Skip()
             return
         project_id = self.project_index[selected]
-        project = controller.get_project(project_id)
+        project = Project.get_by_id(project_id)
         if not project:
             msg = 'The project does not seem to exist anymore!'
             show_modal_and_destroy(ErrorDialog, self, {'message': msg})
@@ -805,19 +937,22 @@ class ProjectSelectDialog(wx.Dialog):
                 event.Skip()
             return
         if project.password:
-            screens = controller.NODE_SCREENS
-            if not screens or screens <= 0:
+            screens = controller.common.NODE_SCREENS
+            if screens < 1:
                 self.Hide()
-                msg = ('Can not select password protected project if screens'
-                       ' configuration is set to hidden (off)')
+                msg = ('Can not select password protected project if screens '
+                       'configuration is set to hidden (off)')
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})
                 self.Show()
                 if event:
                     event.Skip()
                 return
-            params = {'title': 'Project Authentication',
-                      'project_id': project_id}
-            result = show_modal_and_destroy(ErrorDialog, self, params)
+            params = {
+                'title': 'Project Authentication',
+                'project_id': project_id
+            }
+            result = show_modal_and_destroy(ProjectAuthenticationDialog, self,
+                                            params)
             if result != 0:
                 msg = 'Project Authentication Failed'
                 show_modal_and_destroy(ErrorDialog, self, {'message': msg})
@@ -826,25 +961,22 @@ class ProjectSelectDialog(wx.Dialog):
                 return
         LOGGER.debug('Project selected')
         if project_id != self.diwa_state.current_project_id:
-            LOGGER.debug('project_id != '
-                         'self.diwa_state.current_project_id')
             try:
                 self.diwa_state.set_current_project(project_id)
-            except Exception, excp:
-                LOGGER.exception('index_parent_exception: %s', str(excp))
+            except Exception as excp:
+                LOGGER.exception('index_parent_exception: {0!s}'.format(excp))
         try:
-            params = {'title': 'Project Selected',
-                      'project_id': project_id}
+            params = {'project_id': project_id}
             result = show_modal_and_destroy(ProjectSelectedDialog, self,
                                             params)
-            LOGGER.debug('Project selected result: %s', str(result))
-            if result == 2:
-                self.diwa_state.current_session_id = -1
-            self.GetParent().OnProject()
-            self.GetParent().OnSession(None)
-            self.GetParent().Refresh()
-        except Exception, excp:
-            LOGGER.exception('Project Selected Exception: %s', str(excp))
+            LOGGER.debug('Project selected result: {0!s}'.format(result))
+            self.parent.OnProjectChanged()
+            self.parent.diwa_state.on_session_changed(result == wx.ID_NO)
+            if result == wx.ID_NO:
+                self.parent.EnableSessionButton()
+            self.parent.Refresh()
+        except Exception as excp:
+            LOGGER.exception('Project Selected Exception: {0!s}'.format(excp))
         LOGGER.debug('Asked to start session.')
         self.EndModal(0)
 
@@ -873,33 +1005,42 @@ class ProjectSelectedDialog(wx.Dialog):
     A dialog for project selection confirmation.
 
     """
-    ptext = 'Project %s has been selected. A new session will now be started.'
+    ptext = (u'Project {name} has been selected. A new session will now '
+             u'be started.')
 
-    def __init__(self, parent, title, project_id):
-        wx.Dialog.__init__(self, parent, title=title,
+    def __init__(self, parent, project_id):
+        wx.Dialog.__init__(self, parent, title='Project Selected',
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            size=(250, 200))
         try:
-            self.project_name = controller.get_project(project_id).name
-            ltext = ProjectSelectedDialog.ptext % self.project_name
+            project_name = Project.get_by_id(project_id).name
+            ltext = ProjectSelectedDialog.ptext.format(name=project_name)
             self.notice = wx.StaticText(self, label=ltext)
-            self.cb = wx.CheckBox(self, -1, 'No, do not start a new session.')
+            self.no_session = wx.CheckBox(self, -1,
+                                         'No, do not start a new session.')
             self.ok_button = wx.Button(self, -1, 'OK')
             self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
             self.sizer = wx.BoxSizer(wx.VERTICAL)
             self.sizer.Add(self.notice, 0, wx.ALL, 5)
-            self.sizer.Add(self.cb, 0, wx.ALL, 5)
+            self.sizer.Add(self.no_session, 0, wx.ALL, 5)
             self.sizer.Add(self.ok_button, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
             self.SetSizer(self.sizer)
             self.sizer.Fit(self)
             self.SetFocus()
-        except Exception, excp:
-            LOGGER.exception('Dialog exception: %s', str(excp))
+        except Exception as excp:
+            LOGGER.exception('Dialog exception: {0!s}'.format(excp))
             self.EndModal(0)
 
     def OnOk(self, event):
+        """
+        Event handler for OK button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         event.Skip()
-        self.EndModal(2 if self.cb.GetValue() else 1)
+        self.EndModal(wx.ID_YES if self.no_session.GetValue() else wx.ID_NO)
 
 
 class UpdateDialog(wx.Dialog):
@@ -914,15 +1055,16 @@ class UpdateDialog(wx.Dialog):
     :type url: String
 
     """
-    ptext = ('An application update is available for %s at' %
-             diwavars.APPLICATION_NAME)
+    ptext = ('An application update is available for {0} at'.\
+             format(diwavars.APPLICATION_NAME))
 
     def __init__(self, title, url, *args, **kwargs):
         wx.Dialog.__init__(self, wx.GetApp().GetTopWindow(),
-                           title='Version %s is available' % title,
+                           title='Version {0} is available'.format(title),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            *args, **kwargs)
         self.notice = wx.StaticText(self, label=UpdateDialog.ptext)
+        LOGGER.debug('URL: {0} - {1}'.format(type(url).__name__, str(url)))
         self.link = wx.HyperlinkCtrl(self, label='here.', url=url)
         self.link.Bind(wx.EVT_HYPERLINK, self.UrlHandler)
         self.ok_button = wx.Button(self, -1, 'OK')
@@ -939,11 +1081,25 @@ class UpdateDialog(wx.Dialog):
         self.SetFocus()
 
     def OnOk(self, event):
+        """
+        Event handler for OK button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
         event.Skip(False)
         self.EndModal(0)
 
     def UrlHandler(self, event):
-        event.Skip()
+        """
+        Event handler for URL text press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        event.Skip(False)
         webbrowser.open(self.link.GetURL())
 
 
@@ -958,4 +1114,142 @@ class SendProgressBar(wx.ProgressDialog):
                                    parent=parent, style=pd_style)
         mypos = self.GetPositionTuple()
         self.MoveXY(mypos[0], mypos[1] + ypos)
-        self.Hide()
+
+
+class ChooseDiwaProfileDialog(wx.Dialog):
+    """
+    Allows user to select a DiWa profile from a list of profiles. Profiles
+    are loaded from the filesystem.
+
+    :param parent: The parent object.
+    :type parent: Object
+
+    :param profiles: List of profiles
+    :type profiles: List
+
+    """
+
+    PROFILES_PATH = os.path.join(os.path.dirname(diwavars.CONFIG_PATH),
+                                  'profiles')
+
+    def __init__(self, parent, profiles):
+        wx.Dialog.__init__(self,
+                           parent=parent,
+                           id=wx.ID_ANY,
+                           title='Select DiWa Profile',
+                           size=(400, 150),
+                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
+        self.parent = parent
+
+        # Labels.
+        dropdown_label = wx.StaticText(self, wx.ID_ANY, 'Select a profile:')
+
+        # Configuration controls.
+        style = wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT
+        self.dropdown = wx.ComboBox(self, wx.ID_ANY, choices=profiles,
+                                    style=style)
+        self.dropdown.Bind(wx.EVT_COMBOBOX, self.OnComboBox)
+
+        # Other controls.
+        self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
+        self.ok_button.Bind(wx.EVT_BUTTON, self.SelectDiwaProfile)
+        self.ok_button.Disable()
+        exit_button = wx.Button(self, wx.ID_ANY, 'Exit')
+        exit_button.Bind(wx.EVT_BUTTON, self.Exit)
+
+        # Dialog sizers.
+        dialog_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        dialog_sizer.Add(dropdown_label, 0, wx.ALL, 5)
+        dialog_sizer.Add(self.dropdown, 1, wx.EXPAND | wx.ALL, 5)
+
+        # Layout.
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        main_sizer.Add(dialog_sizer, 0, wx.EXPAND | wx.ALL, 5)
+        button_sizer.Add(self.ok_button, 0, wx.ALL, 5)
+        button_sizer.Add(exit_button, 0, wx.ALL, 5)
+        main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 10)
+        self.SetSizer(main_sizer)
+        self.Center()
+        self.SetFocus()
+
+    def OnComboBox(self, event):
+        """
+        Event handler for updating the state of OK button, depending
+        if there's anything selected in the combo-box.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        if self.dropdown.GetSelection() == -1:
+            self.ok_button.Disable()
+        else:
+            self.ok_button.Enable()
+
+    @staticmethod
+    def ListDatabaseProfiles():
+        """
+        Returns the list of available profiles.
+
+        :returns: A list of profiles.
+        :rtype: List of Strings
+
+        """
+        profiles = []
+
+        for rdf in os.walk(ChooseDiwaProfileDialog.PROFILES_PATH):
+            files = rdf[2]
+            for file_ in files:
+                profiles.append(os.path.splitext(file_)[0])
+        return profiles
+
+    def SelectDiwaProfile(self, event):
+        """
+        Load settings from a profile, event handler.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        selected = self.dropdown.GetValue()
+        LOGGER.info('Selected database profile: {0}'.format(selected))
+        valid_profile = 0
+        path = '{0}.ini'.format(selected)
+        path = os.path.join(ChooseDiwaProfileDialog.PROFILES_PATH, path)
+        config_ = ConfigObj(path)
+        wanted = ('DB_ADDRESS', 'DB_NAME', 'DB_TYPE', 'DB_USER', 'DB_PASS')
+        if all((k in config_) for k in wanted):
+            values = [config_[k] for k in wanted]
+            diwavars.update_database_vars(*values)
+            modelsbase.update_database()
+            valid_profile += 1
+        if 'PGM_GROUP' in config_:
+            diwavars.update_pgm_group(config_['PGM_GROUP'])
+            valid_profile += 1
+        if 'STORAGE' in config_:
+            diwavars.update_storage(config_['STORAGE'])
+            valid_profile += 1
+        wanted = ('CAMERA_URL', 'CAMERA_USER', 'CAMERA_PASS')
+        if all((k in config_) for k in wanted):
+            values = [config_[k] for k in wanted]
+            diwavars.update_camera_vars(*values)
+        if valid_profile != 3:
+            msg = ('The profile you selected is invalid . Please select '
+                   'another profile.')
+            params = {'message': msg, 'caption': 'Invalid profile',
+                      'style': wx.OK | wx.ICON_ERROR}
+            show_modal_and_destroy(wx.MessageDialog, self, params)
+            return
+        diwavars.set_using_diwa_profile(True)
+        self.EndModal(0)
+
+    def Exit(self, event):
+        """
+        Event handler for Exit button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        self.EndModal(1)

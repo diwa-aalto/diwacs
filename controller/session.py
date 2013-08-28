@@ -8,21 +8,33 @@ Created on 28.6.2013
 import controller.common
 
 # Third party imports.
-import sqlalchemy
+from sqlalchemy import func
 
 # Own imports
 import controller.activity
 from models import Activity, Event, Project, Session
+from sqlalchemy.orm.exc import NoResultFound
 
 
-def logger():
-    """ Return controller logger. """
+def _logger():
+    """
+    Get the current logger for controller package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return controller.common.LOGGER
 
 
 def add_event(session_id, title, description):
     """
     Adds an event to the database.
+    Returns the ID field of the added event.
 
     :param session: The current session.
     :type session: :class:`models.Session`
@@ -30,25 +42,11 @@ def add_event(session_id, title, description):
     :param description: Description of the event.
     :type description: String
 
+    :returns: The event ID.
+    :rtype: Integer
+
     """
-    event_id = None
-    database = None
-    try:
-        database = controller.common.connect_to_database(True)
-        session = None
-        if session_id:
-            session = database.query(Session)
-            session = session.filter(Session.id == session_id).one()
-        event = Event(desc=description, session=session, title=title)
-        database.add(event)
-        database.commit()
-        event_id = event.id
-    except sqlalchemy.exc.SQLAlchemyError:
-        logger().exception('add event exception.')
-    if database:
-        database.close()
-    logger().info('A new event added.')
-    return event_id
+    return Event(session_id, title, description).id
 
 
 def get_active_session(pgm_group):
@@ -62,26 +60,11 @@ def get_active_session(pgm_group):
     :rtype: Integer
 
     """
-    activity_id = controller.activity.get_active_activity(pgm_group)
-    if activity_id == None:
-        return 0
-    database = None
-    session_id = None
-    try:
-        database = controller.common.connect_to_database()
-        activity = database.query(Activity)
-        activity = activity.filter(Activity.id == activity_id)
-        activity = activity.one()
-        session = activity.session
-        session_id = session.id
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return session_id
+    activity = controller.activity.get_active_activity(pgm_group)
+    return activity.session_id if activity else 0
 
 
-def get_latest_event():
+def get_latest_event_id():
     """
     Get the latest event id.
 
@@ -89,60 +72,23 @@ def get_latest_event():
     :rtype: Integer
 
     """
-    database = None
-    result = 0
-    try:
-        database = controller.common.connect_to_database()
-        event = database.query(Event.id)
-        event = event.order_by(sqlalchemy.desc(Event.id)).first()
-        if event.id:
-            result = event.id
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
+    event = Event.get('last')
+    return event.id
 
 
 def get_session_id_by_activity(activity_id):
     """
-    Docstring here.
+    Get the session ID that this activity_id is a part of.
+
+    :param activity_id: ID of the activity_id.
+    :type activity_id: Integer
+
+    :returns: The project ID.
+    :rtype: Integer
 
     """
-    session_id = 0
-    try:
-        database = controller.common.connect_to_database()
-        act = database.query(Activity).filter(Activity.id == activity_id).one()
-        if act.session_id:
-            session_id = act.session_id
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return session_id
-
-
-def get_sessions_by_project(project_id):
-    """
-    Fetches sessions for a project.
-
-    :param project_id: Project id from database.
-    :type project_id: Integer
-
-    """
-    database = None
-    result = []
-    try:
-        database = controller.common.connect_to_database()
-        sessions = database.query(Session)
-        sessions = sessions.filter(Session.project_id == project_id).all()
-        if sessions:
-            result = sessions
-    except sqlalchemy.exc.SQLAlchemyError:
-        pass
-    if database:
-        database.close()
-    return result
+    activity = Activity.get_by_id(activity_id)
+    return activity.session_id if activity else 0
 
 
 def end_session(session_id):
@@ -154,71 +100,27 @@ def end_session(session_id):
     :type session: :py:class:`models.Session`
 
     """
-    database = None
-    if not session_id or session_id < 1:
+    if session_id < 1:
         return
-    logger().debug('end_session(%d)', session_id)
-    try:
-        database = controller.common.connect_to_database()
-        session = database.query(Session).filter(Session.id == session_id)
-        session = session.one()
-        session.endtime = sqlalchemy.func.now()
-        database.add(session)
-        database.commit()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        logger().exception('end_session exception: %s', str(excp))
-    if database:
-        database.close()
+    session = Session.get_by_id(session_id)
+    session.endtime = func.now()
+    session.update()
 
 
-def start_new_session(project_id, session_id=None, old_session_id=None):
+def start_new_session(project_id, old_session_id=None):
     """
     Creates a session to the database and return a session object.
 
     :param project_id: Project id from database.
     :type project_id: Integer
 
-    :param session_id: an existing session id from database.
-    :type session_id: Integer
-
     :param old_session_id: A session id of a session which will be continued.
     :type old_session_id: Integer
 
     """
-    database = controller.common.connect_to_database()
-    project = None
+    project = Project.get_by_id(project_id)
     try:
-        project = database.query(Project)
-        project = project.filter(Project.id == project_id).one()
-    except sqlalchemy.exc.SQLAlchemyError:
-        return None
-    # recent_path = os.path.join(os.getenv('APPDATA'),
-    #                            'Microsoft\\Windows\\Recent')
-    session = None
-    if session_id:
-        try:
-            session = database.query(Session)
-            session = session.filter(Session.id == session_id).one()
-        except sqlalchemy.exc.SQLAlchemyError:
-            session = None
-    else:
-        session = Session(project)
-        #initial add and commit
-        database.add(session)
-        database.commit()
-        if old_session_id:
-            #link two sessions together
-            try:
-                old_session = database.query(Session)
-                old_session = old_session.filter(Session.id == old_session_id)
-                old_session = old_session.one()
-                session.previous_session = old_session
-                old_session.next_session = session
-                database.add(session)
-                database.add(old_session)
-                database.commit()
-            except sqlalchemy.exc.SQLAlchemyError:
-                pass
-    database.expunge(session)
-    database.close()
-    return session
+        old_session = Session.get_by_id(old_session_id)
+    except NoResultFound:
+        old_session = None
+    return Session(project, old_session)

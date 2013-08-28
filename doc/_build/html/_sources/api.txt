@@ -19,6 +19,7 @@ Documentation generated on |date| at |time|.
 	filesystem
 	graphicaldesign
 	macro
+	modelsbase
 	models
 	setup
 	state

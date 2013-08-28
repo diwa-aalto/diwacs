@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utils module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Utils module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Bugs" href="bugs.html" />
-    <link rel="prev" title="Threads module" href="threads.html" /> 
+    <link rel="prev" title="Threads package" href="threads.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,9 +42,9 @@
           <a href="bugs.html" title="Bugs"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="threads.html" title="Threads module"
+          <a href="threads.html" title="Threads package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -56,7 +56,7 @@
             
   <div class="section" id="module-utils">
 <span id="utils-module"></span><h1>Utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
-<p>Recreated on 17.5.2013</p>
+<p>Created on 17.5.2013</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -78,23 +78,6 @@
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The IP address.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.GetLANMachines">
-<tt class="descclassname">utils.</tt><tt class="descname">GetLANMachines</tt><big>(</big><em>lan_ip</em><big>)</big><a class="headerlink" href="#utils.GetLANMachines" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lan_ip</strong> (<em>string</em>) &#8211; Local Area Network IP.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">lan machines</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string[]</td>
 </tr>
 </tbody>
 </table>
@@ -125,24 +108,6 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> (<em>String</em>) &#8211; IP address</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.IntToDottedIP">
-<tt class="descclassname">utils.</tt><tt class="descname">IntToDottedIP</tt><big>(</big><em>intip</em><big>)</big><a class="headerlink" href="#utils.IntToDottedIP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transforms an Integer IP address to dotted representation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>intip</strong> (<em>Integer</em>) &#8211; The IP</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The IP</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
@@ -183,12 +148,6 @@ last item in the sequence.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="utils.check_project_password">
-<tt class="descclassname">utils.</tt><tt class="descname">check_project_password</tt><big>(</big><em>project_id</em>, <em>password</em><big>)</big><a class="headerlink" href="#utils.check_project_password" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compares the the provided password with the project password.</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="utils.get_encrypted_directory_name">
 <tt class="descclassname">utils.</tt><tt class="descname">get_encrypted_directory_name</tt><big>(</big><em>name</em>, <em>hashed_password</em><big>)</big><a class="headerlink" href="#utils.get_encrypted_directory_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the encrypted name for project directory.</p>
@@ -198,12 +157,6 @@ last item in the sequence.</p>
 <dt id="utils.hash_password">
 <tt class="descclassname">utils.</tt><tt class="descname">hash_password</tt><big>(</big><em>password</em><big>)</big><a class="headerlink" href="#utils.hash_password" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hashes the provided password.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.set_logger_level">
-<tt class="descclassname">utils.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#utils.set_logger_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring here.</p>
 </dd></dl>
 
 </div>
@@ -219,19 +172,20 @@ last item in the sequence.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Utils module</a></li>
 </ul>
 </li>
@@ -249,7 +203,7 @@ last item in the sequence.</p>
 				<p class="topless">
 				<a href="threads.html" 
 				   title="previous chapter">
-				Threads module</a></p>
+				Threads package</a></p>
 	
 	
 		
@@ -290,9 +244,9 @@ last item in the sequence.</p>
           <a href="bugs.html" title="Bugs"
              >next</a> |</li>
         <li class="right" >
-          <a href="threads.html" title="Threads module"
+          <a href="threads.html" title="Threads package"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

@@ -1,8 +1,10 @@
-'''
+"""
 Created on 12.9.2012
 
-@author: neriksso
-'''
+:author: neriksso
+:deprecated:
+
+"""
 import sys
 import zmq
 import json
@@ -11,7 +13,10 @@ import time
 
 
 def get_local_ip_address(target):
-    """ Docstring here. """
+    """
+    Get the local ip address of target.
+
+    """
     ipaddr = ''
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -72,13 +77,28 @@ class Message:
     from_json = staticmethod(from_json)
 
     def __str__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        """
+        Get the string representation of the message.
+
+        """
+        return '_'.join([self.TAG, self.PREFIX, self.PAYLOAD])
 
     def __repr__(self):
-        return "_".join([self.TAG, self.PREFIX, self.PAYLOAD])
+        """
+        Get the debug representation of the message.
+
+        """
+        return '_'.join([self.TAG, self.PREFIX, self.PAYLOAD])
 
 
 def main():
+    """
+    Main functionality of open_file_in.
+
+    :argument 1: Node to send the open command to.
+    :argument 2: Filepath to send.
+
+    """
     if len(sys.argv) == 3:
         target = sys.argv[1]
         filepath = sys.argv[2]
@@ -88,7 +108,7 @@ def main():
         ip_address = get_local_ip_address('www.google.fi')
         #print ip_address
         sock.bind('epgm://' + ip_address + ';239.128.128.2:5555')
-        command = 'open;' + str(filepath)
+        command = u'open;' + unicode(filepath)
         msg = Message(target, 'MSG', command)
         #print msg
         sock.send_multipart([msg.TAG,

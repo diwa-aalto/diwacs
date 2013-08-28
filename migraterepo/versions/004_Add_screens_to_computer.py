@@ -5,7 +5,8 @@ from sqlalchemy.dialects import mysql
 meta = MetaData()
 
 table = Table('computer', meta)
-col = Column('screens',mysql.SMALLINT,default=0)
+col = Column('screens', mysql.SMALLINT, default=0)
+
 
 def upgrade(migrate_engine):
     # Upgrade operations go here. Don't create your own engine; bind

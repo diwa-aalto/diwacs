@@ -5,14 +5,12 @@ Created on 17.5.2013
 
 """
 # System imports.
-import base64
 import datetime
 from logging import config, getLogger
 import os
 import shutil
 import subprocess
 import tempfile
-import urllib2
 from _winreg import (OpenKey, CloseKey, HKEY_CURRENT_USER, QueryValueEx)
 import xmlrpclib
 
@@ -23,7 +21,7 @@ from PIL import Image, ImageOps, ImageGrab
 # Own imports.
 import controller
 import diwavars
-import threads
+from models import Project
 
 
 LOGGER = None
@@ -39,10 +37,7 @@ def __init_logger():
     LOGGER = getLogger('filesystem')
 
 
-diwavars.add_logger_initializer(__init_logger)
-
-
-def set_logger_level(level):
+def __set_logger_level(level):
     """
     Sets the logger level for filesystem logger.
 
@@ -51,6 +46,10 @@ def set_logger_level(level):
 
     """
     LOGGER.setLevel(level)
+
+# TODO: Map when copy_file_to_project and copy_to_temporary_directory are called.
+diwavars.add_logger_initializer(__init_logger)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def copy_file_to_project(filepath, project_id):
@@ -67,7 +66,7 @@ def copy_file_to_project(filepath, project_id):
     :rtype: String
 
     """
-    project_path = controller.get_project_path(project_id)
+    project_path = Project.get_by_id(project_id).dir
     file_project_path = search_file(os.path.basename(filepath), project_path)
     if file_project_path:
         return file_project_path
@@ -103,21 +102,21 @@ def copy_to_temporary_directory(filepath):
 
 
 def create_project_directory(dir_name):
-    """Creates a project directory, if one does not exist in the file system
+    """
+    Creates a project directory, if one does not exist in the file system
 
     :param dir_name: Name of the directory
     :type dir_name: String
 
     """
-    result = ''
+    project_dir = os.path.join(diwavars.PROJECT_PATH, unicode(dir_name))
     try:
-        project_dir = os.path.join(diwavars.PROJECT_PATH, str(dir_name))
         if not os.path.exists(project_dir):
             os.makedirs(project_dir)
-        result = project_dir
+        return project_dir
     except (ValueError, IOError, OSError):
         LOGGER.exception('Error creating project dir.')
-    return result
+        return ''
 
 
 def delete_directory(path):
@@ -137,28 +136,22 @@ def delete_directory(path):
     return result
 
 
-def file_to_base64(filepath):
-    """
-    Transform a file to a binary object.
-
-    :param filepath: The file path.
-    :type filepath: String
-
-    """
-    result = None
-    try:
-        result = xmlrpclib.Binary(open(filepath, "rb").read())
-    except (ValueError, IOError, OSError):
-        pass
-    return result
-
-
 # Module global constants.
 __WIN_XP_REG = r'Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme'
 __WIN_VISTA7_REG = r'Control Panel\Desktop'
 
 
 def get_current_wallpaper(win):
+    """
+    Try to get the current wallpaper image path.
+
+    :param win: Windows version (Major, Minor).
+    :type win: Tuple of Integers
+
+    :returns: Wallpaper image path if it can find it.
+    :rtype: String
+
+    """
     wallpaper = None
     wallpaper_path = ''
     key = None
@@ -200,8 +193,8 @@ def get_current_wallpaper(win):
             LOGGER.debug('keyval2: ' + str(wallpaper_path))
             if (wallpaper_path) and len(wallpaper_path):
                 wallpaper = wallpaper_path
-    except (ValueError, IOError, OSError), excp:
-        LOGGER.exception('get_current_wallpaper exception: %s', str(excp))
+    except (ValueError, IOError, OSError) as excp:
+        LOGGER.exception('get_current_wallpaper exception: {0!s}'.format(excp))
     if key is not None:
         CloseKey(key)
     return wallpaper
@@ -253,41 +246,6 @@ def get_node_image(node):
     return result
 
 
-def is_subtree(filename, parent, case_sensitive=True):
-    """
-    Determines, if filename is inside the parent folder.
-
-    :param filename: The file path.
-    :type filename: String
-
-    :param parent: The parent file path.
-    :type parent: String
-
-    """
-    if not filename:
-        return False
-    if not case_sensitive:
-        filename = filename.lower()
-    try:
-        for (root, directories, names) in os.walk(parent):
-            name_list = names
-            if not case_sensitive:
-                name_list = [name.lower() for name in names]
-            if filename in name_list:
-                return True
-    except (IOError, OSError):
-        pass
-    return False
-
-
-#=========================================================================
-#    List operations: difference and intersection.
-#
-#=========================================================================
-DIFFERENCE = lambda l1, l2: [x for x in l1 if x not in l2]
-INTERSECTION = lambda l1, l2: [x for x in l1 if x in l2]
-
-
 def open_file(filepath):
     """
     Opens a file path.
@@ -296,16 +254,16 @@ def open_file(filepath):
     :type filepath: String
 
     """
-    LOGGER.debug('%s Opening file %s', os.name, filepath)
+    LOGGER.debug('{0} opening file {1}'.format(os.name, filepath))
     try:
         if os.path.exists(filepath):
             try:
                 os.startfile(filepath)
             except OSError:
                 subprocess.call(('start', filepath), shell=True)
-    except OSError, excp:
+    except OSError as excp:
         # Subprocess.call failed!
-        LOGGER.exception('Open file exception: %s', str(excp))
+        LOGGER.exception('Open file exception: {0!s}'.format(excp))
 
 
 def save_screen(filepath):
@@ -353,7 +311,7 @@ def save_screen(filepath):
         frame_mask.paste(cropped_image, box=img_pos)
         frame_mask.save(filepath, format='PNG')
     except (IOError, OSError) as excp:
-        LOGGER.exception('save_screen Exception: %s', str(excp))
+        LOGGER.exception('save_screen Exception: {0!s}'.format(excp))
 
 
 def screen_capture(path, node_id):
@@ -375,13 +333,13 @@ def screen_capture(path, node_id):
             os.makedirs(filepath)
         except OSError:
             pass
-        event_id = controller.get_latest_event()
+        event_id = controller.get_latest_event_id()
         stringform = datetime.datetime.now().strftime('%d%m%Y%H%M%S')
-        nameform = str(event_id) + '_' + node_id + '_' + stringform + '.png'
+        nameform = '{0}_{1}_{2}.png'.format(event_id, node_id, stringform)
         filepath = os.path.join(filepath, nameform)
         grab.save(filepath, format='PNG')
-    except (IOError, OSError), excp:
-        LOGGER.exception('screen_capture exception:%s', str(excp))
+    except (IOError, OSError) as excp:
+        LOGGER.exception('screen_capture exception: {0!s}'.format(excp))
 
 
 def search_file(filename, search_path, case_sensitive=True):
@@ -410,54 +368,6 @@ def search_file(filename, search_path, case_sensitive=True):
     return ''
 
 
-def snapshot(path):
-    """
-    Start the worker thread for snapshot.
-
-    :param path: File path where to store the snapshot.
-    :type path: String
-
-    """
-    thread = threads.DIWA_THREAD(target=snapshot_procedure, args=(path,))
-    thread.daemon = True
-    thread.start()
-
-
-def snapshot_procedure(path):
-    """
-    Worker for storing the snapshot.
-
-    .. warning::
-        This object has a timeout of 1 minute. So consider terminating
-        the thread on shutdown if it's hanging.
-
-    :param path: File path where to store the snapshot.
-    :type path: String
-
-    """
-    filepath = os.path.join(path, 'Snapshots')
-    try:
-        os.makedirs(filepath)
-    except OSError:
-        pass
-    request = urllib2.Request(diwavars.CAMERA_URL)
-    base64string = base64.encodestring('%s:%s' % (diwavars.CAMERA_USER,
-                                                  diwavars.CAMERA_PASS))
-    request.add_header('Authorization', 'Basic %s' % base64string.strip())
-    event_id = controller.get_latest_event()
-    try:
-        data = urllib2.urlopen(request, timeout=60).read()
-        datestring = datetime.datetime.now().strftime('%d%m%Y%H%M%S')
-        name = str(event_id) + '_' + datestring + '.jpg'
-        LOGGER.debug('snapshot filename: %s', name)
-        with open(os.path.join(filepath, name), 'wb') as output:
-            output.write(data)
-    except (IOError, OSError), excp:
-        # urllib2.URLError inherits IOError so both the write and url errors
-        # are caught by this.
-        LOGGER.exception('Snapshot exception: %s', str(excp))
-
-
 def test_storage_connection():
     """
     Try to access \\\\Storage\\Projects
@@ -467,6 +377,6 @@ def test_storage_connection():
 
     """
     try:
-        return os.path.exists(r'\\' + diwavars.STORAGE + '\\Projects')
+        return os.path.exists(r'\\{0}\Projects'.format(diwavars.STORAGE))
     except (IOError, OSError):
         return False

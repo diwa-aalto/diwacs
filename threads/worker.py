@@ -5,37 +5,102 @@ Created on 27.6.2013
 
 """
 # Standard imports.
-
-# Third party imports.
-
-# System imports.
+from ast import literal_eval
+import base64
 from logging import getLevelName
+from datetime import datetime
 import os
+import urllib2
 from _winreg import (KEY_ALL_ACCESS, OpenKey, CloseKey, EnumKey, DeleteKey,
                      CreateKey, SetValueEx, REG_SZ, HKEY_CURRENT_USER)
 
-# 3rd party imports.
+# Third party imports.
 import pyHook
-from wx import CallLater
+from wx import CallLater, CallAfter
 
 # Own imports.
 import controller
 import diwavars
-import filesystem
 import threads.common
 from threads.checkupdate import CHECK_UPDATE
 from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
+import modelsbase
 
 
-def logger():
-    """ Get the common logger. """
+def _logger():
+    """
+    Get the current logger for threads package.
+
+    This function has been prefixed with _ to hide it from
+    documentation as this is only used internally in the
+    package.
+
+    :returns: The logger.
+    :rtype: logging.Logger
+
+    """
     return threads.common.LOGGER
 
 
+class SNAPSHOT_THREAD(DIWA_THREAD):
+    """
+    Worker thread for taking snapshot.
+
+    :param path: File path where to store the snapshot.
+    :type path: String
+
+    """
+    def __init__(self, path):
+        DIWA_THREAD.__init__(self, name='Snapshot')
+        self.path = path
+        self.daemon = True
+        self.start()
+
+    def run(self):
+        """
+        Worker procedure for storing the snapshot.
+
+        .. warning::
+            This object has a timeout of 1 minute. So consider terminating
+            the thread on shutdown if it's hanging.
+
+        """
+        filepath = os.path.join(self.path, 'Snapshots')
+        try:
+            os.makedirs(filepath)
+        except OSError:
+            pass
+        request = urllib2.Request(diwavars.CAMERA_URL)
+        data = (diwavars.CAMERA_USER, diwavars.CAMERA_PASS)
+        base64string = base64.encodestring('{0}:{1}'.format(*data)).strip()
+        request.add_header('Authorization', 'Basic {0}'.format(base64string))
+        event_id = controller.get_latest_event_id()
+        try:
+            data = urllib2.urlopen(request, timeout=45).read()
+            datestring = datetime.now().strftime('%d%m%Y%H%M%S')
+            name = '{0}_{1}.jpg'.format(event_id, datestring)
+            _logger().debug('snapshot filename: {0}'.format(name))
+            with open(os.path.join(filepath, name), 'wb') as output:
+                output.write(data)
+        except (IOError, OSError) as excp:
+            # urllib2.URLError inherits IOError so both the write
+            # and URL errors are caught by this.
+            _logger().exception('Snapshot exception: {0!s}'.format(excp))
+
+
+#: TODO:
+#    Does the execution actually happen in WORKER_THREAD when one
+#    of it's methods is called?
+#    If not this design is flawed and should be replaced by something
+#    like: WORKER_THREAD.add_callback(target_method, **kwargs)
+#
 class WORKER_THREAD(DIWA_THREAD):
     """
     Worker thread for non-UI jobs.
+
+    :param parent: The GUI object.
+    :type parant: :py:class:`diwacs.GraphicalUserInterface`
 
     """
     _version_checker = None
@@ -43,25 +108,36 @@ class WORKER_THREAD(DIWA_THREAD):
     def __init__(self, parent):
         DIWA_THREAD.__init__(self, name='CMFH')
         self.parent = parent
+        self.daemon = True
+        self.start()
 
     def check_responsive(self):
         """
-        Docstring here.
+        Determine the responsive node.
 
         """
-        if not self.parent.responsive and not self.parent.is_responsive:
+        state = self.parent.diwa_state
+        old_responsive = state.responsive
+        if not state.responsive and not state.is_responsive:
             nodes = controller.get_active_responsive_nodes(diwavars.PGM_GROUP)
-            logger().debug('Responsive checking active: %s', str(nodes))
+            log_msg = 'Active nodes: ' + ', '.join([str(n) for n in nodes])
+            _logger().debug(log_msg)
             if not nodes:
                 if diwavars.RESPONSIVE == diwavars.PGM_GROUP:
-                    self.parent.SetResponsive()
-                    logger().debug('Setting self as responsive')
+                    state.set_responsive()
+                    state.responsive = str(state.swnp.node.id)
+                    _logger().debug('Setting self as responsive')
+
             else:
-                self.parent.responsive = str(nodes[0].wos_id)
-                if self.parent.responsive == self.parent.swnp.node.id:
-                    self.parent.SetResponsive()
-        logmsg = 'Responsive checked. Current responsive is: %s'
-        logger().debug(logmsg, str(self.parent.responsive))
+                state.responsive = str(nodes[0].wos_id)
+                if state.responsive == state.swnp.node.id:
+                    state.set_responsive()
+        if state.responsive != old_responsive:
+            if (str(state.responsive) == str(state.swnp.node.id) and
+                    not state.is_responsive):
+                state.set_responsive()
+            log_msg = 'Responsive checked. Current responsive is: {0}'
+            _logger().debug(log_msg.format(state.responsive))
 
     @staticmethod
     def add_project_registry_entry(reg_type):
@@ -85,7 +161,8 @@ class WORKER_THREAD(DIWA_THREAD):
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
                     mypath = os.path.join(os.getcwd(), 'add_file.exe ')
-                    SetValueEx(rkey, '', 0, REG_SZ, mypath + ' \"%1\"')
+                    rpath = '{0} "%1"'.format(mypath)
+                    SetValueEx(rkey, '', 0, REG_SZ, rpath)
             CloseKey(rkey)
 
     @staticmethod
@@ -100,8 +177,8 @@ class WORKER_THREAD(DIWA_THREAD):
         :type id: Integer
 
         """
-        keys = ['Software', 'Classes', '*', 'shell', 'DiWaCS: Open in ' +
-                str(name), 'command']
+        keys = ['Software', 'Classes', '*', 'shell',
+                'DiWaCS: Open in {0}'.format(name), 'command']
         key = ''
         for k, islast in IterIsLast(keys):
             key += k if key == '' else '\\' + k
@@ -110,8 +187,8 @@ class WORKER_THREAD(DIWA_THREAD):
             except:
                 rkey = CreateKey(HKEY_CURRENT_USER, key)
                 if islast:
-                    regpath = os.path.join(os.getcwd(), 'send_file_to.exe ' +
-                                           str(node_id) + ' \"%1\"')
+                    rpath = u'send_file_to.exe {0} "%1"'.format(node_id)
+                    regpath = os.path.join(os.getcwdu(), rpath)
                     SetValueEx(rkey, '', 0, REG_SZ, regpath)
             if rkey:
                 CloseKey(rkey)
@@ -149,47 +226,53 @@ class WORKER_THREAD(DIWA_THREAD):
                         count += 1
                 except WindowsError:
                     break
-        except Exception, excp:
-            excp_string = 'Exception in remove_all_registry_entries: %s'
-            logger().exception(excp_string, str(excp))
+        except Exception as excp:
+            excp_string = 'Exception in remove_all_registry_entries: {0!s}'
+            _logger().exception(excp_string.format(excp))
         if main_key:
             CloseKey(main_key)
 
     @staticmethod
     def __on_storage(value):
         """ Short stub setter. """
-        diwavars.update_storage(value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_storage(value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_address(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(address=value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(address=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_name(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(name=value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(name=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_type(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(type_=value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(type_=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_user(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(user=value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(user=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_db_pass(value):
         """ Short stub setter. """
-        diwavars.update_database_vars(password=value)
-        controller.update_database()
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_database_vars(password=value)
+            modelsbase.update_database()
 
     @staticmethod
     def __on_name(value):
@@ -199,12 +282,12 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_screens(value):
         """ Short stub setter. """
-        controller.set_node_screens(value)
+        controller.set_node_screens(literal_eval(value))
 
     @staticmethod
     def __on_run_cmd(value):
         """ Short stub setter. """
-        diwavars.set_run_cmd(value)
+        diwavars.set_run_cmd(literal_eval(value))
 
     @staticmethod
     def __on_remote_keys(value):
@@ -218,7 +301,7 @@ class WORKER_THREAD(DIWA_THREAD):
         elif value.find(','):
             value = value.split(',')
         else:
-            value = eval(value)
+            value = literal_eval(value)
         if (len(value) < 2) or (not value[0]) or (not value[1]):
             return
         value[0] = 'VK_' + value[0]
@@ -226,24 +309,22 @@ class WORKER_THREAD(DIWA_THREAD):
         vk_mod = pyHook.HookConstants.VKeyToID(value[0])
         vk_key = pyHook.HookConstants.VKeyToID(value[1])
         if (vk_mod == 0) or (vk_key == 0):
-            logger().exception('INVALID KEYCODES: %s, %s', value[0], value[1])
+            _logger().exception('INVALID KEYCODES: {0}, {1}'.format(*value))
             return
         diwavars.update_keys(vk_mod, vk_key)
 
     @staticmethod
     def __on_pgm_group(value):
         """ Short stub setter. """
-        diwavars.update_PGM_group(value)
+        diwavars.update_pgm_group(literal_eval(value))
 
     @staticmethod
     def __on_audio(parent, value):
         """ Short stub setter. """
-        logger().debug('AUDIO in config: %s', str(value))
-        value = eval(value)
+        _logger().debug('AUDIO in config: {0!s}'.format(value))
+        value = literal_eval(value)
         if value:
             diwavars.update_audio(value)
-            logger().debug('Starting audio recorder')
-            parent.StartAudioRecorder()
 
     @staticmethod
     def __on_logger_level(value):
@@ -255,29 +336,41 @@ class WORKER_THREAD(DIWA_THREAD):
     @staticmethod
     def __on_camera_url(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(str(value), None, None)
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(str(value), None, None)
 
     @staticmethod
     def __on_camera_user(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(None, str(value), None)
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(None, str(value), None)
 
     @staticmethod
     def __on_camera_pass(value):
         """ Short stub setter. """
-        diwavars.update_camera_vars(None, None, str(value))
+        if not diwavars.USING_DIWA_PROFILE:
+            diwavars.update_camera_vars(None, None, str(value))
 
     @staticmethod
     def __on_pad_url(value):
-        """ Short stub setter. """
-        diwavars.update_padfile(value)
+        """
+        Short stub setter.
+
+        """
+        diwavars.update_padfile(str(value))
         WORKER_THREAD._version_checker = CHECK_UPDATE()
         WORKER_THREAD._version_checker.start()
 
     @staticmethod
     def __on_responsive(value):
         """ Short stub setter. """
-        diwavars.update_responsive(eval(value))
+        diwavars.update_responsive(literal_eval(value))
+
+    @staticmethod
+    def __on_status_box(value):
+        """ Short stub setter. """
+        _logger().debug('Status box: {0}'.format(literal_eval(value)))
+        diwavars.update_status_box(literal_eval(value))
 
     def parse_config(self, config_object):
         """
@@ -301,10 +394,11 @@ class WORKER_THREAD(DIWA_THREAD):
             'CAMERA_USER': WORKER_THREAD.__on_camera_user,
             'CAMERA_PASS': WORKER_THREAD.__on_camera_pass,
             'PAD_URL': WORKER_THREAD.__on_pad_url,
-            'RESPONSIVE': WORKER_THREAD.__on_responsive
+            'RESPONSIVE': WORKER_THREAD.__on_responsive,
+            'STATUS_BOX': WORKER_THREAD.__on_status_box
         }
         for key, value in config_object.items():
-            logger().debug('(' + key + '=' + value + ')')
+            _logger().debug('(' + key + ' = ' + value + ')')
             if key in handler:
                 handler[key](value)
             elif key == 'AUDIO':
@@ -312,28 +406,47 @@ class WORKER_THREAD(DIWA_THREAD):
             else:
                 globals()[key] = eval(value)
 
+    def __save_audio(self, parameters):
+        """
+        Calls AudioRecorder.save after WINDOW_TAIL seconds.
+
+        """
+        CallLater(diwavars.WINDOW_TAIL * 1000,
+                  self.parent.diwa_state.audio_recorder.save,
+                  *parameters)
+
     def create_event(self, title):
         """
-        Docstring here.
+        Create a new event.
+
+        :param title: Title of the event.
+        :type title: String
 
         """
+        project = self.parent.diwa_state.current_project
+        session = self.parent.diwa_state.current_session
+        if (project is None) or (session is None):
+            return  # TODO: Define a new exception type and catch
+                    #       it in the UI design to display an
+                    #       informative pop-up about project and
+                    #       session.
+        event_id = controller.add_event(session.id, title, '')
+        SNAPSHOT_THREAD(project.dir)
         try:
-            project_id = self.parent.diwa_state.current_project_id
-            session_id = self.parent.diwa_state.current_session_id
-            ide = controller.add_event(session_id, title, '')
-            path = controller.get_project_path(project_id)
-            filesystem.Snaphot(path)
-            self.parent.SwnpSend('SYS', 'screenshot;0')
-            if diwavars.AUDIO:
-                logger().debug('Buffering audio for %d seconds',
-                             diwavars.WINDOW_TAIL)
-                self.parent.status_text.SetLabel('Recording...')
-                CallLater(diwavars.WINDOW_TAIL * 1000,
-                          self.parent.audio_recorder.save, ide, path)
+            self.parent.diwa_state.swnp_send('SYS', 'screenshot;0')
+            if diwavars.AUDIO and self.parent.diwa_state.audio_recorder:
+                log_msg = 'Buffering audio for {0} seconds.'
+                _logger().debug(log_msg.format(diwavars.WINDOW_TAIL))
+                #self.parent.status_text.SetLabel('Recording...')
+                self.parent.diwa_state.append_swnp_data('audio')
+                self.parent.UpdateScreens(update=True)
+                parameters = (event_id, project.dir)
+                CallAfter(self.__save_audio, parameters)
         except:
-            logger().exception('Create Event exception')
+            _logger().exception('Create Event exception.')
+            self.parent.diwa_state.remove_from_swnp_data('audio')
 
     def run(self):
-        """ Run the worker thread. """
+        """Run the worker thread."""
         while not self._stop.isSet():
             pass

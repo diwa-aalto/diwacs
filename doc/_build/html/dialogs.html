@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Dialogs module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Dialogs module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="DiWaCS module" href="diwacs.html" />
-    <link rel="prev" title="Controller module" href="controller.html" /> 
+    <link rel="prev" title="Controller package" href="controller.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,9 +42,9 @@
           <a href="diwacs.html" title="DiWaCS module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="controller.html" title="Controller module"
+          <a href="controller.html" title="Controller package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -61,7 +61,13 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+<tr class="field-odd field"><th class="field-name">platform:</th><td class="field-body">Windows Vista, Windows 7, Windows 8</td>
+</tr>
+<tr class="field-even field"><th class="field-name">synopsis:</th><td class="field-body">Define the pop-up dialogs for the application.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">note:</th><td class="field-body">Requires WxPython.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
 </tr>
 </tbody>
 </table>
@@ -118,6 +124,84 @@ is pressed.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="dialogs.ChooseDiwaProfileDialog">
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ChooseDiwaProfileDialog</tt><big>(</big><em>parent</em>, <em>profiles</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows user to select a DiWa profile from a list of profiles. Profiles
+are loaded from the filesystem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> (<em>Object</em>) &#8211; The parent object.</li>
+<li><strong>profiles</strong> (<em>List</em>) &#8211; List of profiles</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.Exit">
+<tt class="descname">Exit</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.Exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for Exit button press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="dialogs.ChooseDiwaProfileDialog.ListDatabaseProfiles">
+<em class="property">static </em><tt class="descname">ListDatabaseProfiles</tt><big>(</big><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.ListDatabaseProfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of available profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of profiles.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List of Strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.OnComboBox">
+<tt class="descname">OnComboBox</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.OnComboBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for updating the state of OK button, depending
+if there&#8217;s anything selected in the combo-box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.ChooseDiwaProfileDialog.SelectDiwaProfile">
+<tt class="descname">SelectDiwaProfile</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ChooseDiwaProfileDialog.SelectDiwaProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load settings from a profile, event handler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="exception">
 <dt id="dialogs.CloseError">
 <em class="property">exception </em><tt class="descclassname">dialogs.</tt><tt class="descname">CloseError</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="headerlink" href="#dialogs.CloseError" title="Permalink to this definition">¶</a></dt>
@@ -129,6 +213,12 @@ is pressed.</p>
 <em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ConnectionErrorDialog</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#dialogs.ConnectionErrorDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a connection error dialog that informs the user about reconnection
 attempts made by the software.</p>
+<dl class="method">
+<dt id="dialogs.ConnectionErrorDialog.GetResult">
+<tt class="descname">GetResult</tt><big>(</big><big>)</big><a class="headerlink" href="#dialogs.ConnectionErrorDialog.GetResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to reconnect and return the outcome.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -191,6 +281,20 @@ change some settings.</p>
 <dl class="method">
 <dt id="dialogs.PreferencesDialog.OpenConfig">
 <tt class="descname">OpenConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.OpenConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens config file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>Event</em>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.PreferencesDialog.ReloadConfig">
+<tt class="descname">ReloadConfig</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.PreferencesDialog.ReloadConfig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens config file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -344,8 +448,22 @@ Shows a dialog of the selected project.</p>
 
 <dl class="class">
 <dt id="dialogs.ProjectSelectedDialog">
-<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectSelectedDialog</tt><big>(</big><em>parent</em>, <em>title</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">dialogs.</tt><tt class="descname">ProjectSelectedDialog</tt><big>(</big><em>parent</em>, <em>project_id</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dialog for project selection confirmation.</p>
+<dl class="method">
+<dt id="dialogs.ProjectSelectedDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.ProjectSelectedDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for OK button press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -371,20 +489,34 @@ Contains the URL which the user can click on.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="dialogs.set_logger_level">
-<tt class="descclassname">dialogs.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#dialogs.set_logger_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the logger level for dialogs logger.</p>
+<dl class="method">
+<dt id="dialogs.UpdateDialog.OnOk">
+<tt class="descname">OnOk</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.UpdateDialog.OnOk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for OK button press.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; Level of logging.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dialogs.UpdateDialog.UrlHandler">
+<tt class="descname">UrlHandler</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#dialogs.UpdateDialog.UrlHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for URL text press.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; GUI event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -430,19 +562,20 @@ of the dialog without memory leaks and with all exceptions logged.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -460,7 +593,7 @@ of the dialog without memory leaks and with all exceptions logged.</p>
 				<p class="topless">
 				<a href="controller.html" 
 				   title="previous chapter">
-				Controller module</a></p>
+				Controller package</a></p>
 	
 	
 		
@@ -501,9 +634,9 @@ of the dialog without memory leaks and with all exceptions logged.</p>
           <a href="diwacs.html" title="DiWaCS module"
              >next</a> |</li>
         <li class="right" >
-          <a href="controller.html" title="Controller module"
+          <a href="controller.html" title="Controller package"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

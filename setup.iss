@@ -2,15 +2,15 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DiwaCS"
-#define MyAppVersion "0.9.2.6"
+#define MyAppVersion "0.9.3.2"
 #define MyAppPublisher "Aalto University"
 #define MyAppExeName "DiwaCS.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
-; Do not use the same AppId value in installers for other applications.
+; Do not use the same AppId value in instal lers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{679A64CA-5B53-4F8F-B7CD-C14AAAC50152}
+AppId={{679A64CA-5B53-4F8F-B7CD-C14AAAC50152}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -19,7 +19,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=C:\Users\Kristian\workspace\diwacs\installer
 OutputBaseFilename=DiwaCS-setup-{#MyAppVersion}
-Compression=lzma
+Compression=lzma/max
 SolidCompression=yes
 PrivilegesRequired=none
 
@@ -53,5 +53,5 @@ Name: "{app}\data"; Permissions: users-modify
 ;Name: "{app}\icons"; Permissions: users-modify 
 
 [UninstallDelete]
-Type: filesandordirs; Name: "{%HOMEPATH}\.wos"
+Type: filesandordirs; Name: "{%HOMEPATH}\.diwacs"
 Type: filesandordirs; Name: "{app}\data"

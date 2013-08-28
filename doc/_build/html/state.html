@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Models state &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Models state &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="SWNP module" href="swnp.html" />
     <link rel="prev" title="Setup module" href="setup.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="setup.html" title="Setup module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -57,11 +57,49 @@
   <div class="section" id="module-state">
 <span id="models-state"></span><h1>Models state<a class="headerlink" href="#module-state" title="Permalink to this headline">¶</a></h1>
 <p>Created on 4.7.2013</p>
-<p>&#64;author: neriksso</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">neriksso</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="state.SessionChangeException">
+<em class="property">exception </em><tt class="descclassname">state.</tt><tt class="descname">SessionChangeException</tt><a class="headerlink" href="#state.SessionChangeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>A stub for new Exception that just had a different type to be
+catchable in its own right.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="state.State">
 <em class="property">class </em><tt class="descclassname">state.</tt><tt class="descname">State</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#state.State" title="Permalink to this definition">¶</a></dt>
-<dd><p>classdocs</p>
+<dd><p>Used to represent the state of the client.</p>
+<p>All the graphical buttons etc have been removed from here and
+they are part of the main GraphicalUserInterface class right now.
+Likewise that class should minimize making direct changes to the
+current status of the software and only interpret user input.</p>
+<dl class="method">
+<dt id="state.State.append_swnp_data">
+<tt class="descname">append_swnp_data</tt><big>(</big><em>new_data</em><big>)</big><a class="headerlink" href="#state.State.append_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append data to current data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_data</strong> (<em>String</em>) &#8211; Value to be added</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.destroy">
+<tt class="descname">destroy</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Part of the shutdown routine, closes all the threads under this.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="state.State.end_current_project">
 <tt class="descname">end_current_project</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.end_current_project" title="Permalink to this definition">¶</a></dt>
@@ -81,17 +119,23 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="state.State.get_swnp_data">
+<tt class="descname">get_swnp_data</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.get_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="state.State.handle_file_send">
-<tt class="descname">handle_file_send</tt><big>(</big><em>filenames</em>, <em>progressdialog=None</em><big>)</big><a class="headerlink" href="#state.State.handle_file_send" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">handle_file_send</tt><big>(</big><em>filenames</em>, <em>dialog_parameters=None</em><big>)</big><a class="headerlink" href="#state.State.handle_file_send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a file link to another node.</p>
 <p>First parses all the files and folder structure, then confirms weather
 the users wishes to add the items to project before beginning the copy
 routine.</p>
-<p>The copy routine first creates all the needed subfolders and then sums
+<p>The copy routine first creates all the needed sub-folders and then sums
 up all the file sizes to be copied. Then it will update the dialog
 in the beginning/end of every file transaction and whenever there&#8217;s
 been more than 1 second from the last update dialog update. Assuming
-the progressdialog parameter has been given.</p>
+the dialog_parameters parameter has been given.</p>
 <dl class="docutils">
 <dt>The progress dialog, if supplied, is updated as follows:</dt>
 <dd><ul class="first last simple">
@@ -109,7 +153,8 @@ the progressdialog parameter has been given.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filenames</strong> (<em>List of String</em>) &#8211; All the files/folders to be copied.</li>
-<li><strong>progressdialog</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.ProgressDialog</span></tt>) &#8211; The progress dialog to update (optional).</li>
+<li><strong>dialog_parameters</strong> (<tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt>) &#8211; The progress dialog to create by show_modal_and_destroy,
+initialization parameters in a dictionary.</li>
 </ul>
 </td>
 </tr>
@@ -120,7 +165,17 @@ the progressdialog parameter has been given.</p>
 <dl class="method">
 <dt id="state.State.initialize">
 <tt class="descname">initialize</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.initialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Finish the initialization (2-stage init).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body">As this is not so essential, we could just stick it up to
+the __init__ but there might be something that needs to be
+done in between the __init__ and these calls here.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -131,7 +186,7 @@ the progressdialog parameter has been given.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (an instance of <a class="reference internal" href="swnp.html#swnp.Message" title="swnp.Message"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Message</span></tt></a>) &#8211; Received message.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> (<em>String</em>) &#8211; Received message.</td>
 </tr>
 </tbody>
 </table>
@@ -140,13 +195,65 @@ the progressdialog parameter has been given.</p>
 <dl class="method">
 <dt id="state.State.on_project_selected">
 <tt class="descname">on_project_selected</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.on_project_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for project selection in the client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.on_session_changed">
+<tt class="descname">on_session_changed</tt><big>(</big><em>desired_state</em><big>)</big><a class="headerlink" href="#state.State.on_session_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event handler for session change in the client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.remove_from_swnp_data">
+<tt class="descname">remove_from_swnp_data</tt><big>(</big><em>old_data</em><big>)</big><a class="headerlink" href="#state.State.remove_from_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes data value from current data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>old_data</strong> (<em>String</em>) &#8211; Old data value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.remove_observer">
+<tt class="descname">remove_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.remove_observer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Docstring.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.remove_observers">
-<tt class="descname">remove_observers</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.remove_observers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dt id="state.State.send_pop_clipboard">
+<tt class="descname">send_pop_clipboard</tt><big>(</big><em>target_node_id</em><big>)</big><a class="headerlink" href="#state.State.send_pop_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to another node that they should restore their
+old clipboard content and send the overwritten content back to
+this node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_node_id</strong> (<em>Integer</em>) &#8211; The ID of the node that should perform the operation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="state.State.send_push_clipboard">
+<tt class="descname">send_push_clipboard</tt><big>(</big><em>target_node_id</em><big>)</big><a class="headerlink" href="#state.State.send_push_clipboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to another node that they should save their
+clipboard content and set the current content to what this
+node has on its clipboard at this moment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>target_node_id</strong> (<em>Integer</em>) &#8211; The ID of the node that should perform the operation.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -178,27 +285,30 @@ the progressdialog parameter has been given.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.set_observers">
-<tt class="descname">set_observers</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_observers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="state.State.set_project_observer">
-<tt class="descname">set_project_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_project_observer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Observer for file changes in project directory.</p>
+<dt id="state.State.set_observer">
+<tt class="descname">set_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_observer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an observer for file changes in project directory and
+and observer for image uploads by camera in scan folder.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="state.State.set_responsive">
 <tt class="descname">set_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_responsive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Set the current node as responsive.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.set_scan_observer">
-<tt class="descname">set_scan_observer</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.set_scan_observer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Observer for created files in scanned or taken with camera.</p>
+<dt id="state.State.set_swnp_data">
+<tt class="descname">set_swnp_data</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#state.State.set_swnp_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set data value for <a class="reference internal" href="swnp.html#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>String</em>) &#8211; New data value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -208,14 +318,14 @@ the progressdialog parameter has been given.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.start_current_project">
-<tt class="descname">start_current_project</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_project" title="Permalink to this definition">¶</a></dt>
+<dt id="state.State.start_current_project_thread">
+<tt class="descname">start_current_project_thread</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_project_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start current project loop.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="state.State.start_current_session">
-<tt class="descname">start_current_session</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_session" title="Permalink to this definition">¶</a></dt>
+<dt id="state.State.start_current_session_thread">
+<tt class="descname">start_current_session_thread</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.start_current_session_thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start current project loop.</p>
 </dd></dl>
 
@@ -228,7 +338,7 @@ the progressdialog parameter has been given.</p>
 <dl class="method">
 <dt id="state.State.stop_responsive">
 <tt class="descname">stop_responsive</tt><big>(</big><big>)</big><a class="headerlink" href="#state.State.stop_responsive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Stop being responsive.</p>
 </dd></dl>
 
 <dl class="method">
@@ -255,18 +365,22 @@ the progressdialog parameter has been given.</p>
 <dt id="state.create_config">
 <tt class="descclassname">state.</tt><tt class="descname">create_config</tt><big>(</big><big>)</big><a class="headerlink" href="#state.create_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a config file.</p>
+<p>This actually just copies the default one from installation folder
+to the ~wos settings folder.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="state.initialization_test">
 <tt class="descclassname">state.</tt><tt class="descname">initialization_test</tt><big>(</big><big>)</big><a class="headerlink" href="#state.initialization_test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Docstring.</p>
+<dd><p>Used to test that we have are good to go.</p>
+<p>At this time only includes test_connection() from controller, but
+more tests could be added here.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="state.load_config">
 <tt class="descclassname">state.</tt><tt class="descname">load_config</tt><big>(</big><big>)</big><a class="headerlink" href="#state.load_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a config file or creates one.</p>
+<dd><p>Loads a config file, creating it if it does not exists.</p>
 </dd></dl>
 
 </div>
@@ -282,19 +396,20 @@ the progressdialog parameter has been given.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -355,7 +470,7 @@ the progressdialog parameter has been given.</p>
         <li class="right" >
           <a href="setup.html" title="Setup module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

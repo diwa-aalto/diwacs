@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Graphical Design module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>Graphical Design module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Macro module" href="macro.html" />
     <link rel="prev" title="Filesystem module" href="filesystem.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="filesystem.html" title="Filesystem module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -54,9 +54,9 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="graphical-design-module">
-<h1>Graphical Design module<a class="headerlink" href="#graphical-design-module" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-graphicaldesign"></span><p>Created on 6.6.2013</p>
+  <div class="section" id="module-graphicaldesign">
+<span id="graphical-design-module"></span><h1>Graphical Design module<a class="headerlink" href="#module-graphicaldesign" title="Permalink to this headline">¶</a></h1>
+<p>Created on 6.6.2013</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -80,6 +80,25 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>evt</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wx.Event</span></tt>) &#8211; The focus lost event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.BlackOverlay.SetText">
+<tt class="descname">SetText</tt><big>(</big><em>button_modifier=None</em>, <em>button=None</em><big>)</big><a class="headerlink" href="#graphicaldesign.BlackOverlay.SetText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the text that appears on the black overlay.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>button_modifier</strong> (<em>String</em>) &#8211; The button name that should be held down.</li>
+<li><strong>button</strong> (<em>String</em>) &#8211; The button name that should be pressed when the modifier
+key is held down.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -162,12 +181,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="graphicaldesign.GUItemplate.ClearStatusText">
-<tt class="descname">ClearStatusText</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.ClearStatusText" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the status text to EmptyScreen string.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="graphicaldesign.GUItemplate.ConnectionErrorHandler">
 <tt class="descname">ConnectionErrorHandler</tt><big>(</big><em>error</em><big>)</big><a class="headerlink" href="#graphicaldesign.GUItemplate.ConnectionErrorHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show connection error handler dialog.</p>
@@ -246,12 +259,6 @@
 </dd></dl>
 
 <dl class="class">
-<dt id="graphicaldesign.ImageViewer">
-<em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">ImageViewer</tt><big>(</big><em>parent</em>, <em>image</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#graphicaldesign.ImageViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to show an image.</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="graphicaldesign.MySplashScreen">
 <em class="property">class </em><tt class="descclassname">graphicaldesign.</tt><tt class="descname">MySplashScreen</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#graphicaldesign.MySplashScreen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a splash screen widget.</p>
@@ -271,6 +278,19 @@
 <dt id="graphicaldesign.NodeScreen.ReloadAs">
 <tt class="descname">ReloadAs</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.ReloadAs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reload the content of this bitmap.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="graphicaldesign.NodeScreen.SetNodeVars">
+<tt class="descname">SetNodeVars</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.SetNodeVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets NodeScreens variables.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="graphicaldesign.NodeScreen.update_bitmaps">
+<em class="property">static </em><tt class="descname">update_bitmaps</tt><big>(</big><big>)</big><a class="headerlink" href="#graphicaldesign.NodeScreen.update_bitmaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the static bitmaps for hidden and wallpaperless screens.
+This caches them in memory to be used later without IO calls.</p>
 </dd></dl>
 
 </dd></dl>
@@ -316,8 +336,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>title</strong> (<em>String</em>) &#8211; Title to diplay in the balloon.</li>
-<li><strong>message</strong> (<em>String</em>) &#8211; Message to display in the balloong (max 255 chars).</li>
+<li><strong>title</strong> (<em>Unicode</em>) &#8211; Title to diplay in the balloon.</li>
+<li><strong>message</strong> (<em>Unicode</em>) &#8211; Message to display in the balloong (max 255 chars).</li>
 </ul>
 </td>
 </tr>
@@ -340,19 +360,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swnp.html">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -413,7 +434,7 @@
         <li class="right" >
           <a href="filesystem.html" title="Filesystem module"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

@@ -1,5 +1,5 @@
 """
-Recreated on 17.5.2013
+Created on 17.5.2013
 
 :author: neriksso
 
@@ -9,16 +9,15 @@ import base64
 import hashlib
 from logging import config, getLogger
 import socket
-import subprocess
 
 # 3rd party imports.
-from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK
-import win32wnet
+from win32net import NetUseAdd, NetUseDel, USE_LOTS_OF_FORCE
+# from win32netcon import CONNECT_UPDATE_PROFILE, RESOURCETYPE_DISK as DISK
+# import win32wnet
 from winerror import ERROR_NOT_CONNECTED
 import wmi
 
 # My imports.
-import controller
 import diwavars
 
 
@@ -35,9 +34,12 @@ def __init_logger():
     LOGGER = getLogger('utils')
 
 
-def set_logger_level(level):
+def __set_logger_level(level):
     """
-    Docstring here.
+    Sets the logger level for utils logger.
+
+    :param level: Level of logging.
+    :type level: Integer
 
     """
     if LOGGER:
@@ -45,7 +47,7 @@ def set_logger_level(level):
 
 
 diwavars.add_logger_initializer(__init_logger)
-diwavars.add_logger_level_setter(set_logger_level)
+diwavars.add_logger_level_setter(__set_logger_level)
 
 
 def get_encrypted_directory_name(name, hashed_password):
@@ -82,19 +84,6 @@ def hash_password(password):
     return result
 
 
-def check_project_password(project_id, password):
-    """
-    Compares the the provided password with the project password.
-
-    """
-    try:
-        hs = hash_password(password)
-        return controller.get_project_password(project_id) == hs
-    except Exception, e:
-        LOGGER.debug('CheckPassword exception: %s' % str(e))
-        return False
-
-
 def IterIsLast(iterable):
     """
     IterIsLast(iterable) -> generates (item, islast) pairs.
@@ -124,39 +113,8 @@ def DottedIPToInt(dotted_ip):
     :rtype: Integer
 
     """
-    st = dotted_ip.split('.')
-    return int("%02x%02x%02x%02x" % (int(st[0]), int(st[1]),
-                                     int(st[2]), int(st[3])), 16)
-
-
-def GetLANMachines(lan_ip):
-    """
-
-    :param lan_ip: Local Area Network IP.
-    :type lan_ip: string
-    :returns: lan machines
-    :rtype: string[]
-
-    """
-    resultlist = []
-    index = lan_ip.rfind('.')
-    if index > -1:
-        lan_space = lan_ip[0:index]
-    else:
-        #print "given ip is not valid"
-        return resultlist
-    arp_table = subprocess.Popen('arp -a', shell=True, stdout=subprocess.PIPE)
-    for line in arp_table.stdout:
-        if line.find(lan_ip) > -1:
-            primary = True
-            continue
-        if not line.strip():
-            primary = False
-        item = line.split.split()[0]
-        if (primary and line.count('.') == 3 and
-                item.find(lan_space) > -1):
-            resultlist.append(item)
-    return resultlist
+    st = [int(value) for value in dotted_ip.split('.')]
+    return int('{0:02x}{1:02x}{2:02x}{3:02x}'.format(*st), 16)
 
 
 def GetLocalIPAddress(target):
@@ -191,29 +149,14 @@ def GetMacForIp(ip):
             for ip_address in interface.IPAddress:
                 if ip_address == ip:
                     return str(interface.MACAddress).translate(None, ':')
-    except Exception, e:
-        LOGGER.exception("Exception in GetMacForIp: %s", str(e))
-    return None
-
-
-def IntToDottedIP(intip):
-    """Transforms an Integer IP address to dotted representation.
-
-    :param intip: The IP
-    :type intip: Integer
-    :returns: The IP
-    :rtype: string
-
-    """
-    octet = ''
-    for exp in [3, 2, 1, 0]:
-        octet = octet + str(intip / (256 ** exp)) + "."
-        intip = intip % (256 ** exp)
-    return(octet.rstrip('.'))
+    except Exception as excp:
+        LOGGER.exception("Exception in GetMacForIp: %s", str(excp))
+    return ''
 
 
 def MapNetworkShare(letter, share=None):
-    """Maps the network share to a letter.
+    """
+    Maps the network share to a letter.
 
     :param letter: The letter for which to map.
     :type letter: String
@@ -221,16 +164,25 @@ def MapNetworkShare(letter, share=None):
     :type share: String
 
     """
+    logmsg = u'error mapping share {0} {1} {2!s}'
     try:
-        win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
-    except Exception, e:
-        if int(e[0]) != ERROR_NOT_CONNECTED:
-            LOGGER.exception("error mapping share %s %s %s", letter,
-                             share, str(e))
-    # Special case:
+        # win32wnet.WNetCancelConnection2(letter, CONNECT_UPDATE_PROFILE, 1)
+        NetUseDel(None, letter, USE_LOTS_OF_FORCE)
+    except Exception as excp:
+        # NOT_CONNECTED can be safely ignored as this is the state that
+        # we wished for in the beginning.
+        if int(excp[0]) != ERROR_NOT_CONNECTED:
+            msg = logmsg.format(letter, share, excp)
+            LOGGER.exception(msg.encode('utf-8'))
+    # If we still need to reconnect it.
     if share is not None:
         try:
-            win32wnet.WNetAddConnection2(DISK, letter, share)
-        except Exception, e:
-            LOGGER.exception("error mapping share %s %s %s", letter, share,
-                             str(e))
+            # win32wnet.WNetAddConnection2(DISK, letter, share)
+            data = {
+                u'remote': unicode(share),
+                u'local': unicode(letter)
+            }
+            NetUseAdd(None, 1, data)
+        except Exception as excp:
+            msg = logmsg.format(letter, share, excp)
+            LOGGER.exception(msg.encode('utf-8'))

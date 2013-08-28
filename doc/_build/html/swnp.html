@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SWNP module &mdash; DiWaCS 0.9.3.0 documentation</title>
+    <title>SWNP module &mdash; DiWaCS 0.9.3.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3.0',
+        VERSION:     '0.9.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="DiWaCS 0.9.3.0 documentation" href="index.html" />
+    <link rel="top" title="DiWaCS 0.9.3.1 documentation" href="index.html" />
     <link rel="up" title="Automated Code Documentation" href="api.html" />
     <link rel="next" title="Testing module" href="testing.html" />
     <link rel="prev" title="Models state" href="state.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="state.html" title="Models state"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" accesskey="U">Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -139,6 +139,12 @@ Messages are encoded to json for transmission.</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="swnp.Node.data">
+<tt class="descname">data</tt><a class="headerlink" href="#swnp.Node.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns data.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="swnp.Node.get_age">
 <tt class="descname">get_age</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.Node.get_age" title="Permalink to this definition">¶</a></dt>
@@ -155,7 +161,7 @@ Messages are encoded to json for transmission.</p>
 
 <dl class="class">
 <dt id="swnp.SWNP">
-<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>node_id=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">swnp.</tt><tt class="descname">SWNP</tt><big>(</big><em>pgm_group</em>, <em>screens=0</em>, <em>name=None</em>, <em>context=None</em>, <em>error_handler=None</em><big>)</big><a class="headerlink" href="#swnp.SWNP" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main class of swnp.</p>
 <p>This class has the required ZeroMQ bindings and is responsible for
 communicating with other instances.</p>
@@ -171,7 +177,6 @@ communicating with other instances.</p>
 <li><strong>pgm_group</strong> (<em>Integer</em>) &#8211; The Multicast Group this node wants to be a part of.</li>
 <li><strong>screens</strong> (<em>Integer</em>) &#8211; The number of visible screens. Defaults to 0.</li>
 <li><strong>name</strong> (<em>String</em>) &#8211; The name of the instance.</li>
-<li><strong>node_id</strong> (<em>Integer</em>) &#8211; ID of the current instance.</li>
 <li><strong>context</strong> (<tt class="xref py py-class docutils literal"><span class="pre">zmq.Context</span></tt>) &#8211; ZeroMQ context to use.</li>
 <li><strong>error_handler</strong> (<tt class="xref py py-class docutils literal"><span class="pre">wos.CONN_ERR_TH</span></tt>) &#8211; Error handler for the init constructor.</li>
 </ul>
@@ -202,22 +207,6 @@ communicating with other instances.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_id</strong> (<em>Integer</em>) &#8211; The id of the searched node.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#swnp.Node" title="swnp.Node"><tt class="xref py py-class docutils literal"><span class="pre">swnp.Node</span></tt></a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="swnp.SWNP.get_buffer">
-<tt class="descname">get_buffer</tt><big>(</big><big>)</big><a class="headerlink" href="#swnp.SWNP.get_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the buffered messages and returns them</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON formated string.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -412,20 +401,24 @@ communicating with other instances.</p>
 <dd><p>Routine for checking node list and removing nodes with timeout.</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="swnp.set_logger_level">
-<tt class="descclassname">swnp.</tt><tt class="descname">set_logger_level</tt><big>(</big><em>level</em><big>)</big><a class="headerlink" href="#swnp.set_logger_level" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the logger level for swnp logger.</p>
+<dl class="method">
+<dt id="swnp.SWNP.update_pgm_group">
+<tt class="descname">update_pgm_group</tt><big>(</big><em>new_pgm_group</em><big>)</big><a class="headerlink" href="#swnp.SWNP.update_pgm_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>This updates the PGM group on the fly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>level</strong> (<em>Integer</em>) &#8211; Level of logging.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>new_pgm_group</strong> &#8211; New PGM Group value.</li>
+<li><strong>new_pgm_group</strong> &#8211; Integer</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -441,19 +434,20 @@ communicating with other instances.</p>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Automated Code Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="add_file.html">Add file module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="send_file.html">Send file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controller.html">Controller package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dialogs.html">Dialogs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwacs.html">DiWaCS module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diwavars.html">DiWaVars module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filesystem.html">Filesystem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphicaldesign.html">Graphical Design module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro.html">Macro module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modelsbase.html">Modelsbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="models.html">Models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setup module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="state.html">Models state</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="">SWNP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threads.html">Threads package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utils module</a></li>
 </ul>
 </li>
@@ -514,7 +508,7 @@ communicating with other instances.</p>
         <li class="right" >
           <a href="state.html" title="Models state"
              >previous</a> |</li>
-        <li><a href="index.html">DiWaCS 0.9.3.0 documentation</a> &raquo;</li>
+        <li><a href="index.html">DiWaCS 0.9.3.1 documentation</a> &raquo;</li>
           <li><a href="api.html" >Automated Code Documentation</a> &raquo;</li> 
       </ul>
     </div>

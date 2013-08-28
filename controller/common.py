@@ -8,19 +8,15 @@ Created on 28.6.2013
 import sys
 import diwavars
 
-
-if diwavars.CURRENTLY_RUNNING:
-    sys.stdout = open(r'data\controller_stdout.log', 'w')
-    sys.stderr = open(r'data\controller_stderr.log', 'w')
-
 # System imports.
 import logging
 
 # Third party imports.
-import sqlalchemy
+from sqlalchemy.exc import SQLAlchemyError
 
 # Own imports.
-from models import Action, Base, File, Project
+from models import Activity, Project, Session, Company
+
 
 LOGGER = None
 
@@ -53,37 +49,6 @@ diwavars.add_logger_level_setter(__set_logger_level)
 ENGINE = None  # create_engine(DATABASE, echo=True)
 NODE_NAME = ''
 NODE_SCREENS = 0
-ACTIONS = {
-                       1: 'Created',
-                       2: 'Deleted',
-                       3: 'Updated',
-                       4: 'Renamed from something',
-                       5: 'Renamed to something',
-                       6: 'Opened',
-                       7: 'Closed',
-            }
-
-
-def get_action_id_by_name(action_name):
-    """ Get the static ID of action name. """
-    for temp_id, temp_name in ACTIONS:
-        if temp_name == action_name:
-            return temp_id
-    return 0
-
-
-def update_database():
-    """
-    Update the database connection engine.
-
-    .. note::
-        This only works when DB_STRING is completely defined by
-        the log reader.
-
-    """
-    global ENGINE
-    if diwavars.DB_STRING:
-        ENGINE = sqlalchemy.create_engine(diwavars.DB_STRING, echo=False)
 
 
 def set_node_name(name):
@@ -108,47 +73,6 @@ def set_node_screens(screens):
     NODE_SCREENS = screens
 
 
-def create_all():
-    """
-    Create tables to the database.
-
-    """
-    if not ENGINE:
-        return
-    try:
-        database = connect_to_database()
-        database.execute('SET foreign_key_checks = 0')
-        database.execute('DROP table IF EXISTS Action')
-        database.execute('SET foreign_key_checks = 1')
-        database.commit()
-        Base.metadata.create_all(ENGINE)  # @UndefinedVariable
-        for xy_tuple in ACTIONS.items():
-            database.add(Action(xy_tuple[1]))
-        database.commit()
-        database.close()
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        LOGGER.exception('create_all Exception: %s', str(excp))
-
-
-def connect_to_database(expire=False):
-    """
-    Connect to the database and return a Session object.
-
-    :param expire: Parameter passed to session maker as expire_on_commit.
-    :type expire: Boolean
-
-    :returns: Session.
-    :rtype: :py:class:`sqlalchemy.orm.session.Session`
-
-    """
-    if not ENGINE:
-        LOGGER.exception('No engine!')
-        return None
-    initializer = sqlalchemy.orm.sessionmaker
-    session_maker = initializer(bind=ENGINE, expire_on_commit=expire)
-    return session_maker()
-
-
 def delete_record(record_model, id_number):
     """
     Delete a record from database
@@ -164,50 +88,51 @@ def delete_record(record_model, id_number):
 
     """
     try:
-        database = connect_to_database()
-        record = database.query(record_model).filter_by(id=id_number).one()
-        if record_model == Project:
-            for session in record.sessions:
-                LOGGER.debug(str(session))
-                database.delete(session)
-            db_command = 'Delete from activity where project_id=%d'
-            database.execute(db_command % id_number)
-        database.delete(record)
-        database.commit()
-        database.close()
+        instance = record_model.get_by_id(id_number)
+        if isinstance(instance, Project):
+            activities = Session.get('all', Activity.project_id == id_number)
+            sessions = Session.get('all', Session.project_id == id_number)
+            msg = 'Deleting sessions:'
+            for session in sessions:
+                msg = msg + '\r\n' + str(session) + (' PID {0}'.\
+                                                     format(session.project_id)
+                                                     )
+            LOGGER.debug(msg)
+            Activity.delete_many(activities)
+            Session.delete_many(sessions)
+        instance.delete()
         return True
-    except sqlalchemy.exc.SQLAlchemyError:
-        excp_string = 'Delete record exception model %s id %d.'
-        LOGGER.exception(excp_string, record_model, id_number)
+    except SQLAlchemyError:
+        log_msg = ('Delete record exception model {model_name!s} with '
+                   'id {id_number}.')
+        log_msg = log_msg.format(model_name=record_model.__name__,
+                                 id_number=id_number)
+        LOGGER.exception(log_msg)
         return False
 
 
-def get_or_create(database, model, **kwargs):
+def get_or_create(model, *filters, **initializers):
     """
     Fetches or creates a instance.
-
-    :param database: a related database.
-    :type database: :class:`sqlalchemy.orm.session.Session`
 
     :param model: The model of which an instance is wanted.
     :type model: :py:class:`sqlalchemy.ext.declarative.declarative_base`
 
+    Filters are given after model and represent the query conditions for get.
+
+    Initializers are given after filters and are keyword arguments used for
+    initializing a new object.
+
     :returns: An object of the desired model.
 
-     """
-    instance = database.query(model).filter_by(**kwargs)
-    instance = instance.order_by(sqlalchemy.desc(model.id)).first()
-    if instance:
-        return instance
-    if 'path' in kwargs and 'project_id' in kwargs:
-        project = database.query(Project)
-        project = project.filter(Project.id == kwargs['project_id']).one()
-        instance = File(path=kwargs['path'], project=project)
-        database.add(instance)
-        database.commit()
-        return instance
-    instance = model(**kwargs)
-    return instance
+    :throws: :py:class:`sqlalchemy.exc.SQLAlchemyException`
+
+    """
+    candidates = model.get('all', *filters)
+    candidates.sort(key=model.id_ordering)
+    if candidates:
+        return candidates.pop()
+    return model(**initializers)
 
 
 def test_connection():
@@ -219,12 +144,9 @@ def test_connection():
 
     """
     try:
-        database = connect_to_database()
-        if not database:
-            return False
-        database.query(Project).count()
-        database.close()
-        return True
-    except sqlalchemy.exc.SQLAlchemyError, excp:
-        LOGGER.exception('EXCPT_TEST_CONNECTION: %s', str(excp))
+        count = Company.get('count')
+        LOGGER.debug('Company count: {0}'.format(count))
+        return count > 0
+    except Exception as excp:
+        LOGGER.exception('FAILED CONNECTION: {0!s}'.format(excp))
         return False
