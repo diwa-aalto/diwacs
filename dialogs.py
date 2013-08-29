@@ -9,6 +9,7 @@ Created on 4.6.2013
 """
 # System imports
 from logging import config, getLogger
+import re
 import webbrowser
 import os
 
@@ -24,6 +25,12 @@ import filesystem
 import modelsbase
 
 LOGGER = None
+_NAMES = (
+    u'CON', u'PRN', u'AUX', u'NUL', u'CC', u'LP', u'COM[0-9]', u'LPT[0-9]'
+)
+_PATTERNS = ['^{0}(\\.[^\\.]+)?$'.format(name) for name in _NAMES]
+FORBIDDEN_FOLDERNAMES = [re.compile(pattern) for pattern in _PATTERNS]
+FORBIDDEN_CHARACTERS = (u'/', u'\\', u'<', u'>', u':', u'"', u'|', u'?', u'*')
 
 # "Too many" public method (because wxPython 'derived'-classes are inherited).
 # pylint: disable=R0904
@@ -192,6 +199,13 @@ class AddProjectDialog(wx.Dialog):
             if event:
                 event.Skip()
             return
+        if not self._IsValidPath(self.dir.GetValue()):
+            msg = ('The folder name you specified is not valid for Microsoft '
+                   'Windows operating system for the given purpose.')
+            show_modal_and_destroy(ErrorDialog, self, {'message': msg})
+            if event:
+                event.Skip()
+                return
         try:
             company = Company.get_by_id()
             project_data = {
@@ -236,6 +250,18 @@ class AddProjectDialog(wx.Dialog):
             LOGGER.exception(log_msg.format(excp))
         self.EndModal(result)
 
+    @staticmethod
+    def _IsValidPath(path):
+        for character in path:
+            if character in FORBIDDEN_CHARACTERS:
+                return False
+        for forbidden in FORBIDDEN_FOLDERNAMES:
+            if forbidden.match(path):
+                return False
+        # Should actually be return "Maybe" but _some_ checking is better
+        # than no checking at all.
+        return True
+
     def OnText(self, event):
         """
         Event handler for text changed.
@@ -245,6 +271,12 @@ class AddProjectDialog(wx.Dialog):
         source_string = source_object.GetValue()
         if source_object == self.dir:
             self.password.SetEditable(len(source_string) == 0)
+            color = 'red'
+            if self._IsValidPath(self.dir.GetValue()):
+                color = 'default'
+            self.dir.SetBackgroundColour(color)
+            self.dir.Refresh()
+            self.dir.Update()
             event.Skip(len(self.password.GetValue()) > 0)
         else:
             self.dir.SetEditable(len(source_string) == 0)
