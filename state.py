@@ -579,9 +579,9 @@ class State(object):
         #  Open all files in list.
         target = literal_eval(parameters)
         for filename in target:
-            log_msg = 'Opening file: {basename}'
-            LOGGER.info(log_msg.format(basename=os.path.basename(filename)))
-            LOGGER.debug(log_msg.format(basename=filename))
+            filename = filename.decode('utf-8')
+            log_msg = u'Opening file: {0}'
+            LOGGER.info(log_msg.format(os.path.basename(filename)))
             if os.path.exists(filename):
                 if self.current_session:
                     action_id = REVERSE_ACTIONS['Opened']

@@ -195,7 +195,7 @@ class GraphicalUserInterface(GUItemplate):
     def __init__(self):
         # SUPER #
         kwargs = {
-            'parant': None,
+            'parent': None,
             'title': diwavars.TRAY_TOOLTIP,
             'size': diwavars.FRAME_SIZE,
             'style': wx.FRAME_NO_TASKBAR

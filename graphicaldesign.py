@@ -166,6 +166,7 @@ class DropTarget(wx.PyDropTarget):
         """
         if not filenames:
             return
+        filenames = [unicode(n) for n in filenames]
         try:
             deltay = 200
             for dialogy in self.my_send_dialogs:
@@ -209,7 +210,8 @@ class DropTarget(wx.PyDropTarget):
             self.parent.Raise()
             self.parent.Update()
             if paths:
-                filenames = paths
+                filenames = [unicode(p) for p in paths]
+            filenames = [n.encode('utf-8') for n in filenames]
             command = 'open;{0!s}'.format(filenames)
             self.parent.diwa_state.swnp_send(str(iterated), command)
             self.my_send_dialogs.remove(deltay)

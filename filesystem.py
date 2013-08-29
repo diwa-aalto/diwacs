@@ -254,16 +254,16 @@ def open_file(filepath):
     :type filepath: String
 
     """
-    LOGGER.debug('{0} opening file {1}'.format(os.name, filepath))
+    LOGGER.debug(u'{0} opening file {1}'.format(os.name, filepath))
     try:
         if os.path.exists(filepath):
             try:
                 os.startfile(filepath)
             except OSError:
-                subprocess.call(('start', filepath), shell=True)
+                subprocess.call((u'start', filepath), shell=True)
     except OSError as excp:
         # Subprocess.call failed!
-        LOGGER.exception('Open file exception: {0!s}'.format(excp))
+        LOGGER.exception(u'Open file exception: {0!s}'.format(excp))
 
 
 def save_screen(filepath):

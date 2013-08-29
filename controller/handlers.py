@@ -129,7 +129,8 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        self._project_prototype(event.src_path, REVERSE_ACTIONS['Created'])
+        path = unicode(event.src_path)
+        self._project_prototype(path, REVERSE_ACTIONS['Created'])
 
     def _on_deleted_project(self, event):
         """
@@ -140,7 +141,8 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        self._project_prototype(event.src_path, REVERSE_ACTIONS['Deleted'])
+        path = unicode(event.src_path)
+        self._project_prototype(path, REVERSE_ACTIONS['Deleted'])
 
     def _on_modified_project(self, event):
         """
@@ -151,7 +153,8 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         :type event: :py:class:`watchdog.events.FileSystemEvent`
 
         """
-        self._project_prototype(event.src_path, REVERSE_ACTIONS['Updated'])
+        path = unicode(event.src_path)
+        self._project_prototype(path, REVERSE_ACTIONS['Updated'])
 
     def _on_moved_project(self, event):
         """

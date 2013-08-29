@@ -107,7 +107,7 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
 
     def __on_add_to_project(self, id_, param):
         """ Add to Project handler. """
-        id_ = id
+        id_ = id_
         param = param.decode('utf-8')
         project_id = self.parent.diwa_state.current_project_id
         if project_id:
@@ -140,7 +140,6 @@ class SEND_FILE_CONTEX_MENU_HANDLER(DIWA_THREAD):
     def __on_open(self, id_, param):
         """ Open handler. """
         id_ = id_
-        _logger().debug('Received: ' + param)
         param = param.decode('utf-8')
         _logger().debug(u'OPEN FILE: {0}'.format(param))
         target = literal_eval(param)
