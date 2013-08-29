@@ -16,7 +16,6 @@ import wx.lib.buttons as buttons
 from urlparse import urlparse
 from sqlalchemy.exc import SQLAlchemyError
 from modelsbase import ItemAlreadyExistsException
-from wx._controls import TE_READONLY
 try:
     from agw import ultimatelistctrl as ULC  # @UnusedImport
 except ImportError:
@@ -828,7 +827,7 @@ class GUItemplate(wx.Frame):
         self.status_box = wx.TextCtrl(self.banner_panel, wx.ID_ANY,
                                       pos=(diwavars.FRAME_SIZE[0] - 185, 5),
                                       size=(180, 40),
-                                      style=wx.TE_MULTILINE | TE_READONLY)
+                                      style=wx.TE_MULTILINE | wx.TE_READONLY)
         if not diwavars.STATUS_BOX_VALUE:
             self.status_box.Hide()
         diwavars.register_status_box_callback(self._OnStatusBoxCallback,
