@@ -7,8 +7,6 @@ Created on 6.6.2013
 
 """
 # System imports.
-from base64 import b64encode
-import cStringIO
 from logging import config, getLogger
 import os
 
@@ -168,7 +166,8 @@ class DropTarget(wx.PyDropTarget):
             return
         filenames = [unicode(n) for n in filenames]
         try:
-            deltay = 200
+            deltay = 200    # Used to spawn the boxes in a bit different
+                            # positions.
             for dialogy in self.my_send_dialogs:
                 deltay = deltay if dialogy < deltay else dialogy
             deltay += 20
