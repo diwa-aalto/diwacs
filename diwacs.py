@@ -6,17 +6,15 @@ Created on 8.5.2012
 """
 # Critical imports
 import sys
-from ast import literal_eval
 import diwavars
-import datetime
-from models import Project
-from state import SessionChangeException
 
 if __name__ == '__main__':
     diwavars.set_running()
 
 # Standard imports.
+from ast import literal_eval
 import cProfile
+import datetime
 import logging
 import os
 import pstats
@@ -38,6 +36,7 @@ from dialogs import (CloseError, PreferencesDialog, ProjectSelectDialog,
                      ChooseDiwaProfileDialog)
 from graphicaldesign import (BlackOverlay, MySplashScreen, SysTray, NodeScreen,
                              GUItemplate, EventListTemplate)
+from models import Project
 import state
 import threads
 import utils
@@ -596,7 +595,7 @@ class GraphicalUserInterface(GUItemplate):
                 msg = 'Session started: {0}'.format(session_id)
                 LOGGER.info(msg)
                 diwavars.print_to_status_box(msg)
-            except SessionChangeException:
+            except state.SessionChangeException:
                 params = {'message': 'Failed to start a new session!'}
                 LOGGER.exception('Session change failed...')
                 show_modal_and_destroy(ErrorDialog, self, params)
