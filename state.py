@@ -1031,8 +1031,11 @@ class State(object):
             self.set_current_session(0)
             self.remove_observer()
         elif project and self.current_project_id != project_id:
+            if self.current_project_thread:
+                self.current_project_thread.stop()
             self.current_project_id = project_id
             self.current_project = project
+            self.swnp_send('SYS', 'current_project;{0}'.format(project_id))
             extra = u' (responsive)' if self.is_responsive else u''
             log_msg = u'Project "{name}" selected{extra}'
             log_msg = log_msg.format(name=project.name, extra=extra)

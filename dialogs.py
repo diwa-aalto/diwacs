@@ -223,6 +223,10 @@ class AddProjectDialog(wx.Dialog):
             if not self.dir.GetValue():
                 project_data.pop('dir')
             project = controller.add_project(data)
+            if project is None:
+                LOGGER.warning('Error in creating project.'))
+                self.EndModal(-1)
+                return
             LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
             result = project.id
         except Exception as excp:
@@ -1087,7 +1091,7 @@ class UpdateDialog(wx.Dialog):
     :type url: String
 
     """
-    ptext = ('An application update is available for {0} at'.\
+    ptext = ('An application update is available for {0}. '.\
              format(diwavars.APPLICATION_NAME))
 
     def __init__(self, title, url, *args, **kwargs):
@@ -1097,16 +1101,17 @@ class UpdateDialog(wx.Dialog):
                            *args, **kwargs)
         self.notice = wx.StaticText(self, label=UpdateDialog.ptext)
         LOGGER.debug('URL: {0} - {1}'.format(type(url).__name__, str(url)))
-        self.link = wx.HyperlinkCtrl(self, label='here.', url=url)
-        self.link.Bind(wx.EVT_HYPERLINK, self.UrlHandler)
-        self.ok_button = wx.Button(self, -1, 'OK')
+        self.url = url
+        self.link = wx.Button(self, -1, 'Download')
+        self.link.Bind(wx.EVT_BUTTON, self.UrlHandler)
+        self.ok_button = wx.Button(self, -1, 'Close')
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
         self.vsizer = wx.BoxSizer(wx.VERTICAL)
         self.hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.hsizer.Add(self.notice)
+        self.vsizer.Add(self.notice)
         self.hsizer.Add(self.link)
+        self.hsizer.Add(self.ok_button)
         self.vsizer.Add(self.hsizer)
-        self.vsizer.Add(self.ok_button)
         self.SetSizer(self.vsizer)
         self.CenterOnScreen()
         self.vsizer.Fit(self)
@@ -1132,7 +1137,8 @@ class UpdateDialog(wx.Dialog):
 
         """
         event.Skip(False)
-        webbrowser.open(self.link.GetURL())
+        webbrowser.open(self.url)
+        self.EndModal(0)
 
 
 class SendProgressBar(wx.ProgressDialog):
