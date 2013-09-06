@@ -26,7 +26,8 @@ from threads.checkupdate import CHECK_UPDATE
 from threads.diwathread import DIWA_THREAD
 from utils import IterIsLast
 import modelsbase
-
+from dialogs import DatabaseInformationDialog
+from graphicaldesign import MySplashScreen
 
 def _logger():
     """
@@ -104,9 +105,9 @@ class WORKER_THREAD(DIWA_THREAD):
 
     """
     _version_checker = None
-
+    
     def __init__(self, parent):
-        DIWA_THREAD.__init__(self, name='CMFH')
+        DIWA_THREAD.__init__(self, name='worker')
         self.parent = parent
         self.daemon = True
         self.start()
@@ -397,6 +398,7 @@ class WORKER_THREAD(DIWA_THREAD):
             'RESPONSIVE': WORKER_THREAD.__on_responsive,
             'STATUS_BOX': WORKER_THREAD.__on_status_box
         }
+        config_object = self.__check_database_vars(config_object)
         for key, value in config_object.items():
             _logger().debug('(' + key + ' = ' + value + ')')
             if key in handler:
@@ -405,7 +407,36 @@ class WORKER_THREAD(DIWA_THREAD):
                 WORKER_THREAD.__on_audio(self.parent, value)
             else:
                 globals()[key] = literal_eval(value)
-
+    
+    def __check_database_vars(self, config_object):
+        default_values = ['DATABASE_NAME', 
+                          'DATABASE_USERNAME', 
+                          'DATABASE_PASSWORD']
+        ret = config_object
+        for key, value in config_object.items():
+            default_values = ['DATABASE_NAME', 
+                          'DATABASE_USERNAME', 
+                          'DATABASE_PASSWORD']
+            if value in default_values:
+                self.parent.splash_screen.Hide()
+                self.parent.splash_screen.Destroy()
+                dlg = DatabaseInformationDialog()
+                ret = dlg.ShowModal()
+                if ret == 0:
+                    _logger().debug(dlg.ret)
+                    config_object['DB_ADDRESS'] = dlg.ret[0]
+                    config_object['DB_NAME'] = dlg.ret[1]
+                    config_object['DB_TYPE'] = dlg.ret[2]
+                    config_object['DB_USER'] = dlg.ret[3]
+                    config_object['DB_PASS'] = dlg.ret[4]
+                    ret = config_object
+                    config_object.write()
+                dlg.Destroy()
+                self.parent.splash_screen = MySplashScreen()
+                self.parent.splash_screen.Show()
+                break
+        return ret
+                
     def __save_audio(self, parameters):
         """
         Calls AudioRecorder.save after WINDOW_TAIL seconds.

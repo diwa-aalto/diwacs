@@ -42,7 +42,7 @@ def set_blank_cursor(value):
 APPLICATION_NAME = 'DiWaCS'
 
 # current application version
-VERSION = '0.9.3.2'
+VERSION = '0.9.3.3'
 
 # regex for URL parsing
 URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://)[^ <>'"{}|\\^`[\]]*)''')
@@ -353,7 +353,7 @@ def update_database_vars(address=None, name=None, type_=None, user=None,
             return
         DB_STRING = __myformat.format(DB_TYPE, db_driver, DB_USER, DB_PASS,
                                       DB_ADDRESS, DB_NAME)
-
+        print DB_STRING
 STATUS_BOX_VALUE = 0
 STATUS_BOX_CALLBACK = None
 STATUS_BOX_PRINT_CALLBACK = None

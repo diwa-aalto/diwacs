@@ -218,11 +218,10 @@ class GraphicalUserInterface(GUItemplate):
         # List for choices
         LOGGER.debug('WxPython version {0!s}'.format(wx.version()))
         self.list = EventList(self)
-        splash_screen = MySplashScreen()
-        splash_screen.Show()
+        self.splash_screen = MySplashScreen()
+        self.splash_screen.Show()
         self.screen_selected = None
         self.ui_initialized = False
-
         self.diwa_state = state.State(parent=self)
         self.InitUICore()
         self.diwa_state.initialize()
@@ -236,22 +235,19 @@ class GraphicalUserInterface(GUItemplate):
 
         # Perform initial testing before actual initialization.
         initial_test = state.initialization_test()
-
         if initial_test:
-            splash_screen.Hide()
-            splash_screen.Destroy()
+            self.splash_screen.Hide()
+            self.splash_screen.Destroy()
             if initial_test:
                 params = {'message': initial_test}
                 show_modal_and_destroy(ErrorDialog, self, params)
             self.Destroy()
             wx.GetApp().ExitMainLoop()
             return
-
         diwavars.set_default_cursor(self.GetCursor())
         diwavars.set_blank_cursor(wx.StockCursor(wx.CURSOR_BLANK))
         self.overlay = BlackOverlay((0, 0), wx.DisplaySize(), self, '')
         self.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
-
         try:
             self.trayicon = SysTray(self)
             self.trayicon.Bind(wx.EVT_MENU, self.OnExit, id=wx.ID_EXIT)
@@ -268,12 +264,12 @@ class GraphicalUserInterface(GUItemplate):
             wx.EVT_TASKBAR_LEFT_UP(self.trayicon, self.OnTaskBarActivate)
             self.Refresh()
             self.Show(True)
-            splash_screen.Hide()
-            splash_screen.Destroy()
+            self.splash_screen.Hide()
+            self.splash_screen.Destroy()
         except Exception as excp:
             LOGGER.exception('load exception: {0!s}'.format(excp))
-            splash_screen.Hide()
-            splash_screen.Destroy()
+            self.splash_screen.Hide()
+            self.splash_screen.Destroy()
             self.Destroy()
 
     def InitUICore(self):

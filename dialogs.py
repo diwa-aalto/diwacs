@@ -224,7 +224,7 @@ class AddProjectDialog(wx.Dialog):
                 project_data.pop('dir')
             project = controller.add_project(data)
             if project is None:
-                LOGGER.warning('Error in creating project.'))
+                LOGGER.warn('Error in creating project.')
                 self.EndModal(-1)
                 return
             LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
@@ -1097,6 +1097,8 @@ class UpdateDialog(wx.Dialog):
     def __init__(self, title, url, *args, **kwargs):
         wx.Dialog.__init__(self, wx.GetApp().GetTopWindow(),
                            title='Version {0} is available'.format(title),
+                           pos=(wx.GetDisplaySize()[0]/2, 
+                                                diwavars.FRAME_SIZE[1]/2),
                            style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP,
                            *args, **kwargs)
         self.notice = wx.StaticText(self, label=UpdateDialog.ptext)
@@ -1108,13 +1110,16 @@ class UpdateDialog(wx.Dialog):
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnOk)
         self.vsizer = wx.BoxSizer(wx.VERTICAL)
         self.hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.vsizer.Add(self.notice)
+        self.vsizer.Add(self.notice, 0, wx.TOP|wx.LEFT|wx.RIGHT, 10)
         self.hsizer.Add(self.link)
         self.hsizer.Add(self.ok_button)
-        self.vsizer.Add(self.hsizer)
+        self.vsizer.Add(self.hsizer, 0, wx.ALL, 10)
         self.SetSizer(self.vsizer)
-        self.CenterOnScreen()
         self.vsizer.Fit(self)
+        # Calculate position 
+        size = tuple([x/-2 for x in self.GetSize()])
+        pos = map(sum,zip(self.GetPosition(),size))
+        self.SetPosition(pos)
         self.SetFocus()
 
     def OnOk(self, event):
@@ -1291,3 +1296,132 @@ class ChooseDiwaProfileDialog(wx.Dialog):
 
         """
         self.EndModal(1)
+    
+class DatabaseInformationDialog(wx.Dialog):
+    """
+    Allows the user to change Database Connection Parameters.
+
+    """
+
+    def __init__(self):
+        wx.Dialog.__init__(self,
+                           id=wx.ID_ANY, parent=wx.GetApp().GetTopWindow(),
+                           title='Database Information',
+                           size=(400, 150),
+                           style=wx.DEFAULT_DIALOG_STYLE | wx.STAY_ON_TOP)
+
+        # Labels.
+        info_label = wx.StaticText(self, wx.ID_ANY, 'You have not entered '\
+                                                'database information. '\
+                                                'Please do so now.')
+        db_addr_label = wx.StaticText(self, wx.ID_ANY, 'Database Address:')
+        db_name_label = wx.StaticText(self, wx.ID_ANY, 'Database Name:')
+        db_user_label = wx.StaticText(self, wx.ID_ANY, 'Database Username:')
+        db_pass_label = wx.StaticText(self, wx.ID_ANY, 'Database Password:')
+        db_type_label = wx.StaticText(self, wx.ID_ANY, 'Database Type:')
+        
+        # Configuration controls.
+        self.db_addr_value = wx.TextCtrl(self, wx.ID_ANY, '')
+        self.db_name_value = wx.TextCtrl(self, wx.ID_ANY, '')
+        self.db_user_value = wx.TextCtrl(self, wx.ID_ANY, '')
+        self.db_pass_value = wx.TextCtrl(self, wx.ID_ANY, '')
+        style = wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT
+        self.db_type_value = wx.ComboBox(self, wx.ID_ANY, 
+                                         choices=['MYSQL', 'POSTGRESQL'],
+                                         style=style)
+        
+
+        # Other controls.
+        self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
+        self.ok_button.Bind(wx.EVT_BUTTON, self.UpdateVars)
+        exit_button = wx.Button(self, wx.ID_ANY, 'Exit')
+        exit_button.Bind(wx.EVT_BUTTON, self.Exit)
+
+        # Dialog sizers.
+        dialog_sizer  = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)
+        dialog_sizer.AddGrowableCol(1)
+        dialog_sizer.Add(db_addr_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        dialog_sizer.Add(self.db_addr_value, 0, wx.EXPAND)
+        
+        dialog_sizer.Add(db_name_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        dialog_sizer.Add(self.db_name_value, 0, wx.EXPAND)
+        
+        dialog_sizer.Add(db_user_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        dialog_sizer.Add(self.db_user_value, 0, wx.EXPAND)
+        
+        dialog_sizer.Add(db_pass_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        dialog_sizer.Add(self.db_pass_value, 0, wx.EXPAND)
+        
+        dialog_sizer.Add(db_type_label, 0,
+                              wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        dialog_sizer.Add(self.db_type_value, 0, wx.EXPAND)
+
+        # Layout.
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        main_sizer.Add(info_label, 0, wx.ALL, 5)
+        main_sizer.Add(dialog_sizer, 0, wx.EXPAND | wx.ALL, 5)
+        button_sizer.Add(self.ok_button, 0, wx.ALL, 5)
+        button_sizer.Add(exit_button, 0, wx.ALL, 5)
+        main_sizer.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.TOP, 10)
+        self.SetSizer(main_sizer)
+        main_sizer.Fit(self)
+        self.Center()
+        self.SetFocus()
+        self.LoadValues()
+    
+    def LoadValues(self):
+        """ Loads currents values to controls"""
+        config = diwavars.CONFIG
+        LOGGER.debug(str(config))
+        self.db_addr_value.SetValue(config['DB_ADDRESS'])
+        self.db_name_value.SetValue(config['DB_NAME'])
+        self.db_user_value.SetValue(config['DB_USER'])
+        self.db_pass_value.SetValue(config['DB_PASS'])
+        self.db_type_value.SetStringSelection(
+                            config['DB_TYPE'].upper())
+        
+    def GetValues(self):
+        """ Fetches current values from the controls. """
+        controls = [
+                    self.db_addr_value,
+                    self.db_name_value,
+                    self.db_type_value,
+                    self.db_user_value,
+                    self.db_pass_value
+                    ]
+        values = []
+        for index, control in enumerate(controls):
+            if index == 2: 
+                value = control.GetStringSelection().lower()
+            else:   
+                value = control.GetValue()
+            values.append(str(value))
+        return values
+        
+    def UpdateVars(self, event):
+        """
+        Set new database values, event handler.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        values = self.GetValues()
+        self.ret = values
+        self.EndModal(0)
+
+    def Cancel(self, event):
+        """
+        Event handler for Cancel button press.
+
+        :param event: GUI event.
+        :type event: :py:class:`wx.Event`
+
+        """
+        self.EndModal(1)
+    
