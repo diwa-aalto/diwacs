@@ -84,7 +84,7 @@ class SNAPSHOT_THREAD(DIWA_THREAD):
             _logger().debug('snapshot filename: {0}'.format(name))
             with open(os.path.join(filepath, name), 'wb') as output:
                 output.write(data)
-        except (IOError, OSError) as excp:
+        except (IOError, OSError, ValueError) as excp:
             # urllib2.URLError inherits IOError so both the write
             # and URL errors are caught by this.
             _logger().exception('Snapshot exception: {0!s}'.format(excp))
