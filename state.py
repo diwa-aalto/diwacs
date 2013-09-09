@@ -245,7 +245,7 @@ class State(object):
             LOGGER.debug('Cmfh closing...')
             self.cmfh.stop()
         if self.worker:
-            LOGGER.debug('Registery closing...')
+            LOGGER.debug('Registry closing...')
             self.worker.remove_all_registry_entries()
             LOGGER.debug('Worker closing...')
             self.worker.stop()
@@ -577,9 +577,8 @@ class State(object):
 
         """
         #  Open all files in list.
-        target = literal_eval(parameters)
+        target = literal_eval(parameters.decode('utf-8'))
         for filename in target:
-            filename = filename.decode('utf-8')
             log_msg = u'Opening file: {0}'
             LOGGER.info(log_msg.format(os.path.basename(filename)))
             if os.path.exists(filename):
