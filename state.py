@@ -606,6 +606,8 @@ class State(object):
 
         """
         LOGGER.info('event: {0}'.format(parameters))
+        msg = 'Event: {0}'.format(parameters)        
+        diwavars.print_to_status_box(msg)
         if self.is_responsive:
             self.worker.create_event(parameters)
 
@@ -1005,6 +1007,8 @@ class State(object):
                 self.start_current_session_thread()
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
+            msg = 'Session started: {0}'.format(session_id)
+            diwavars.print_to_status_box(msg)
         elif session_id == 0 and self.current_session_id > 0:
             # End session.
             self.current_session = None
@@ -1013,6 +1017,7 @@ class State(object):
                 self.end_current_session()
             self.parent.DisableSessionButton()
             LOGGER.info('Session ended')
+            diwavars.print_to_status_box('Session ended')
 
     def set_current_project(self, project_id):
         """
@@ -1052,7 +1057,9 @@ class State(object):
                     log_msg = log_msg.format(exception=excp)
                     LOGGER.exception(log_msg)
             LOGGER.info(u'Project set to %s (%s)', project_id, project.name)
-
+            msg = 'Project: {0}'.format(project.name)
+            diwavars.print_to_status_box(msg)
+            
     def set_responsive(self):
         """
         Set the current node as responsive.
