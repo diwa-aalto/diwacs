@@ -33,7 +33,7 @@ def main():
     context = None
     socket = None
     try:
-        filepath = sys.argv[1]
+        filepath = sys.argv[1].decode(sys.getfilesystemencoding())
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
         socket.setsockopt(zmq.LINGER, 5000)

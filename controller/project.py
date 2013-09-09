@@ -58,8 +58,8 @@ def add_file_to_project(file_path, project_id):
     if not file_path:
         return ''
     file_path = os.path.abspath(file_path)
-    if File.get('exists', (File.path == file_path, 
-                           File.project_id == project_id)):
+    if File.get('exists', File.path == file_path, 
+                           File.project_id == project_id):
         _logger().debug('Not adding file to project: File exists')
         return ''
     project = Project.get_by_id(project_id)

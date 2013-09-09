@@ -32,8 +32,8 @@ def main():
     """
     if len(sys.argv) == 3:
         try:
-            node_id = sys.argv[1]
-            filepath = sys.argv[2]
+            node_id = sys.argv[1].decode(sys.getfilesystemencoding())
+            filepath = sys.argv[2].decode(sys.getfilesystemencoding())
             context = zmq.Context()
             socket = context.socket(zmq.REQ)
             socket.setsockopt(zmq.LINGER, 5000)
