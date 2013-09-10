@@ -379,7 +379,7 @@ class Event(MethodMixin, Base):
 
     def __init__(self, session_id, title='', description=''):
         try:
-            modelsbase.LOGGER.debug('EVT({0}, {1}, {2})'.\
+            modelsbase.LOGGER.debug(u'EVT({0}, {1}, {2})'.\
                                     format(session_id, title, description))
             self.title = title
             self.desc = description

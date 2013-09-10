@@ -85,7 +85,7 @@ def initialization_test():
     At this time only includes test_connection() from controller, but
     more tests could be added here.
 
-    """#TODO: filesystem.test_storage_connection()
+    """  # TODO: filesystem.test_storage_connection()
     error = ''
     if not error and not controller.test_connection():
         error += 'Database connection failed.\n'
@@ -460,7 +460,7 @@ class State(object):
                 mydirs[i] = directory.replace(tpath, tmp)
             for i, item in enumerate(returnvalue):
                 returnvalue[i] = item.replace(tpath, tmp)
-            #src_dst_list = [(src, dst.replace(tpath, tmp))
+            # src_dst_list = [(src, dst.replace(tpath, tmp))
             #                 for (src, dst) in src_dst_list]
         try:
             self._handle_file_copy(src_dst_list, mydirs, dialog_parameters)
@@ -504,7 +504,7 @@ class State(object):
 
         """
         nodes = self.swnp.get_list()
-        #: TODO: Ask why this had the limitation?
+        # : TODO: Ask why this had the limitation?
         # nodes = [n for n in nodes if n.id <= 10]
         if len(nodes) < 2:
             self.set_responsive()
@@ -605,10 +605,11 @@ class State(object):
         Event handler for messages that inform you of new events.
 
         """
-        LOGGER.info('event: {0}'.format(parameters))
-        msg = 'Event: {0}'.format(parameters)        
-        diwavars.print_to_status_box(msg)
+        parameters = parameters.decode('utf-8')
+        LOGGER.info(u'event: {0}'.format(parameters))
         if self.is_responsive:
+            msg = u'Event: {0}'.format(parameters)
+            self.send_print_to_status(msg)
             self.worker.create_event(parameters)
 
     def _on_remote_start(self, parameters):
@@ -830,6 +831,14 @@ class State(object):
         if session_id != self.current_session_id:
             self.set_current_session(session_id)
 
+    def _on_print_to_status(self, parameters):
+        """
+        Event handler for messages that are to be printed to status box.
+
+        """
+        msg = parameters.decode('utf-8')
+        diwavars.print_to_status_box(msg)
+
     def message_handler(self, message):
         """
         Message handler for received messages.
@@ -853,7 +862,8 @@ class State(object):
             'screenshot': self._on_screenshot,
             'current_activity': self._on_current_activity,
             'current_project': self._on_current_project,
-            'current_session': self._on_current_session
+            'current_session': self._on_current_session,
+            'print_to_status': self._on_print_to_status
         }
         try:
             cmd, parameters = message.split(';', 1)
@@ -899,6 +909,16 @@ class State(object):
         """
         data = re.sub(':?{0}'.format(old_data), '', self.get_swnp_data())
         self.set_swnp_data(data)
+
+    def send_print_to_status(self, msg):
+        """
+        Sends a message to SYS that a message should be printed to status box.
+
+        :param msg: The message to be printed to status box.
+        :type msg: String
+
+        """
+        self.swnp_send('SYS', (u'print_to_status;' + msg).encode('utf-8'))
 
     def send_push_clipboard(self, target_node_id):
         """
@@ -951,6 +971,7 @@ class State(object):
             self.swnp_send('SYS', 'current_activity;{0}'.format(
                                                             self.activity_id))
 
+
     def on_session_changed(self, desired_state):
         """
         Event handler for session change in the client.
@@ -966,11 +987,14 @@ class State(object):
             self.activity_id = update(self.current_project_id,
                                       diwavars.PGM_GROUP,
                                       session_id, self.activity_id)
+            msg = 'Session started: {0}'.format(session_id)
+            self.send_print_to_status(msg)
         else:
             self.end_current_session()
             self.activity_id = update(self.current_project_id,
                                       diwavars.PGM_GROUP,
                                       0, self.activity_id)
+            self.send_print_to_status('Session ended')
         send_session = 'current_session;{0}'.format(self.current_session_id)
         send_activity = 'current_activity;{0}'.format(self.activity_id)
         LOGGER.debug(send_session + '  ' + send_activity)
@@ -1007,8 +1031,6 @@ class State(object):
                 self.start_current_session_thread()
             self.parent.EnableSessionButton()
             LOGGER.info('Session %d started', int(session_id))
-            msg = 'Session started: {0}'.format(session_id)
-            diwavars.print_to_status_box(msg)
         elif session_id == 0 and self.current_session_id > 0:
             # End session.
             self.current_session = None
@@ -1017,7 +1039,6 @@ class State(object):
                 self.end_current_session()
             self.parent.DisableSessionButton()
             LOGGER.info('Session ended')
-            diwavars.print_to_status_box('Session ended')
 
     def set_current_project(self, project_id):
         """
@@ -1057,9 +1078,7 @@ class State(object):
                     log_msg = log_msg.format(exception=excp)
                     LOGGER.exception(log_msg)
             LOGGER.info(u'Project set to %s (%s)', project_id, project.name)
-            msg = 'Project: {0}'.format(project.name)
-            diwavars.print_to_status_box(msg)
-            
+
     def set_responsive(self):
         """
         Set the current node as responsive.
@@ -1134,7 +1153,7 @@ class State(object):
         if self.current_project is None:
             return 0
         self.end_current_session()
-        #:TODO: When should previous session be passed?
+        # :TODO: When should previous session be passed?
         session = controller.start_new_session(self.current_project_id)
         self.current_session = session
         self.current_session_id = session.id if session is not None else 0

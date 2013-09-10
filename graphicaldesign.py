@@ -9,6 +9,7 @@ Created on 6.6.2013
 # System imports.
 from logging import config, getLogger
 import os
+import datetime
 
 # Third party imports.
 import wx
@@ -165,7 +166,7 @@ class DropTarget(wx.PyDropTarget):
             return
         filenames = [unicode(n) for n in filenames]
         try:
-            deltay = 200    # Used to spawn the boxes in a bit different
+            deltay = 200  # Used to spawn the boxes in a bit different
                             # positions.
             for dialogy in self.my_send_dialogs:
                 deltay = deltay if dialogy < deltay else dialogy
@@ -707,7 +708,7 @@ class GUItemplate(wx.Frame):
             self.setbtn = buttons.GenBitmapButton(self.panel, wx.ID_ANY,
                                                   icon('settings'),
                                                   size=(-1, 32))
-            #self.setbtn.SetBitmap(self.GetProgramIcon('settings'))
+            # self.setbtn.SetBitmap(self.GetProgramIcon('settings'))
             self.setbtn.SetBackgroundColour(self.panel.GetBackgroundColour())
             self.setbtn.focusClr = self.panel.GetBackgroundColour()
             self.setbtn.shadowPenClr = self.panel.GetBackgroundColour()
@@ -863,7 +864,13 @@ class GUItemplate(wx.Frame):
         """
         if len(self.status_box.GetValue()):
             self.status_box.AppendText('\r\n')
-        self.status_box.AppendText(value)
+        ts = datetime.datetime.time(datetime.datetime.now()).strftime('%H:%M')
+        ts = unicode(ts)
+        try:
+            value = u'{0}>{1}'.format(ts, value)
+            self.status_box.AppendText(value)
+        except Exception as err:
+            LOGGER.exception('StatusBoxPrint Error: {0}'.format(str(err)))
 
     def OnExit(self, event):
         """

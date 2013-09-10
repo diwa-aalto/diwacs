@@ -22,6 +22,7 @@ import StringIO
 import threading
 from time import sleep
 import webbrowser
+import inspect
 
 # 3rd party imports.
 from pubsub import pub
@@ -102,10 +103,12 @@ class EventList(EventListTemplate):
         session = self.parent.diwa_state.current_session
         if not self.parent.diwa_state.is_responsive:
             LOGGER.debug('EventList.OnEnter(-NOT RESPONSIVE-)')
+            label = label.encode('utf-8')
             self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
                                              'event;{0}'.format(label))
         elif project and session:
             LOGGER.debug('EventList.OnEnter(CALL AFTER)')
+            self.parent.diwa_state.send_print_to_status(unicode('Event: ' + label))
             wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         self.custom_event.SetValue('')
         wx.CallLater(1000, self.HideNow)
@@ -171,6 +174,7 @@ class EventList(EventListTemplate):
             self.parent.diwa_state.swnp_send(self.parent.diwa_state.responsive,
                                             'event;{0}'.format(label))
         elif (project is not None) and (session is not None):
+            self.parent.diwa_state.send_print_to_status('Event: ' + label)
             wx.CallAfter(self.parent.diwa_state.worker.create_event, label)
         wx.CallLater(1000, self.HideNow)
         if event:
@@ -502,7 +506,7 @@ class GraphicalUserInterface(GUItemplate):
         :type event: Event
 
         """
-        #create default event
+        # create default event
         self.list.SetFocus()
         self.list.ShowNow()
         if event:
@@ -550,11 +554,15 @@ class GraphicalUserInterface(GUItemplate):
         """
         project = self.diwa_state.current_project
         session = self.diwa_state.current_session
+        caller = inspect.stack()[1][3]
         if project is not None:
             self.diwa_state.on_project_selected()
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
             self.sesbtn.Enable(True)
+            if caller == 'OnProjectSelect':
+                msg = 'Project: {0}'.format(project.name)
+                self.diwa_state.send_print_to_status(msg)
         else:
             self.SetProjectName(None)
             self.DisableDirectoryButton()
@@ -674,7 +682,7 @@ class GraphicalUserInterface(GUItemplate):
         update = update  # Intentionally left unused.
         if not self.init_screens_done:
             return
-        self.Freeze()                   # Prevents flickering.
+        self.Freeze()  # Prevents flickering.
         # self.HideScreens()
         self.nodes = self.diwa_state.swnp.get_screen_list()
         arrows_should_be_enabled = len(self.nodes) > 3
@@ -704,7 +712,7 @@ class GraphicalUserInterface(GUItemplate):
             except WindowsError:
                 pass
         self.diwa_state.worker.check_responsive()
-        self.Thaw()                     # Pair for freeze()
+        self.Thaw()  # Pair for freeze()
 
     def OnExit(self, event):
         """
@@ -753,7 +761,7 @@ class GraphicalUserInterface(GUItemplate):
                 LOGGER.info('Application closed!')
                 wx.GetApp().ExitMainLoop()
             except CloseError:
-                raise   # Raise without parameter rises the original exception.
+                raise  # Raise without parameter rises the original exception.
                         # This also preseves the original traceback.
             except Exception as excp:
                 LOGGER.exception('Exception in Close: {0!s}'.format(excp))
