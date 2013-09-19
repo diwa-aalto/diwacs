@@ -701,7 +701,7 @@ class PreferencesDialog(wx.Dialog):
         params = {'message': 'Preferences Saved!',
                   'caption': 'Information',
                   'style': wx.OK | wx.ICON_INFORMATION}
-        show_modal_and_destroy(wx.MessageDialog, self.parent, params)
+        show_modal_and_destroy(wx.MessageDialog, self, params)
         if event:
             event.Skip(False)
         self.EndModal(0)

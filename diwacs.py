@@ -315,6 +315,9 @@ class GraphicalUserInterface(GUItemplate):
         """
         params = {'config_object': diwavars.CONFIG}
         show_modal_and_destroy(PreferencesDialog, self, params)
+        self.SetFocus()
+        self.Refresh()
+        
         try:
             # Inform other nodes of new name/screen setting and update
             # your own screen if need be.
