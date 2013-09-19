@@ -165,7 +165,7 @@ class WORKER_THREAD(DIWA_THREAD):
                     rpath = '{0} "%1"'.format(mypath)
                     SetValueEx(rkey, '', 0, REG_SZ, rpath)
             CloseKey(rkey)
-
+    
     @staticmethod
     def add_registry_entry(name, node_id):
         """
@@ -193,7 +193,22 @@ class WORKER_THREAD(DIWA_THREAD):
                     SetValueEx(rkey, '', 0, REG_SZ, regpath)
             if rkey:
                 CloseKey(rkey)
-
+    
+    @staticmethod
+    def add_node_registry_entries(nodes, add_registry_entry):
+        """
+        Adds registry entry for all provided nodes.
+        
+        :param nodes: Nodes.
+        :type nodes: List.
+        
+        """
+        for node in nodes:
+            try:
+                add_registry_entry(node.name, node.id)
+            except WindowsError:
+                pass
+            
     @staticmethod
     def remove_all_registry_entries():
         """

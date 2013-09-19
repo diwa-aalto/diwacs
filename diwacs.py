@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Created on 8.5.2012
 
@@ -23,6 +24,7 @@ import threading
 from time import sleep
 import webbrowser
 import inspect
+
 
 # 3rd party imports.
 from pubsub import pub
@@ -706,11 +708,9 @@ class GraphicalUserInterface(GUItemplate):
                 self.node_screens[i].EmptyScreen()
                 self.node_screens[i].Disable()
                 # TODO: Remove old registry entry.
-        for node in self.nodes:
-            try:
-                self.diwa_state.worker.add_registry_entry(node.name, node.id)
-            except WindowsError:
-                pass
+        self.diwa_state.worker.add_node_registry_entries(self.nodes, 
+                                                         self.diwa_state.worker\
+                                                         .add_registry_entry)   
         self.diwa_state.worker.check_responsive()
         self.Thaw()  # Pair for freeze()
 
@@ -778,15 +778,15 @@ class GraphicalUserInterface(GUItemplate):
         :type event: Event
 
         """
-        description = (diwavars.APPLICATION_NAME +
-            ' is the windows client for DiWa - A distributed meeting room '
+        description = unicode(diwavars.APPLICATION_NAME +
+            ' is the windows client for DiWa \n - A distributed meeting room '
             'collaboration system.\n\n'
             'Lead programmer: Nick Eriksson\n'
-            'Contributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen, '
-            'Vikki du Preez, Marko Nieminen'
+            'Contributors: Mika P. Nieminen, Mikael Runonen, Mari Tyllinen,\n\t'
+            u'Vikki du Preez, Marko Nieminen, Kristian Mört'
         )
         copyright_text = ('(c) 2012-2013 DiWa project by Strategic Usability '
-                          'Research Group STRATUS, Aalto University School of '
+                          'Research Group\n STRATUS, Aalto University School of '
                           'Science.')
 
         unused_licence = """

@@ -697,7 +697,7 @@ class PreferencesDialog(wx.Dialog):
         params = {'message': 'Preferences Saved!',
                   'caption': 'Information',
                   'style': wx.OK | wx.ICON_INFORMATION}
-        show_modal_and_destroy(wx.MessageDialog, self, params)
+        show_modal_and_destroy(wx.MessageDialog, self.parent, params)
         if event:
             event.Skip(False)
         self.EndModal(0)
@@ -1334,8 +1334,8 @@ class DatabaseInformationDialog(wx.Dialog):
         # Other controls.
         self.ok_button = wx.Button(self, wx.ID_ANY, 'OK')
         self.ok_button.Bind(wx.EVT_BUTTON, self.UpdateVars)
-        exit_button = wx.Button(self, wx.ID_ANY, 'Exit')
-        exit_button.Bind(wx.EVT_BUTTON, self.Exit)
+        exit_button = wx.Button(self, wx.ID_ANY, 'Cancel')
+        exit_button.Bind(wx.EVT_BUTTON, self.Cancel)
 
         # Dialog sizers.
         dialog_sizer  = wx.FlexGridSizer(cols=2, hgap=8, vgap=8)

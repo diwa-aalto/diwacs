@@ -472,6 +472,8 @@ class State(object):
                                               REVERSE_ACTIONS['Created'],
                                               self.current_session_id,
                                               project_id)
+        self.parent.Raise()
+        self.parent.Focus()
         return returnvalue
 
     def end_current_project(self):
@@ -1068,6 +1070,7 @@ class State(object):
             self.worker.remove_all_registry_entries()
             self.worker.add_project_registry_entry('*')
             self.worker.add_project_registry_entry('Folder')
+            self.worker.add_node_registry_entries(self.parent.nodes, self.worker.add_registry_entry)
             utils.MapNetworkShare('W:', project.dir)
             if self.is_responsive:
                 LOGGER.debug('Starting observers.')
