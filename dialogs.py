@@ -31,7 +31,10 @@ _NAMES = (
 _PATTERNS = ['^{0}(\\.[^\\.]+)?$'.format(name) for name in _NAMES]
 FORBIDDEN_FOLDERNAMES = [re.compile(pattern) for pattern in _PATTERNS]
 FORBIDDEN_CHARACTERS = (u'/', u'\\', u'<', u'>', u':', u'"', u'|', u'?', u'*')
-
+FORBIDDEN_CHARACTERS_PATTERN = re.compile(u'[' + 
+                                re.escape(u''.join([c for c in 
+                                                    FORBIDDEN_CHARACTERS]))
+                                +u']')
 # "Too many" public method (because wxPython 'derived'-classes are inherited).
 # pylint: disable=R0904
 
@@ -256,8 +259,9 @@ class AddProjectDialog(wx.Dialog):
 
     @staticmethod
     def _IsValidPath(path):
-        for character in path:
-            if character in FORBIDDEN_CHARACTERS:
+        dir_list = path.split(os.sep)
+        for directory in dir_list:
+            if FORBIDDEN_CHARACTERS_PATTERN.search(directory):
                 return False
         for forbidden in FORBIDDEN_FOLDERNAMES:
             if forbidden.match(path):
