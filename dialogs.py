@@ -225,13 +225,18 @@ class AddProjectDialog(wx.Dialog):
             }
             if not self.dir.GetValue():
                 project_data.pop('dir')
-            project = controller.add_project(data)
-            if project is None:
-                LOGGER.warn('Error in creating project.')
-                self.EndModal(-1)
-                return
-            LOGGER.info('Created Project {0.name} (id={0.id})'.format(project))
-            result = project.id
+            if self.project_id:
+                controller.edit_project(self.project_id, project_data)    
+            else:
+                project = controller.add_project(data)
+                if project is None:
+                    LOGGER.warn('Error in creating project.')
+                    self.EndModal(-1)
+                    return
+                LOGGER.info(u'Created Project {1.name} '
+                            u'(id={1.id})'.format(project))
+            
+            result = project.id if project else self.project_id
         except Exception as excp:
             LOGGER.exception('Error in add project: {0!s}'.format(excp))
             self.EndModal(-1)

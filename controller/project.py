@@ -9,6 +9,7 @@ import controller.common
 
 # System imports.
 import os
+import shutil
 
 # Third party imports.
 import sqlalchemy
@@ -64,22 +65,39 @@ def add_file_to_project(file_path, project_id):
         return ''
     project = Project.get_by_id(project_id)
     try:
-        if file_path.startswith(project.dir):
-            newpath = file_path
+        paths = []
+        if os.path.isdir(file_path):
+                    base = os.path.basename(file_path)
+                    log_msg = u'Adding a new directory {dir!s} to {project!s}'
+                    log_msg = log_msg.format(project=project, dir=base)
+                    _logger().debug(log_msg)
+                    dir_path = os.path.join(project.dir, base)
+                    shutil.copytree(file_path, dir_path)
+                    for (root, _, files) in os.walk(dir_path):
+                        for f in files:
+                            paths.append(os.path.abspath(os.path.join(root,
+                                                                      f)))
+        elif file_path.startswith(project.dir):
+            paths.append(file_path)
         else:
-            newpath = filesystem.copy_file_to_project(file_path, project_id)
-        if newpath:
-            try:
-                File(newpath, project_id)
-            except ItemAlreadyExistsException:
-                pass
-        return newpath
+            paths.append(filesystem.copy_file_to_project(file_path, project_id))
+        if paths:
+            for path in paths:
+                try:
+                    File(path, project_id)
+                except ItemAlreadyExistsException:
+                    pass
+        return paths[0] if len(paths) == 1 else dir_path
     except SQLAlchemyError as excp:
         log_msg = 'Add file to {project!s} exception: {exception!s}'
         log_msg = log_msg.format(project=project, exception=excp)
         _logger().exception(log_msg)
         return ''
-
+    except shutil.Error as excp:
+        log_msg = u'Add file to {project!s} copy exception: {exception!s}'
+        log_msg = log_msg.format(project=project, exception=unicode(excp))
+        _logger().exception(log_msg)
+        return ''
 
 def add_project(data):
     """

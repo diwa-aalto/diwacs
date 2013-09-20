@@ -473,7 +473,7 @@ class State(object):
                                               self.current_session_id,
                                               project_id)
         self.parent.Raise()
-        self.parent.Focus()
+        self.parent.SetFocus()
         return returnvalue
 
     def end_current_project(self):

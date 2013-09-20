@@ -105,7 +105,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
         """
         #: TODO: In init pass a function to query current session id :p
         try:
-            log_msg = 'Project file {filename} {action} in {directory}'
+            log_msg = u'Project file {filename} {action} in {directory}'
             log_msg = log_msg.format(filename=os.path.basename(path),
                                      action=ACTIONS[action_id],
                                      directory=os.path.dirname(path))
@@ -227,7 +227,7 @@ class PROJECT_EVENT_HANDLER(FileSystemEventHandler):
                 return
             file_path = event.src_path
             basename = os.path.basename(file_path)
-            log_msg = 'On created at: {path} ({name})'
+            log_msg = u'On created at: {path} ({name})'
             log_msg = log_msg.format(path=project.dir, name=basename)
             _logger().debug(log_msg)
             new_path = os.path.join(project.dir, basename)
