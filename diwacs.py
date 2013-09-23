@@ -30,6 +30,7 @@ import inspect
 from pubsub import pub
 import pyHook
 import wx
+import wx.lib.buttons as buttons
 
 
 # Own imports.
@@ -416,6 +417,7 @@ class GraphicalUserInterface(GUItemplate):
         selected.
 
         """
+        LOGGER.debug("enabling dir")
         self.dirbtn.Enable()
         self.dirbtn.Refresh()
         self.dirbtn.Update()
@@ -432,6 +434,8 @@ class GraphicalUserInterface(GUItemplate):
             usable.
 
         """
+        self.dirbtn.Disable()
+        self.dirbtn.Disable()
         self.dirbtn.Disable()
         self.dirbtn.Refresh()
         self.dirbtn.Update()
@@ -565,16 +569,18 @@ class GraphicalUserInterface(GUItemplate):
             self.SetProjectName(project.name)
             self.EnableDirectoryButton()
             self.sesbtn.Enable(True)
+            if session is not None:
+                self.EnableSessionButton()
+            else:
+                self.DisableSessionButton()
             if caller == 'OnProjectSelect':
                 msg = 'Project: {0}'.format(project.name)
                 self.diwa_state.send_print_to_status(msg)
         else:
             self.SetProjectName(None)
+            self.sesbtn.Disable()
             self.DisableDirectoryButton()
-        if session is not None:
-            self.EnableSessionButton()
-        else:
-            self.DisableSessionButton()
+            self.status_box.Clear()     
         self.Refresh()
         self.Update()
 

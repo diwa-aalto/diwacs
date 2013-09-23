@@ -791,6 +791,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.add_button = wx.Button(self, wx.ID_ANY, 'Create...')
         self.edit_button = wx.Button(self, wx.ID_ANY, 'Modify...')
         self.delete_button = wx.Button(self, wx.ID_ANY, 'Delete...')
+        self.deselect_button = wx.Button(self, wx.ID_ANY, 'Deselect')
         self.select_button = wx.Button(self, wx.ID_ANY, 'Select')
         self.cancel_button = wx.Button(self, wx.ID_ANY, 'Cancel')
 
@@ -799,6 +800,8 @@ class ProjectSelectDialog(wx.Dialog):
         self.edit_button.Disable()
         self.delete_button.Bind(wx.EVT_BUTTON, self.OnProjectDelete)
         self.delete_button.Disable()
+        self.deselect_button.Bind(wx.EVT_BUTTON, self.OnProjectDeselect)
+        self.deselect_button.Disable()
         self.select_button.Bind(wx.EVT_BUTTON, self.OnProjectSelect)
         self.select_button.Disable()
         self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
@@ -812,6 +815,8 @@ class ProjectSelectDialog(wx.Dialog):
         button_sizer.Add(self.add_button)
         button_sizer.Add(self.edit_button)
         button_sizer.Add(self.delete_button)
+        selection_sizer.Add(self.deselect_button,0,wx.ALIGN_LEFT | wx.RIGHT, 
+                            120)
         selection_sizer.Add(self.select_button)
         selection_sizer.Add(self.cancel_button)
         main_sizer_h.Add(button_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
@@ -821,6 +826,7 @@ class ProjectSelectDialog(wx.Dialog):
         self.Layout()
 
         if self.diwa_state.current_project:
+            self.deselect_button.Enable()
             self.select_button.Enable()
             self.edit_button.Enable()
             self.delete_button.Enable()
@@ -1024,7 +1030,25 @@ class ProjectSelectDialog(wx.Dialog):
             LOGGER.exception('Project Selected Exception: {0!s}'.format(excp))
         LOGGER.debug('Asked to start session.')
         self.EndModal(0)
+        
+    def OnProjectDeselect(self, event):
+        """
+        Handles the selection of a project.
 
+        Starts a :class:`wos.CURRENT_PROJECT`, if necessary.
+        Shows a dialog of the selected project.
+
+        :param event: GUI Event.
+        :type event: Event
+
+        """
+        current_project = self.diwa_state.current_project
+        self.diwa_state.set_current_project(0)
+        self.parent.OnProjectChanged()
+        self.parent.DisableDirectoryButton()
+        self.parent.Refresh()
+        self.EndModal(0)
+        
     def UpdateProjects(self, company_id=1):
         """
         Fetches all projects from the database, based on the company.

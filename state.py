@@ -26,6 +26,7 @@ import configobj
 import pyHook
 from watchdog.observers import Observer
 import wx
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 # Own imports.
 import controller
@@ -1051,12 +1052,20 @@ class State(object):
 
         """
         project_id = int(project_id)
-        project = Project.get_by_id(project_id)
+        try:
+            project = Project.get_by_id(project_id)
+        except NoResultFound, MultipleResultsFound:
+            project = None
         if project is None:
             self.current_project_id = 0
             self.current_project = None
             self.set_current_session(0)
+            self.worker.remove_all_registry_entries()
             self.remove_observer()
+            self.end_current_project()
+            self.end_current_session()
+            controller.unset_activity(diwavars.PGM_GROUP)
+            LOGGER.info('Project deselected.')
         elif project and self.current_project_id != project_id:
             if self.current_project_thread:
                 self.current_project_thread.stop()
