@@ -233,8 +233,8 @@ class AddProjectDialog(wx.Dialog):
                     LOGGER.warn('Error in creating project.')
                     self.EndModal(-1)
                     return
-                LOGGER.info(u'Created Project {1.name} '
-                            u'(id={1.id})'.format(project))
+                LOGGER.info(u'Created Project {0.name} '
+                            u'(id={0.id})'.format(project))
             
             result = project.id if project else self.project_id
         except Exception as excp:
